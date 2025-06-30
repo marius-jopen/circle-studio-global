@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
 	import { SliceZone } from '@prismicio/svelte';
 	import BigWheel from '$lib/components/BigWheel.svelte';
 
@@ -58,9 +58,11 @@
 		]
 	};
 
-</script>
+</script> -->
 
-<BigWheel {config} />
+<!-- <BigWheel {config} /> -->
 
-<SliceZone slices={data.page.data.slices} {components} />
+<!-- <SliceZone slices={data.page.data.slices} {components} /> -->
+
+HOME
 
