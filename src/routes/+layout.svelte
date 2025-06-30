@@ -20,7 +20,9 @@
 		<meta name="twitter:card" content="summary_large_image" />
 	{/if}
 </svelte:head>
+
 <main>
 	{@render children()}
 </main>
-<PrismicPreview {repositoryName} />
+
+<PrismicPreview {repositoryName} /> 
