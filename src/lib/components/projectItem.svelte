@@ -29,7 +29,8 @@
 		
 		{#if videoUrl}
 			<VideoPreview 
-				{videoUrl} 
+				hlsUrl={videoUrl}
+				videoUrl={videoUrl.replace('.m3u8', '.mp4')}
 				posterImage={imageField} 
 				{aspectClass}
 			/>
