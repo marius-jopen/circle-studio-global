@@ -1,21 +1,21 @@
-// import { asText } from '@prismicio/client';
+import { createClient } from '$lib/prismicio';
 
-// import { createClient } from '$lib/prismicio';
+export async function load({ fetch, cookies }) {
+	const client = createClient({ fetch, cookies });
 
-// export async function load({ fetch, cookies }) {
-// 	const client = createClient({ fetch, cookies });
+	const page = await client.getSingle('home');
+	const allProjects = await client.getAllByType('projects');
 
-// 	const page = await client.getByUID('page', 'home');
+	return {
+		page,
+		allProjects,
+		title: page.data.meta_title || 'Circle Studio Global',
+		meta_description: page.data.meta_description,
+		meta_title: page.data.meta_title,
+		meta_image: page.data.meta_image.url
+	};
+}
 
-// 	return {
-// 		page,
-// 		title: asText(page.data.title),
-// 		meta_description: page.data.meta_description,
-// 		meta_title: page.data.meta_title,
-// 		meta_image: page.data.meta_image.url
-// 	};
-// }
-
-// export function entries() {
-// 	return [{}];
-// }
+export function entries() {
+	return [{}];
+}

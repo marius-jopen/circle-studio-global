@@ -1,68 +1,53 @@
-<!-- <script lang="ts">
+<script lang="ts">
 	import { SliceZone } from '@prismicio/svelte';
-	import BigWheel from '$lib/components/BigWheel.svelte';
-
+	import { isFilled } from '@prismicio/client';
 	import { components } from '$lib/slices';
+	import ProjectIndex from '$lib/components/ProjectIndex.svelte';
+	import ProjectItem from '$lib/components/projectItem.svelte';
 
 	export let data;
 
-	// Single config object containing all BigWheel settings
-	export let config = {
-		uiVisible: true,
-		globalSettings: {
-			containerSizePercent: 100,
-			fontSizePercent: 10,
-			distancePercent: 1,
-			paused: false,
-			textColor: "black",
-			backgroundColor: "#ffffff",
-			transparentBackground: false,
-			saveStillTrigger: false,
-			startRecording: false,
-			stopRecording: false,
-			exportResolution: 600,
-			useHighResRecording: false,
-			fadeInTime: 3,
-			fadeOutTime: 2.5,
-			pauseTime: 1.5,
-			visibleTime: 5,
-			manualMode: false,
-			triggerFadeIn: false,
-			triggerFadeOut: false
-		},
-		items: [
-			{
-				text: 'circle studio',
-				rotationSpeed: 0.9,
-				spacingAmplitudePercent: 2.5,
-				spacingSpeed: 0.09,
-				rotationStart: 0,
-				animationType: 'sin'
-			},
-			{
-				text: 'est. 2025',
-				rotationSpeed: 0.9,
-				spacingAmplitudePercent: 2.5,
-				spacingSpeed: 0.09,
-				rotationStart: 180,
-				animationType: 'sin'
-			},
-			{
-				text: 'New York',
-				rotationSpeed: 0.9,
-				spacingAmplitudePercent: 2.5,
-				spacingSpeed: 0.09,
-				rotationStart: 200,
-				animationType: 'sin'
-			}
-		]
-	};
+	// Extract featured project IDs to exclude them from ProjectIndex
+	$: featuredProjectIds = (() => {
+		const ids = [];
+		
+		// Add single featured project ID
+		if (isFilled.contentRelationship(data.page.data.feature_project)) {
+			ids.push(data.page.data.feature_project.id);
+		}
+		
+		// Add featured projects IDs
+		if (data.page.data.feature_projects) {
+			data.page.data.feature_projects.forEach(projectGroup => {
+				if (isFilled.contentRelationship(projectGroup.items)) {
+					ids.push(projectGroup.items.id);
+				}
+			});
+		}
+		
+		return ids;
+	})();
+</script>
 
-</script> -->
+<div>
+	{#if isFilled.contentRelationship(data.page.data.feature_project)}
+		<ProjectItem project={data.page.data.feature_project} />
+	{/if}
 
-<!-- <BigWheel {config} /> -->
+	{#if data.page.data.feature_projects && data.page.data.feature_projects.length > 0}
+		{#each data.page.data.feature_projects as projectGroup}
+			{#if isFilled.contentRelationship(projectGroup.items)}
+				<ProjectItem project={projectGroup.items} />
+			{/if}
+		{/each}
+	{/if}
 
-<!-- <SliceZone slices={data.page.data.slices} {components} /> -->
+	<ProjectIndex allProjects={data.allProjects} {featuredProjectIds} />
 
-HOME
+	{#if data.page.data.slices && data.page.data.slices.length > 0}
+		<SliceZone slices={data.page.data.slices} {components} />
+	{/if}
+</div>
+
+
 
