@@ -11,7 +11,7 @@
 
 <div>
 	{#if remainingProjects.length > 0}
-		<div class="grid grid-cols-2 gap-4">
+		<div class="grid grid-cols-3 gap-4">
 			{#each remainingProjects as project}
 				<ProjectItem dimension="portrait" {project} />
 			{/each}

@@ -24,7 +24,7 @@
 		uiVisible: false,
 		globalSettings: {
 			containerSizePercent: 60,
-			fontSizePercent: 10,
+			fontSizePercent: 8,
 			distancePercent: 1,
 			paused: false,
 			textColor: "white",
@@ -57,10 +57,44 @@
 </script>
 
 <style>
-	/* Override BigWheel's sticky positioning when used as overlay */
-	:global(.bigwheel-overlay > div > div) {
+	/* Override BigWheel's layout when used as overlay */
+	:global(.bigwheel-overlay > div) {
+		/* Reset the flex layout */
+		display: block !important;
+		flex-direction: column !important;
+		gap: 0 !important;
+		height: auto !important;
+		width: auto !important;
+		max-width: none !important;
+		margin: 0 !important;
+		padding: 0 !important;
 		position: static !important;
 		top: auto !important;
+	}
+	
+	/* Target the canvas container directly */
+	:global(.bigwheel-overlay > div > div:first-child) {
+		position: static !important;
+		top: auto !important;
+		flex-shrink: 1 !important;
+		margin: 0 auto !important;
+	}
+	
+	/* Hide controls container when used as overlay */
+	:global(.bigwheel-overlay > div > div:last-child) {
+		display: none !important;
+	}
+	
+	/* Ensure the canvas itself is centered */
+	:global(.bigwheel-overlay > div > div:first-child > div) {
+		margin: 0 auto !important;
+	}
+	
+	/* Center the overlay container */
+	.bigwheel-overlay {
+		display: flex !important;
+		align-items: center !important;
+		justify-content: center !important;
 	}
 </style>
 
@@ -70,25 +104,30 @@
 		{@const imageField = dimension === 'portrait' ? preview?.preview_image_portrait : preview?.preview_image_landscape}
 		{@const videoUrl = dimension === 'portrait' ? preview?.preview_video_url_portrait : preview?.preview_video_url_landscape}
 		
-		<div class="relative">
-			{#if videoUrl}
+		{#if videoUrl}
+			<div class="relative mb-4">
 				<VideoPreview 
 					hlsUrl={videoUrl}
 					posterImage={imageField} 
-					classes="w-full h-auto rounded object-cover mb-4 {aspectClass}"
+					classes="w-full h-auto rounded object-cover {aspectClass}"
 				/>
-			{:else if imageField?.url}
+				<!-- BigWheel positioned directly over the video -->
+				<div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay">
+					<BigWheel {config} />
+				</div>
+			</div>
+		{:else if imageField?.url}
+			<div class="relative mb-4">
 				<PrismicImage 
 					field={imageField} 
-					class="w-full h-auto rounded {aspectClass} object-cover mb-4"
+					class="w-full h-auto rounded {aspectClass} object-cover"
 				/>
-			{/if}
-			
-			<!-- BigWheel positioned directly over the video/image -->
-			<div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay">
-				<BigWheel {config} />
+				<!-- BigWheel positioned directly over the image -->
+				<div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay">
+					<BigWheel {config} />
+				</div>
 			</div>
-		</div>
+		{/if}
 	{/if}
 </div>
 
