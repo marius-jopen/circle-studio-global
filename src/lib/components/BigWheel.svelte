@@ -845,11 +845,11 @@
       {/each}
     </div>
     
-    <div class="flex justify-center mt-4">
+    <!-- <div class="flex justify-center mt-4">
       <Button variant="secondary" on:click={toggleControls}>
         {showControls ? 'Hide Controls' : 'Show Controls'}
       </Button>
-    </div>
+    </div> -->
   </div>
 
   <!-- Controls Container - Scrollable -->
