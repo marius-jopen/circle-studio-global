@@ -13,6 +13,7 @@
 	{projectTitle}
 
 	{#if projectData?.preview && Array.isArray(projectData.preview) && projectData.preview.length > 0 && projectData.preview[0]}		
+		{@const preview = projectData.preview[0]}
 		{#if preview?.preview_image_landscape?.url}
 			<img 
 				src={preview.preview_image_landscape.url} 

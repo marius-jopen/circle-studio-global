@@ -29,17 +29,19 @@
 	})();
 </script>
 
-<div>
+<div class="px-4">
 	{#if isFilled.contentRelationship(data.page.data.feature_project)}
 		<ProjectItem project={data.page.data.feature_project} />
 	{/if}
 
 	{#if data.page.data.feature_projects && data.page.data.feature_projects.length > 0}
-		{#each data.page.data.feature_projects as projectGroup}
-			{#if isFilled.contentRelationship(projectGroup.items)}
-				<ProjectItem project={projectGroup.items} />
-			{/if}
-		{/each}
+		<div class="flex flex-row gap-4">
+			{#each data.page.data.feature_projects as projectGroup}
+				{#if isFilled.contentRelationship(projectGroup.items)}
+					<ProjectItem project={projectGroup.items} />
+				{/if}
+			{/each}
+		</div>
 	{/if}
 
 	<ProjectIndex allProjects={data.allProjects} {featuredProjectIds} />
