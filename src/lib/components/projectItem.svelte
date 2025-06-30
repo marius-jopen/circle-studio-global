@@ -20,6 +20,7 @@
 	}[dimension];
 
 	// Make config reactive so it updates when projectTitle changes
+	// Make config reactive so it updates when projectTitle changes
 	$: config = {
 		uiVisible: false,
 		globalSettings: {
@@ -27,8 +28,8 @@
 			fontSizePercent: 8,
 			distancePercent: 1,
 			paused: false,
-			textColor: "white",
-			backgroundColor: "#ffffff",
+			textColor: "#ffffff",
+			backgroundColor: "#ffffff", 
 			transparentBackground: true,
 			saveStillTrigger: false,
 			startRecording: false,
@@ -54,7 +55,47 @@
 			}
 		]
 	};
+	
+	// Force BigWheel to update when config changes by adding a key
+	$: bigWheelKey = JSON.stringify(config);
 </script>
+
+<div>
+	{#if projectData?.preview && Array.isArray(projectData.preview) && projectData.preview.length > 0 && projectData.preview[0]}		
+		{@const preview = projectData.preview[0]}
+		{@const imageField = dimension === 'portrait' ? preview?.preview_image_portrait : preview?.preview_image_landscape}
+		{@const videoUrl = dimension === 'portrait' ? preview?.preview_video_url_portrait : preview?.preview_video_url_landscape}
+		
+		{#if videoUrl}
+			<div class="relative mb-4">
+				<VideoPreview 
+					hlsUrl={videoUrl}
+					posterImage={imageField} 
+					classes="w-full h-auto rounded object-cover {aspectClass}"
+				/>
+				<!-- BigWheel positioned directly over the video -->
+				<div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay">
+					{#key bigWheelKey}
+						<BigWheel {config} />
+					{/key}
+				</div>
+			</div>
+		{:else if imageField?.url}
+			<div class="relative mb-4">
+				<PrismicImage 
+					field={imageField} 
+					class="w-full h-auto rounded {aspectClass} object-cover"
+				/>
+				<!-- BigWheel positioned directly over the image -->
+				<div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay">
+					{#key bigWheelKey}
+						<BigWheel {config} />
+					{/key}
+				</div>
+			</div>
+		{/if}
+	{/if}
+</div>
 
 <style>
 	/* Override BigWheel's layout when used as overlay */
@@ -96,39 +137,22 @@
 		align-items: center !important;
 		justify-content: center !important;
 	}
+	
+	/* Force white text color for BigWheel overlay */
+	:global(.bigwheel-overlay text) {
+		fill: white !important;
+	}
+	
+	:global(.bigwheel-overlay span) {
+		color: white !important;
+	}
+	
+	:global(.bigwheel-overlay div) {
+		color: white !important;
+	}
+	
+	:global(.bigwheel-overlay *) {
+		color: white !important;
+		fill: white !important;
+	}
 </style>
-
-<div>
-	{#if projectData?.preview && Array.isArray(projectData.preview) && projectData.preview.length > 0 && projectData.preview[0]}		
-		{@const preview = projectData.preview[0]}
-		{@const imageField = dimension === 'portrait' ? preview?.preview_image_portrait : preview?.preview_image_landscape}
-		{@const videoUrl = dimension === 'portrait' ? preview?.preview_video_url_portrait : preview?.preview_video_url_landscape}
-		
-		{#if videoUrl}
-			<div class="relative mb-4">
-				<VideoPreview 
-					hlsUrl={videoUrl}
-					posterImage={imageField} 
-					classes="w-full h-auto rounded object-cover {aspectClass}"
-				/>
-				<!-- BigWheel positioned directly over the video -->
-				<div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay">
-					<BigWheel {config} />
-				</div>
-			</div>
-		{:else if imageField?.url}
-			<div class="relative mb-4">
-				<PrismicImage 
-					field={imageField} 
-					class="w-full h-auto rounded {aspectClass} object-cover"
-				/>
-				<!-- BigWheel positioned directly over the image -->
-				<div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay">
-					<BigWheel {config} />
-				</div>
-			</div>
-		{/if}
-	{/if}
-</div>
-
-
