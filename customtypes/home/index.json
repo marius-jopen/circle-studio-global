@@ -1,0 +1,106 @@
+{
+	"format": "page",
+	"id": "home",
+	"label": "Home",
+	"repeatable": false,
+	"status": true,
+	"json": {
+		"Main": {
+			"feature_project": {
+				"type": "Link",
+				"config": {
+					"label": "Feature Project",
+					"select": "document",
+					"repeat": false,
+					"customtypes": [
+						{
+							"id": "projects",
+							"fields": [
+								"title",
+								"description",
+								{
+									"id": "preview",
+									"fields": [
+										"preview_image_landscape",
+										"preview_video_url_landscape",
+										"preview_image_portrait",
+										"preview_video_url_portrait"
+									]
+								}
+							]
+						}
+					]
+				}
+			},
+			"feature_projects": {
+				"type": "Group",
+				"config": {
+					"label": "Feature Projects",
+					"repeat": true,
+					"fields": {
+						"items": {
+							"type": "Link",
+							"config": {
+								"label": "Items",
+								"select": "document",
+								"repeat": false,
+								"customtypes": [
+									{
+										"id": "projects",
+										"fields": [
+											"description",
+											"title",
+											{
+												"id": "preview",
+												"fields": [
+													"preview_image_landscape",
+													"preview_video_url_landscape",
+													"preview_image_portrait",
+													"preview_video_url_portrait"
+												]
+											}
+										]
+									}
+								]
+							}
+						}
+					}
+				}
+			},
+			"slices": {
+				"type": "Slices",
+				"fieldset": "Slice Zone",
+				"config": {
+					"choices": {}
+				}
+			}
+		},
+		"SEO & Metadata": {
+			"meta_title": {
+				"config": {
+					"label": "Meta Title",
+					"placeholder": "A title of the page used for social media and search engines"
+				},
+				"type": "Text"
+			},
+			"meta_description": {
+				"config": {
+					"label": "Meta Description",
+					"placeholder": "A brief summary of the page"
+				},
+				"type": "Text"
+			},
+			"meta_image": {
+				"config": {
+					"constraint": {
+						"height": 1260,
+						"width": 2400
+					},
+					"label": "Meta Image",
+					"thumbnails": []
+				},
+				"type": "Image"
+			}
+		}
+	}
+}

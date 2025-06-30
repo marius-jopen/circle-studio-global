@@ -1,0 +1,33 @@
+{
+	"format": "custom",
+	"id": "settings",
+	"label": "Settings",
+	"repeatable": false,
+	"status": true,
+	"json": {
+		"Main": {
+			"navigation_header": {
+				"type": "Link",
+				"config": {
+					"label": "Navigation Header",
+					"placeholder": "",
+					"select": null,
+					"allowTargetBlank": true,
+					"allowText": true,
+					"repeat": true
+				}
+			},
+			"navigation_footer": {
+				"type": "Link",
+				"config": {
+					"label": "Navigation Footer",
+					"placeholder": "",
+					"select": null,
+					"allowTargetBlank": true,
+					"allowText": true,
+					"repeat": true
+				}
+			}
+		}
+	}
+}
