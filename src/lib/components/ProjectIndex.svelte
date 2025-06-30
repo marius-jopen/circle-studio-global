@@ -11,9 +11,11 @@
 
 <div>
 	{#if remainingProjects.length > 0}
-		{#each remainingProjects as project}
-			<ProjectItem {project} />
-		{/each}
+		<div class="grid grid-cols-2 gap-4">
+			{#each remainingProjects as project}
+				<ProjectItem dimension="portrait" {project} />
+			{/each}
+		</div>
 	{/if}
 </div>
 
