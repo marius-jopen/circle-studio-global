@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	
-	export let videoUrl: string;
-	export let hlsUrl: string = '';
+	export let hlsUrl: string;
 	export let posterImage: any = null;
-	export let aspectClass: string = 'aspect-video';
-	export let additionalClasses: string = 'w-full h-auto rounded object-cover mb-4';
+	export let classes: string = 'w-full h-auto rounded object-cover mb-4';
 	
 	let videoElement: HTMLVideoElement;
 	
+	// Automatically generate MP4 URL from HLS URL
+	$: videoUrl = hlsUrl.replace('.m3u8', '.mp4');
 	// Determine if we should use HLS or MP4
 	$: useHls = hlsUrl && hlsUrl.includes('.m3u8');
 	
@@ -32,7 +32,7 @@
 <video 
 	bind:this={videoElement}
 	controls 
-	class="{additionalClasses} {aspectClass}"
+	class="{classes}"
 	poster={posterImage?.url || ''}
 	preload="metadata"
 >
