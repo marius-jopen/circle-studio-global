@@ -51,7 +51,7 @@
 				rotationSpeed: 0.5,
 				spacingAmplitudePercent: 2,
 				spacingSpeed: 0.09,
-				rotationStart: Math.random() * 360,
+				rotationStart: 0,
 				animationType: 'sin'
 			},
 			{
@@ -59,7 +59,7 @@
 				rotationSpeed: 0.3,
 				spacingAmplitudePercent: 2,
 				spacingSpeed: 0.09,
-				rotationStart: Math.random() * 360,
+				rotationStart: 180,
 				animationType: 'sin'
 			}
 		]
