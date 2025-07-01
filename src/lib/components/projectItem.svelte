@@ -11,6 +11,7 @@
 	// Get project data - handle both full documents and content relationships
 	$: projectData = project.data || project;
 	$: projectTitle = projectData?.title || 'Untitled Project';
+	$: projectClient = projectData?.client || 'Untitled Client';
 	
 	// Get aspect ratio class based on dimension
 	$: aspectClass = {
@@ -36,13 +37,13 @@
 			stopRecording: false,
 			exportResolution: 400,
 			useHighResRecording: false,
-			fadeInTime: 3,
-			fadeOutTime: 2.5,
+			fadeInTime: 0.5,
+			fadeOutTime: 0.5,
 			pauseTime: 1.5,
 			visibleTime: 5,
 			manualMode: true,
-			triggerFadeIn: false,
-			triggerFadeOut: false
+			triggerFadeIn: isHovering,
+			triggerFadeOut: !isHovering
 		},
 		items: [
 			{
@@ -50,14 +51,22 @@
 				rotationSpeed: 0.5,
 				spacingAmplitudePercent: 2,
 				spacingSpeed: 0.09,
-				rotationStart: 0,
+				rotationStart: Math.random() * 360,
+				animationType: 'sin'
+			},
+			{
+				text: projectClient,
+				rotationSpeed: 0.3,
+				spacingAmplitudePercent: 2,
+				spacingSpeed: 0.09,
+				rotationStart: Math.random() * 360,
 				animationType: 'sin'
 			}
 		]
 	};
 	
-	// Force BigWheel to update when config changes by adding a key
-	$: bigWheelKey = JSON.stringify(config);
+	// Hover state for fade in/out
+	let isHovering = false;
 </script>
 
 <div>
@@ -67,7 +76,9 @@
 		{@const videoUrl = dimension === 'portrait' ? preview?.preview_video_url_portrait : preview?.preview_video_url_landscape}
 		
 		{#if videoUrl}
-			<div class="relative mb-4">
+			<div class="relative mb-4" 
+				 on:mouseenter={() => isHovering = true}
+				 on:mouseleave={() => isHovering = false}>
 				<VideoPreview 
 					hlsUrl={videoUrl}
 					posterImage={imageField} 
@@ -75,22 +86,20 @@
 				/>
 				<!-- BigWheel positioned directly over the video -->
 				<div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay">
-					{#key bigWheelKey}
-						<BigWheel {config} />
-					{/key}
+					<BigWheel {config} />
 				</div>
 			</div>
 		{:else if imageField?.url}
-			<div class="relative mb-4">
+			<div class="relative mb-4"
+				 on:mouseenter={() => isHovering = true}
+				 on:mouseleave={() => isHovering = false}>
 				<PrismicImage 
 					field={imageField} 
 					class="w-full h-auto rounded {aspectClass} object-cover"
 				/>
 				<!-- BigWheel positioned directly over the image -->
 				<div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay">
-					{#key bigWheelKey}
-						<BigWheel {config} />
-					{/key}
+					<BigWheel {config} />
 				</div>
 			</div>
 		{/if}

@@ -26,7 +26,8 @@
 										"preview_image_portrait",
 										"preview_video_url_portrait"
 									]
-								}
+								},
+								"client"
 							]
 						}
 					]
@@ -58,7 +59,8 @@
 													"preview_image_portrait",
 													"preview_video_url_portrait"
 												]
-											}
+											},
+											"client"
 										]
 									}
 								]

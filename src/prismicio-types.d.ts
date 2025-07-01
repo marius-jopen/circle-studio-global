@@ -84,7 +84,8 @@ export interface HomeDocumentDataFeatureProjectsItem {
 							'preview_image_portrait',
 							'preview_video_url_portrait'
 						];
-					}
+					},
+					'client'
 				];
 			}
 		]
@@ -121,7 +122,8 @@ interface HomeDocumentData {
 							'preview_image_portrait',
 							'preview_video_url_portrait'
 						];
-					}
+					},
+					'client'
 				];
 			}
 		]
@@ -443,6 +445,17 @@ interface ProjectsDocumentData {
 	 * - **Documentation**: https://prismic.io/docs/fields/text
 	 */
 	title: prismic.KeyTextField;
+
+	/**
+	 * Client field in *Projects*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: projects.client
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	client: prismic.KeyTextField;
 
 	/**
 	 * Description field in *Projects*

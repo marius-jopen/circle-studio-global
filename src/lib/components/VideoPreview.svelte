@@ -30,8 +30,11 @@
 </script>
 
 <video 
+	autoplay
+	loop
+	muted
+	playsinline
 	bind:this={videoElement}
-	controls 
 	class="{classes}"
 	poster={posterImage?.url || ''}
 	preload="metadata"

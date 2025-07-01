@@ -19,6 +19,13 @@
 					"placeholder": ""
 				}
 			},
+			"client": {
+				"type": "Text",
+				"config": {
+					"label": "Client",
+					"placeholder": ""
+				}
+			},
 			"description": {
 				"type": "StructuredText",
 				"config": {
