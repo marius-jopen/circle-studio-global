@@ -7,6 +7,7 @@
 	// Accept either a full ProjectsDocument or a content relationship field
 	export let project: ProjectsDocument | any;
 	export let dimension: 'landscape' | 'square' | 'portrait' = 'landscape';
+	export let clickable: boolean = true;
 	
 	// Get project data - handle both full documents and content relationships
 	$: projectData = project.data || project;
@@ -72,42 +73,81 @@
 	$: projectUid = project.uid || project.id;
 </script>
 
-<a href="/work/{projectUid}" class="block">
-	{#if projectData?.preview && Array.isArray(projectData.preview) && projectData.preview.length > 0 && projectData.preview[0]}		
-		{@const preview = projectData.preview[0]}
-		{@const imageField = dimension === 'portrait' ? preview?.preview_image_portrait : preview?.preview_image_landscape}
-		{@const videoUrl = dimension === 'portrait' ? preview?.preview_video_url_portrait : preview?.preview_video_url_landscape}
-		
-		{#if videoUrl}
-			<div class="relative mb-4" 
-				 on:mouseenter={() => isHovering = true}
-				 on:mouseleave={() => isHovering = false}>
-				<VideoPreview 
-					hlsUrl={videoUrl}
-					posterImage={imageField} 
-					classes="w-full h-auto rounded object-cover {aspectClass}"
-				/>
-				<!-- BigWheel positioned directly over the video -->
-				<div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay">
-					<BigWheel {config} />
+{#if clickable}
+	<a href="/work/{projectUid}" class="block">
+		{#if projectData?.preview && Array.isArray(projectData.preview) && projectData.preview.length > 0 && projectData.preview[0]}		
+			{@const preview = projectData.preview[0]}
+			{@const imageField = dimension === 'portrait' ? preview?.preview_image_portrait : preview?.preview_image_landscape}
+			{@const videoUrl = dimension === 'portrait' ? preview?.preview_video_url_portrait : preview?.preview_video_url_landscape}
+			
+			{#if videoUrl}
+				<div class="relative mb-4" 
+					 on:mouseenter={() => isHovering = true}
+					 on:mouseleave={() => isHovering = false}>
+					<VideoPreview 
+						hlsUrl={videoUrl}
+						posterImage={imageField} 
+						classes="w-full h-auto rounded object-cover {aspectClass}"
+					/>
+					<!-- BigWheel positioned directly over the video -->
+					<div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay">
+						<BigWheel {config} />
+					</div>
 				</div>
-			</div>
-		{:else if imageField?.url}
-			<div class="relative mb-4"
-				 on:mouseenter={() => isHovering = true}
-				 on:mouseleave={() => isHovering = false}>
-				<PrismicImage 
-					field={imageField} 
-					class="w-full h-auto rounded {aspectClass} object-cover"
-				/>
-				<!-- BigWheel positioned directly over the image -->
-				<div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay">
-					<BigWheel {config} />
+			{:else if imageField?.url}
+				<div class="relative mb-4"
+					 on:mouseenter={() => isHovering = true}
+					 on:mouseleave={() => isHovering = false}>
+					<PrismicImage 
+						field={imageField} 
+						class="w-full h-auto rounded {aspectClass} object-cover"
+					/>
+					<!-- BigWheel positioned directly over the image -->
+					<div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay">
+						<BigWheel {config} />
+					</div>
 				</div>
-			</div>
+			{/if}
 		{/if}
-	{/if}
-</a>
+	</a>
+{:else}
+	<div class="block">
+		{#if projectData?.preview && Array.isArray(projectData.preview) && projectData.preview.length > 0 && projectData.preview[0]}		
+			{@const preview = projectData.preview[0]}
+			{@const imageField = dimension === 'portrait' ? preview?.preview_image_portrait : preview?.preview_image_landscape}
+			{@const videoUrl = dimension === 'portrait' ? preview?.preview_video_url_portrait : preview?.preview_video_url_landscape}
+			
+			{#if videoUrl}
+				<div class="relative mb-4" 
+					 on:mouseenter={() => isHovering = true}
+					 on:mouseleave={() => isHovering = false}>
+					<VideoPreview 
+						hlsUrl={videoUrl}
+						posterImage={imageField} 
+						classes="w-full h-auto rounded object-cover {aspectClass}"
+					/>
+					<!-- BigWheel positioned directly over the video -->
+					<div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay">
+						<BigWheel {config} />
+					</div>
+				</div>
+			{:else if imageField?.url}
+				<div class="relative mb-4"
+					 on:mouseenter={() => isHovering = true}
+					 on:mouseleave={() => isHovering = false}>
+					<PrismicImage 
+						field={imageField} 
+						class="w-full h-auto rounded {aspectClass} object-cover"
+					/>
+					<!-- BigWheel positioned directly over the image -->
+					<div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay">
+						<BigWheel {config} />
+					</div>
+				</div>
+			{/if}
+		{/if}
+	</div>
+{/if}
 
 <style>
 	/* Override BigWheel's layout when used as overlay */

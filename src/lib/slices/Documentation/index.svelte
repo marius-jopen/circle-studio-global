@@ -44,7 +44,7 @@
 	{#if transformedProjects.length > 0}
 		<div class="grid gap-6 {gridClass}">
 			{#each transformedProjects as project}
-				<ProjectItem dimension="portrait" {project} />
+				<ProjectItem dimension="portrait" {project} clickable={false} />
 			{/each}
 		</div>
 	{/if}
