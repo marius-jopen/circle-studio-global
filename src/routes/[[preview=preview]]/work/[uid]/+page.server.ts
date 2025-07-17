@@ -1,27 +1,43 @@
 import { asText } from '@prismicio/client';
+import { error } from '@sveltejs/kit';
 
 import { createClient } from '$lib/prismicio';
 
 export async function load({ params, fetch, cookies }) {
 	const client = createClient({ fetch, cookies });
 
-	const project = await client.getByUID('projects', params.uid);
+	try {
+		const project = await client.getByUID('projects', params.uid);
 
-	return {
-		project,
-		title: project.data.title || 'Project',
-		meta_description: project.data.meta_description,
-		meta_title: project.data.meta_title,
-		meta_image: project.data.meta_image?.url
-	};
+		return {
+			project,
+			title: project.data.title || 'Project',
+			meta_description: project.data.meta_description,
+			meta_title: project.data.meta_title,
+			meta_image: project.data.meta_image?.url
+		};
+	} catch (err) {
+		// Log the error for debugging but throw a 404 instead of 500
+		console.error(`Failed to fetch project with UID: ${params.uid}`, err);
+		throw error(404, `Project not found: ${params.uid}`);
+	}
 }
 
 export async function entries() {
 	const client = createClient();
 
-	const projects = await client.getAllByType('projects');
+	try {
+		const projects = await client.getAllByType('projects');
 
-	return projects.map((project) => {
-		return { uid: project.uid };
-	});
+		// Filter out any projects that might be invalid
+		return projects
+			.filter(project => project.uid && project.uid.length > 0)
+			.map((project) => {
+				return { uid: project.uid };
+			});
+	} catch (err) {
+		console.error('Failed to fetch projects for prerendering:', err);
+		// Return empty array to prevent build failure
+		return [];
+	}
 }

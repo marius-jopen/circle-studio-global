@@ -1,27 +1,40 @@
 import { asText } from '@prismicio/client';
+import { error } from '@sveltejs/kit';
 
 import { createClient } from '$lib/prismicio';
 
 export async function load({ params, fetch, cookies }) {
 	const client = createClient({ fetch, cookies });
 
-	const page = await client.getByUID('page', params.uid);
+	try {
+		const page = await client.getByUID('page', params.uid);
 
-	return {
-		page,
-		title: asText(page.data.title),
-		meta_description: page.data.meta_description,
-		meta_title: page.data.meta_title,
-		meta_image: page.data.meta_image.url
-	};
+		return {
+			page,
+			title: asText(page.data.title),
+			meta_description: page.data.meta_description,
+			meta_title: page.data.meta_title,
+			meta_image: page.data.meta_image.url
+		};
+	} catch (err) {
+		console.error(`Failed to fetch page with UID: ${params.uid}`, err);
+		throw error(404, `Page not found: ${params.uid}`);
+	}
 }
 
 export async function entries() {
 	const client = createClient();
 
-	const pages = await client.getAllByType('page');
+	try {
+		const pages = await client.getAllByType('page');
 
-	return pages.map((page) => {
-		return { uid: page.uid };
-	});
+		return pages
+			.filter(page => page.uid && page.uid.length > 0)
+			.map((page) => {
+				return { uid: page.uid };
+			});
+	} catch (err) {
+		console.error('Failed to fetch pages for prerendering:', err);
+		return [];
+	}
 }
