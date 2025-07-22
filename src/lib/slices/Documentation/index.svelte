@@ -24,12 +24,12 @@
 <section 
 	data-slice-type={slice.slice_type} 
 	data-slice-variation={slice.variation}
-	class="mx-auto px-3 py-8"
+	class="mx-auto py-2"
 >
 	{#if slice.primary.items && slice.primary.items.length > 0}
-		<div class="grid gap-6 {gridClass}">
+		<div class="grid gap-3 {gridClass}">
 			{#each slice.primary.items as item}
-				<DocumentationItem dimension="portrait" {item} />
+				<DocumentationItem {item} />
 			{/each}
 		</div>
 	{/if}

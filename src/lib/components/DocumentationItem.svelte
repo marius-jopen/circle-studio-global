@@ -3,14 +3,6 @@
 	import VideoPreview from './VideoPreview.svelte';
 
 	export let item: any;
-	export let dimension: 'landscape' | 'square' | 'portrait' = 'landscape';
-	
-	// Get aspect ratio class based on dimension
-	$: aspectClass = {
-		// landscape: 'aspect-video',
-		// square: 'aspect-square',
-		// portrait: 'aspect-[3/4]'
-	}[dimension];
 </script>
 
 <div class="block">
@@ -19,18 +11,18 @@
 		{@const videoUrl = item.video_url}
 		
 		{#if videoUrl}
-			<div class="relative mb-4">
+			<div class="relative">
 				<VideoPreview 
 					hlsUrl={videoUrl}
 					posterImage={imageField} 
-					classes="w-full h-auto rounded object-cover {aspectClass}"
+					classes="w-full h-auto rounded object-cover"
 				/>
 			</div>
 		{:else if imageField?.url}
-			<div class="relative mb-4">
+			<div class="relative">
 				<PrismicImage 
 					field={imageField} 
-					class="w-full h-auto rounded {aspectClass} object-cover"
+					class="w-full h-auto rounded object-cover"
 				/>
 			</div>
 		{/if}
