@@ -14,6 +14,10 @@
 	$: useHls = hlsUrl && hlsUrl.includes('.m3u8');
 	
 	onMount(async () => {
+		console.log('🎥 VideoAdvanced Debug:');
+		console.log('- shouldAutoplay prop:', shouldAutoplay);
+		console.log('- hlsUrl:', hlsUrl);
+		
 		if (useHls && videoElement) {
 			// Dynamically import HLS.js
 			const { default: Hls } = await import('hls.js');
@@ -25,6 +29,28 @@
 			} else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
 				// Safari has native HLS support
 				videoElement.src = hlsUrl;
+			}
+		}
+		
+		// Debug autoplay behavior
+		if (shouldAutoplay && videoElement) {
+			console.log('🎮 Attempting autoplay...');
+			
+			// Try to play and catch any autoplay policy blocks
+			try {
+				const playPromise = videoElement.play();
+				if (playPromise !== undefined) {
+					playPromise
+						.then(() => {
+							console.log('✅ Autoplay succeeded!');
+						})
+						.catch(error => {
+							console.log('❌ Autoplay blocked by browser:', error.message);
+							console.log('💡 This is likely due to browser autoplay policies');
+						});
+				}
+			} catch (error) {
+				console.log('❌ Autoplay error:', error);
 			}
 		}
 	});

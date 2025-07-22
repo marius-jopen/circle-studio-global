@@ -21,6 +21,13 @@
 		// If referrer exists and is from the same domain, it's navigation
 		// If no referrer or different domain, it's likely direct access
 		cameFromNavigation = !!(referrer && new URL(referrer).host === currentHost);
+		
+		// Debug logging
+		console.log('🔍 Navigation Detection Debug:');
+		console.log('- Referrer:', referrer);
+		console.log('- Current Host:', currentHost);
+		console.log('- Came from navigation:', cameFromNavigation);
+		console.log('- Should autoplay:', cameFromNavigation);
 	});
 </script>
 
