@@ -17,13 +17,22 @@
 	$: remainingProjects = allProjects.filter(project => !featuredProjectIds.includes(project.id));
 
 	// Randomize layout on component mount and when projects change
-	$: randomizedLayout = createRandomizedLayout(remainingProjects);
+	$: randomizedLayout = createRandomizedLayout(shuffleArray(remainingProjects));
 
 	interface LayoutRow {
 		type: keyof typeof LAYOUT_CONFIG;
 		projects: ProjectsDocument[];
 		dimension: 'portrait' | 'square' | 'landscape';
 		gridCols: string;
+	}
+
+	function shuffleArray<T>(array: T[]): T[] {
+		const shuffled = [...array];
+		for (let i = shuffled.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+		}
+		return shuffled;
 	}
 
 	function planFinalLayout(remainingProjects: ProjectsDocument[], previousLayoutType: keyof typeof LAYOUT_CONFIG | null): LayoutRow[] {
