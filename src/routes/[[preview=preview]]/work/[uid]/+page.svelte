@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { SliceZone, PrismicImage, PrismicRichText, PrismicLink } from '@prismicio/svelte';
 	import type { PageProps } from './$types';
-	import VideoAdvanced from '$lib/components/VideoAdvanced.svelte';
+	import VideoPlayerCustom from '$lib/components/VideoPlayerCustom.svelte';
 
 	import { components } from '$lib/slices';
 
@@ -29,7 +29,7 @@
 	{#if projectData.main_video_url || projectData.main_image?.url}
 		<div class="mb-12">
 			{#if projectData.main_video_url}
-				<VideoAdvanced 
+				<VideoPlayerCustom 
 					hlsUrl={projectData.main_video_url}
 					posterImage={projectData.main_image} 
 					classes="w-full h-auto rounded-lg object-cover aspect-video"
