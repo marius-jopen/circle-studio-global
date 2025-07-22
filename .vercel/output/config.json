@@ -1,0 +1,557 @@
+{
+	"version": 3,
+	"routes": [
+		{
+			"src": "/slice-simulator",
+			"dest": "/slice-simulator/"
+		},
+		{
+			"src": "/slice-simulator/",
+			"status": 308,
+			"headers": {
+				"Location": "/slice-simulator"
+			}
+		},
+		{
+			"src": "/work/theory",
+			"dest": "/work/theory/"
+		},
+		{
+			"src": "/work/theory/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/theory"
+			}
+		},
+		{
+			"src": "/work/la-felicidad-se-consigue-con-cosas-muy-simples",
+			"dest": "/work/la-felicidad-se-consigue-con-cosas-muy-simples/"
+		},
+		{
+			"src": "/work/la-felicidad-se-consigue-con-cosas-muy-simples/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/la-felicidad-se-consigue-con-cosas-muy-simples"
+			}
+		},
+		{
+			"src": "/work/nike-j39",
+			"dest": "/work/nike-j39/"
+		},
+		{
+			"src": "/work/nike-j39/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/nike-j39"
+			}
+		},
+		{
+			"src": "/work/bombo-fabrika-gabriel-garzon-montano",
+			"dest": "/work/bombo-fabrika-gabriel-garzon-montano/"
+		},
+		{
+			"src": "/work/bombo-fabrika-gabriel-garzon-montano/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/bombo-fabrika-gabriel-garzon-montano"
+			}
+		},
+		{
+			"src": "/work/sagmeister-123",
+			"dest": "/work/sagmeister-123/"
+		},
+		{
+			"src": "/work/sagmeister-123/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/sagmeister-123"
+			}
+		},
+		{
+			"src": "/work/sagmeister-now-is-better-manatee",
+			"dest": "/work/sagmeister-now-is-better-manatee/"
+		},
+		{
+			"src": "/work/sagmeister-now-is-better-manatee/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/sagmeister-now-is-better-manatee"
+			}
+		},
+		{
+			"src": "/work/story",
+			"dest": "/work/story/"
+		},
+		{
+			"src": "/work/story/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/story"
+			}
+		},
+		{
+			"src": "/work/aguita-gabriel-garzon-montano",
+			"dest": "/work/aguita-gabriel-garzon-montano/"
+		},
+		{
+			"src": "/work/aguita-gabriel-garzon-montano/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/aguita-gabriel-garzon-montano"
+			}
+		},
+		{
+			"src": "/work/nike-trash-talk-motion",
+			"dest": "/work/nike-trash-talk-motion/"
+		},
+		{
+			"src": "/work/nike-trash-talk-motion/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/nike-trash-talk-motion"
+			}
+		},
+		{
+			"src": "/work/telfar-puff-remix",
+			"dest": "/work/telfar-puff-remix/"
+		},
+		{
+			"src": "/work/telfar-puff-remix/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/telfar-puff-remix"
+			}
+		},
+		{
+			"src": "/work/sagmeister-book",
+			"dest": "/work/sagmeister-book/"
+		},
+		{
+			"src": "/work/sagmeister-book/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/sagmeister-book"
+			}
+		},
+		{
+			"src": "/work/telfar-pills",
+			"dest": "/work/telfar-pills/"
+		},
+		{
+			"src": "/work/telfar-pills/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/telfar-pills"
+			}
+		},
+		{
+			"src": "/work/telfar-puff",
+			"dest": "/work/telfar-puff/"
+		},
+		{
+			"src": "/work/telfar-puff/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/telfar-puff"
+			}
+		},
+		{
+			"src": "/work/telfar-wallet-loops-test",
+			"dest": "/work/telfar-wallet-loops-test/"
+		},
+		{
+			"src": "/work/telfar-wallet-loops-test/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/telfar-wallet-loops-test"
+			}
+		},
+		{
+			"src": "/work/mariana-trench",
+			"dest": "/work/mariana-trench/"
+		},
+		{
+			"src": "/work/mariana-trench/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/mariana-trench"
+			}
+		},
+		{
+			"src": "/work/telfar-puff-party",
+			"dest": "/work/telfar-puff-party/"
+		},
+		{
+			"src": "/work/telfar-puff-party/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/telfar-puff-party"
+			}
+		},
+		{
+			"src": "/work/proenza-schouler-monogram-film",
+			"dest": "/work/proenza-schouler-monogram-film/"
+		},
+		{
+			"src": "/work/proenza-schouler-monogram-film/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/proenza-schouler-monogram-film"
+			}
+		},
+		{
+			"src": "/work/my-balloon",
+			"dest": "/work/my-balloon/"
+		},
+		{
+			"src": "/work/my-balloon/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/my-balloon"
+			}
+		},
+		{
+			"src": "/work/sagmeister-beautiful-numbers",
+			"dest": "/work/sagmeister-beautiful-numbers/"
+		},
+		{
+			"src": "/work/sagmeister-beautiful-numbers/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/sagmeister-beautiful-numbers"
+			}
+		},
+		{
+			"src": "/work/crawl-gabriel-garzon-montano",
+			"dest": "/work/crawl-gabriel-garzon-montano/"
+		},
+		{
+			"src": "/work/crawl-gabriel-garzon-montano/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/crawl-gabriel-garzon-montano"
+			}
+		},
+		{
+			"src": "/work/marine-now",
+			"dest": "/work/marine-now/"
+		},
+		{
+			"src": "/work/marine-now/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/marine-now"
+			}
+		},
+		{
+			"src": "/work/telfar-smedium",
+			"dest": "/work/telfar-smedium/"
+		},
+		{
+			"src": "/work/telfar-smedium/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/telfar-smedium"
+			}
+		},
+		{
+			"src": "/work/telfar-bps",
+			"dest": "/work/telfar-bps/"
+		},
+		{
+			"src": "/work/telfar-bps/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/telfar-bps"
+			}
+		},
+		{
+			"src": "/work/moynat",
+			"dest": "/work/moynat/"
+		},
+		{
+			"src": "/work/moynat/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/moynat"
+			}
+		},
+		{
+			"src": "/work/la-belle-est-la-bete",
+			"dest": "/work/la-belle-est-la-bete/"
+		},
+		{
+			"src": "/work/la-belle-est-la-bete/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/la-belle-est-la-bete"
+			}
+		},
+		{
+			"src": "/work/nike-luca",
+			"dest": "/work/nike-luca/"
+		},
+		{
+			"src": "/work/nike-luca/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/nike-luca"
+			}
+		},
+		{
+			"src": "/work/ride-or-die",
+			"dest": "/work/ride-or-die/"
+		},
+		{
+			"src": "/work/ride-or-die/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/ride-or-die"
+			}
+		},
+		{
+			"src": "/work/loved-ones",
+			"dest": "/work/loved-ones/"
+		},
+		{
+			"src": "/work/loved-ones/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/loved-ones"
+			}
+		},
+		{
+			"src": "/work/sagmeister-illy-cups",
+			"dest": "/work/sagmeister-illy-cups/"
+		},
+		{
+			"src": "/work/sagmeister-illy-cups/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/sagmeister-illy-cups"
+			}
+		},
+		{
+			"src": "/work/mitski-a-pearl",
+			"dest": "/work/mitski-a-pearl/"
+		},
+		{
+			"src": "/work/mitski-a-pearl/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/mitski-a-pearl"
+			}
+		},
+		{
+			"src": "/work/nike-aja",
+			"dest": "/work/nike-aja/"
+		},
+		{
+			"src": "/work/nike-aja/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/nike-aja"
+			}
+		},
+		{
+			"src": "/work/telfar-wallet-loops",
+			"dest": "/work/telfar-wallet-loops/"
+		},
+		{
+			"src": "/work/telfar-wallet-loops/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/telfar-wallet-loops"
+			}
+		},
+		{
+			"src": "/work/thom-yorke",
+			"dest": "/work/thom-yorke/"
+		},
+		{
+			"src": "/work/thom-yorke/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/thom-yorke"
+			}
+		},
+		{
+			"src": "/work/telfar-wallets",
+			"dest": "/work/telfar-wallets/"
+		},
+		{
+			"src": "/work/telfar-wallets/",
+			"status": 308,
+			"headers": {
+				"Location": "/work/telfar-wallets"
+			}
+		},
+		{
+			"src": "/play",
+			"dest": "/play/"
+		},
+		{
+			"src": "/play/",
+			"status": 308,
+			"headers": {
+				"Location": "/play"
+			}
+		},
+		{
+			"src": "/about",
+			"dest": "/about/"
+		},
+		{
+			"src": "/about/",
+			"status": 308,
+			"headers": {
+				"Location": "/about"
+			}
+		},
+		{
+			"src": "/_app/immutable/.+",
+			"headers": {
+				"cache-control": "public, immutable, max-age=31536000"
+			}
+		},
+		{
+			"handle": "filesystem"
+		},
+		{
+			"src": "^/api/preview/?(?:/__data.json)?$",
+			"dest": "/api/preview"
+		},
+		{
+			"src": "^(/[^/]+)?/work/([^/]+?)/?(?:/__data.json)?$",
+			"dest": "/[[preview=preview]]/work/[uid]"
+		},
+		{
+			"src": "^(/[^/]+)?/?(?:/__data.json)?$",
+			"dest": "/[[preview=preview]]"
+		},
+		{
+			"src": "^(/[^/]+)?/([^/]+?)/?(?:/__data.json)?$",
+			"dest": "/[[preview=preview]]/[uid]"
+		},
+		{
+			"src": "/.*",
+			"dest": "/![-]/catchall"
+		}
+	],
+	"overrides": {
+		"slice-simulator.html": {
+			"path": "slice-simulator"
+		},
+		"index.html": {
+			"path": ""
+		},
+		"work/theory.html": {
+			"path": "work/theory"
+		},
+		"work/la-felicidad-se-consigue-con-cosas-muy-simples.html": {
+			"path": "work/la-felicidad-se-consigue-con-cosas-muy-simples"
+		},
+		"work/nike-j39.html": {
+			"path": "work/nike-j39"
+		},
+		"work/bombo-fabrika-gabriel-garzon-montano.html": {
+			"path": "work/bombo-fabrika-gabriel-garzon-montano"
+		},
+		"work/sagmeister-123.html": {
+			"path": "work/sagmeister-123"
+		},
+		"work/sagmeister-now-is-better-manatee.html": {
+			"path": "work/sagmeister-now-is-better-manatee"
+		},
+		"work/story.html": {
+			"path": "work/story"
+		},
+		"work/aguita-gabriel-garzon-montano.html": {
+			"path": "work/aguita-gabriel-garzon-montano"
+		},
+		"work/nike-trash-talk-motion.html": {
+			"path": "work/nike-trash-talk-motion"
+		},
+		"work/telfar-puff-remix.html": {
+			"path": "work/telfar-puff-remix"
+		},
+		"work/sagmeister-book.html": {
+			"path": "work/sagmeister-book"
+		},
+		"work/telfar-pills.html": {
+			"path": "work/telfar-pills"
+		},
+		"work/telfar-puff.html": {
+			"path": "work/telfar-puff"
+		},
+		"work/telfar-wallet-loops-test.html": {
+			"path": "work/telfar-wallet-loops-test"
+		},
+		"work/mariana-trench.html": {
+			"path": "work/mariana-trench"
+		},
+		"work/telfar-puff-party.html": {
+			"path": "work/telfar-puff-party"
+		},
+		"work/proenza-schouler-monogram-film.html": {
+			"path": "work/proenza-schouler-monogram-film"
+		},
+		"work/my-balloon.html": {
+			"path": "work/my-balloon"
+		},
+		"work/sagmeister-beautiful-numbers.html": {
+			"path": "work/sagmeister-beautiful-numbers"
+		},
+		"work/crawl-gabriel-garzon-montano.html": {
+			"path": "work/crawl-gabriel-garzon-montano"
+		},
+		"work/marine-now.html": {
+			"path": "work/marine-now"
+		},
+		"work/telfar-smedium.html": {
+			"path": "work/telfar-smedium"
+		},
+		"work/telfar-bps.html": {
+			"path": "work/telfar-bps"
+		},
+		"work/moynat.html": {
+			"path": "work/moynat"
+		},
+		"work/la-belle-est-la-bete.html": {
+			"path": "work/la-belle-est-la-bete"
+		},
+		"work/nike-luca.html": {
+			"path": "work/nike-luca"
+		},
+		"work/ride-or-die.html": {
+			"path": "work/ride-or-die"
+		},
+		"work/loved-ones.html": {
+			"path": "work/loved-ones"
+		},
+		"work/sagmeister-illy-cups.html": {
+			"path": "work/sagmeister-illy-cups"
+		},
+		"work/mitski-a-pearl.html": {
+			"path": "work/mitski-a-pearl"
+		},
+		"work/nike-aja.html": {
+			"path": "work/nike-aja"
+		},
+		"work/telfar-wallet-loops.html": {
+			"path": "work/telfar-wallet-loops"
+		},
+		"work/thom-yorke.html": {
+			"path": "work/thom-yorke"
+		},
+		"work/telfar-wallets.html": {
+			"path": "work/telfar-wallets"
+		},
+		"play.html": {
+			"path": "play"
+		},
+		"about.html": {
+			"path": "about"
+		}
+	}
+}
