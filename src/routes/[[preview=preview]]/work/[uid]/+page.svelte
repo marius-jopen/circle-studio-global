@@ -21,12 +21,14 @@
 		// More robust navigation detection:
 		// 1. Check if referrer exists and is from same domain
 		// 2. Also check if referrer is the homepage or any page from our site
+		// 3. Special case: Vercel dashboard (for developer testing)
 		const hasReferrer = referrer && referrer.trim() !== '';
 		const isFromSameDomain = hasReferrer && new URL(referrer).host === currentHost;
 		const isFromOurSite = hasReferrer && referrer.includes(currentHost);
+		const isFromVercelDashboard = hasReferrer && referrer.includes('vercel.com');
 		
-		// Consider it navigation if coming from same domain OR our site
-		cameFromNavigation = !!(isFromSameDomain || isFromOurSite);
+		// Consider it navigation if coming from same domain, our site, or Vercel dashboard
+		cameFromNavigation = !!(isFromSameDomain || isFromOurSite || isFromVercelDashboard);
 		
 		// Debug logging
 		console.log('🔍 Navigation Detection Debug:');
@@ -35,6 +37,7 @@
 		console.log('- Has Referrer:', hasReferrer);
 		console.log('- Is From Same Domain:', isFromSameDomain);
 		console.log('- Is From Our Site:', isFromOurSite);
+		console.log('- Is From Vercel Dashboard:', isFromVercelDashboard);
 		console.log('- Came from navigation:', cameFromNavigation);
 		console.log('- Should autoplay:', cameFromNavigation);
 	});
