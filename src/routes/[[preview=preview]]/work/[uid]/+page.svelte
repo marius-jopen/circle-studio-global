@@ -24,19 +24,8 @@
 	{/if}
 </svelte:head>
 
-<div class="container mx-auto px-4 py-8 max-w-4xl">
-	<!-- Project Header -->
-	<header class="mb-12">
-		<h1 class="text-4xl md:text-6xl font-bold mb-4">{projectData.title}</h1>
-		{#if projectData.client}
-			<p class="text-xl text-gray-600 mb-6">{projectData.client}</p>
-		{/if}
-		{#if projectData.description}
-			<div class="prose prose-lg max-w-none">
-				<PrismicRichText field={projectData.description} />
-			</div>
-		{/if}
-	</header>
+<div class="mx-auto px-3">
+
 
 	<!-- Main Media -->
 	{#if projectData.main_video_url || projectData.main_image?.url}
@@ -55,6 +44,19 @@
 			{/if}
 		</div>
 	{/if}
+
+	<!-- Project Info -->
+	<div class="mb-12">
+		<h1 class="text-4xl md:text-6xl font-bold mb-4">{projectData.title}</h1>
+		{#if projectData.client}
+			<p class="text-xl text-gray-600 mb-6">{projectData.client}</p>
+		{/if}
+		{#if projectData.description}
+			<div class="prose prose-lg max-w-none">
+				<PrismicRichText field={projectData.description} />
+			</div>
+		{/if}
+	</div>
 
 	<!-- Credits -->
 	{#if projectData.credits && projectData.credits.length > 0}
