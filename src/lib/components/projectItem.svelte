@@ -74,7 +74,7 @@
 </script>
 
 {#if clickable}
-	<a href="/work/{projectUid}" class="block">
+	<a href="/work/{projectUid}" class="block brightness-[95%]">
 		{#if projectData?.preview && Array.isArray(projectData.preview) && projectData.preview.length > 0 && projectData.preview[0]}		
 			{@const preview = projectData.preview[0]}
 			{@const imageField = dimension === 'portrait' ? preview?.preview_image_portrait : preview?.preview_image_landscape}
