@@ -421,12 +421,12 @@ export interface ProjectsDocumentDataCreditsItem {
 	/**
 	 * Person field in *Projects → Credits*
 	 *
-	 * - **Field Type**: Content Relationship
+	 * - **Field Type**: Link
 	 * - **Placeholder**: *None*
 	 * - **API ID Path**: projects.credits[].person
-	 * - **Documentation**: https://prismic.io/docs/fields/content-relationship
+	 * - **Documentation**: https://prismic.io/docs/fields/link
 	 */
-	person: ContentRelationshipFieldWithData<[{ id: 'people'; fields: ['name', 'link'] }]>;
+	person: prismic.Repeatable<prismic.LinkField<string, string, unknown, prismic.FieldState, never>>;
 }
 
 type ProjectsDocumentDataSlicesSlice = DocumentationSlice;

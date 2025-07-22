@@ -106,14 +106,11 @@
 							"type": "Link",
 							"config": {
 								"label": "Person",
-								"select": "document",
-								"repeat": false,
-								"customtypes": [
-									{
-										"id": "people",
-										"fields": ["name", "link"]
-									}
-								]
+								"placeholder": "",
+								"select": null,
+								"allowTargetBlank": false,
+								"allowText": false,
+								"repeat": true
 							}
 						}
 					}

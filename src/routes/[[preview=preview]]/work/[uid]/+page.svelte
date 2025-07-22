@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { SliceZone, PrismicImage, PrismicRichText } from '@prismicio/svelte';
+	import { SliceZone, PrismicImage, PrismicRichText, PrismicLink } from '@prismicio/svelte';
 	import type { PageProps } from './$types';
 	import VideoAdvanced from '$lib/components/VideoAdvanced.svelte';
 	import { onMount } from 'svelte';
@@ -99,15 +99,13 @@
 						{#if credit.label}
 							<h3 class="font-semibold text-gray-800 mb-2">{credit.label}</h3>
 						{/if}
-						{#if credit.person && 'data' in credit.person && credit.person.data?.name}
+						{#if credit.person && credit.person.length > 0}
 							<p class="text-gray-600">
-								{#if credit.person.data.link && 'url' in credit.person.data.link && credit.person.data.link.url}
-									<a href={credit.person.data.link.url} class="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">
-										{credit.person.data.name}
-									</a>
-								{:else}
-									{credit.person.data.name}
-								{/if}
+								{#each credit.person as person, index}
+									<PrismicLink field={person} class="text-blue-600 hover:underline">
+										{(person as any).data?.name || `Person ${index + 1}`}
+									</PrismicLink>{#if index < credit.person.length - 1},&nbsp;{/if}
+								{/each}
 							</p>
 						{/if}
 					</div>

@@ -7,7 +7,9 @@ export async function load({ params, fetch, cookies }) {
 	const client = createClient({ fetch, cookies });
 
 	try {
-		const project = await client.getByUID('projects', params.uid);
+		const project = await client.getByUID('projects', params.uid, {
+			fetchLinks: ['people.name'] // Fetch the name field from linked people documents
+		});
 
 		return {
 			project,

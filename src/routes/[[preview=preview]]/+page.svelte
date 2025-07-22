@@ -29,7 +29,7 @@
 	})();
 </script>
 
-<div class="px-4">
+<div class="px-3">
 	{#if isFilled.contentRelationship(data.page.data.feature_project)}
 		<div class="pb-4">
 			<ProjectItem dimension="landscape" project={data.page.data.feature_project} />
