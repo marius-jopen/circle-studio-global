@@ -4,6 +4,7 @@
 	export let hlsUrl: string;
 	export let posterImage: any = null;
 	export let classes: string = 'w-full h-auto rounded object-cover mb-4';
+	export let shouldAutoplay: boolean = false;
 	
 	let videoElement: HTMLVideoElement;
 	
@@ -30,9 +31,9 @@
 </script>
 
 <video 
-	autoplay
+	autoplay={shouldAutoplay}
 	loop
-	muted
+	muted={!shouldAutoplay}
 	playsinline
 	controls
 	bind:this={videoElement}

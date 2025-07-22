@@ -2,6 +2,7 @@
 	import { SliceZone, PrismicImage, PrismicRichText } from '@prismicio/svelte';
 	import type { PageProps } from './$types';
 	import VideoAdvanced from '$lib/components/VideoAdvanced.svelte';
+	import { onMount } from 'svelte';
 
 	import { components } from '$lib/slices';
 
@@ -9,6 +10,18 @@
 	
 	const project = $derived(data.project);
 	const projectData = $derived(project.data);
+	
+	let cameFromNavigation = $state(false);
+	
+	onMount(() => {
+		// Check if user came from navigation vs direct access
+		const referrer = document.referrer;
+		const currentHost = window.location.host;
+		
+		// If referrer exists and is from the same domain, it's navigation
+		// If no referrer or different domain, it's likely direct access
+		cameFromNavigation = !!(referrer && new URL(referrer).host === currentHost);
+	});
 </script>
 
 <svelte:head>
@@ -35,6 +48,7 @@
 					hlsUrl={projectData.main_video_url}
 					posterImage={projectData.main_image} 
 					classes="w-full h-auto rounded-lg object-cover aspect-video"
+					shouldAutoplay={cameFromNavigation}
 				/>
 			{:else if projectData.main_image?.url}
 				<PrismicImage 
