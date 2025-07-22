@@ -409,6 +409,7 @@
       if (activeExportResolution >= 2160) bitrate = 30000000; // 30Mbps for 4K
       
       // Initialize RecordRTC
+      // @ts-ignore
       recorder = new RecordRTC(recordingStream, {
         type: 'video',
         mimeType: 'video/mp4',
@@ -418,6 +419,7 @@
         height: activeExportResolution,
         videoBitsPerSecond: bitrate,
         frameInterval: 1,
+        // @ts-ignore
         numberOfAudioChannels: 0,
         disableLogs: false,
         // MP4 specific options for better compatibility
