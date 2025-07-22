@@ -31,14 +31,18 @@
 
 <div class="px-4">
 	{#if isFilled.contentRelationship(data.page.data.feature_project)}
-		<ProjectItem dimension="landscape" project={data.page.data.feature_project} />
+		<div class="pb-4">
+			<ProjectItem dimension="landscape" project={data.page.data.feature_project} />
+		</div>
 	{/if}
 
 	{#if data.page.data.feature_projects && data.page.data.feature_projects.length > 0}
 		<div class="grid grid-cols-2 gap-4">
 			{#each data.page.data.feature_projects as projectGroup}
 				{#if isFilled.contentRelationship(projectGroup.items)}
-					<ProjectItem dimension="square" project={projectGroup.items} />
+					<div class="pb-4">
+						<ProjectItem dimension="square" project={projectGroup.items} />
+					</div>
 				{/if}
 			{/each}
 		</div>
