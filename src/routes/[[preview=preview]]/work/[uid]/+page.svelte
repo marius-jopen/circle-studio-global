@@ -18,14 +18,23 @@
 		const referrer = document.referrer;
 		const currentHost = window.location.host;
 		
-		// If referrer exists and is from the same domain, it's navigation
-		// If no referrer or different domain, it's likely direct access
-		cameFromNavigation = !!(referrer && new URL(referrer).host === currentHost);
+		// More robust navigation detection:
+		// 1. Check if referrer exists and is from same domain
+		// 2. Also check if referrer is the homepage or any page from our site
+		const hasReferrer = referrer && referrer.trim() !== '';
+		const isFromSameDomain = hasReferrer && new URL(referrer).host === currentHost;
+		const isFromOurSite = hasReferrer && referrer.includes(currentHost);
+		
+		// Consider it navigation if coming from same domain OR our site
+		cameFromNavigation = !!(isFromSameDomain || isFromOurSite);
 		
 		// Debug logging
 		console.log('🔍 Navigation Detection Debug:');
 		console.log('- Referrer:', referrer);
 		console.log('- Current Host:', currentHost);
+		console.log('- Has Referrer:', hasReferrer);
+		console.log('- Is From Same Domain:', isFromSameDomain);
+		console.log('- Is From Our Site:', isFromOurSite);
 		console.log('- Came from navigation:', cameFromNavigation);
 		console.log('- Should autoplay:', cameFromNavigation);
 	});
