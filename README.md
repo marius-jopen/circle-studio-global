@@ -111,3 +111,4 @@ limitations under the License.
 [prismic-sign-up]: https://prismic.io/dashboard/signup
 [sveltekit]: https://kit.svelte.dev/
 [live-demo]: https://sveltekit-starter-prismic-minimal.vercel.app/
+# Force clean build
