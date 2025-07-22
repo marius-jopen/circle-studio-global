@@ -32,13 +32,13 @@
 				<VideoPlayerCustom 
 					hlsUrl={projectData.main_video_url}
 					posterImage={projectData.main_image} 
-					classes="w-full h-auto rounded-lg object-cover aspect-video"
+					classes="w-full h-auto rounded-lg"
 					autoplayWithSound={true}
 				/>
 			{:else if projectData.main_image?.url}
 				<PrismicImage 
 					field={projectData.main_image} 
-					class="w-full h-auto rounded-lg object-cover"
+					class="w-full h-auto rounded-lg"
 				/>
 			{/if}
 		</div>
