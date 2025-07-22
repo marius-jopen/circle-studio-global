@@ -39,7 +39,6 @@
 
 <div class="mx-auto px-3">
 
-
 	<!-- Main Media -->
 	{#if projectData.main_video_url || projectData.main_image?.url}
 		<div class="mb-12">
