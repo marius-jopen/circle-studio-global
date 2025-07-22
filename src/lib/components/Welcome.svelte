@@ -84,6 +84,12 @@
     
     fadePhase = 'lettersFadingOut';
     
+    // Dispatch event to notify that user has interacted and welcome is being dismissed
+    if (browser) {
+      console.log('🎭 Welcome screen dismissed, dispatching event...');
+      window.dispatchEvent(new CustomEvent('welcome-dismissed'));
+    }
+    
     // Trigger letters to fade out
     welcomeConfig.globalSettings.triggerFadeOut = true;
     welcomeConfig = { ...welcomeConfig };
