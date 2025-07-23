@@ -75,7 +75,7 @@
 
 	<!-- Project Info -->
 	<div class="mb-12">
-		<h1 class="text-4xl md:text-6xl font-bold mb-4">{projectData.title}</h1>
+		<h1 class="text-4xl md:text-6xl font-bold mb-3">{projectData.title}</h1>
 		{#if projectData.client}
 			<p class="text-xl text-gray-600 mb-6">{projectData.client}</p>
 		{/if}

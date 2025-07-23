@@ -157,7 +157,7 @@
 			{@const videoUrl = dimension === 'portrait' ? preview?.preview_video_url_portrait : preview?.preview_video_url_landscape}
 			
 			{#if videoUrl}
-				<div class="relative mb-4" 
+				<div class="relative" 
 					 on:mouseenter={() => isHovering = true}
 					 on:mouseleave={() => isHovering = false}>
 					<VideoPlayerCustom 
@@ -173,7 +173,7 @@
 					</div>
 				</div>
 			{:else if imageField?.url}
-				<div class="relative mb-4"
+				<div class="relative"
 					 on:mouseenter={() => isHovering = true}
 					 on:mouseleave={() => isHovering = false}>
 					<PrismicImage 

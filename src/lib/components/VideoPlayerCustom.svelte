@@ -16,7 +16,7 @@
 	const { 
 		hlsUrl, 
 		posterImage = null, 
-		classes = 'w-full h-auto rounded object-cover mb-4', 
+		classes = 'w-full h-auto rounded object-cover mb-3', 
 		shouldAutoplay = false, 
 		autoplayWithSound = false, 
 		waitForWelcomeDismissal = false,

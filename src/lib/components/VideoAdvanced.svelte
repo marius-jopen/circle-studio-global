@@ -243,7 +243,7 @@
 	<!-- Unmute overlay for muted autoplay -->
 	{#if showUnmuteOverlay && isPlaying}
 		<button 
-			class="absolute top-4 right-4 bg-black bg-opacity-70 text-white px-3 py-2 rounded-lg flex items-center gap-2 hover:bg-opacity-90 transition-opacity"
+			class="absolute top-4 right-4 bg-black bg-opacity-70 text-white px-3 py-2 rounded-lg flex items-center gap-3 hover:bg-opacity-90 transition-opacity"
 			on:click={handleUnmute}
 			aria-label="Unmute video"
 		>
