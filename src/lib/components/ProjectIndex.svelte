@@ -1,9 +1,14 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import type { ProjectsDocument } from '../../prismicio-types';
 	import ProjectItem from './projectItem.svelte';
 
 	export let allProjects: ProjectsDocument[] = [];
 	export let featuredProjectIds: string[] = [];
+
+	// State to control visibility and prevent flash
+	let isReady = false;
+	let isVisible = false;
 
 	// Configuration for layout randomization
 	const LAYOUT_CONFIG = {
@@ -19,8 +24,20 @@
 	// Filter out featured projects to show only remaining projects
 	$: remainingProjects = allProjects.filter(project => !featuredProjectIds.includes(project.id));
 
-	// Randomize layout on component mount and when projects change
-	$: randomizedLayout = createRandomizedLayout(shuffleArray(remainingProjects));
+	// Randomize layout only when we have stable data
+	$: randomizedLayout = isReady ? createRandomizedLayout(shuffleArray(remainingProjects)) : [];
+
+	// Watch for when data is stable and ready to display
+	$: if (allProjects.length > 0 && !isReady) {
+		// Use setTimeout to ensure the layout calculation completes before showing
+		setTimeout(() => {
+			isReady = true;
+			// Add small delay before fade-in animation
+			setTimeout(() => {
+				isVisible = true;
+			}, 50);
+		}, 10);
+	}
 
 	interface LayoutRow {
 		type: keyof typeof LAYOUT_CONFIG;
@@ -231,17 +248,45 @@
 </script>
 
 <div>
-	{#if randomizedLayout.length > 0}
-		<div class="space-y-3">
-			{#each randomizedLayout as row}
-				<div class="grid dimension-{row.dimension} {row.gridCols} gap-3">
-					{#each row.projects as project}
-						<ProjectItem dimension={row.dimension} {project} />
-					{/each}
-				</div>
-			{/each}
+	{#if isReady && randomizedLayout.length > 0}
+		<div class="project-grid-container" class:visible={isVisible}>
+			<div class="space-y-3">
+				{#each randomizedLayout as row, rowIndex}
+					<div class="grid dimension-{row.dimension} {row.gridCols} gap-3">
+						{#each row.projects as project, projectIndex}
+							{@const globalIndex = randomizedLayout.slice(0, rowIndex).reduce((acc, r) => acc + r.projects.length, 0) + projectIndex}
+							<div 
+								class="project-item-wrapper" 
+								class:visible={isVisible}
+								style="--delay: {globalIndex * 100}ms"
+							>
+								<ProjectItem dimension={row.dimension} {project} />
+							</div>
+						{/each}
+					</div>
+				{/each}
+			</div>
 		</div>
 	{/if}
 </div>
+
+<style>
+	.project-grid-container {
+		/* Container is always visible, individual items control their own visibility */
+		opacity: 1;
+	}
+
+	.project-item-wrapper {
+		opacity: 0;
+		transform: translateY(20px);
+		transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+		transition-delay: var(--delay);
+	}
+
+	.project-item-wrapper.visible {
+		opacity: 1;
+		transform: translateY(0);
+	}
+</style>
 
 
