@@ -313,6 +313,10 @@
 			
 			const handleWelcomeDismissed = () => {
 				console.log('🎉 Received welcome dismissed event!');
+				// Store user interaction for future navigation
+				sessionStorage.setItem('user-has-interacted', 'true');
+				console.log('💾 Stored user interaction permission for navigation');
+				
 				if (!hasTriggered) {
 					console.log('🚀 First time receiving event, waiting 1 second then triggering autoplay!');
 					hasTriggered = true;
@@ -331,12 +335,42 @@
 			console.log('👂 Adding welcome-dismissed event listener...');
 			window.addEventListener('welcome-dismissed', handleWelcomeDismissed);
 			
-			// Fallback: if no welcome dismissal after 2 seconds, try autoplay anyway (navigation case)
+			// Fallback: if no welcome dismissal after 2 seconds, try autoplay with sound if user has interacted before
 			setTimeout(() => {
 				if (!hasTriggered && !isPlaying) {
-					console.log('⏰ No welcome dismissal after 2s, trying autoplay (navigation case)...');
+					console.log('⏰ No welcome dismissal after 2s, checking for stored user interaction...');
 					hasTriggered = true;
-					triggerAutoplayWithSound();
+					
+					// Check if user has interacted before (stored in sessionStorage) or is navigating
+					const hasUserInteracted = sessionStorage.getItem('user-has-interacted') === 'true';
+					const isNavigating = sessionStorage.getItem('circle-studio-navigating') === 'true';
+					
+					console.log('🔍 Interaction check:', { hasUserInteracted, isNavigating });
+					
+					if (hasUserInteracted || isNavigating) {
+						console.log('✅ User has interacted or is navigating, trying autoplay with sound...');
+						triggerAutoplayWithSound();
+					} else {
+						console.log('❌ No previous user interaction, falling back to muted autoplay...');
+						// Fallback to muted autoplay
+						if (videoElement) {
+							videoElement.muted = true;
+							isMuted = true;
+							userInitiatedPlay = true;
+							
+							const playPromise = videoElement.play();
+							if (playPromise !== undefined) {
+								playPromise
+									.then(() => {
+										console.log('✅ Fallback muted autoplay succeeded');
+										isPlaying = true;
+									})
+									.catch((error) => {
+										console.log('❌ Even muted autoplay failed:', error.message);
+									});
+							}
+						}
+					}
 				} else if (hasTriggered) {
 					console.log('✅ Welcome event already handled, no fallback needed');
 				} else if (isPlaying) {
@@ -475,6 +509,8 @@
 		<track kind="captions" src="" label="Captions" />
 		Your browser does not support the video tag.
 	</video>
+
+
 
 	<!-- Custom Controls - only show if hideControls is false -->
 	{#if !hideControls}

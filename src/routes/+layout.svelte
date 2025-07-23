@@ -1,12 +1,31 @@
-<script>
+<script lang="ts">
 	import { PrismicPreview } from '@prismicio/svelte/kit';
 	import { page } from '$app/state';
 	import { repositoryName } from '$lib/prismicio';
 	import Header from '$lib/components/Header.svelte';
 	import Welcome from '$lib/components/Welcome.svelte';
+	import { onMount } from 'svelte';
 	import "../app.css";
 
 	let { children, data } = $props();
+	
+	// Global navigation click detection for video autoplay permissions
+	onMount(() => {
+		const handleNavigationClick = (e: Event) => {
+			const target = e.target as HTMLElement;
+			if (target.closest('a') || target.closest('button')) {
+				sessionStorage.setItem('user-has-interacted', 'true');
+				console.log('🌐 Global navigation click detected, stored user interaction permission');
+			}
+		};
+		
+		// Listen for all clicks globally
+		document.addEventListener('click', handleNavigationClick);
+		
+		return () => {
+			document.removeEventListener('click', handleNavigationClick);
+		};
+	});
 </script>
 
 <svelte:head>

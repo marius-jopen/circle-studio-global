@@ -67,6 +67,9 @@
       const target = event.target as HTMLElement;
       if (target.tagName === 'A' || target.closest('a')) {
         sessionStorage.setItem('circle-studio-navigating', 'true');
+        // Also set user interaction permission for video autoplay with sound
+        sessionStorage.setItem('user-has-interacted', 'true');
+        console.log('🖱️ Navigation click detected in Welcome, stored user interaction permission');
       }
     }
 
@@ -83,6 +86,12 @@
     if (fadePhase !== 'lettersVisible') return;
     
     fadePhase = 'lettersFadingOut';
+    
+    // Store user interaction permission immediately
+    if (browser) {
+      sessionStorage.setItem('user-has-interacted', 'true');
+      console.log('💾 Welcome dismissed - stored user interaction permission');
+    }
     
     // Dispatch event to notify that user has interacted and welcome is being dismissed
     if (browser) {
