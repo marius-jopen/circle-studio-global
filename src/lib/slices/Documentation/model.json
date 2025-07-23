@@ -45,6 +45,18 @@
                   "label": "Video Url",
                   "placeholder": ""
                 }
+              },
+              "play": {
+                "type": "Select",
+                "config": {
+                  "label": "Play",
+                  "placeholder": "",
+                  "options": [
+                    "autoplay-muted",
+                    "no-autoplay"
+                  ],
+                  "default_value": "autoplay-muted"
+                }
               }
             }
           }

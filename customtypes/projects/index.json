@@ -39,7 +39,7 @@
 				"type": "Group",
 				"config": {
 					"label": "Preview",
-					"repeat": false,
+					"repeat": true,
 					"fields": {
 						"preview_image_landscape": {
 							"type": "Image",
@@ -69,6 +69,39 @@
 							"config": {
 								"label": "Preview Video Url Portrait",
 								"placeholder": ""
+							}
+						}
+					}
+				}
+			},
+			"main": {
+				"type": "Group",
+				"config": {
+					"label": "Main",
+					"repeat": true,
+					"fields": {
+						"main_image": {
+							"type": "Image",
+							"config": {
+								"label": "Main Image",
+								"constraint": {},
+								"thumbnails": []
+							}
+						},
+						"main_video_url": {
+							"type": "Text",
+							"config": {
+								"label": "Main Video Url",
+								"placeholder": ""
+							}
+						},
+						"playmode": {
+							"type": "Select",
+							"config": {
+								"label": "Playmode",
+								"placeholder": "",
+								"options": ["autoplay-sound", "autoplay-muted", "no-autoplay"],
+								"default_value": "autoplay-sound"
 							}
 						}
 					}

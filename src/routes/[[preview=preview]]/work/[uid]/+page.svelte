@@ -26,20 +26,45 @@
 
 <div class="mx-auto px-3">
 	<!-- Main Media -->
-	{#if projectData.main_video_url || projectData.main_image?.url}
+	{#if projectData.main && projectData.main.length > 0}
 		<div class="mb-12">
-			{#if projectData.main_video_url}
-				<VideoPlayerCustom 
-					hlsUrl={projectData.main_video_url}
-					posterImage={projectData.main_image} 
-					classes="w-full h-auto rounded-lg"
-					autoplayWithSound={true}
-				/>
-			{:else if projectData.main_image?.url}
-				<PrismicImage 
-					field={projectData.main_image} 
-					class="w-full h-auto rounded-lg"
-				/>
+			<!-- Single item: full width -->
+			{#if projectData.main.length === 1}
+				{@const item = projectData.main[0]}
+				{#if item.main_video_url}
+					<VideoPlayerCustom 
+						hlsUrl={item.main_video_url}
+						posterImage={item.main_image} 
+						classes="w-full h-auto rounded-lg"
+						autoplayWithSound={item.playmode === 'autoplay-sound'}
+						shouldAutoplay={item.playmode === 'autoplay-muted'}
+					/>
+				{:else if item.main_image?.url}
+					<PrismicImage 
+						field={item.main_image} 
+						class="w-full h-auto rounded-lg"
+					/>
+				{/if}
+			<!-- Multiple items: side by side -->
+			{:else}
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+					{#each projectData.main as item}
+						{#if item.main_video_url}
+							<VideoPlayerCustom 
+								hlsUrl={item.main_video_url}
+								posterImage={item.main_image} 
+								classes="w-full h-auto rounded-lg"
+								autoplayWithSound={item.playmode === 'autoplay-sound'}
+								shouldAutoplay={item.playmode === 'autoplay-muted'}
+							/>
+						{:else if item.main_image?.url}
+							<PrismicImage 
+								field={item.main_image} 
+								class="w-full h-auto rounded-lg"
+							/>
+						{/if}
+					{/each}
+				</div>
 			{/if}
 		</div>
 	{/if}

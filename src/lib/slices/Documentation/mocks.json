@@ -47,6 +47,14 @@
 									"value": "get",
 									"type": "Text"
 								}
+							],
+							[
+								"play",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "autoplay-muted",
+									"type": "Select"
+								}
 							]
 						]
 					}

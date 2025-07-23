@@ -405,6 +405,42 @@ export interface ProjectsDocumentDataPreviewItem {
 }
 
 /**
+ * Item in *Projects → Main*
+ */
+export interface ProjectsDocumentDataMainItem {
+	/**
+	 * Main Image field in *Projects → Main*
+	 *
+	 * - **Field Type**: Image
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: projects.main[].main_image
+	 * - **Documentation**: https://prismic.io/docs/fields/image
+	 */
+	main_image: prismic.ImageField<never>;
+
+	/**
+	 * Main Video Url field in *Projects → Main*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: projects.main[].main_video_url
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	main_video_url: prismic.KeyTextField;
+
+	/**
+	 * Playmode field in *Projects → Main*
+	 *
+	 * - **Field Type**: Select
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: autoplay-sound
+	 * - **API ID Path**: projects.main[].playmode
+	 * - **Documentation**: https://prismic.io/docs/fields/select
+	 */
+	playmode: prismic.SelectField<'autoplay-sound' | 'autoplay-muted' | 'no-autoplay', 'filled'>;
+}
+
+/**
  * Item in *Projects → Credits*
  */
 export interface ProjectsDocumentDataCreditsItem {
@@ -478,6 +514,17 @@ interface ProjectsDocumentData {
 	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
 	 */
 	preview: prismic.GroupField<Simplify<ProjectsDocumentDataPreviewItem>>;
+
+	/**
+	 * Main field in *Projects*
+	 *
+	 * - **Field Type**: Group
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: projects.main[]
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+	 */
+	main: prismic.GroupField<Simplify<ProjectsDocumentDataMainItem>>;
 
 	/**
 	 * Main Image field in *Projects*
@@ -673,6 +720,17 @@ export interface DocumentationSliceDefaultPrimaryItemsItem {
 	 * - **Documentation**: https://prismic.io/docs/fields/text
 	 */
 	video_url: prismic.KeyTextField;
+
+	/**
+	 * Play field in *Documentation → Default → Primary → items*
+	 *
+	 * - **Field Type**: Select
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: autoplay-muted
+	 * - **API ID Path**: documentation.default.primary.items[].play
+	 * - **Documentation**: https://prismic.io/docs/fields/select
+	 */
+	play: prismic.SelectField<'autoplay-muted' | 'no-autoplay', 'filled'>;
 }
 
 /**
@@ -803,6 +861,7 @@ declare module '@prismicio/client' {
 			ProjectsDocument,
 			ProjectsDocumentData,
 			ProjectsDocumentDataPreviewItem,
+			ProjectsDocumentDataMainItem,
 			ProjectsDocumentDataCreditsItem,
 			ProjectsDocumentDataSlicesSlice,
 			SettingsDocument,
