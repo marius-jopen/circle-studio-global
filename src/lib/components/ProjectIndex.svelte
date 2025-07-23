@@ -7,9 +7,12 @@
 
 	// Configuration for layout randomization
 	const LAYOUT_CONFIG = {
-		threePortraits: { weight: 40, itemsPerRow: 3, dimension: 'portrait' as const },
-		twoSquares: { weight: 30, itemsPerRow: 2, dimension: 'square' as const },
-		fourPortraits: { weight: 15, itemsPerRow: 4, dimension: 'portrait' as const },
+		threePortraits: { weight: 25, itemsPerRow: 3, dimension: 'portrait' as const },
+		twoSquares: { weight: 18, itemsPerRow: 2, dimension: 'square' as const },
+		twoLandscapes: { weight: 15, itemsPerRow: 2, dimension: 'landscape' as const },
+		threeSquares: { weight: 12, itemsPerRow: 3, dimension: 'square' as const },
+		fivePortraits: { weight: 8, itemsPerRow: 5, dimension: 'portrait' as const },
+		fourPortraits: { weight: 7, itemsPerRow: 4, dimension: 'portrait' as const },
 		oneLandscape: { weight: 15, itemsPerRow: 1, dimension: 'landscape' as const }
 	};
 
