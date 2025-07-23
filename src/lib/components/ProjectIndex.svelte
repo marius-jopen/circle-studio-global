@@ -8,7 +8,6 @@
 
 	// State to control visibility and prevent flash
 	let isReady = false;
-	let isVisible = false;
 
 	// Configuration for layout randomization
 	const LAYOUT_CONFIG = {
@@ -32,10 +31,6 @@
 		// Use setTimeout to ensure the layout calculation completes before showing
 		setTimeout(() => {
 			isReady = true;
-			// Add small delay before fade-in animation
-			setTimeout(() => {
-				isVisible = true;
-			}, 50);
 		}, 10);
 	}
 
@@ -249,44 +244,18 @@
 
 <div>
 	{#if isReady && randomizedLayout.length > 0}
-		<div class="project-grid-container" class:visible={isVisible}>
-			<div class="space-y-3">
-				{#each randomizedLayout as row, rowIndex}
-					<div class="grid dimension-{row.dimension} {row.gridCols} gap-3">
-						{#each row.projects as project, projectIndex}
-							{@const globalIndex = randomizedLayout.slice(0, rowIndex).reduce((acc, r) => acc + r.projects.length, 0) + projectIndex}
-							<div 
-								class="project-item-wrapper" 
-								class:visible={isVisible}
-								style="--delay: {globalIndex * 100}ms"
-							>
-								<ProjectItem dimension={row.dimension} {project} />
-							</div>
-						{/each}
-					</div>
-				{/each}
-			</div>
+		<div class="space-y-3">
+			{#each randomizedLayout as row}
+				<div class="grid dimension-{row.dimension} {row.gridCols} gap-3">
+					{#each row.projects as project}
+						<ProjectItem dimension={row.dimension} {project} />
+					{/each}
+				</div>
+			{/each}
 		</div>
 	{/if}
 </div>
 
-<style>
-	.project-grid-container {
-		/* Container is always visible, individual items control their own visibility */
-		opacity: 1;
-	}
 
-	.project-item-wrapper {
-		opacity: 0;
-		transform: translateY(20px);
-		transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-		transition-delay: var(--delay);
-	}
-
-	.project-item-wrapper.visible {
-		opacity: 1;
-		transform: translateY(0);
-	}
-</style>
 
 
