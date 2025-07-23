@@ -155,12 +155,32 @@
       }
     }
 
+    // Handle scroll dismissal (only on non-project pages)
+    function handleScroll() {
+      // Only allow scroll dismissal if:
+      // 1. We're not on a project page
+      // 2. Welcome screen is visible and ready to be dismissed
+      if (!isProjectPage && fadePhase === 'lettersVisible') {
+        console.log('📜 Scroll detected on non-project page, dismissing welcome screen');
+        fadeOut();
+      }
+    }
+
     window.addEventListener('beforeunload', handleBeforeUnload);
     document.addEventListener('click', handleClick);
+    
+    // Add scroll listener for non-project pages
+    if (!isProjectPage) {
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      // Also listen for wheel events to catch scroll attempts even when page can't scroll
+      window.addEventListener('wheel', handleScroll, { passive: true });
+    }
 
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
       document.removeEventListener('click', handleClick);
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('wheel', handleScroll);
     };
   });
 
@@ -237,10 +257,12 @@
         {/if}
       </div>
       
-      <!-- Fixed positioned click hint to prevent layout jumps -->
-      <div class="click-hint" class:visible={fadePhase === 'lettersVisible'}>
-        Click anywhere to continue
-      </div>
+      <!-- Fixed positioned click hint to prevent layout jumps - only show on project pages -->
+      {#if isProjectPage}
+        <div class="click-hint" class:visible={fadePhase === 'lettersVisible'}>
+          Click anywhere to continue
+        </div>
+      {/if}
     </div>
   </div>
 {/if}
