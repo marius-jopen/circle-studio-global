@@ -12,6 +12,13 @@
 					"label": "UID"
 				}
 			},
+			"date": {
+				"type": "Date",
+				"config": {
+					"label": "Date",
+					"placeholder": ""
+				}
+			},
 			"title": {
 				"type": "Text",
 				"config": {

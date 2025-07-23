@@ -13,6 +13,7 @@
 	$: projectData = project.data || project;
 	$: projectTitle = projectData?.title || 'Untitled Project';
 	$: projectClient = projectData?.client || 'Untitled Client';
+	$: projectDate = projectData?.date || '';
 	
 	// Get aspect ratio class based on dimension
 	$: aspectClass = {
@@ -62,6 +63,14 @@
 				spacingSpeed: 0.09,
 				rotationStart: 180,
 				animationType: 'sin'
+			},
+			{
+				text: projectDate,
+				rotationSpeed: 0.4,
+				spacingAmplitudePercent: 2,
+				spacingSpeed: 0.11,
+				rotationStart: 250,
+				animationType: 'sin'
 			}
 		]
 	};
@@ -71,12 +80,40 @@
 	
 	// Get project UID for linking
 	$: projectUid = project.uid || project.id;
+	
+	// Random preview selection logic
+	$: selectedPreview = (() => {
+		if (!projectData?.preview || !Array.isArray(projectData.preview) || projectData.preview.length === 0) {
+			return null;
+		}
+		
+		let selectedIndex;
+		let selectedItem;
+		
+		if (projectData.preview.length === 1) {
+			// Only one preview item
+			selectedIndex = 0;
+			selectedItem = projectData.preview[0];
+			console.log(`📸 Project "${projectTitle}": Using single preview item (index ${selectedIndex})`);
+		} else {
+			// Multiple preview items - select randomly
+			selectedIndex = Math.floor(Math.random() * projectData.preview.length);
+			selectedItem = projectData.preview[selectedIndex];
+			console.log(`🎲 Project "${projectTitle}": Randomly selected preview item ${selectedIndex + 1} of ${projectData.preview.length} (index ${selectedIndex})`);
+		}
+		
+		return {
+			item: selectedItem,
+			index: selectedIndex
+		};
+	})();
 </script>
 
 {#if clickable}
 	<a href="/work/{projectUid}" class="block brightness-[95%]">
-		{#if projectData?.preview && Array.isArray(projectData.preview) && projectData.preview.length > 0 && projectData.preview[0]}		
-			{@const preview = projectData.preview[0]}
+		<!-- {projectUid} -->
+		{#if selectedPreview}		
+			{@const preview = selectedPreview.item}
 			{@const imageField = dimension === 'portrait' ? preview?.preview_image_portrait : preview?.preview_image_landscape}
 			{@const videoUrl = dimension === 'portrait' ? preview?.preview_video_url_portrait : preview?.preview_video_url_landscape}
 			
@@ -112,8 +149,8 @@
 	</a>
 {:else}
 	<div class="block">
-		{#if projectData?.preview && Array.isArray(projectData.preview) && projectData.preview.length > 0 && projectData.preview[0]}		
-			{@const preview = projectData.preview[0]}
+		{#if selectedPreview}		
+			{@const preview = selectedPreview.item}
 			{@const imageField = dimension === 'portrait' ? preview?.preview_image_portrait : preview?.preview_image_landscape}
 			{@const videoUrl = dimension === 'portrait' ? preview?.preview_video_url_portrait : preview?.preview_video_url_landscape}
 			

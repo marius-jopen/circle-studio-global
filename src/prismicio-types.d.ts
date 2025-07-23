@@ -472,6 +472,17 @@ type ProjectsDocumentDataSlicesSlice = DocumentationSlice;
  */
 interface ProjectsDocumentData {
 	/**
+	 * Date field in *Projects*
+	 *
+	 * - **Field Type**: Date
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: projects.date
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/date
+	 */
+	date: prismic.DateField;
+
+	/**
 	 * Title field in *Projects*
 	 *
 	 * - **Field Type**: Text
