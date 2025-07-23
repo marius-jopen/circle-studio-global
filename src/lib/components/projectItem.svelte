@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { ProjectsDocument } from '../../prismicio-types';
 	import { PrismicImage } from '@prismicio/svelte';
+	import { onMount } from 'svelte';
 	import VideoPlayerCustom from './VideoPlayerCustom.svelte';
 	import BigWheel from '$lib/components/BigWheel.svelte';
 
@@ -43,9 +44,9 @@
 			fadeOutTime: 0.5,
 			pauseTime: 1.5,
 			visibleTime: 5,
-			manualMode: true,
-			triggerFadeIn: isHovering,
-			triggerFadeOut: !isHovering
+			manualMode: true, // Use manual mode for controlled animations
+			triggerFadeIn: showText,
+			triggerFadeOut: !showText || !initialRenderComplete // Ensure starts faded out
 		},
 		items: [
 			{
@@ -77,6 +78,49 @@
 	
 	// Hover state for fade in/out
 	let isHovering = false;
+	let isMounted = false;
+	let welcomeDismissed = false;
+	let initialRenderComplete = false;
+	
+	// Only show text after component is mounted, user hovers, AND welcome screen is dismissed
+	$: showText = isMounted && isHovering && welcomeDismissed && initialRenderComplete;
+	
+	// Debug logging for showText state
+	$: if (projectTitle) {
+		console.log(`🔍 ${projectTitle} - isMounted: ${isMounted}, isHovering: ${isHovering}, welcomeDismissed: ${welcomeDismissed}, initialRenderComplete: ${initialRenderComplete}, showText: ${showText}`);
+	}
+	
+	onMount(() => {
+		// Check if welcome has already been dismissed
+		const hasUserInteracted = sessionStorage.getItem('user-has-interacted') === 'true';
+		welcomeDismissed = hasUserInteracted;
+		
+		console.log(`📍 ${projectTitle} mounting - hasUserInteracted: ${hasUserInteracted}`);
+		
+		// Listen for welcome dismissal
+		const handleWelcomeDismissed = () => {
+			welcomeDismissed = true;
+			console.log(`📝 ${projectTitle}: Welcome dismissed, BigWheel text can now show on hover`);
+		};
+		
+		window.addEventListener('welcome-dismissed', handleWelcomeDismissed);
+		
+		// First, mark as mounted quickly
+		setTimeout(() => {
+			isMounted = true;
+			console.log(`✅ ${projectTitle}: Component mounted`);
+		}, 50);
+		
+		// Then allow initial render to complete (longer delay to prevent any flash)
+		setTimeout(() => {
+			initialRenderComplete = true;
+			console.log(`🎨 ${projectTitle}: Initial render complete, ready for interactions`);
+		}, 300);
+		
+		return () => {
+			window.removeEventListener('welcome-dismissed', handleWelcomeDismissed);
+		};
+	});
 	
 	// Get project UID for linking
 	$: projectUid = project.uid || project.id;
