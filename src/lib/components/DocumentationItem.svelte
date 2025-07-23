@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { PrismicImage } from '@prismicio/svelte';
-	import VideoPreview from './VideoPreview.svelte';
+	import VideoPlayerCustom from './VideoPlayerCustom.svelte';
 
 	export let item: any;
 </script>
@@ -9,13 +9,16 @@
 	{#if item}
 		{@const imageField = item.image}
 		{@const videoUrl = item.video_url}
-		
+		{@const playMode = item.play || 'autoplay-muted'} <!-- Default to autoplay-muted if not set -->
 		{#if videoUrl}
 			<div class="relative">
-				<VideoPreview 
+				<VideoPlayerCustom 
 					hlsUrl={videoUrl}
 					posterImage={imageField} 
 					classes="w-full h-auto rounded object-cover"
+					shouldAutoplay={playMode === 'autoplay-muted'}
+					hideControls={playMode === 'autoplay-muted'}
+					startMuted={playMode === 'autoplay-muted'}
 				/>
 			</div>
 		{:else if imageField?.url}

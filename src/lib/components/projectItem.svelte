@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { ProjectsDocument } from '../../prismicio-types';
 	import { PrismicImage } from '@prismicio/svelte';
-	import VideoPreview from './VideoPreview.svelte';
+	import VideoPlayerCustom from './VideoPlayerCustom.svelte';
 	import BigWheel from '$lib/components/BigWheel.svelte';
 
 	// Accept either a full ProjectsDocument or a content relationship field
@@ -121,10 +121,12 @@
 				<div class="relative" 
 					 on:mouseenter={() => isHovering = true}
 					 on:mouseleave={() => isHovering = false}>
-					<VideoPreview 
+					<VideoPlayerCustom 
 						hlsUrl={videoUrl}
 						posterImage={imageField} 
 						classes="w-full h-auto rounded object-cover {aspectClass}"
+						shouldAutoplay={true}
+						hideControls={true}
 					/>
 					<!-- BigWheel positioned directly over the video -->
 					<div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay">
@@ -158,10 +160,12 @@
 				<div class="relative mb-4" 
 					 on:mouseenter={() => isHovering = true}
 					 on:mouseleave={() => isHovering = false}>
-					<VideoPreview 
+					<VideoPlayerCustom 
 						hlsUrl={videoUrl}
 						posterImage={imageField} 
 						classes="w-full h-auto rounded object-cover {aspectClass}"
+						shouldAutoplay={true}
+						hideControls={true}
 					/>
 					<!-- BigWheel positioned directly over the video -->
 					<div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay">

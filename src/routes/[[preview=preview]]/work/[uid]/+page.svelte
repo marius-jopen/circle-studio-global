@@ -38,6 +38,8 @@
 						classes="w-full h-auto rounded-lg"
 						autoplayWithSound={item.playmode === 'autoplay-sound'}
 						shouldAutoplay={item.playmode === 'autoplay-muted'}
+						hideControls={item.playmode === 'autoplay-muted'}
+						startMuted={item.playmode !== 'no-autoplay'}
 					/>
 				{:else if item.main_image?.url}
 					<PrismicImage 
@@ -47,7 +49,7 @@
 				{/if}
 			<!-- Multiple items: side by side -->
 			{:else}
-				<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+				<div class="flex flex-row gap-3">
 					{#each projectData.main as item}
 						{#if item.main_video_url}
 							<VideoPlayerCustom 
@@ -56,6 +58,8 @@
 								classes="w-full h-auto rounded-lg"
 								autoplayWithSound={item.playmode === 'autoplay-sound'}
 								shouldAutoplay={item.playmode === 'autoplay-muted'}
+								hideControls={item.playmode === 'autoplay-muted'}
+								startMuted={item.playmode !== 'no-autoplay'}
 							/>
 						{:else if item.main_image?.url}
 							<PrismicImage 
