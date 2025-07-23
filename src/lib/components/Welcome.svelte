@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
+  import { page } from '$app/state';
   import BigWheel from './BigWheel.svelte';
 
   let showWelcome = true; // Start with welcome screen visible
@@ -10,8 +11,11 @@
   let welcomeElement: HTMLDivElement;
   let fadePhase: 'initial' | 'lettersVisible' | 'lettersFadingOut' | 'backgroundFadingOut' | 'hidden' = 'lettersVisible';
 
-  // Configuration for the BigWheel component
-  let welcomeConfig = {
+  // Check if we're on the home page
+  $: isHomePage = page?.route?.id === '/[[preview=preview]]';
+
+  // Configuration for the BigWheel component - reactive to page type
+  $: welcomeConfig = {
     uiVisible: false,
     items: [
       {
@@ -28,14 +32,14 @@
       fontSizePercent: 15.7,
       distancePercent: 0,
       paused: false,
-      textColor: '#000000',
+      textColor: isHomePage ? '#ffffff' : '#a7a7a7', // White for home, black for others
       backgroundColor: '#ffffff',
-      transparentBackground: true, // Let the overlay handle background
-      fadeInTime: 0, // No fade in - visible immediately
-      fadeOutTime: 1.2, // Letters fade out over 1.5 seconds when dismissing
+      transparentBackground: true,
+      fadeInTime: 0,
+      fadeOutTime: 1.2,
       pauseTime: 0,
-      visibleTime: 0, // Not used in manual mode
-      manualMode: true, // Manual control of fade cycle
+      visibleTime: 0,
+      manualMode: true,
       triggerFadeIn: false,
       triggerFadeOut: false
     }
@@ -44,16 +48,22 @@
   onMount(() => {
     if (!browser) return;
 
+    console.log('🎭 Welcome component mounted on:', page?.route?.id, 'isHomePage:', isHomePage);
+
     // Check if this is navigation between pages (not a fresh load)
     const navigationEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
     const isNavigating = sessionStorage.getItem('circle-studio-navigating');
     
+    console.log('🔍 Navigation check - isNavigating:', isNavigating, 'entry type:', navigationEntry?.type);
+    
     // Hide welcome screen if this is navigation between pages
     if (isNavigating && navigationEntry?.type !== 'reload') {
+      console.log('✅ This is navigation, hiding welcome screen');
       showWelcome = false;
       wheelVisible = false;
       fadePhase = 'hidden';
     } else {
+      console.log('🆕 This is a fresh load, showing welcome screen');
       // This is a fresh load/reload - clear the navigation flag
       sessionStorage.removeItem('circle-studio-navigating');
     }
@@ -61,12 +71,14 @@
     // Set navigation flag when user navigates away
     function handleBeforeUnload() {
       sessionStorage.setItem('circle-studio-navigating', 'true');
+      console.log('🚪 Setting navigation flag on beforeunload');
     }
 
     function handleClick(event: Event) {
       const target = event.target as HTMLElement;
       if (target.tagName === 'A' || target.closest('a')) {
         sessionStorage.setItem('circle-studio-navigating', 'true');
+        console.log('🔗 Setting navigation flag on link click');
         // Also set user interaction permission for video autoplay with sound
         sessionStorage.setItem('user-has-interacted', 'true');
         console.log('🖱️ Navigation click detected in Welcome, stored user interaction permission');
@@ -140,6 +152,7 @@
   <div 
     class="welcome-overlay"
     class:background-visible={backgroundVisible}
+    class:home-page={isHomePage}
     bind:this={welcomeElement}
     on:click={handleClick}
     on:keydown={handleKeydown}
@@ -169,7 +182,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: #ffffff;
+    background-color: #ffffff; /* White background for other pages */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -181,6 +194,11 @@
 
   .welcome-overlay:not(.background-visible) {
     opacity: 0;
+  }
+
+  /* Transparent background for home page */
+  .welcome-overlay.home-page {
+    background-color: transparent;
   }
 
   .welcome-content {
@@ -202,13 +220,18 @@
     bottom: 4rem;
     left: 50%;
     transform: translateX(-50%);
-    color: #666;
+    color: #666; /* Gray text for other pages */
     font-size: 0.875rem;
     text-align: center;
     opacity: 0;
     font-family: system-ui, -apple-system, sans-serif;
     transition: opacity 0.5s ease-in-out;
     white-space: nowrap;
+  }
+
+  /* White click hint text for home page */
+  .welcome-overlay.home-page .click-hint {
+    color: #ffffff;
   }
 
   .click-hint.visible {

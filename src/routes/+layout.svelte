@@ -14,8 +14,9 @@
 		const handleNavigationClick = (e: Event) => {
 			const target = e.target as HTMLElement;
 			if (target.closest('a') || target.closest('button')) {
+				sessionStorage.setItem('circle-studio-navigating', 'true');
 				sessionStorage.setItem('user-has-interacted', 'true');
-				console.log('🌐 Global navigation click detected, stored user interaction permission');
+				console.log('🌐 Global navigation click detected, stored both flags');
 			}
 		};
 		
