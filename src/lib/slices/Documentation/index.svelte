@@ -24,7 +24,7 @@
 <section 
 	data-slice-type={slice.slice_type} 
 	data-slice-variation={slice.variation}
-	class="mx-auto py-2"
+	class="mx-auto pb-3"
 >
 	{#if slice.primary.items && slice.primary.items.length > 0}
 		<div class="grid gap-3 {gridClass}">

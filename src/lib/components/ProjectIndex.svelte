@@ -229,7 +229,7 @@
 
 <div>
 	{#if randomizedLayout.length > 0}
-		<div class="space-y-4">
+		<div class="space-y-3">
 			{#each randomizedLayout as row}
 				<div class="grid dimension-{row.dimension} {row.gridCols} gap-3">
 					{#each row.projects as project}

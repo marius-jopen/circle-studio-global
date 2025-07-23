@@ -2,6 +2,7 @@
 	import type { ProjectsDocument } from '../../prismicio-types';
 	import { PrismicImage } from '@prismicio/svelte';
 	import { onMount } from 'svelte';
+	import { browser } from '$app/environment';
 	import VideoPlayerCustom from './VideoPlayerCustom.svelte';
 	import BigWheel from '$lib/components/BigWheel.svelte';
 
@@ -41,12 +42,12 @@
 			exportResolution: 400,
 			useHighResRecording: false,
 			fadeInTime: 0.5,
-			fadeOutTime: 0.5,
+			fadeOutTime: 0.1, // Very fast fade out to hide immediately
 			pauseTime: 1.5,
 			visibleTime: 5,
 			manualMode: true, // Use manual mode for controlled animations
-			triggerFadeIn: showText,
-			triggerFadeOut: !showText || !initialRenderComplete // Ensure starts faded out
+			triggerFadeIn: showText && !isNavigating, // Double check navigation state
+			triggerFadeOut: !showText || !initialRenderComplete || isNavigating || !isMounted // Force hidden initially
 		},
 		items: [
 			{
@@ -81,22 +82,28 @@
 	let isMounted = false;
 	let welcomeDismissed = false;
 	let initialRenderComplete = false;
+	let isNavigating = false;
 	
-	// Only show text after component is mounted, user hovers, AND welcome screen is dismissed
-	$: showText = isMounted && isHovering && welcomeDismissed && initialRenderComplete;
+	// Check all initial states immediately during script execution (before any rendering)
+	if (browser) {
+		const hasUserInteracted = sessionStorage.getItem('user-has-interacted') === 'true';
+		const navigationState = sessionStorage.getItem('circle-studio-navigating') === 'true';
+		
+		welcomeDismissed = hasUserInteracted;
+		isNavigating = navigationState;
+		
+		console.log(`🚀 ${projectTitle || 'Project'} script init - hasUserInteracted: ${hasUserInteracted}, isNavigating: ${navigationState}`);
+	}
+	
+	// Only show text after component is mounted, user hovers, welcome dismissed, render complete, AND not navigating
+	$: showText = isMounted && isHovering && welcomeDismissed && initialRenderComplete && !isNavigating;
 	
 	// Debug logging for showText state
 	$: if (projectTitle) {
-		console.log(`🔍 ${projectTitle} - isMounted: ${isMounted}, isHovering: ${isHovering}, welcomeDismissed: ${welcomeDismissed}, initialRenderComplete: ${initialRenderComplete}, showText: ${showText}`);
+		console.log(`🔍 ${projectTitle} - isMounted: ${isMounted}, isHovering: ${isHovering}, welcomeDismissed: ${welcomeDismissed}, initialRenderComplete: ${initialRenderComplete}, isNavigating: ${isNavigating}, showText: ${showText}`);
 	}
 	
 	onMount(() => {
-		// Check if welcome has already been dismissed
-		const hasUserInteracted = sessionStorage.getItem('user-has-interacted') === 'true';
-		welcomeDismissed = hasUserInteracted;
-		
-		console.log(`📍 ${projectTitle} mounting - hasUserInteracted: ${hasUserInteracted}`);
-		
 		// Listen for welcome dismissal
 		const handleWelcomeDismissed = () => {
 			welcomeDismissed = true;
@@ -114,8 +121,17 @@
 		// Then allow initial render to complete (longer delay to prevent any flash)
 		setTimeout(() => {
 			initialRenderComplete = true;
-			console.log(`🎨 ${projectTitle}: Initial render complete, ready for interactions`);
+			console.log(`🎨 ${projectTitle}: Initial render complete`);
 		}, 300);
+		
+		// Clear navigation flag after everything is ready (prevent flash during route changes)
+		setTimeout(() => {
+			if (isNavigating) {
+				sessionStorage.removeItem('circle-studio-navigating');
+				isNavigating = false;
+				console.log(`🧹 ${projectTitle}: Navigation flag cleared, ready for interactions`);
+			}
+		}, 500);
 		
 		return () => {
 			window.removeEventListener('welcome-dismissed', handleWelcomeDismissed);
@@ -173,7 +189,10 @@
 						hideControls={true}
 					/>
 					<!-- BigWheel positioned directly over the video -->
-					<div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay">
+					<div 
+						class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay"
+						class:force-hidden={isNavigating || !initialRenderComplete || !isMounted}
+					>
 						<BigWheel {config} />
 					</div>
 				</div>
@@ -186,7 +205,10 @@
 						class="w-full h-auto rounded {aspectClass} object-cover"
 					/>
 					<!-- BigWheel positioned directly over the image -->
-					<div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay">
+					<div 
+						class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay"
+						class:force-hidden={isNavigating || !initialRenderComplete || !isMounted}
+					>
 						<BigWheel {config} />
 					</div>
 				</div>
@@ -212,7 +234,10 @@
 						hideControls={true}
 					/>
 					<!-- BigWheel positioned directly over the video -->
-					<div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay">
+					<div 
+						class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay"
+						class:force-hidden={isNavigating || !initialRenderComplete || !isMounted}
+					>
 						<BigWheel {config} />
 					</div>
 				</div>
@@ -225,7 +250,10 @@
 						class="w-full h-auto rounded {aspectClass} object-cover"
 					/>
 					<!-- BigWheel positioned directly over the image -->
-					<div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay">
+					<div 
+						class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay"
+						class:force-hidden={isNavigating || !initialRenderComplete || !isMounted}
+					>
 						<BigWheel {config} />
 					</div>
 				</div>
@@ -273,6 +301,13 @@
 		display: flex !important;
 		align-items: center !important;
 		justify-content: center !important;
+	}
+	
+	/* Force hide BigWheel overlay during navigation and initialization */
+	.bigwheel-overlay.force-hidden {
+		visibility: hidden !important;
+		opacity: 0 !important;
+		pointer-events: none !important;
 	}
 	
 	/* Force white text color for BigWheel overlay */
