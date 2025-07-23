@@ -27,7 +27,7 @@
 <div class="mx-auto px-3">
 	<!-- Main Media -->
 	{#if projectData.main && projectData.main.length > 0}
-		<div class="mb-12">
+		<div class="mb-3">
 			<!-- Single item: full width -->
 			{#if projectData.main.length === 1}
 				{@const item = projectData.main[0]}
@@ -74,17 +74,23 @@
 	{/if}
 
 	<!-- Project Info -->
-	<div class="mb-12">
-		<h1 class="text-4xl md:text-6xl font-bold mb-3">{projectData.title}</h1>
-		{#if projectData.client}
-			<p class="text-xl text-gray-600 mb-6">{projectData.client}</p>
-		{/if}
+	<div class="mb-12 grid grid-cols-2 gap-3 w-full">
+		<div class="col-span-1">
+			{projectData.title}{projectData.client ? `, ${projectData.client}` : ''}
+		</div>
 		{#if projectData.description}
 			<div class="prose prose-lg max-w-none">
 				<PrismicRichText field={projectData.description} />
 			</div>
 		{/if}
 	</div>
+
+	
+
+	<!-- Content Slices -->
+	{#if projectData.slices && projectData.slices.length > 0}
+		<SliceZone slices={projectData.slices} {components} />
+	{/if}
 
 	<!-- Credits -->
 	{#if projectData.credits && projectData.credits.length > 0}
@@ -109,10 +115,5 @@
 				{/each}
 			</div>
 		</section>
-	{/if}
-
-	<!-- Content Slices -->
-	{#if projectData.slices && projectData.slices.length > 0}
-		<SliceZone slices={projectData.slices} {components} />
 	{/if}
 </div>
