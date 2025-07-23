@@ -147,7 +147,7 @@
 			welcomeDismissed = true;
 			console.log(`📝 ${projectTitle}: Welcome dismissed, checking for pre-existing hover`);
 			// Check if mouse is already over this project when welcome is dismissed
-			setTimeout(() => checkInitialHoverState(), 50);
+			setTimeout(() => checkInitialHoverState(), 0);
 		};
 		
 		window.addEventListener('welcome-dismissed', handleWelcomeDismissed);
@@ -156,13 +156,13 @@
 		setTimeout(() => {
 			isMounted = true;
 			console.log(`✅ ${projectTitle}: Component mounted`);
-		}, 50);
+		}, 10);
 		
 		// Then allow initial render to complete (longer delay to prevent any flash)
 		setTimeout(() => {
 			initialRenderComplete = true;
 			console.log(`🎨 ${projectTitle}: Initial render complete`);
-		}, 300);
+		}, 100);
 		
 		// Clear navigation flag after everything is ready (prevent flash during route changes)
 		setTimeout(() => {
