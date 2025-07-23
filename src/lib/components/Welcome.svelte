@@ -14,8 +14,14 @@
   // Check if we're on the home page
   $: isHomePage = page?.route?.id === '/[[preview=preview]]';
 
-  // Configuration for the BigWheel component - reactive to page type
-  $: welcomeConfig = {
+  // Check if we're on a project page and get project title
+  $: isProjectPage = page?.route?.id?.includes('/work/[uid]');
+  $: projectTitle = isProjectPage ? (page?.data?.project?.data?.title || page?.data?.title || 'Project') : '';
+  $: projectClient = isProjectPage ? (page?.data?.project?.data?.client || 'Client') : '';
+  $: projectDate = isProjectPage ? (page?.data?.project?.data?.date || '') : '';
+  
+  // Normal pages configuration
+  $: normalPageConfig = {
     uiVisible: false,
     items: [
       {
@@ -32,7 +38,7 @@
       fontSizePercent: 15.7,
       distancePercent: 0,
       paused: false,
-      textColor: isHomePage ? '#ffffff' : '#a7a7a7', // White for home, black for others
+      textColor: isHomePage ? '#ffffff' : '#000000',
       backgroundColor: '#ffffff',
       transparentBackground: true,
       fadeInTime: 0,
@@ -44,6 +50,70 @@
       triggerFadeOut: false
     }
   };
+  
+  // Project pages configuration
+  $: projectPageConfig = {
+    uiVisible: false,
+    items: [
+      {
+        text: 'CIRCLE STUDIO GLOBAL',
+        rotationSpeed: 0.5,
+        spacingAmplitudePercent: 2,
+        spacingSpeed: 0.09,
+        rotationStart: 0,
+        animationType: 'sin'
+      },
+      {
+        text: projectTitle,
+        rotationSpeed: 0.3,
+        spacingAmplitudePercent: 2,
+        spacingSpeed: 0.09,
+        rotationStart: 180,
+        animationType: 'sin'
+      },
+      {
+        text: projectClient,
+        rotationSpeed: 0.6,
+        spacingAmplitudePercent: 2,
+        spacingSpeed: 0.05,
+        rotationStart: 80,
+        animationType: 'sin'
+      },
+      {
+        text: projectDate,
+        rotationSpeed: 0.4,
+        spacingAmplitudePercent: 2,
+        spacingSpeed: 0.11,
+        rotationStart: 250,
+        animationType: 'sin'
+      }
+    ],
+    globalSettings: {
+      containerSizePercent: 100,
+      fontSizePercent: 9,
+      distancePercent: 1,
+      paused: false,
+      textColor: '#000000',
+      backgroundColor: '#ffffff',
+      transparentBackground: true,
+      fadeInTime: 0.5,
+      fadeOutTime: 1.2,
+      pauseTime: 1.5,
+      visibleTime: 5,
+      manualMode: true,
+      triggerFadeIn: false,
+      triggerFadeOut: false
+    }
+  };
+  
+  // Choose which configuration to use
+  $: welcomeConfig = isProjectPage ? projectPageConfig : normalPageConfig;
+  
+  // Debug logging for project page detection
+  $: if (isProjectPage) {
+    console.log('🎬 Welcome on project page - Using project configuration');
+    console.log('🎬 Project data:', { projectTitle, projectClient, projectDate });
+  }
 
   onMount(() => {
     if (!browser) return;
