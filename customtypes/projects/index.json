@@ -114,21 +114,6 @@
 					}
 				}
 			},
-			"main_image": {
-				"type": "Image",
-				"config": {
-					"label": "Main Image",
-					"constraint": {},
-					"thumbnails": []
-				}
-			},
-			"main_video_url": {
-				"type": "Text",
-				"config": {
-					"label": "Main Video Url",
-					"placeholder": ""
-				}
-			},
 			"credits": {
 				"type": "Group",
 				"config": {

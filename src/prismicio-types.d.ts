@@ -538,28 +538,6 @@ interface ProjectsDocumentData {
 	main: prismic.GroupField<Simplify<ProjectsDocumentDataMainItem>>;
 
 	/**
-	 * Main Image field in *Projects*
-	 *
-	 * - **Field Type**: Image
-	 * - **Placeholder**: *None*
-	 * - **API ID Path**: projects.main_image
-	 * - **Tab**: Main
-	 * - **Documentation**: https://prismic.io/docs/fields/image
-	 */
-	main_image: prismic.ImageField<never>;
-
-	/**
-	 * Main Video Url field in *Projects*
-	 *
-	 * - **Field Type**: Text
-	 * - **Placeholder**: *None*
-	 * - **API ID Path**: projects.main_video_url
-	 * - **Tab**: Main
-	 * - **Documentation**: https://prismic.io/docs/fields/text
-	 */
-	main_video_url: prismic.KeyTextField;
-
-	/**
 	 * Credits field in *Projects*
 	 *
 	 * - **Field Type**: Group
