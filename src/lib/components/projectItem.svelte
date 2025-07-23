@@ -83,6 +83,7 @@
 	let welcomeDismissed = false;
 	let initialRenderComplete = false;
 	let isNavigating = false;
+	let projectElement: HTMLElement;
 	
 	// Check all initial states immediately during script execution (before any rendering)
 	if (browser) {
@@ -93,6 +94,43 @@
 		isNavigating = navigationState;
 		
 		console.log(`🚀 ${projectTitle || 'Project'} script init - hasUserInteracted: ${hasUserInteracted}, isNavigating: ${navigationState}`);
+	}
+	
+	// Check if mouse is already over this element
+	function checkInitialHoverState() {
+		if (!browser || !projectElement) return;
+		
+		// Use a simple trick: temporarily add a mouseover listener and trigger a synthetic mouse event
+		let hasChecked = false;
+		
+		const handleMouseOver = () => {
+			if (!hasChecked && !isHovering) {
+				isHovering = true;
+				hasChecked = true;
+				console.log(`🎯 ${projectTitle}: Detected pre-existing hover state`);
+			}
+			projectElement.removeEventListener('mouseover', handleMouseOver);
+		};
+		
+		// Add listener
+		projectElement.addEventListener('mouseover', handleMouseOver);
+		
+		// Check if element is currently hovered by using CSS :hover state
+		setTimeout(() => {
+			if (!hasChecked) {
+				// If no mouseover was detected, check if element matches :hover
+				try {
+					const isHovered = projectElement.matches(':hover');
+					if (isHovered && !isHovering) {
+						isHovering = true;
+						console.log(`🎯 ${projectTitle}: CSS :hover detected - triggering fade in`);
+					}
+				} catch (e) {
+					// CSS :hover check failed, that's ok
+				}
+				projectElement.removeEventListener('mouseover', handleMouseOver);
+			}
+		}, 100);
 	}
 	
 	// Only show text after component is mounted, user hovers, welcome dismissed, render complete, AND not navigating
@@ -107,7 +145,9 @@
 		// Listen for welcome dismissal
 		const handleWelcomeDismissed = () => {
 			welcomeDismissed = true;
-			console.log(`📝 ${projectTitle}: Welcome dismissed, BigWheel text can now show on hover`);
+			console.log(`📝 ${projectTitle}: Welcome dismissed, checking for pre-existing hover`);
+			// Check if mouse is already over this project when welcome is dismissed
+			setTimeout(() => checkInitialHoverState(), 50);
 		};
 		
 		window.addEventListener('welcome-dismissed', handleWelcomeDismissed);
@@ -129,7 +169,9 @@
 			if (isNavigating) {
 				sessionStorage.removeItem('circle-studio-navigating');
 				isNavigating = false;
-				console.log(`🧹 ${projectTitle}: Navigation flag cleared, ready for interactions`);
+				console.log(`🧹 ${projectTitle}: Navigation flag cleared, checking for pre-existing hover`);
+				// Check if mouse is already over this project when navigation is cleared
+				setTimeout(() => checkInitialHoverState(), 50);
 			}
 		}, 500);
 		
@@ -170,7 +212,7 @@
 </script>
 
 {#if clickable}
-	<a href="/work/{projectUid}" class="block brightness-[95%]">
+	<a href="/work/{projectUid}" class="block brightness-[95%]" bind:this={projectElement}>
 		<!-- {projectUid} -->
 		{#if selectedPreview}		
 			{@const preview = selectedPreview.item}
@@ -216,7 +258,7 @@
 		{/if}
 	</a>
 {:else}
-	<div class="block">
+	<div class="block" bind:this={projectElement}>
 		{#if selectedPreview}		
 			{@const preview = selectedPreview.item}
 			{@const imageField = dimension === 'portrait' ? preview?.preview_image_portrait : preview?.preview_image_landscape}
