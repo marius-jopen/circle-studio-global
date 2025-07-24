@@ -244,9 +244,9 @@
 
 <div>
 	{#if isReady && randomizedLayout.length > 0}
-		<div class="space-y-3">
+		<div class="space-y-2">
 			{#each randomizedLayout as row}
-				<div class="grid dimension-{row.dimension} {row.gridCols} gap-3">
+				<div class="grid dimension-{row.dimension} {row.gridCols} gap-2">
 					{#each row.projects as project}
 						<ProjectItem dimension={row.dimension} {project} />
 					{/each}
