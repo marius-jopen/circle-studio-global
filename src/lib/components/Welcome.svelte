@@ -4,7 +4,7 @@
   import { page } from '$app/state';
   import BigWheel from './BigWheel.svelte';
 
-  let showWelcome = true; // Start with welcome screen visible
+  let showWelcome = false; // Start with welcome screen hidden by default
   let isVisible = true;
   let backgroundVisible = true;
   let wheelVisible = true; // Start with wheel visible
@@ -19,6 +19,15 @@
   $: projectTitle = isProjectPage ? (page?.data?.project?.data?.title || page?.data?.title || 'Project') : '';
   $: projectClient = isProjectPage ? (page?.data?.project?.data?.client || 'Client') : '';
   $: projectDate = isProjectPage ? (page?.data?.project?.data?.date || '') : '';
+  
+  // Only show welcome screen on project pages
+  $: {
+    if (isProjectPage) {
+      showWelcome = true; // Show welcome on project pages
+    } else {
+      showWelcome = false; // Hide welcome on all other pages
+    }
+  }
   
   // Normal pages configuration
   $: normalPageConfig = {
@@ -126,16 +135,17 @@
     
     console.log('🔍 Navigation check - isNavigating:', isNavigating, 'entry type:', navigationEntry?.type);
     
-    // Hide welcome screen if this is navigation between pages
-    if (isNavigating && navigationEntry?.type !== 'reload') {
-      console.log('✅ This is navigation, hiding welcome screen');
+    // Hide welcome screen if this is navigation between pages OR if not on a project page
+    if ((isNavigating && navigationEntry?.type !== 'reload') || !isProjectPage) {
+      console.log('✅ This is navigation or not a project page, hiding welcome screen');
       showWelcome = false;
       wheelVisible = false;
       fadePhase = 'hidden';
     } else {
-      console.log('🆕 This is a fresh load, showing welcome screen');
-      // This is a fresh load/reload - clear the navigation flag
+      console.log('🆕 This is a fresh load on a project page, showing welcome screen');
+      // This is a fresh load/reload on a project page - clear the navigation flag
       sessionStorage.removeItem('circle-studio-navigating');
+      showWelcome = true;
     }
 
     // Set navigation flag when user navigates away

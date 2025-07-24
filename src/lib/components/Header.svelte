@@ -11,7 +11,7 @@
 		<nav class=" px-3 py-4">
 			<div class="flex justify-between w-full">
 				<!-- Logo/Home Link -->
-				<a href="/" class="block hover:opacity-70 transition-opacity -mt-8">
+				<a href="/" class="block hover:opacity-70 transition-opacity -mt-6">
 					<BigWheel 
 						config={{
 							uiVisible: false,
@@ -24,7 +24,7 @@
 								animationType: 'sin'
 							}],
 							globalSettings: {
-								containerSizePercent: 50,
+								containerSizePercent: 30,
 								fontSizePercent: 15.7,
 								distancePercent: 0,
 								paused: false,
