@@ -1,17 +1,41 @@
 <script>
 	import { PrismicLink } from '@prismicio/svelte';
+	import BigWheel from './BigWheel.svelte';
 
 	let { settings } = $props();
 </script>
 
 <!-- Navigation Header -->
 {#if settings?.data?.navigation_header}
-	<header class="sticky top-0 z-50">
+	<header class="fixed top-0 z-50 w-full">
 		<nav class=" px-3 py-4">
 			<div class="flex justify-between w-full">
 				<!-- Logo/Home Link -->
-				<a href="/" class="text-xl text-gray-900 hover:text-gray-700 transition-colors">
-					Circle Studio Global
+				<a href="/" class="block hover:opacity-70 transition-opacity -mt-8">
+					<BigWheel 
+						config={{
+							uiVisible: false,
+							items: [{
+								text: 'CIRCLE STUDIO GLOBAL',
+								rotationSpeed: 0.15,
+								spacingAmplitudePercent: 0,
+								spacingSpeed: 0,
+								rotationStart: 0,
+								animationType: 'sin'
+							}],
+							globalSettings: {
+								containerSizePercent: 50,
+								fontSizePercent: 15.7,
+								distancePercent: 0,
+								paused: false,
+								textColor: '#000000',
+								transparentBackground: true,
+								manualMode: true,
+								fadeInTime: 0,
+								fadeOutTime: 0
+							}
+						}}
+					/>
 				</a>
 				
 				<!-- Navigation Links -->
@@ -20,7 +44,7 @@
 						<li>
 							<PrismicLink 
 								field={navItem} 
-								class="text-gray-700 hover:text-gray-900 transition-colors font-medium"
+								class="hover:text-gray-900 transition-colors font-medium"
 							>
 								{navItem.text || 'Link'}
 							</PrismicLink>

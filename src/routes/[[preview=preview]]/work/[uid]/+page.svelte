@@ -87,7 +87,7 @@
 	</div>
 
 	<!-- Credits -->
-	<Credits credits={projectData.credits} />
+	<!-- <Credits credits={projectData.credits} /> -->
 
 	<!-- Content Slices -->
 	{#if projectData.slices && projectData.slices.length > 0}

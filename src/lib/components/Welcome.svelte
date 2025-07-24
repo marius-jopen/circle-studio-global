@@ -38,7 +38,7 @@
       fontSizePercent: 15.7,
       distancePercent: 0,
       paused: false,
-      textColor: isHomePage ? '#ffffff' : '#000000',
+      textColor: isHomePage ? '#ffffff' : '#b8b8b8',
       backgroundColor: '#ffffff',
       transparentBackground: true,
       fadeInTime: 0,

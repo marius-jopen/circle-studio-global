@@ -47,7 +47,7 @@
 
 <Header settings={data.settings} />
 
-<main>
+<main class="mt-14">
 	{@render children()}
 </main>
 
