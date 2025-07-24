@@ -11,13 +11,13 @@
 
 	// Configuration for layout randomization
 	const LAYOUT_CONFIG = {
-		threePortraits: { weight: 25, itemsPerRow: 3, dimension: 'portrait' as const },
-		twoSquares: { weight: 18, itemsPerRow: 2, dimension: 'square' as const },
-		twoLandscapes: { weight: 15, itemsPerRow: 2, dimension: 'landscape' as const },
-		threeSquares: { weight: 12, itemsPerRow: 3, dimension: 'square' as const },
-		fivePortraits: { weight: 8, itemsPerRow: 5, dimension: 'portrait' as const },
-		fourPortraits: { weight: 7, itemsPerRow: 4, dimension: 'portrait' as const },
-		oneLandscape: { weight: 15, itemsPerRow: 1, dimension: 'landscape' as const }
+		threePortraits: { weight: 15, itemsPerRow: 3, dimension: 'portrait' as const },
+		twoSquares: { weight: 12, itemsPerRow: 2, dimension: 'square' as const },
+		twoLandscapes: { weight: 8, itemsPerRow: 2, dimension: 'landscape' as const },
+		threeSquares: { weight: 10, itemsPerRow: 3, dimension: 'square' as const },
+		fivePortraits: { weight: 15, itemsPerRow: 5, dimension: 'portrait' as const },
+		fourPortraits: { weight: 20, itemsPerRow: 4, dimension: 'portrait' as const },
+		oneLandscape: { weight: 20, itemsPerRow: 1, dimension: 'landscape' as const }
 	};
 
 	// Filter out featured projects to show only remaining projects
@@ -53,34 +53,105 @@
 	function planFinalLayout(remainingProjects: ProjectsDocument[], previousLayoutType: keyof typeof LAYOUT_CONFIG | null): LayoutRow[] {
 		const finalRows: LayoutRow[] = [];
 		const projectsToDistribute = [...remainingProjects];
+		let lastLayoutType = previousLayoutType;
+		let lastItemCount: number | null = null;
 		
 		if (projectsToDistribute.length === 0) return finalRows;
 		
-		// Distribute projects to avoid lonely items
+		// Get the last item count from the previous row to maintain alternation
+		if (previousLayoutType) {
+			lastItemCount = LAYOUT_CONFIG[previousLayoutType].itemsPerRow;
+		}
+		
+		// Distribute projects to avoid lonely items while respecting constraints
 		while (projectsToDistribute.length > 0) {
 			let bestLayout: keyof typeof LAYOUT_CONFIG;
 			let itemsToTake: number;
 			
+			// Available layout options based on remaining projects
+			const availableOptions: Array<{layout: keyof typeof LAYOUT_CONFIG, items: number}> = [];
+			
+			if (projectsToDistribute.length >= 5) {
+				availableOptions.push({layout: 'fivePortraits', items: 5});
+			}
 			if (projectsToDistribute.length >= 4) {
-				// Take 4 if possible (fourPortraits)
-				bestLayout = 'fourPortraits';
-				itemsToTake = 4;
-			} else if (projectsToDistribute.length === 3) {
-				// Take 3 (threePortraits)
-				bestLayout = 'threePortraits';
-				itemsToTake = 3;
-			} else if (projectsToDistribute.length === 2) {
-				// Take 2 (twoSquares)
-				bestLayout = 'twoSquares';
-				itemsToTake = 2;
-			} else {
-				// Only 1 left - this shouldn't happen with our logic, but handle it
-				bestLayout = 'threePortraits';
-				itemsToTake = 1;
+				availableOptions.push({layout: 'fourPortraits', items: 4});
+			}
+			if (projectsToDistribute.length >= 3) {
+				availableOptions.push({layout: 'threePortraits', items: 3});
+				availableOptions.push({layout: 'threeSquares', items: 3});
+			}
+			if (projectsToDistribute.length >= 2) {
+				availableOptions.push({layout: 'twoSquares', items: 2});
+				availableOptions.push({layout: 'twoLandscapes', items: 2});
+			}
+			if (projectsToDistribute.length >= 1) {
+				availableOptions.push({layout: 'oneLandscape', items: 1});
 			}
 			
-			// Note: We avoid oneLandscape in final planning to prevent lonely items
-			// The bestLayout choices above already ensure good distribution
+			// Filter options based on constraints
+			const validOptions = availableOptions.filter(option => {
+				// Don't repeat the same layout type
+				if (lastLayoutType === option.layout) return false;
+				
+				// Don't repeat the same number of items (prevents vertical alignment)
+				if (lastItemCount !== null && lastItemCount === option.items) return false;
+				
+				// Check if this choice would leave a reasonable remainder
+				const remaining = projectsToDistribute.length - option.items;
+				if (remaining === 1 && projectsToDistribute.length > option.items) return false;
+				
+				return true;
+			});
+			
+			// Build robust fallback chain - prioritize avoiding same item count
+			let finalOptions = validOptions;
+			
+			// First fallback: relax layout type constraint but keep item count constraint
+			if (finalOptions.length === 0) {
+				finalOptions = availableOptions.filter(option => {
+					// Still don't repeat the same number of items
+					if (lastItemCount !== null && lastItemCount === option.items) return false;
+					
+					// Check remainder constraint
+					const remaining = projectsToDistribute.length - option.items;
+					if (remaining === 1 && projectsToDistribute.length > option.items) return false;
+					
+					return true;
+				});
+			}
+			
+			// Second fallback: only avoid same layout type
+			if (finalOptions.length === 0) {
+				finalOptions = availableOptions.filter(option => {
+					if (lastLayoutType === option.layout) return false;
+					
+					const remaining = projectsToDistribute.length - option.items;
+					if (remaining === 1 && projectsToDistribute.length > option.items) return false;
+					
+					return true;
+				});
+			}
+			
+			// Last resort: just avoid leaving 1 item
+			if (finalOptions.length === 0) {
+				finalOptions = availableOptions.filter(option => {
+					const remaining = projectsToDistribute.length - option.items;
+					if (remaining === 1 && projectsToDistribute.length > option.items) return false;
+					return true;
+				});
+			}
+			
+			// Absolute last resort: use any option
+			if (finalOptions.length === 0) {
+				finalOptions = availableOptions;
+			}
+			
+			// Choose the best option (prefer larger groups when possible)
+			const chosenOption = finalOptions.sort((a, b) => b.items - a.items)[0];
+			
+			bestLayout = chosenOption.layout;
+			itemsToTake = chosenOption.items;
 			
 			const config = LAYOUT_CONFIG[bestLayout];
 			const projectsForRow = projectsToDistribute.splice(0, Math.min(itemsToTake, projectsToDistribute.length));
@@ -92,7 +163,8 @@
 				gridCols: getGridColsClass(projectsForRow.length)
 			});
 			
-			previousLayoutType = bestLayout;
+			lastLayoutType = bestLayout;
+			lastItemCount = projectsForRow.length;
 		}
 		
 		return finalRows;
@@ -104,6 +176,7 @@
 		const rows: LayoutRow[] = [];
 		let remainingProjects = [...projects];
 		let previousLayoutType: keyof typeof LAYOUT_CONFIG | null = null;
+		let previousItemCount: number | null = null;
 
 		// Create weighted array for random selection
 		const weightedChoices: Array<{ type: keyof typeof LAYOUT_CONFIG; weight: number }> = [];
@@ -114,10 +187,51 @@
 		});
 
 		while (remainingProjects.length > 0) {
-			// Filter out consecutive landscape layouts
-			const availableChoices = weightedChoices.filter(choice => 
-				!(previousLayoutType === 'oneLandscape' && choice.type === 'oneLandscape')
-			);
+			// Filter out consecutive same layouts and same item counts (not just even/odd)
+			const availableChoices = weightedChoices.filter(choice => {
+				const config = LAYOUT_CONFIG[choice.type];
+				const itemsNeeded = Math.min(config.itemsPerRow, remainingProjects.length);
+				
+				// Don't repeat the same layout type
+				if (previousLayoutType === choice.type) {
+					return false;
+				}
+				
+				// Don't repeat the same number of items (this prevents vertical alignment)
+				if (previousItemCount !== null && previousItemCount === itemsNeeded) {
+					return false;
+				}
+				
+				return true;
+			});
+			
+			// Build a more robust fallback chain
+			let finalChoices = availableChoices;
+			
+			// First fallback: relax layout type constraint but keep item count constraint
+			if (finalChoices.length === 0) {
+				finalChoices = weightedChoices.filter(choice => {
+					const config = LAYOUT_CONFIG[choice.type];
+					const itemsNeeded = Math.min(config.itemsPerRow, remainingProjects.length);
+					
+					// Still don't repeat the same number of items
+					if (previousItemCount !== null && previousItemCount === itemsNeeded) {
+						return false;
+					}
+					
+					return true;
+				});
+			}
+			
+			// Second fallback: only avoid same layout type  
+			if (finalChoices.length === 0) {
+				finalChoices = weightedChoices.filter(choice => previousLayoutType !== choice.type);
+			}
+			
+			// Last resort: use any choice
+			if (finalChoices.length === 0) {
+				finalChoices = weightedChoices;
+			}
 			
 			// Check if we should plan the final rows to avoid lonely items
 			if (remainingProjects.length <= 7) {
@@ -128,7 +242,7 @@
 			}
 			
 			// Randomly select layout type from available choices
-			const randomChoice = availableChoices[Math.floor(Math.random() * availableChoices.length)];
+			const randomChoice = finalChoices[Math.floor(Math.random() * finalChoices.length)];
 			const layoutType = randomChoice.type;
 			const config = LAYOUT_CONFIG[layoutType];
 
@@ -151,18 +265,34 @@
 						gridCols: adjustedGridCols
 					});
 					previousLayoutType = layoutType;
+					previousItemCount = adjustedProjectsForRow.length;
 					continue;
 				} else {
-					// Find a different layout that takes more items
-					const betterChoices = availableChoices.filter(choice => {
+					// Find a different layout that takes more items and follows our constraints
+					const betterChoices = finalChoices.filter(choice => {
 						const choiceConfig = LAYOUT_CONFIG[choice.type];
 						const needed = Math.min(choiceConfig.itemsPerRow, remainingProjects.length);
 						const remaining = remainingProjects.length - needed;
+						
+						// Prioritize avoiding same item count
+						if (previousItemCount !== null && previousItemCount === needed) {
+							return false;
+						}
+						
 						return remaining !== 1 && needed <= remainingProjects.length;
 					});
 					
-					if (betterChoices.length > 0) {
-						const betterChoice = betterChoices[Math.floor(Math.random() * betterChoices.length)];
+					// If no choices avoid same item count, try without that constraint
+					const fallbackBetterChoices = betterChoices.length > 0 ? betterChoices :
+						finalChoices.filter(choice => {
+							const choiceConfig = LAYOUT_CONFIG[choice.type];
+							const needed = Math.min(choiceConfig.itemsPerRow, remainingProjects.length);
+							const remaining = remainingProjects.length - needed;
+							return remaining !== 1 && needed <= remainingProjects.length;
+						});
+					
+					if (fallbackBetterChoices.length > 0) {
+						const betterChoice = fallbackBetterChoices[Math.floor(Math.random() * fallbackBetterChoices.length)];
 						const betterConfig = LAYOUT_CONFIG[betterChoice.type];
 						const betterProjectsForRow = remainingProjects.splice(0, Math.min(betterConfig.itemsPerRow, remainingProjects.length));
 						
@@ -173,6 +303,7 @@
 							gridCols: getGridColsClass(betterConfig.itemsPerRow)
 						});
 						previousLayoutType = betterChoice.type;
+						previousItemCount = betterProjectsForRow.length;
 						continue;
 					}
 				}
@@ -186,12 +317,29 @@
 				// Put projects back and try a layout that fits
 				remainingProjects.unshift(...projectsForRow);
 				
-				// Find a layout that fits the remaining projects
-				const availableLayouts = Object.entries(LAYOUT_CONFIG).filter(([_, layoutConfig]) => 
-					layoutConfig.itemsPerRow <= remainingProjects.length
-				);
+				// Find a layout that fits the remaining projects and follows our constraints
+				const availableLayouts = Object.entries(LAYOUT_CONFIG).filter(([type, layoutConfig]) => {
+					const itemsNeeded = Math.min(layoutConfig.itemsPerRow, remainingProjects.length);
+					
+					// Must have enough projects
+					if (layoutConfig.itemsPerRow > remainingProjects.length) return false;
+					
+					// Don't repeat same layout type
+					if (previousLayoutType === type) return false;
+					
+					// Don't repeat same number of items
+					if (previousItemCount !== null && previousItemCount === itemsNeeded) return false;
+					
+					return true;
+				});
 				
-				if (availableLayouts.length === 0) {
+				// Fallback: if no layouts fit our constraints, just avoid same layout type
+				const fallbackLayouts = availableLayouts.length > 0 ? availableLayouts :
+					Object.entries(LAYOUT_CONFIG).filter(([type, layoutConfig]) => 
+						layoutConfig.itemsPerRow <= remainingProjects.length && previousLayoutType !== type
+					);
+				
+				if (fallbackLayouts.length === 0) {
 					// If no layout fits, use the final layout planner
 					const finalRows = planFinalLayout(remainingProjects, previousLayoutType);
 					rows.push(...finalRows);
@@ -199,13 +347,13 @@
 				}
 				
 				// Select randomly from available layouts, but check for lonely items
-				const goodLayouts = availableLayouts.filter(([_, layoutConfig]) => {
+				const goodLayouts = fallbackLayouts.filter(([_, layoutConfig]) => {
 					const needed = layoutConfig.itemsPerRow;
 					const remaining = remainingProjects.length - needed;
 					return remaining !== 1;
 				});
 				
-				const layoutsToChooseFrom = goodLayouts.length > 0 ? goodLayouts : availableLayouts;
+				const layoutsToChooseFrom = goodLayouts.length > 0 ? goodLayouts : fallbackLayouts;
 				const [selectedType, selectedConfig] = layoutsToChooseFrom[Math.floor(Math.random() * layoutsToChooseFrom.length)];
 				const selectedProjects = remainingProjects.splice(0, selectedConfig.itemsPerRow);
 				
@@ -216,6 +364,7 @@
 					gridCols: getGridColsClass(selectedConfig.itemsPerRow)
 				});
 				previousLayoutType = selectedType as keyof typeof LAYOUT_CONFIG;
+				previousItemCount = selectedProjects.length;
 			} else {
 				// Add the row
 				rows.push({
@@ -225,6 +374,7 @@
 					gridCols: getGridColsClass(config.itemsPerRow)
 				});
 				previousLayoutType = layoutType;
+				previousItemCount = projectsForRow.length;
 			}
 		}
 
