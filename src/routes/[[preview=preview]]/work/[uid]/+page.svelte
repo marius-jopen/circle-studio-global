@@ -2,6 +2,7 @@
 	import { SliceZone, PrismicImage, PrismicRichText, PrismicLink } from '@prismicio/svelte';
 	import type { PageProps } from './$types';
 	import VideoPlayerCustom from '$lib/components/VideoPlayerCustom.svelte';
+	import Credits from '$lib/components/Credits.svelte';
 
 	import { components } from '$lib/slices';
 
@@ -85,7 +86,8 @@
 		{/if}
 	</div>
 
-	
+	<!-- Credits -->
+	<Credits credits={projectData.credits} />
 
 	<!-- Content Slices -->
 	{#if projectData.slices && projectData.slices.length > 0}
@@ -93,27 +95,5 @@
 	{/if}
 
 	<!-- Credits -->
-	{#if projectData.credits && projectData.credits.length > 0}
-		<section class="mb-12">
-			<h2 class="text-2xl font-bold mb-6">Credits</h2>
-			<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-				{#each projectData.credits as credit}
-					<div class="bg-gray-50 p-4 rounded-lg">
-						{#if credit.label}
-							<h3 class="font-semibold text-gray-800 mb-2">{credit.label}</h3>
-						{/if}
-						{#if credit.person && credit.person.length > 0}
-							<p class="text-gray-600">
-								{#each credit.person as person, index}
-									<PrismicLink field={person} class="text-blue-600 hover:underline">
-										{(person as any).data?.name || `Person ${index + 1}`}
-									</PrismicLink>{#if index < credit.person.length - 1},&nbsp;{/if}
-								{/each}
-							</p>
-						{/if}
-					</div>
-				{/each}
-			</div>
-		</section>
-	{/if}
+	<Credits credits={projectData.credits} />
 </div>
