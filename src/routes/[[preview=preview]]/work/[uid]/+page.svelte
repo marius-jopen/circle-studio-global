@@ -75,7 +75,7 @@
 
 <div class="mx-auto px-3">
 	<!-- Project Info -->
-	<div class="mb-12 grid grid-cols-2 gap-3 w-full">
+	<div class="mb-32 grid grid-cols-2 gap-3 w-full">
 		<div class="col-span-1">
 			{projectData.title}{projectData.client ? `, ${projectData.client}` : ''}
 		</div>
