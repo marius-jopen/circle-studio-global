@@ -10,6 +10,7 @@
 	export let project: ProjectsDocument | any;
 	export let dimension: 'landscape' | 'square' | 'portrait' = 'landscape';
 	export let clickable: boolean = true;
+	export let itemsPerRow: number = 1;
 	
 	// Get project data - handle both full documents and content relationships
 	$: projectData = project.data || project;
@@ -24,12 +25,60 @@
 		portrait: 'aspect-[3/4]'
 	}[dimension];
 
+	// Calculate container size based on dimension and items per row
+	function getContainerSizePercent(dimension: string, itemsPerRow: number): number {
+		switch (dimension) {
+			case 'landscape':
+				switch (itemsPerRow) {
+					case 1: return 80; // Single landscape - biggest
+					case 2: return 50; // Two landscapes side by side
+					default: return 50; // Fallback for more items
+				}
+			case 'square':
+				switch (itemsPerRow) {
+					case 1: return 70; // Single square
+					case 2: return 50; // Two squares side by side
+					case 3: return 55; // Three squares
+					default: return 35; // Fallback for more items
+				}
+			case 'portrait':
+				switch (itemsPerRow) {
+					case 1: return 65; // Single portrait
+					case 2: return 60; // Two portraits
+					case 3: return 55; // Three portraits
+					case 4: return 55; // Four portraits - increased from 45%
+					case 5: return 40; // Five portraits - increased from 25%
+					default: return 55; // Fallback for more items
+				}
+			default:
+				return 60; // Default fallback
+		}
+	}
+
+	$: containerSizePercent = getContainerSizePercent(dimension, itemsPerRow);
+	
+	// Debug logging to understand sizing issues
+	$: {
+		if (projectTitle && containerSizePercent) {
+			console.log(`🎛️ BIGWHEEL SIZE: "${projectTitle}" | ${dimension} | ${itemsPerRow} items | ${containerSizePercent}% container`);
+			
+			// Special debug for portrait 3 cases
+			if (dimension === 'portrait' && itemsPerRow === 3) {
+				if (containerSizePercent !== 55) {
+					console.error(`❌ PORTRAIT 3 SIZE ERROR: "${projectTitle}" should be 55% but got ${containerSizePercent}%`);
+				} else {
+					console.log(`✅ PORTRAIT 3 CORRECT: "${projectTitle}" correctly sized at 55%`);
+				}
+			}
+		}
+	}
+
 	// Make config reactive so it updates when projectTitle changes
 	// Make config reactive so it updates when projectTitle changes
 	$: config = {
 		uiVisible: false,
 		globalSettings: {
-			containerSizePercent: 60,
+			containerSizePercent: containerSizePercent,
 			fontSizePercent: 8,
 			distancePercent: 1,
 			paused: false,
@@ -41,7 +90,7 @@
 			stopRecording: false,
 			exportResolution: 400,
 			useHighResRecording: false,
-			fadeInTime: 0.5,
+			fadeInTime: 0.3,
 			fadeOutTime: 0.1, // Very fast fade out to hide immediately
 			pauseTime: 1.5,
 			visibleTime: 5,
@@ -259,6 +308,7 @@
 	</a>
 {:else}
 	<div class="block" bind:this={projectElement}>
+		
 		{#if selectedPreview}		
 			{@const preview = selectedPreview.item}
 			{@const imageField = dimension === 'portrait' ? preview?.preview_image_portrait : preview?.preview_image_landscape}

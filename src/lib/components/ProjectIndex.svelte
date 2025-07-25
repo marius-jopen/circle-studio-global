@@ -25,6 +25,17 @@
 
 	// Randomize layout only when we have stable data
 	$: randomizedLayout = isReady ? createRandomizedLayout(shuffleArray(remainingProjects)) : [];
+	
+	// Debug layout rows for portrait 3 cases
+	$: {
+		if (randomizedLayout.length > 0) {
+			randomizedLayout.forEach((row, index) => {
+				if (row.dimension === 'portrait' && row.projects.length === 3) {
+					console.log(`🏗️ LAYOUT ROW ${index}: 3 portrait projects | Layout: ${row.type} | Configured: ${row.configuredItemsPerRow} items | Grid: ${row.gridCols}`);
+				}
+			});
+		}
+	}
 
 	// Watch for when data is stable and ready to display
 	$: if (allProjects.length > 0 && !isReady) {
@@ -39,6 +50,7 @@
 		projects: ProjectsDocument[];
 		dimension: 'portrait' | 'square' | 'landscape';
 		gridCols: string;
+		configuredItemsPerRow: number;
 	}
 
 	function shuffleArray<T>(array: T[]): T[] {
@@ -160,7 +172,8 @@
 				type: bestLayout,
 				projects: projectsForRow,
 				dimension: config.dimension,
-				gridCols: getGridColsClass(projectsForRow.length)
+				gridCols: getGridColsClass(projectsForRow.length),
+				configuredItemsPerRow: config.itemsPerRow
 			});
 			
 			lastLayoutType = bestLayout;
@@ -235,8 +248,13 @@
 			
 			// Check if we should plan the final rows to avoid lonely items
 			if (remainingProjects.length <= 7) {
+				console.log(`🔥 SWITCHING TO FINAL LAYOUT PLANNING: ${remainingProjects.length} projects remaining`);
 				// Plan the final layout to avoid lonely items
 				const finalRows = planFinalLayout(remainingProjects, previousLayoutType);
+				console.log(`🔥 FINAL LAYOUT PLANNED: ${finalRows.length} rows created`);
+				finalRows.forEach((row, index) => {
+					console.log(`🔥 FINAL ROW ${index}: ${row.projects.length} ${row.dimension} projects | Layout: ${row.type} | Configured: ${row.configuredItemsPerRow} items`);
+				});
 				rows.push(...finalRows);
 				break;
 			}
@@ -262,7 +280,8 @@
 						type: layoutType,
 						projects: adjustedProjectsForRow,
 						dimension: config.dimension,
-						gridCols: adjustedGridCols
+						gridCols: adjustedGridCols,
+						configuredItemsPerRow: config.itemsPerRow
 					});
 					previousLayoutType = layoutType;
 					previousItemCount = adjustedProjectsForRow.length;
@@ -300,7 +319,8 @@
 							type: betterChoice.type,
 							projects: betterProjectsForRow,
 							dimension: betterConfig.dimension,
-							gridCols: getGridColsClass(betterConfig.itemsPerRow)
+							gridCols: getGridColsClass(betterConfig.itemsPerRow),
+							configuredItemsPerRow: betterConfig.itemsPerRow
 						});
 						previousLayoutType = betterChoice.type;
 						previousItemCount = betterProjectsForRow.length;
@@ -361,7 +381,8 @@
 					type: selectedType as keyof typeof LAYOUT_CONFIG,
 					projects: selectedProjects,
 					dimension: selectedConfig.dimension,
-					gridCols: getGridColsClass(selectedConfig.itemsPerRow)
+					gridCols: getGridColsClass(selectedConfig.itemsPerRow),
+					configuredItemsPerRow: selectedConfig.itemsPerRow
 				});
 				previousLayoutType = selectedType as keyof typeof LAYOUT_CONFIG;
 				previousItemCount = selectedProjects.length;
@@ -371,7 +392,8 @@
 					type: layoutType,
 					projects: projectsForRow,
 					dimension: config.dimension,
-					gridCols: getGridColsClass(config.itemsPerRow)
+					gridCols: getGridColsClass(config.itemsPerRow),
+					configuredItemsPerRow: config.itemsPerRow
 				});
 				previousLayoutType = layoutType;
 				previousItemCount = projectsForRow.length;
@@ -398,7 +420,7 @@
 			{#each randomizedLayout as row}
 				<div class="grid dimension-{row.dimension} {row.gridCols} gap-2">
 					{#each row.projects as project}
-						<ProjectItem dimension={row.dimension} {project} />
+						<ProjectItem dimension={row.dimension} itemsPerRow={row.configuredItemsPerRow} {project} />
 					{/each}
 				</div>
 			{/each}
