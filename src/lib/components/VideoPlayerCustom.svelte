@@ -533,7 +533,7 @@
 
 		<!-- Bottom Controls Bar (visible only when showFullControls is true) -->
 		<div 
-			class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/50 to-transparent p-4 transition-opacity duration-300"
+			class="absolute bottom-0 left-0 right-0 t p-4 transition-opacity duration-300"
 			class:opacity-100={showFullControls}
 			class:opacity-0={!showFullControls}
 		>

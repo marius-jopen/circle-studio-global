@@ -25,7 +25,6 @@
 	{/if}
 </svelte:head>
 
-<div class="mx-auto px-3">
 	<!-- Main Media -->
 	{#if projectData.main && projectData.main.length > 0}
 		<div class="mb-3">
@@ -36,7 +35,7 @@
 					<VideoPlayerCustom 
 						hlsUrl={item.main_video_url}
 						posterImage={item.main_image} 
-						classes="w-full h-auto rounded-lg"
+						classes="w-full h-auto rounded-none"
 						autoplayWithSound={item.playmode === 'autoplay-sound'}
 						shouldAutoplay={item.playmode === 'autoplay-muted'}
 						hideControls={item.playmode === 'autoplay-muted'}
@@ -45,7 +44,7 @@
 				{:else if item.main_image?.url}
 					<PrismicImage 
 						field={item.main_image} 
-						class="w-full h-auto rounded-lg"
+						class="w-full h-auto rounded-none"
 					/>
 				{/if}
 			<!-- Multiple items: side by side -->
@@ -56,7 +55,7 @@
 							<VideoPlayerCustom 
 								hlsUrl={item.main_video_url}
 								posterImage={item.main_image} 
-								classes="w-full h-auto rounded-lg"
+								classes="w-full h-auto rounded-none"
 								autoplayWithSound={item.playmode === 'autoplay-sound'}
 								shouldAutoplay={item.playmode === 'autoplay-muted'}
 								hideControls={item.playmode === 'autoplay-muted'}
@@ -65,7 +64,7 @@
 						{:else if item.main_image?.url}
 							<PrismicImage 
 								field={item.main_image} 
-								class="w-full h-auto rounded-lg"
+								class="w-full h-auto rounded-none"
 							/>
 						{/if}
 					{/each}
@@ -74,6 +73,7 @@
 		</div>
 	{/if}
 
+<div class="mx-auto px-3">
 	<!-- Project Info -->
 	<div class="mb-12 grid grid-cols-2 gap-3 w-full">
 		<div class="col-span-1">
