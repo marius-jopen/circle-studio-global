@@ -3,6 +3,7 @@
 	import BigWheel from './BigWheel.svelte';
 
 	let { settings } = $props();
+	let isHovering = $state(false);
 </script>
 
 <!-- Navigation Header -->
@@ -11,13 +12,18 @@
 		<nav class=" px-3 py-4">
 			<div class="flex justify-between w-full">
 				<!-- Logo/Home Link -->
-				<a href="/" class="block -mt-6">
+				<a 
+					href="/" 
+					class="block -mt-6"
+					on:mouseenter={() => isHovering = true}
+					on:mouseleave={() => isHovering = false}
+				>
 					<BigWheel 
 						config={{
 							uiVisible: false,
 							items: [{
 								text: 'CIRCLE STUDIO GLOBAL',
-								rotationSpeed: 0.15,
+								rotationSpeed: isHovering ? 2 : 0.15,
 								spacingAmplitudePercent: 0,
 								spacingSpeed: 0,
 								rotationStart: 0,
