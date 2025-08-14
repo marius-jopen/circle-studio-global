@@ -5,6 +5,7 @@
 	import ProjectIndex from '$lib/components/ProjectIndex.svelte';
 	import ProjectItem from '$lib/components/projectItem.svelte';
     import ProjectIndexList from '$lib/components/ProjectIndexList.svelte';
+    import GlobalPreviewPlayer from '$lib/components/GlobalPreviewPlayer.svelte';
 
 	export let data;
 
@@ -80,6 +81,8 @@
 		<ProjectIndex allProjects={data.allProjects} {featuredProjectIds} />
 	{:else}
 		<ProjectIndexList allProjects={data.allProjects} {featuredProjectIds} />
+		<!-- Fixed bottom-right hover preview video - only for list view -->
+		<GlobalPreviewPlayer />
 	{/if}
 
 	{#if data.page.data.slices && data.page.data.slices.length > 0}

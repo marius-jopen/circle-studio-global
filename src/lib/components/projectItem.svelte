@@ -5,6 +5,7 @@
 	import { browser } from '$app/environment';
 	import VideoPlayerCustom from './VideoPlayerCustom.svelte';
 	import BigWheel from '$lib/components/BigWheel.svelte';
+    import { hoverPreview } from '$lib/stores/preview';
 
 	// Accept either a full ProjectsDocument or a content relationship field
 	export let project: ProjectsDocument | any;
@@ -261,7 +262,20 @@
 </script>
 
 {#if clickable}
-	<a href="/work/{projectUid}" class="block brightness-[95%]" bind:this={projectElement}>
+	<a href="/work/{projectUid}" class="block brightness-[95%]" bind:this={projectElement}
+	   on:mouseenter={() => {
+		   if (selectedPreview?.item?.preview_video_url_landscape) {
+			   hoverPreview.set({
+				   url: selectedPreview.item.preview_video_url_landscape,
+				   poster: selectedPreview.item.preview_image_landscape,
+				   uid: projectUid
+			   });
+		   }
+	   }}
+	   on:mouseleave={() => {
+		   hoverPreview.update(s => (s?.uid === projectUid ? { url: null } : s));
+	   }}
+	>
 		<!-- {projectUid} -->
 		{#if selectedPreview}		
 			{@const preview = selectedPreview.item}
@@ -269,7 +283,7 @@
 			{@const videoUrl = dimension === 'portrait' ? preview?.preview_video_url_portrait : preview?.preview_video_url_landscape}
 			
 			{#if videoUrl}
-				<div class="relative" 
+				<div class="relative" role="group"
 					 on:mouseenter={() => isHovering = true}
 					 on:mouseleave={() => isHovering = false}>
 					<VideoPlayerCustom 
@@ -288,7 +302,7 @@
 					</div>
 				</div>
 			{:else if imageField?.url}
-				<div class="relative"
+				<div class="relative" role="group"
 					 on:mouseenter={() => isHovering = true}
 					 on:mouseleave={() => isHovering = false}>
 					<PrismicImage 
@@ -307,7 +321,20 @@
 		{/if}
 	</a>
 {:else}
-	<div class="block" bind:this={projectElement}>
+    <div class="block" bind:this={projectElement} role="group"
+	     on:mouseenter={() => {
+		     if (selectedPreview?.item?.preview_video_url_landscape) {
+			     hoverPreview.set({
+				     url: selectedPreview.item.preview_video_url_landscape,
+				     poster: selectedPreview.item.preview_image_landscape,
+				     uid: projectUid
+			     });
+		     }
+	     }}
+	     on:mouseleave={() => {
+		     hoverPreview.update(s => (s?.uid === projectUid ? { url: null } : s));
+	     }}
+	>
 		
 		{#if selectedPreview}		
 			{@const preview = selectedPreview.item}
@@ -315,7 +342,7 @@
 			{@const videoUrl = dimension === 'portrait' ? preview?.preview_video_url_portrait : preview?.preview_video_url_landscape}
 			
 			{#if videoUrl}
-				<div class="relative" 
+				<div class="relative" role="group"
 					 on:mouseenter={() => isHovering = true}
 					 on:mouseleave={() => isHovering = false}>
 					<VideoPlayerCustom 
@@ -334,7 +361,7 @@
 					</div>
 				</div>
 			{:else if imageField?.url}
-				<div class="relative"
+				<div class="relative" role="group"
 					 on:mouseenter={() => isHovering = true}
 					 on:mouseleave={() => isHovering = false}>
 					<PrismicImage 
