@@ -34,28 +34,27 @@
 	let viewMode: 'grid' | 'list' = 'grid';
 </script>
 
-<!-- View switch fixed at the top center, high z-index to ensure clickability -->
-<div class="fixed left-1/2 -translate-x-1/2 top-6 z-[100] pointer-events-auto">
-	<div class="flex items-center gap-2 bg-white/90 border border-black/10 rounded-full shadow px-2 py-1">
+<!-- Minimal view switch at top-center, styled like navigation -->
+<div class="fixed left-1/2 -translate-x-1/2 top-4 z-[60] pointer-events-auto select-none">
+    <div class="flex items-center gap-3 font-medium">
+        <button
+            class="transition-colors hover:text-gray-900 focus:outline-none"
+            class:opacity-40={viewMode !== 'grid'}
+            aria-pressed={viewMode === 'grid'}
+            onclick={() => (viewMode = 'grid')}
+        >
+            Grid
+        </button>
+
 		<button
-			class="px-3 py-1 rounded-full border text-sm pointer-events-auto"
-			class:bg-black={viewMode === 'grid'}
-			class:text-white={viewMode === 'grid'}
-			aria-pressed={viewMode === 'grid'}
-			on:click={() => (viewMode = 'grid')}
-		>
-			Grid
-		</button>
-		<button
-			class="px-3 py-1 rounded-full border text-sm pointer-events-auto"
-			class:bg-black={viewMode === 'list'}
-			class:text-white={viewMode === 'list'}
-			aria-pressed={viewMode === 'list'}
-			on:click={() => (viewMode = 'list')}
-		>
-			List
-		</button>
-	</div>
+            class="transition-colors hover:text-gray-900 focus:outline-none"
+            class:opacity-40={viewMode !== 'list'}
+            aria-pressed={viewMode === 'list'}
+            onclick={() => (viewMode = 'list')}
+        >
+            List
+        </button>
+    </div>
 </div>
 
 <div class="px-3 mt-20">
