@@ -182,8 +182,8 @@
 		}, 100);
 	}
 	
-	// Only show text after component is mounted, user hovers, welcome dismissed, render complete, AND not navigating
-	$: showText = isMounted && isHovering && welcomeDismissed && initialRenderComplete && !isNavigating;
+	// Only show text after component is mounted, user hovers, render complete, AND not navigating
+	$: showText = isMounted && isHovering && initialRenderComplete && !isNavigating;
 	
 	// Debug logging for showText state
 	$: if (projectTitle) {
