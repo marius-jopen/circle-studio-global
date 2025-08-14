@@ -6,6 +6,7 @@
 	import ProjectItem from '$lib/components/projectItem.svelte';
     import ProjectIndexList from '$lib/components/ProjectIndexList.svelte';
     import GlobalPreviewPlayer from '$lib/components/GlobalPreviewPlayer.svelte';
+    import { onMount } from 'svelte';
 
 	export let data;
 
@@ -32,6 +33,27 @@
 
 	// UI state: switch between grid (ProjectIndex) and list (ProjectIndexList)
 	let viewMode: 'grid' | 'list' = 'grid';
+
+	function setView(mode: 'grid' | 'list') {
+		viewMode = mode;
+		try {
+			localStorage.setItem('indexViewMode', mode);
+		} catch {}
+	}
+
+	onMount(() => {
+		try {
+			const url = new URL(window.location.href);
+			const fromQuery = url.searchParams.get('view');
+			const stored = localStorage.getItem('indexViewMode');
+			const initial = (fromQuery === 'grid' || fromQuery === 'list')
+				? (fromQuery as 'grid' | 'list')
+				: (stored === 'grid' || stored === 'list' ? (stored as 'grid' | 'list') : null);
+			if (initial && initial !== viewMode) {
+				viewMode = initial;
+			}
+		} catch {}
+	});
 </script>
 
 <!-- Minimal view switch at top-center, styled like navigation -->
@@ -41,16 +63,16 @@
             class="transition-colors hover:text-gray-900 focus:outline-none"
             class:opacity-40={viewMode !== 'grid'}
             aria-pressed={viewMode === 'grid'}
-            onclick={() => (viewMode = 'grid')}
+            onclick={() => setView('grid')}
         >
             Grid
         </button>
 
-		<button
+        <button
             class="transition-colors hover:text-gray-900 focus:outline-none"
             class:opacity-40={viewMode !== 'list'}
             aria-pressed={viewMode === 'list'}
-            onclick={() => (viewMode = 'list')}
+            onclick={() => setView('list')}
         >
             List
         </button>

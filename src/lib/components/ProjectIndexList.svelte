@@ -36,23 +36,28 @@
 	}
 </script>
 
-<div class="divide-y divide-black/20">
+<div class="divide-y divide-black/20 text-black hover:text-black/50">
 	{#each sortedProjects as project}
 		<a href="/work/{project.uid}"
-		   class="block py-2"
-		   on:mouseenter={() => {
+		   class="block py-2 hover:text-black transition-colors duration-200"
+		   onmouseenter={() => {
 			   const p = pickRandomLandscape(project);
 			   if (p) hoverPreview.set({ url: p.videoUrl, poster: p.poster, uid: project.uid });
 		   }}
-		   on:mouseleave={() => {
+		   onmouseleave={() => {
 			   const current = get(hoverPreview);
 			   if (current?.uid === project.uid) hoverPreview.set({ url: null });
 		   }}
 		>
-			<div class="grid grid-cols-12 items-center">
-				<div class="col-span-5 text-left uppercase tracking-wide">{project.data.client}</div>
-				<div class="col-span-5 text-center">{project.data.title}</div>
-				<div class="col-span-2 text-right">{getYear(project.data.date)}</div>
+			<div class="grid grid-cols-12 items-center gap-2">
+				<div class="col-span-4 text-left tracking-wide">{project.data.client}</div>
+				<div class="col-span-4 text-left">{project.data.title}</div>
+				<div class="col-span-3 text-left whitespace-nowrap overflow-hidden text-ellipsis">
+					{#if project.tags && project.tags.length > 0}
+						{project.tags.join(', ')}
+					{/if}
+				</div>
+				<div class="col-span-1 text-right">{getYear(project.data.date)}</div>
 			</div>
 		</a>
 	{/each}
