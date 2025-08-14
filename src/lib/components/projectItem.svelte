@@ -233,31 +233,28 @@
 	// Get project UID for linking
 	$: projectUid = project.uid || project.id;
 	
-	// Random preview selection logic
+	// Random preview selection logic with dimension support
+	function filterItemsForDimension(items: any[], dim: 'landscape' | 'square' | 'portrait') {
+		if (dim === 'portrait') {
+			return items.filter((i) => i?.preview_video_url_portrait || i?.preview_image_portrait?.url);
+		}
+		// Treat square the same as landscape asset availability
+		return items.filter((i) => i?.preview_video_url_landscape || i?.preview_image_landscape?.url);
+	}
+
 	$: selectedPreview = (() => {
-		if (!projectData?.preview || !Array.isArray(projectData.preview) || projectData.preview.length === 0) {
-			return null;
-		}
-		
-		let selectedIndex;
-		let selectedItem;
-		
-		if (projectData.preview.length === 1) {
-			// Only one preview item
-			selectedIndex = 0;
-			selectedItem = projectData.preview[0];
-			console.log(`📸 Project "${projectTitle}": Using single preview item (index ${selectedIndex})`);
-		} else {
-			// Multiple preview items - select randomly
-			selectedIndex = Math.floor(Math.random() * projectData.preview.length);
-			selectedItem = projectData.preview[selectedIndex];
-			console.log(`🎲 Project "${projectTitle}": Randomly selected preview item ${selectedIndex + 1} of ${projectData.preview.length} (index ${selectedIndex})`);
-		}
-		
-		return {
-			item: selectedItem,
-			index: selectedIndex
-		};
+		const allItems = Array.isArray(projectData?.preview) ? projectData.preview : [];
+		if (allItems.length === 0) return null;
+
+		const preferred = filterItemsForDimension(allItems, dimension);
+		const candidates = preferred.length > 0 ? preferred : allItems;
+		const selectedIndex = Math.floor(Math.random() * candidates.length);
+		const selectedItem = candidates[selectedIndex];
+
+		console.log(`🎲 Project "${projectTitle}": Selected preview with dimension ${dimension}. ` +
+			(preferred.length > 0 ? `From ${preferred.length} supported items.` : `No direct match; fell back to any of ${allItems.length}.`));
+
+		return { item: selectedItem, index: selectedIndex };
 	})();
 </script>
 

@@ -25,6 +25,34 @@
 
 	// Randomize layout only when we have stable data
 	$: randomizedLayout = isReady ? createRandomizedLayout(shuffleArray(remainingProjects)) : [];
+
+	function projectSupportsDimension(project: ProjectsDocument, dimension: 'portrait' | 'square' | 'landscape'): boolean {
+		const items = Array.isArray(project.data?.preview) ? (project.data.preview as any[]) : [];
+		if (dimension === 'portrait') {
+			return items.some((i) => i?.preview_video_url_portrait || i?.preview_image_portrait?.url);
+		}
+		// Treat non-portrait (square/landscape) the same as landscape assets
+		return items.some((i) => i?.preview_video_url_landscape || i?.preview_image_landscape?.url);
+	}
+
+	// Normalize layout to ensure we never have a 3-column portrait row with only 2 valid items
+	// Filter out projects that cannot render for the row's dimension, then convert 3-portrait/2-items → 2-square
+	$: normalizedLayout = randomizedLayout.map((row): LayoutRow => {
+		const supportedProjects = row.projects.filter((p) => projectSupportsDimension(p, row.dimension));
+		if (row.dimension === 'portrait' && supportedProjects.length === 2) {
+			return {
+				...row,
+				projects: supportedProjects,
+				dimension: 'square',
+				gridCols: getGridColsClass(2),
+				configuredItemsPerRow: 2
+			};
+		}
+		return {
+			...row,
+			projects: supportedProjects
+		};
+	});
 	
 	// Debug layout rows for portrait 3 cases
 	$: {
@@ -409,15 +437,16 @@
 			case 2: return 'grid-cols-2';
 			case 3: return 'grid-cols-3';
 			case 4: return 'grid-cols-4';
+			case 5: return 'grid-cols-5';
 			default: return 'grid-cols-3';
 		}
 	}
 </script>
 
 <div>
-	{#if isReady && randomizedLayout.length > 0}
+	{#if isReady && normalizedLayout.length > 0}
 		<div class="space-y-2">
-			{#each randomizedLayout as row}
+			{#each normalizedLayout as row}
 				<div class="grid dimension-{row.dimension} {row.gridCols} gap-2">
 					{#each row.projects as project}
 						<ProjectItem dimension={row.dimension} itemsPerRow={row.configuredItemsPerRow} {project} />
