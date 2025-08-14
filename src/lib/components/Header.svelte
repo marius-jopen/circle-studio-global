@@ -8,16 +8,16 @@
 
 <!-- Navigation Header -->
 {#if settings?.data?.navigation_header}
-	<header class="fixed top-0 z-50 w-full">
+    <header class="fixed top-0 z-50 w-full pointer-events-none">
 		<nav class=" px-3 py-4">
 			<div class="flex justify-between w-full">
 				<!-- Logo/Home Link -->
-				<a 
-					href="/" 
-					class="block -mt-6"
-					on:mouseenter={() => isHovering = true}
-					on:mouseleave={() => isHovering = false}
-				>
+                <a 
+                    href="/" 
+                    class="block -mt-6 pointer-events-auto"
+                    onmouseenter={() => isHovering = true}
+                    onmouseleave={() => isHovering = false}
+                >
 					<BigWheel 
 						config={{
 							uiVisible: false,
@@ -45,7 +45,7 @@
 				</a>
 				
 				<!-- Navigation Links -->
-				<ul class="flex items-right space-x-6">
+                <ul class="flex items-right space-x-6 pointer-events-auto">
 					{#each settings.data.navigation_header as navItem}
 						<li>
 							<PrismicLink 
