@@ -36,7 +36,7 @@
         hideUiTimeout = setTimeout(() => {
             showControls = false;
             showSoundIcon = false;
-        }, 2000);
+        }, 1500);
     }
 
     function clearAutoHide() {
@@ -148,14 +148,14 @@
 	{#if controls && hasSoundMode}
 	<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
 		<div 
-			class="flex flex-col items-center gap-0 pointer-events-auto text-white transition-opacity duration-400"
+			class="group flex flex-col items-center gap-0 pointer-events-auto text-white transition-opacity duration-400"
 			class:opacity-100={isHovering && showControls}
 			class:opacity-0={!isHovering || !showControls}
 			style="width:25%;"
 		>
 			{#if hasSoundMode && !isFullscreen}
 			<button
-				class="text-base cursor-pointer opacity-60 hover:opacity-100"
+				class="text-base cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
 				aria-label={isMuted ? 'Unmute video' : 'Mute video'}
 				onclick={(e) => {
 					e.stopPropagation();
@@ -171,7 +171,7 @@
 			{/if}
 
 			<button
-				class="text-base cursor-pointer opacity-60 hover:opacity-100"
+				class="text-base cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
 				aria-label={isPlaying ? 'Pause video' : 'Play video'}
 				onclick={() => {
 					if (!videoElement) return;
@@ -183,7 +183,7 @@
 			</button>
 
 			<button
-				class="text-base cursor-pointer opacity-60 hover:opacity-100"
+				class="text-base cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
 				aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
 				onclick={async () => {
 					if (!containerElement) return;
@@ -202,7 +202,7 @@
 				{isFullscreen ? 'Return' : 'Fullscreen'}
 			</button>
 
-			<div class="text-base tabular-nums opacity-60 hover:opacity-100">
+			<div class="text-base tabular-nums opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200 cursor-default">
 				{(() => {
 					const s = (n: number) => Math.floor(n).toString().padStart(2, '0');
 					const mins = Math.floor(currentTime / 60);
