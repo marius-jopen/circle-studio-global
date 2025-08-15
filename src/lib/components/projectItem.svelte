@@ -287,8 +287,6 @@
 						hlsUrl={videoUrl}
 						posterImage={imageField} 
 						classes="w-full h-auto rounded object-cover {aspectClass}"
-						shouldAutoplay={true}
-						hideControls={true}
 					/>
 					<!-- BigWheel positioned directly over the video -->
 					<div 
@@ -346,8 +344,6 @@
 						hlsUrl={videoUrl}
 						posterImage={imageField} 
 						classes="w-full h-auto rounded object-cover {aspectClass}"
-						shouldAutoplay={true}
-						hideControls={true}
 					/>
 					<!-- BigWheel positioned directly over the video -->
 					<div 

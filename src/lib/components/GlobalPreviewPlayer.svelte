@@ -9,8 +9,6 @@
       hlsUrl={$hoverPreview.url}
       posterImage={$hoverPreview.poster}
       classes="w-[360px] h-auto rounded-md shadow-lg"
-      shouldAutoplay={true}
-      hideControls={true}
     />
   </div>
 {/if}
