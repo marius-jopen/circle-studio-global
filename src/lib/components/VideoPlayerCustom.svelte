@@ -7,6 +7,7 @@
 		classes?: string;
 		playMode?: string | 'no-sound' | 'has-sound';
 		controls?: boolean;
+		context?: string;
 	}
 
 	const {
@@ -14,7 +15,8 @@
 		posterImage = null,
 		classes = 'w-full h-auto rounded object-cover mb-3',
 		playMode = 'no-sound',
-		controls = false
+		controls = false,
+		context = undefined
 	}: Props = $props();
 
 	let videoElement: HTMLVideoElement;
@@ -33,13 +35,23 @@
     let isScrubbing = $state(false);
     let scrubLeft = 0;
     let scrubWidth = 1;
+    let lastShowControls = showControls;
+
+    function notifyControlsShown() {
+        window.dispatchEvent(new CustomEvent('video-controls-shown', { detail: { videoId, context } }));
+    }
+
+    function notifyControlsHidden() {
+        window.dispatchEvent(new CustomEvent('video-controls-hidden', { detail: { videoId, context } }));
+    }
 
     function scheduleAutoHide() {
         if (hideUiTimeout) clearTimeout(hideUiTimeout);
         hideUiTimeout = setTimeout(() => {
             showControls = false;
             showSoundIcon = false;
-        }, 750);
+            notifyControlsHidden();
+        }, 1500);
     }
 
     function clearAutoHide() {
@@ -88,6 +100,7 @@
         if (!duration) return;
         isScrubbing = true;
         showControls = true;
+        notifyControlsShown();
         const rect = (e.currentTarget as HTMLButtonElement).getBoundingClientRect();
         scrubLeft = rect.left;
         scrubWidth = rect.width;
@@ -100,6 +113,7 @@
         if (!duration) return;
         isScrubbing = true;
         showControls = true;
+        notifyControlsShown();
         const target = e.currentTarget as HTMLButtonElement;
         if (target) {
             const rect = target.getBoundingClientRect();
@@ -113,8 +127,21 @@
         window.addEventListener('touchend', onTouchEnd);
     }
 
+    $effect(() => {
+        if (showControls && !lastShowControls) {
+            notifyControlsShown();
+        } else if (!showControls && lastShowControls) {
+            notifyControlsHidden();
+        }
+        lastShowControls = showControls;
+    });
+
 	function notifyVideoPlayingWithSound() {
-		window.dispatchEvent(new CustomEvent('video-playing-with-sound', { detail: { videoId } }));
+		window.dispatchEvent(new CustomEvent('video-playing-with-sound', { detail: { videoId, context } }));
+	}
+
+	function notifyVideoSoundOff() {
+		window.dispatchEvent(new CustomEvent('video-sound-off', { detail: { videoId, context } }));
 	}
 
 	function handleOtherVideoPlaying(event: Event) {
@@ -122,6 +149,7 @@
 		if (otherId && otherId !== videoId && videoElement && !videoElement.muted) {
 			videoElement.muted = true;
 			isMuted = true;
+			notifyVideoSoundOff();
 		}
 	}
 
@@ -185,9 +213,9 @@
 	class="relative {classes} overflow-hidden bg-black rounded-lg"
 	role="group"
 	bind:this={containerElement}
-	onmouseenter={() => { if (suppressUI) return; isHovering = true; showSoundIcon = true; if (controls) showControls = true; scheduleAutoHide(); }}
-	onmouseleave={() => { isHovering = false; clearAutoHide(); }}
-	onmousemove={() => { if (suppressUI) return; showSoundIcon = true; if (controls) showControls = true; scheduleAutoHide(); }}
+	onmouseenter={() => { if (suppressUI) return; isHovering = true; showSoundIcon = true; if (controls) { showControls = true; notifyControlsShown(); } scheduleAutoHide(); }}
+	onmouseleave={() => { isHovering = false; clearAutoHide(); showControls = false; notifyControlsHidden(); }}
+	onmousemove={() => { if (suppressUI) return; showSoundIcon = true; if (controls) { showControls = true; notifyControlsShown(); } scheduleAutoHide(); }}
 >
 	<video
 		bind:this={videoElement}
@@ -230,6 +258,7 @@
 					videoElement.muted = !videoElement.muted;
 					isMuted = videoElement.muted;
 					if (!isMuted) notifyVideoPlayingWithSound();
+					else notifyVideoSoundOff();
 					scheduleAutoHide();
 				}}
 			>

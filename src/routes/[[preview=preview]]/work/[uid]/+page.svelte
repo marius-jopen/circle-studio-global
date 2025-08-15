@@ -27,7 +27,7 @@
 
 	<!-- Main Media -->
 	{#if projectData.main && projectData.main.length > 0}
-		<div class="mb-3">
+		<div class="mb-3" id="main-media">
 			<!-- Single item: full width -->
 			{#if projectData.main.length === 1}
 				{@const item = projectData.main[0]}
@@ -39,6 +39,7 @@
 						classes="w-full h-auto rounded-none"
 						playMode="has-sound"
 						controls={true}
+						context="main"
 					/>
 				{:else if item.main_image?.url}
 					<PrismicImage 
@@ -58,6 +59,7 @@
 								classes="w-full h-auto rounded-none"
 								playMode="has-sound"
 								controls={true}
+								context="main"
 							/>
 						{:else if item.main_image?.url}
 							<PrismicImage 
