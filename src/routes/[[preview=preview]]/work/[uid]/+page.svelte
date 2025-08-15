@@ -38,6 +38,7 @@
 						posterImage={item.main_image} 
 						classes="w-full h-auto rounded-none"
 						playMode="has-sound"
+						controls={true}
 					/>
 				{:else if item.main_image?.url}
 					<PrismicImage 
@@ -56,6 +57,7 @@
 								posterImage={item.main_image} 
 								classes="w-full h-auto rounded-none"
 								playMode="has-sound"
+								controls={true}
 							/>
 						{:else if item.main_image?.url}
 							<PrismicImage 
@@ -71,7 +73,7 @@
 
 <div class="mx-auto px-3">
 	<!-- Project Info -->
-	<div class="mb-32 grid grid-cols-2 gap-3 w-full">
+	<div class="mb-32 grid grid-cols-2 gap-2 w-full">
 		<div class="col-span-1">
 			{projectData.title}{projectData.client ? `, ${projectData.client}` : ''}
 		</div>

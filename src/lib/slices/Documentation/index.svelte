@@ -24,10 +24,10 @@
 <section 
 	data-slice-type={slice.slice_type} 
 	data-slice-variation={slice.variation}
-	class="mx-auto pb-3"
+	class="mx-auto pb-2"
 >
 	{#if slice.primary.items && slice.primary.items.length > 0}
-		<div class="grid gap-3 {gridClass}">
+		<div class="grid gap-2 {gridClass}">
 			{#each slice.primary.items as item}
 				<DocumentationItem {item} />
 			{/each}
