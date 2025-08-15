@@ -4,7 +4,7 @@
 </script>
 
 {#if $hoverPreview?.url}
-  <div class="fixed bottom-4 right-4 z-[120] pointer-events-none">
+  <div class="fixed bottom-3 right-3 z-[120] pointer-events-none">
     <VideoPlayerSimple
       hlsUrl={$hoverPreview.url}
       posterImage={$hoverPreview.poster}
