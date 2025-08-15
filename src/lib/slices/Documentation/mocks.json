@@ -52,7 +52,7 @@
 								"play",
 								{
 									"__TYPE__": "FieldContent",
-									"value": "autoplay-muted",
+									"value": "has-sound",
 									"type": "Select"
 								}
 							]

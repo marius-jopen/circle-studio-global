@@ -107,8 +107,8 @@
 							"config": {
 								"label": "Playmode",
 								"placeholder": "",
-								"options": ["autoplay-sound", "autoplay-muted", "no-autoplay"],
-								"default_value": "autoplay-sound"
+								"options": ["test-1", "test-2"],
+								"default_value": "test-1"
 							}
 						}
 					}

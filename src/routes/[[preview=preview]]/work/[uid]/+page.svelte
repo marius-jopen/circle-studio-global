@@ -32,14 +32,11 @@
 			{#if projectData.main.length === 1}
 				{@const item = projectData.main[0]}
 				{#if item.main_video_url}
+					<!-- {item.playmode} -->
 					<VideoPlayerCustom 
 						hlsUrl={item.main_video_url}
 						posterImage={item.main_image} 
 						classes="w-full h-auto rounded-none"
-						autoplayWithSound={item.playmode === 'autoplay-sound'}
-						shouldAutoplay={item.playmode === 'autoplay-muted'}
-						hideControls={item.playmode === 'autoplay-muted'}
-						startMuted={item.playmode === 'autoplay-muted'}
 					/>
 				{:else if item.main_image?.url}
 					<PrismicImage 
@@ -52,14 +49,11 @@
 				<div class="flex flex-row gap-3">
 					{#each projectData.main as item}
 						{#if item.main_video_url}
+							<!-- {item.playmode} -->
 							<VideoPlayerCustom 
 								hlsUrl={item.main_video_url}
 								posterImage={item.main_image} 
 								classes="w-full h-auto rounded-none"
-								autoplayWithSound={item.playmode === 'autoplay-sound'}
-								shouldAutoplay={item.playmode === 'autoplay-muted'}
-								hideControls={item.playmode === 'autoplay-muted'}
-								startMuted={item.playmode === 'autoplay-muted'}
 							/>
 						{:else if item.main_image?.url}
 							<PrismicImage 

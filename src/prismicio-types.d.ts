@@ -433,11 +433,11 @@ export interface ProjectsDocumentDataMainItem {
 	 *
 	 * - **Field Type**: Select
 	 * - **Placeholder**: *None*
-	 * - **Default Value**: autoplay-sound
+	 * - **Default Value**: test-1
 	 * - **API ID Path**: projects.main[].playmode
 	 * - **Documentation**: https://prismic.io/docs/fields/select
 	 */
-	playmode: prismic.SelectField<'autoplay-sound' | 'autoplay-muted' | 'no-autoplay', 'filled'>;
+	playmode: prismic.SelectField<'test-1' | 'test-2', 'filled'>;
 }
 
 /**
@@ -715,11 +715,11 @@ export interface DocumentationSliceDefaultPrimaryItemsItem {
 	 *
 	 * - **Field Type**: Select
 	 * - **Placeholder**: *None*
-	 * - **Default Value**: autoplay-muted
+	 * - **Default Value**: no-sound
 	 * - **API ID Path**: documentation.default.primary.items[].play
 	 * - **Documentation**: https://prismic.io/docs/fields/select
 	 */
-	play: prismic.SelectField<'autoplay-muted' | 'no-autoplay', 'filled'>;
+	play: prismic.SelectField<'no-sound' | 'has-sound', 'filled'>;
 }
 
 /**

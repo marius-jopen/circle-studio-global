@@ -9,20 +9,22 @@
 	{#if item}
 		{@const imageField = item.image}
 		{@const videoUrl = item.video_url}
-		{@const playMode = item.play || 'autoplay-muted'} <!-- Default to autoplay-muted if not set -->
+		{@const playMode = item.play}
+		{@const displayPlayMode = (playMode === 'autoplay-muted' || playMode === 'auto-muted') ? 'no-sound' : playMode}
+		<!-- {playMode} -->
+		<!-- {displayPlayMode} -->
 		{#if videoUrl}
 			<div class="relative">
+				Video: {displayPlayMode}
 				<VideoPlayerCustom 
 					hlsUrl={videoUrl}
 					posterImage={imageField} 
 					classes="w-full h-auto rounded object-cover"
-					shouldAutoplay={playMode === 'autoplay-muted'}
-					hideControls={playMode === 'autoplay-muted'}
-					startMuted={playMode === 'autoplay-muted'}
 				/>
 			</div>
 		{:else if imageField?.url}
 			<div class="relative">
+				Image
 				<PrismicImage 
 					field={imageField} 
 					class="w-full h-auto rounded object-cover"

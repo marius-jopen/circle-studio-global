@@ -52,10 +52,10 @@
                   "label": "Play",
                   "placeholder": "",
                   "options": [
-                    "autoplay-muted",
-                    "no-autoplay"
+                    "no-sound",
+                    "has-sound"
                   ],
-                  "default_value": "autoplay-muted"
+                  "default_value": "no-sound"
                 }
               }
             }
