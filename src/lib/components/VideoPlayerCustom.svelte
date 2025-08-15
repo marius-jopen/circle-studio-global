@@ -19,6 +19,19 @@
     let isHovering = $state(false);
     let isMuted = $state(true);
     let showSoundIcon = $state(true);
+	const videoId = Math.random().toString(36).slice(2);
+
+	function notifyVideoPlayingWithSound() {
+		window.dispatchEvent(new CustomEvent('video-playing-with-sound', { detail: { videoId } }));
+	}
+
+	function handleOtherVideoPlaying(event: Event) {
+		const { videoId: otherId } = (event as CustomEvent).detail || {};
+		if (otherId && otherId !== videoId && videoElement && !videoElement.muted) {
+			videoElement.muted = true;
+			isMuted = true;
+		}
+	}
 
 	const useHls = $derived(hlsUrl && hlsUrl.includes('.m3u8'));
 	const videoUrl = $derived(hlsUrl.replace('.m3u8', '.mp4'));
@@ -47,6 +60,9 @@
 			}
 		}
 
+		// Listen for other videos unmuting
+		window.addEventListener('video-playing-with-sound', handleOtherVideoPlaying);
+
 		if (useHls && videoElement) {
 			import('hls.js').then(({ default: Hls }) => {
 				if (Hls.isSupported()) {
@@ -58,6 +74,10 @@
 				}
 			});
 		}
+
+		return () => {
+			window.removeEventListener('video-playing-with-sound', handleOtherVideoPlaying);
+		};
 	});
 </script>
 
@@ -101,17 +121,18 @@
 				if (!videoElement) return;
 				videoElement.muted = !videoElement.muted;
 				isMuted = videoElement.muted;
+				if (!isMuted) notifyVideoPlayingWithSound();
 				showSoundIcon = false;
 			}}
 		>
 			{#if isMuted}
-				<svg class="w-full h-full" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-					<path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.797L4.05 13.06a.5.5 0 00-.383-.06H2a1 1 0 01-1-1V8a1 1 0 011-1h1.667a.5.5 0 00.383-.06l4.333-3.737a1 1 0 011-.127zM12.293 7.293a1 1 0 011.414 0L15 8.586l1.293-1.293a1 1 0 111.414 1.414L16.414 10l1.293 1.293a1 1 0 01-1.414 1.414L15 11.414l-1.293 1.293a1 1 0 01-1.414-1.414L13.586 10l-1.293-1.293a1 1 0 010-1.414z"/>
-				</svg>
+				<div class="text-3xl cursor-pointer">
+					Sound On
+				</div>
 			{:else}
-				<svg class="w-full h-full" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-					<path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.797L4.05 13.06a.5.5 0 00-.383-.06H2a1 1 0 01-1-1V8a1 1 0 011-1h1.667a.5.5 0 00.383-.06l4.333-3.737a1 1 0 011-.127zM12.5 9a2.5 2.5 0 012.5 2.5 2.5 2.5 0 01-2.5 2.5V9z"/>
-				</svg>
+				<div class="text-3xl cursor-pointer">
+					Sound Off
+				</div>
 			{/if}
 		</button>
 	</div>
