@@ -298,7 +298,14 @@
 				{isFullscreen ? 'Return' : 'Fullscreen'}
 			</button>
 
-			<div class="text-xl tabular-nums opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200 cursor-default">
+			<button 
+			onclick={() => {
+				if (!videoElement) return;
+				videoElement.currentTime = 0;
+				currentTime = 0;
+				scheduleAutoHide();
+			}}
+			class="text-xl cursor-pointer tabular-nums opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200 cursor-default">
 				{(() => {
 					const s = (n: number) => Math.floor(n).toString().padStart(2, '0');
 					const mins = Math.floor(currentTime / 60);
@@ -307,7 +314,8 @@
 					const dsecs = Math.floor(duration % 60);
 					return `${mins}:${s(secs)} / ${dmins}:${s(dsecs)}`;
 				})()}
-			</div>
+			</button>
+
 		</div>
 	</div>
 	{/if}
