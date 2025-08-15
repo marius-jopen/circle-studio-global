@@ -427,17 +427,6 @@ export interface ProjectsDocumentDataMainItem {
 	 * - **Documentation**: https://prismic.io/docs/fields/text
 	 */
 	main_video_url: prismic.KeyTextField;
-
-	/**
-	 * Playmode field in *Projects → Main*
-	 *
-	 * - **Field Type**: Select
-	 * - **Placeholder**: *None*
-	 * - **Default Value**: test-1
-	 * - **API ID Path**: projects.main[].playmode
-	 * - **Documentation**: https://prismic.io/docs/fields/select
-	 */
-	playmode: prismic.SelectField<'test-1' | 'test-2', 'filled'>;
 }
 
 /**

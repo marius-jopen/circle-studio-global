@@ -6,13 +6,15 @@
 		posterImage?: any;
 		classes?: string;
 		startMuted?: boolean;
+		playMode?: string;
 	}
 
 	const {
 		hlsUrl,
 		posterImage = null,
 		classes = 'w-full h-auto rounded object-cover mb-3',
-		startMuted = false
+		startMuted = false,
+		playMode = 'no-sound'
 	}: Props = $props();
 
 	let videoElement: HTMLVideoElement;
@@ -36,6 +38,9 @@
 </script>
 
 <div class="relative {classes} overflow-hidden bg-black rounded-lg">
+	<div class="text-white">
+		{playMode}
+	</div>
 	<video
 		bind:this={videoElement}
 		class="w-full h-full object-cover"

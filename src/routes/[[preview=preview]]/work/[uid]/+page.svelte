@@ -37,6 +37,7 @@
 						hlsUrl={item.main_video_url}
 						posterImage={item.main_image} 
 						classes="w-full h-auto rounded-none"
+						playMode="has-sound"
 					/>
 				{:else if item.main_image?.url}
 					<PrismicImage 
@@ -54,6 +55,7 @@
 								hlsUrl={item.main_video_url}
 								posterImage={item.main_image} 
 								classes="w-full h-auto rounded-none"
+								playMode="has-sound"
 							/>
 						{:else if item.main_image?.url}
 							<PrismicImage 

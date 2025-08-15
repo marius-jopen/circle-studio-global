@@ -15,8 +15,9 @@
 		<!-- {displayPlayMode} -->
 		{#if videoUrl}
 			<div class="relative">
-				Video: {displayPlayMode}
+				<!-- Video: {displayPlayMode} -->
 				<VideoPlayerCustom 
+					playMode={displayPlayMode}
 					hlsUrl={videoUrl}
 					posterImage={imageField} 
 					classes="w-full h-auto rounded object-cover"
@@ -24,7 +25,7 @@
 			</div>
 		{:else if imageField?.url}
 			<div class="relative">
-				Image
+				<!-- Image -->
 				<PrismicImage 
 					field={imageField} 
 					class="w-full h-auto rounded object-cover"
