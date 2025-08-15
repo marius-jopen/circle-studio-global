@@ -17,8 +17,8 @@
 					class="block -mt-6"
 					class:pointer-events-auto={!faded}
 					class:pointer-events-none={faded}
-					onmouseenter={() => isHovering = true}
-					onmouseleave={() => isHovering = false}
+					onmouseenter={() => { isHovering = true; }}
+					onmouseleave={() => { isHovering = false; }}
 				>
 					<BigWheel 
 						config={{

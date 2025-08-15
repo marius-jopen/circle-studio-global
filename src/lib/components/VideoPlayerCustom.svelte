@@ -100,7 +100,6 @@
         if (!duration) return;
         isScrubbing = true;
         showControls = true;
-        notifyControlsShown();
         const rect = (e.currentTarget as HTMLButtonElement).getBoundingClientRect();
         scrubLeft = rect.left;
         scrubWidth = rect.width;
@@ -113,7 +112,6 @@
         if (!duration) return;
         isScrubbing = true;
         showControls = true;
-        notifyControlsShown();
         const target = e.currentTarget as HTMLButtonElement;
         if (target) {
             const rect = target.getBoundingClientRect();

@@ -5,6 +5,7 @@
 	import Header from '$lib/components/Header.svelte';
 	import Welcome from '$lib/components/Welcome.svelte';
 	import { onMount } from 'svelte';
+	import { afterNavigate } from '$app/navigation';
 	import "../app.css";
 
 	let { children, data } = $props();
@@ -14,6 +15,27 @@
 	let mainMediaVisible = $state(true);
 	let soundContexts = new Map<string, Set<string>>();
 	let controlsVisibleContexts = new Map<string, Set<string>>();
+
+	let io: IntersectionObserver | undefined;
+	let observedEl: HTMLElement | null = null;
+
+	function attachObserver() {
+		const mainEl = document.getElementById('main-media');
+		if (observedEl === mainEl) return;
+		if (io && observedEl) io.unobserve(observedEl);
+		observedEl = mainEl;
+		if (mainEl && 'IntersectionObserver' in window) {
+			io = new IntersectionObserver((entries) => {
+				const entry = entries[0];
+				mainMediaVisible = entry.isIntersecting && entry.intersectionRatio > 0;
+				// Defer calling updateHeaderState until it's defined in onMount
+			}, { threshold: [0, 0.01, 0.1] });
+			io.observe(mainEl);
+		} else {
+			mainMediaVisible = false;
+			// Defer calling updateHeaderState until it's defined in onMount
+		}
+	}
 
 	onMount(() => {
 		const handleNavigationClick = (e: Event) => {
@@ -78,18 +100,23 @@
 		window.addEventListener('video-sound-off', handleVideoSoundOff as EventListener);
 		window.addEventListener('video-controls-shown', handleControlsShown as EventListener);
 		window.addEventListener('video-controls-hidden', handleControlsHidden as EventListener);
+		window.addEventListener('header-hover-on', updateHeaderState as EventListener);
+		window.addEventListener('header-hover-off', updateHeaderState as EventListener);
 		
-		// Observe main media visibility
-		const mainEl = document.getElementById('main-media');
-		let io: IntersectionObserver | undefined;
-		if (mainEl && 'IntersectionObserver' in window) {
-			io = new IntersectionObserver((entries) => {
-				const entry = entries[0];
-				mainMediaVisible = entry.isIntersecting && entry.intersectionRatio > 0;
-				updateHeaderState();
-			}, { threshold: [0, 0.01, 0.1] });
-			io.observe(mainEl);
-		}
+		// Observe main media visibility (initial)
+		attachObserver();
+		// Now that updateHeaderState exists, trigger initial compute
+		updateHeaderState();
+
+		// Re-attach on route changes and reset per-page context
+		afterNavigate(() => {
+			// Clear only 'main' context states on navigation
+			controlsVisibleContexts.delete('main');
+			soundContexts.delete('main');
+			mainMediaVisible = true;
+			attachObserver();
+			updateHeaderState();
+		});
 		
 		return () => {
 			document.removeEventListener('click', handleNavigationClick);
@@ -97,7 +124,9 @@
 			window.removeEventListener('video-sound-off', handleVideoSoundOff as EventListener);
 			window.removeEventListener('video-controls-shown', handleControlsShown as EventListener);
 			window.removeEventListener('video-controls-hidden', handleControlsHidden as EventListener);
-			if (io && mainEl) io.unobserve(mainEl);
+			if (io && observedEl) io.unobserve(observedEl);
+			window.removeEventListener('header-hover-on', updateHeaderState as EventListener);
+			window.removeEventListener('header-hover-off', updateHeaderState as EventListener);
 		};
 	});
 </script>
