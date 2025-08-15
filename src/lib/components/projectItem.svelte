@@ -3,7 +3,7 @@
 	import { PrismicImage } from '@prismicio/svelte';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
-	import VideoPlayerCustom from './VideoPlayerCustom.svelte';
+	import VideoPlayerSimple from './VideoPlayerSimple.svelte';
 	import BigWheel from '$lib/components/BigWheel.svelte';
     import { hoverPreview } from '$lib/stores/preview';
 
@@ -283,7 +283,7 @@
 				<div class="relative" role="group"
 					 on:mouseenter={() => isHovering = true}
 					 on:mouseleave={() => isHovering = false}>
-					<VideoPlayerCustom 
+					<VideoPlayerSimple 
 						hlsUrl={videoUrl}
 						posterImage={imageField} 
 						classes="w-full h-auto rounded object-cover {aspectClass}"
@@ -342,7 +342,7 @@
 				<div class="relative" role="group"
 					 on:mouseenter={() => isHovering = true}
 					 on:mouseleave={() => isHovering = false}>
-					<VideoPlayerCustom 
+					<VideoPlayerSimple 
 						hlsUrl={videoUrl}
 						posterImage={imageField} 
 						classes="w-full h-auto rounded object-cover {aspectClass}"

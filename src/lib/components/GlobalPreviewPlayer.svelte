@@ -1,11 +1,11 @@
 <script lang="ts">
   import { hoverPreview } from '$lib/stores/preview';
-  import VideoPlayerCustom from '$lib/components/VideoPlayerCustom.svelte';
+  import VideoPlayerSimple from '$lib/components/VideoPlayerSimple.svelte';
 </script>
 
 {#if $hoverPreview?.url}
   <div class="fixed bottom-4 right-4 z-[120] pointer-events-none">
-    <VideoPlayerCustom
+    <VideoPlayerSimple
       hlsUrl={$hoverPreview.url}
       posterImage={$hoverPreview.poster}
       classes="w-[360px] h-auto rounded-md shadow-lg"
