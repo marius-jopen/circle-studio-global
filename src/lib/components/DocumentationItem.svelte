@@ -21,7 +21,7 @@
 					hlsUrl={videoUrl}
 					posterImage={imageField} 
 					classes="w-full h-auto rounded object-cover"
-					controls={false}
+					controls={true}
 				/>
 			</div>
 		{:else if imageField?.url}

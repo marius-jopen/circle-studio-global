@@ -145,108 +145,45 @@
 		<track kind="captions" src="" label="Captions" />
 	</video>
 
-	{#if hasSoundMode && !isFullscreen}
+	{#if controls && hasSoundMode}
 	<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-		<button
-			class="pointer-events-auto flex items-center justify-center text-white transition-opacity duration-200"
-			class:opacity-100={isHovering && showSoundIcon}
-			class:opacity-0={!isHovering || !showSoundIcon}
-			style="width:25%; height:25%"
-			aria-label={isMuted ? 'Unmute video' : 'Mute video'}
-			onclick={(e) => {
-				e.stopPropagation();
-				if (!videoElement) return;
-				videoElement.muted = !videoElement.muted;
-				isMuted = videoElement.muted;
-				if (!isMuted) notifyVideoPlayingWithSound();
-				showSoundIcon = false;
-                showControls = false;
-                suppressUI = true;
-                setTimeout(() => { suppressUI = false; }, 500);
-			}}
+		<div 
+			class="flex flex-col items-center gap-0 pointer-events-auto text-white transition-opacity duration-400"
+			class:opacity-100={isHovering && showControls}
+			class:opacity-0={!isHovering || !showControls}
+			style="width:25%;"
 		>
-			{#if isMuted}
-				<div class="text-3xl cursor-pointer">
-					Sound On
-				</div>
-			{:else}
-				<div class="text-3xl cursor-pointer">
-					Sound Off
-				</div>
-			{/if}
-		</button>
-	</div>
-	{/if}
-
-	<!-- Bottom Controls: minimalistic and only visible on hover -->
-	{#if controls}
-	<div 
-		class="absolute bottom-0 left-0 right-0 p-3 transition-opacity duration-200 pointer-events-none"
-		class:opacity-100={isHovering && showControls}
-		class:opacity-0={!isHovering || !showControls}
-	>
-		<!-- Progress Bar -->
-		<button 
-			class="w-full h-1 bg-white/30 rounded-full mb-2 overflow-hidden pointer-events-auto"
-			role="slider"
-			aria-valuemin="0"
-			aria-valuemax="100"
-			aria-valuenow={(duration > 0 ? (currentTime / duration) * 100 : 0)}
-			aria-label="Seek"
-			onclick={(e) => {
-				if (!videoElement || duration <= 0) return;
-				const rect = (e.currentTarget as HTMLButtonElement).getBoundingClientRect();
-				const percent = Math.min(Math.max((e.clientX - rect.left) / rect.width, 0), 1);
-				videoElement.currentTime = percent * duration;
-			}}
-			onkeydown={(e: KeyboardEvent) => {
-				if (!videoElement || duration <= 0) return;
-				if (e.key === 'ArrowLeft') {
-					videoElement.currentTime = Math.max(0, videoElement.currentTime - 5);
-					e.preventDefault();
-				} else if (e.key === 'ArrowRight') {
-					videoElement.currentTime = Math.min(duration, videoElement.currentTime + 5);
-					e.preventDefault();
-				}
-			}}
-		>
-			<div class="h-full bg-white rounded-full" style={`width: ${duration > 0 ? (currentTime / duration) * 100 : 0}%`}></div>
-		</button>
-
-		<!-- Controls Row -->
-		<div class="flex items-center justify-between text-white/95 text-xs pointer-events-auto px-1">
-			<!-- Play/Pause -->
+			{#if hasSoundMode && !isFullscreen}
 			<button
-				class="text-xs w-7 h-7 flex items-center justify-center cursor-pointer"
+				class="text-base cursor-pointer opacity-60 hover:opacity-100"
+				aria-label={isMuted ? 'Unmute video' : 'Mute video'}
+				onclick={(e) => {
+					e.stopPropagation();
+					if (!videoElement) return;
+					videoElement.muted = !videoElement.muted;
+					isMuted = videoElement.muted;
+					if (!isMuted) notifyVideoPlayingWithSound();
+					scheduleAutoHide();
+				}}
+			>
+				Sound {isMuted ? 'On' : 'Off'}
+			</button>
+			{/if}
+
+			<button
+				class="text-base cursor-pointer opacity-60 hover:opacity-100"
 				aria-label={isPlaying ? 'Pause video' : 'Play video'}
 				onclick={() => {
 					if (!videoElement) return;
 					if (videoElement.paused) { videoElement.play(); } else { videoElement.pause(); }
-                    showControls = false;
+					scheduleAutoHide();
 				}}
 			>
-				{#if isPlaying}
-					Pause
-				{:else}
-					Play
-				{/if}
+				{isPlaying ? 'Pause' : 'Play'}
 			</button>
 
-			<!-- Time -->
-			<div class="text-xs tabular-nums">
-				{(() => {
-					const s = (n: number) => Math.floor(n).toString().padStart(2, '0');
-					const mins = Math.floor(currentTime / 60);
-					const secs = Math.floor(currentTime % 60);
-					const dmins = Math.floor(duration / 60);
-					const dsecs = Math.floor(duration % 60);
-					return `${mins}:${s(secs)} / ${dmins}:${s(dsecs)}`;
-				})()}
-			</div>
-
-			<!-- Fullscreen toggle -->
 			<button
-				class="text-xs w-7 h-7 flex items-center justify-end"
+				class="text-base cursor-pointer opacity-60 hover:opacity-100"
 				aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
 				onclick={async () => {
 					if (!containerElement) return;
@@ -259,14 +196,22 @@
 							isFullscreen = false;
 						}
 					} catch (e) {}
+					scheduleAutoHide();
 				}}
 			>
-				{#if isFullscreen}
-					Return
-				{:else}
-					Full
-				{/if}
+				{isFullscreen ? 'Return' : 'Fullscreen'}
 			</button>
+
+			<div class="text-base tabular-nums opacity-60 hover:opacity-100">
+				{(() => {
+					const s = (n: number) => Math.floor(n).toString().padStart(2, '0');
+					const mins = Math.floor(currentTime / 60);
+					const secs = Math.floor(currentTime % 60);
+					const dmins = Math.floor(duration / 60);
+					const dsecs = Math.floor(duration % 60);
+					return `${mins}:${s(secs)} / ${dmins}:${s(dsecs)}`;
+				})()}
+			</div>
 		</div>
 	</div>
 	{/if}
