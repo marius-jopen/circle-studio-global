@@ -30,13 +30,16 @@
     let containerElement: HTMLDivElement;
     let hideUiTimeout: ReturnType<typeof setTimeout> | undefined;
     let suppressUI = $state(false);
+    let isScrubbing = $state(false);
+    let scrubLeft = 0;
+    let scrubWidth = 1;
 
     function scheduleAutoHide() {
         if (hideUiTimeout) clearTimeout(hideUiTimeout);
         hideUiTimeout = setTimeout(() => {
             showControls = false;
             showSoundIcon = false;
-        }, 1500);
+        }, 750);
     }
 
     function clearAutoHide() {
@@ -44,6 +47,70 @@
             clearTimeout(hideUiTimeout);
             hideUiTimeout = undefined;
         }
+    }
+
+    function positionToPercent(clientX: number): number {
+        return Math.min(Math.max((clientX - scrubLeft) / scrubWidth, 0), 1);
+    }
+
+    function handleScrubMoveClientX(clientX: number) {
+        if (!videoElement || duration <= 0) return;
+        const percent = positionToPercent(clientX);
+        videoElement.currentTime = percent * duration;
+        currentTime = videoElement.currentTime;
+    }
+
+    function onMouseMove(e: MouseEvent) {
+        handleScrubMoveClientX(e.clientX);
+    }
+
+    function onMouseUp() {
+        isScrubbing = false;
+        window.removeEventListener('mousemove', onMouseMove);
+        window.removeEventListener('mouseup', onMouseUp);
+        scheduleAutoHide();
+    }
+
+    function onTouchMove(e: TouchEvent) {
+        if (e.touches && e.touches[0]) {
+            handleScrubMoveClientX(e.touches[0].clientX);
+        }
+    }
+
+    function onTouchEnd() {
+        isScrubbing = false;
+        window.removeEventListener('touchmove', onTouchMove);
+        window.removeEventListener('touchend', onTouchEnd);
+        scheduleAutoHide();
+    }
+
+    function startScrubMouse(e: MouseEvent) {
+        if (!duration) return;
+        isScrubbing = true;
+        showControls = true;
+        const rect = (e.currentTarget as HTMLButtonElement).getBoundingClientRect();
+        scrubLeft = rect.left;
+        scrubWidth = rect.width;
+        handleScrubMoveClientX(e.clientX);
+        window.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('mouseup', onMouseUp);
+    }
+
+    function startScrubTouch(e: TouchEvent) {
+        if (!duration) return;
+        isScrubbing = true;
+        showControls = true;
+        const target = e.currentTarget as HTMLButtonElement;
+        if (target) {
+            const rect = target.getBoundingClientRect();
+            scrubLeft = rect.left;
+            scrubWidth = rect.width;
+        }
+        if (e.touches && e.touches[0]) {
+            handleScrubMoveClientX(e.touches[0].clientX);
+        }
+        window.addEventListener('touchmove', onTouchMove, { passive: true });
+        window.addEventListener('touchend', onTouchEnd);
     }
 
 	function notifyVideoPlayingWithSound() {
@@ -146,7 +213,7 @@
 	</video>
 
 	{#if controls && hasSoundMode}
-	<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+	<div class="absolute inset-0 flex items-center justify-center pointer-events-none -mt-4">
 		<div 
 			class="group flex flex-col items-center gap-0 pointer-events-auto text-white transition-opacity duration-400"
 			class:opacity-100={isHovering && showControls}
@@ -155,7 +222,7 @@
 		>
 			{#if hasSoundMode && !isFullscreen}
 			<button
-				class="text-base cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
+				class="text-xl cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
 				aria-label={isMuted ? 'Unmute video' : 'Mute video'}
 				onclick={(e) => {
 					e.stopPropagation();
@@ -171,7 +238,7 @@
 			{/if}
 
 			<button
-				class="text-base cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
+				class="text-xl cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
 				aria-label={isPlaying ? 'Pause video' : 'Play video'}
 				onclick={() => {
 					if (!videoElement) return;
@@ -183,7 +250,7 @@
 			</button>
 
 			<button
-				class="text-base cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
+				class="text-xl cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
 				aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
 				onclick={async () => {
 					if (!containerElement) return;
@@ -202,7 +269,7 @@
 				{isFullscreen ? 'Return' : 'Fullscreen'}
 			</button>
 
-			<div class="text-base tabular-nums opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200 cursor-default">
+			<div class="text-xl tabular-nums opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200 cursor-default">
 				{(() => {
 					const s = (n: number) => Math.floor(n).toString().padStart(2, '0');
 					const mins = Math.floor(currentTime / 60);
@@ -213,6 +280,33 @@
 				})()}
 			</div>
 		</div>
+	</div>
+	{/if}
+
+	{#if controls && hasSoundMode}
+	<div 
+		class="absolute left-3 right-3 bottom-3 transition-opacity duration-200 opacity-70 pointer-events-none"
+		class:opacity-70={isHovering && showControls}
+		class:opacity-0={!isHovering || !showControls}
+	>
+		<button
+			class="relative block w-full h-3 pointer-events-auto"
+			role="slider"
+			aria-valuemin="0"
+			aria-valuemax="100"
+			aria-valuenow={(duration > 0 ? (currentTime / duration) * 100 : 0)}
+			aria-label="Seek"
+			onmousedown={startScrubMouse}
+			ontouchstart={startScrubTouch}
+		>
+			<!-- Centered thin visible track -->
+			<div class="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-0.5 bg-white/40 rounded">
+				<div 
+					class="h-full bg-white rounded"
+					style={`width: ${duration > 0 ? (currentTime / duration) * 100 : 0}%`}
+				></div>
+			</div>
+		</button>
 	</div>
 	{/if}
 </div>
