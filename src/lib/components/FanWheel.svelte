@@ -1,6 +1,7 @@
 <script lang="ts">
 	// API required by assignment
 	export let items: string[] = [];
+export let urls: (string | null | undefined)[] | undefined = undefined; // optional parallel hrefs
 	export let radius: number = 200; // px
 	export let rotationSpeed: number = 20; // seconds per full rotation
 	export let fontSize: number = 20; // optional text size
@@ -16,10 +17,20 @@
 		<div class="absolute inset-0 animate-spin" style={`animation-duration:${rotationSpeed}s`}>
 			{#each items as label, i}
 				<div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-					<span
-						class="block whitespace-nowrap select-none pointer-events-none"
-						style={`transform: rotate(${angleFor(i)}deg) translateY(-${radius}px) rotate(90deg); transform-origin:50% 50%; font-size:${fontSize}px;`}
-					>{label}</span>
+					{#if urls && urls[i]}
+						<a
+							href={urls[i] as string}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="block whitespace-nowrap select-none"
+							style={`transform: rotate(${angleFor(i)}deg) translateY(-${radius}px) rotate(90deg); transform-origin:50% 50%; font-size:${fontSize}px;`}
+						>{label}</a>
+					{:else}
+						<span
+							class="block whitespace-nowrap select-none pointer-events-none"
+							style={`transform: rotate(${angleFor(i)}deg) translateY(-${radius}px) rotate(90deg); transform-origin:50% 50%; font-size:${fontSize}px;`}
+						>{label}</span>
+					{/if}
 				</div>
 			{/each}
 		</div>

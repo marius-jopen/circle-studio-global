@@ -2,55 +2,34 @@
 	import type { Content } from '@prismicio/client';
 	import type { SliceComponentProps } from '@prismicio/svelte';
 	import FanWheel from '$lib/components/FanWheel.svelte';
+	import { createClient } from '$lib/prismicio';
+	import { asLink } from '@prismicio/client';
+	import { onMount } from 'svelte';
 
 	type Props = SliceComponentProps<Content.WheelSlice>;
 
 	const { slice }: Props = $props();
 
-	// Example data until wired to CMS
-	let items: string[] = [
-		'car',
-		'house',
-		'mouse',
-		'tiger',
-		'cheese',
-		'bread',
-		'train',
-		'car',
-		'house',
-		'mouse',
-		'tiger',
-		'cheese',
-		'bread',
-		'train'
-	];
+	let items = $state<string[]>([]);
+	let urls = $state<string[]>([]);
+	const rotationSpeed = 20;
 
-	let speed = $state(12); // °/s
+	onMount(async () => {
+		const client = createClient();
+		const docs = await client.getAllByType('people', {
+			orderings: [{ field: 'my.people.name', direction: 'asc' }],
+			pageSize: 200
+		});
+		items = docs.map((d) => (d.data.name as string) || d.uid);
+		urls = docs.map((d) => asLink(d.data.link) || '#');
+	});
 </script>
 
 <section data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
-	<div class="container">
-		<FanWheel {items}
-			size={820}
-			radius={300}
-			startAngleDeg={-140}
-			endAngleDeg={140}
-			speedDegPerSec={speed}
-			fontSize={26}
-			showControls={false}
-		/>
-		<div class="controls">
-			<label>
-				<span>Speed</span>
-				<input type="range" min="-90" max="90" step="1" bind:value={speed}>
-				<output>{Math.round(speed)}°/s</output>
-			</label>
-		</div>
+	<div class="flex justify-center items-center w-full pt-24 pb-24">
+		<FanWheel {items} {urls} radius={300} rotationSpeed={rotationSpeed} fontSize={26} />
 	</div>
 </section>
 
 <style>
-	.container { display: grid; gap: 16px; justify-items: center; }
-	.controls { display: flex; gap: 12px; align-items: center; }
-	.controls label { display: inline-flex; gap: 8px; align-items: center; }
 </style>
