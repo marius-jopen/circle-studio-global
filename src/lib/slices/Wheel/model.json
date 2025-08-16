@@ -1,0 +1,18 @@
+{
+  "id": "wheel",
+  "type": "SharedSlice",
+  "name": "Wheel",
+  "description": "Wheel",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {},
+      "items": {}
+    }
+  ]
+}

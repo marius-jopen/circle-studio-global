@@ -27,6 +27,9 @@
 				"fieldset": "Slice Zone",
 				"config": {
 					"choices": {
+						"wheel": {
+							"type": "SharedSlice"
+						},
 						"circle": {
 							"type": "SharedSlice"
 						},

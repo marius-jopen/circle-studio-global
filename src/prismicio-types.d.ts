@@ -198,7 +198,7 @@ export type HomeDocument<Lang extends string = string> = prismic.PrismicDocument
 	Lang
 >;
 
-type PageDocumentDataSlicesSlice = CircleSlice | RichTextSlice;
+type PageDocumentDataSlicesSlice = WheelSlice | CircleSlice | RichTextSlice;
 
 /**
  * Content for Page documents
@@ -835,6 +835,33 @@ type RichTextSliceVariation = RichTextSliceDefault;
  */
 export type RichTextSlice = prismic.SharedSlice<'rich_text', RichTextSliceVariation>;
 
+/**
+ * Default variation for Wheel Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type WheelSliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Record<string, never>,
+	never
+>;
+
+/**
+ * Slice variation for *Wheel*
+ */
+type WheelSliceVariation = WheelSliceDefault;
+
+/**
+ * Wheel Shared Slice
+ *
+ * - **API ID**: `wheel`
+ * - **Description**: Wheel
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type WheelSlice = prismic.SharedSlice<'wheel', WheelSliceVariation>;
+
 declare module '@prismicio/client' {
 	interface CreateClient {
 		(
@@ -888,7 +915,10 @@ declare module '@prismicio/client' {
 			RichTextSlice,
 			RichTextSliceDefaultPrimary,
 			RichTextSliceVariation,
-			RichTextSliceDefault
+			RichTextSliceDefault,
+			WheelSlice,
+			WheelSliceVariation,
+			WheelSliceDefault
 		};
 	}
 }

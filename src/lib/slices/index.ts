@@ -3,9 +3,11 @@
 import Circle from './Circle/index.svelte';
 import Documentation from './Documentation/index.svelte';
 import RichText from './RichText/index.svelte';
+import Wheel from './Wheel/index.svelte';
 
 export const components = {
 	circle: Circle,
 	documentation: Documentation,
-	rich_text: RichText
+	rich_text: RichText,
+	wheel: Wheel
 };
