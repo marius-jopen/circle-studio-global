@@ -198,7 +198,7 @@ export type HomeDocument<Lang extends string = string> = prismic.PrismicDocument
 	Lang
 >;
 
-type PageDocumentDataSlicesSlice = WheelSlice | CircleSlice | RichTextSlice;
+type PageDocumentDataSlicesSlice = InputSlice | WheelSlice | CircleSlice | RichTextSlice;
 
 /**
  * Content for Page documents
@@ -794,6 +794,33 @@ type DocumentationSliceVariation = DocumentationSliceDefault;
 export type DocumentationSlice = prismic.SharedSlice<'documentation', DocumentationSliceVariation>;
 
 /**
+ * Default variation for Input Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type InputSliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Record<string, never>,
+	never
+>;
+
+/**
+ * Slice variation for *Input*
+ */
+type InputSliceVariation = InputSliceDefault;
+
+/**
+ * Input Shared Slice
+ *
+ * - **API ID**: `input`
+ * - **Description**: Input
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type InputSlice = prismic.SharedSlice<'input', InputSliceVariation>;
+
+/**
  * Primary content in *RichText → Default → Primary*
  */
 export interface RichTextSliceDefaultPrimary {
@@ -912,6 +939,9 @@ declare module '@prismicio/client' {
 			DocumentationSliceDefaultPrimary,
 			DocumentationSliceVariation,
 			DocumentationSliceDefault,
+			InputSlice,
+			InputSliceVariation,
+			InputSliceDefault,
 			RichTextSlice,
 			RichTextSliceDefaultPrimary,
 			RichTextSliceVariation,

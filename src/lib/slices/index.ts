@@ -2,12 +2,14 @@
 
 import Circle from './Circle/index.svelte';
 import Documentation from './Documentation/index.svelte';
+import Input from './Input/index.svelte';
 import RichText from './RichText/index.svelte';
 import Wheel from './Wheel/index.svelte';
 
 export const components = {
 	circle: Circle,
 	documentation: Documentation,
+	input: Input,
 	rich_text: RichText,
 	wheel: Wheel
 };
