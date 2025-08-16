@@ -55,6 +55,7 @@
     spacingSpeed: number;
     rotationStart: number; // degrees, 0-360
     animationType?: string; // 'sin', 'linear', 'ease-in', 'ease-out', 'steps'
+    autoTextSize?: boolean;
   };
 
   
@@ -189,6 +190,7 @@
         spacingSpeed: item.spacingSpeed,
         rotationStart: item.rotationStart,
         animationType: item.animationType ?? 'sin',
+        autoTextSize: item.autoTextSize ?? false,
       }));
     }
     if (globalSettings) {
@@ -841,6 +843,7 @@
             manualMode={activeManualMode}
             triggerFadeIn={activeTriggerFadeIn}
             triggerFadeOut={activeTriggerFadeOut}
+            autoTextSize={circle.autoTextSize ?? false}
             bind:this={textCircleRefs[i]}
             />
           </div>

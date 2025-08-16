@@ -23,7 +23,7 @@
 </script>
 
 <section data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
-	<div class="flex justify-center items-center w-full">
+	<div class="flex justify-center items-center w-full pt-24 pb-24">
 		{#if selectedText}
 			<BigWheel
 				config={{
@@ -35,7 +35,8 @@
 							spacingAmplitudePercent: 0,
 							spacingSpeed: 0,
 							rotationStart: 0,
-							animationType: 'sin'
+							animationType: 'sin',
+							autoTextSize: true,
 						}
 					],
 					globalSettings: {

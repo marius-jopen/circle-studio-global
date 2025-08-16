@@ -11,6 +11,7 @@
   export let containerSize: number = 500;
   export let paused: boolean = false;
   export let textColor: string = "#000000";
+  export let autoTextSize: boolean = false; // When true, scale font to fill circumference
   
   // Fade animation props
   export let fadeInTime: number = 3; // seconds to fade in all letters
@@ -148,6 +149,29 @@
     });
   }
 
+  // Compute effective font size when autoTextSize is enabled
+  let measureCanvas: HTMLCanvasElement | null = null;
+  function computeEffectiveFontSize(baseFontSize: number): number {
+    if (!autoTextSize || radius <= 0) return baseFontSize;
+    if (!measureCanvas) measureCanvas = document.createElement('canvas');
+    const ctx = measureCanvas.getContext('2d');
+    if (!ctx) return baseFontSize;
+    ctx.font = `${baseFontSize}px sans-serif`;
+    const letters = text.split('');
+    const totalWidth = letters.reduce((sum, l) => sum + ctx.measureText(l).width, 0);
+    const circumference = 2 * Math.PI * radius;
+    if (totalWidth <= 0 || circumference <= 0) return baseFontSize;
+    // Scale proportionally so total width matches circumference; leave a tiny margin
+    const scale = circumference / totalWidth;
+    const sized = baseFontSize * scale * 0.995; // small safety margin to avoid overflow
+    // Prevent absurd values
+    const minSize = 2;
+    const maxSize = Math.max(4, (containerSize / 2));
+    return Math.min(Math.max(sized, minSize), maxSize);
+  }
+
+  $: effectiveFontSize = computeEffectiveFontSize(fontSize);
+
   function draw() {
     const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
@@ -167,7 +191,7 @@
     // Use elapsedTime instead of performance.now() to allow freezing animations
     const time = elapsedTime;
     const letters = text.split('');
-    ctx.font = `${fontSize}px sans-serif`;
+    ctx.font = `${effectiveFontSize}px sans-serif`;
     const letterWidths = letters.map(l => ctx.measureText(l).width);
     const totalWidth = letterWidths.reduce((a, b) => a + b, 0);
     const circumference = 2 * Math.PI * radius;
@@ -207,7 +231,7 @@
       ctx.save();
       ctx.rotate(angle);
       ctx.translate(0, -radius);
-      ctx.font = `${fontSize}px sans-serif`;
+      ctx.font = `${effectiveFontSize}px sans-serif`;
       
       // Apply opacity from fade animation
       const opacity = letterOpacities[i] || 0;
@@ -308,7 +332,8 @@
     
     // Draw text with high quality settings
     const letters = text.split('');
-    ctx.font = `${fontSize}px ${fontFamily}`;
+    const captureFontSize = effectiveFontSize;
+    ctx.font = `${captureFontSize}px ${fontFamily}`;
 
     const letterWidths = letters.map(l => ctx.measureText(l).width);
     const totalWidth = letterWidths.reduce((a, b) => a + b, 0);
@@ -343,7 +368,7 @@
     }
     
     // Use a slightly larger font for high-res rendering to ensure sharp text
-    const highResFontSize = highRes ? fontSize * 1.05 : fontSize;
+    const highResFontSize = highRes ? captureFontSize * 1.05 : captureFontSize;
     const rgb = hexToRgb(textColor);
     
     for (let i = 0; i < letters.length; i++) {
