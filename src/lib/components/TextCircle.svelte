@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { browser } from '$app/environment';
   export let text: string = "circle studio";
   export let fontSize: number = 40;
   export let radius: number = 180;
@@ -151,26 +152,35 @@
 
   // Compute effective font size when autoTextSize is enabled
   let measureCanvas: HTMLCanvasElement | null = null;
-  function computeEffectiveFontSize(baseFontSize: number): number {
-    if (!autoTextSize || radius <= 0) return baseFontSize;
+  function computeEffectiveFontSize(baseFontSize: number, textStr: string, r: number): number {
+    if (!autoTextSize || r <= 0) return baseFontSize;
+    if (!browser) return baseFontSize;
     if (!measureCanvas) measureCanvas = document.createElement('canvas');
     const ctx = measureCanvas.getContext('2d');
     if (!ctx) return baseFontSize;
     ctx.font = `${baseFontSize}px sans-serif`;
-    const letters = text.split('');
+    const letters = textStr.split('');
     const totalWidth = letters.reduce((sum, l) => sum + ctx.measureText(l).width, 0);
-    const circumference = 2 * Math.PI * radius;
+    const circumference = 2 * Math.PI * r;
     if (totalWidth <= 0 || circumference <= 0) return baseFontSize;
     // Scale proportionally so total width matches circumference; leave a tiny margin
     const scale = circumference / totalWidth;
     const sized = baseFontSize * scale * 0.995; // small safety margin to avoid overflow
     // Prevent absurd values
     const minSize = 2;
-    const maxSize = Math.max(4, (containerSize / 2));
+    // Edge-guard: ensure glyphs don't get cut off beyond canvas bounds
+    // Available outward space from the text baseline to the canvas edge
+    const edgeMargin = 2; // small inner margin in px
+    const availableOutward = Math.max(0, (containerSize / 2) - r - edgeMargin);
+    // Approximate ascent proportion of the font (portion above baseline)
+    const ascentFactor = 0.9; // conservative
+    const maxByEdge = availableOutward / ascentFactor;
+    const genericCap = Math.max(4, (containerSize / 2));
+    const maxSize = Math.max(4, Math.min(genericCap, maxByEdge));
     return Math.min(Math.max(sized, minSize), maxSize);
   }
 
-  $: effectiveFontSize = computeEffectiveFontSize(fontSize);
+  $: effectiveFontSize = computeEffectiveFontSize(fontSize, text, radius);
 
   function draw() {
     const ctx = canvas.getContext('2d', { alpha: true });
