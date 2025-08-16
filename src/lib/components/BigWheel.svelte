@@ -785,7 +785,7 @@
 
 
 
-<div class="flex flex-col lg:flex-row gap-6 h-full w-full max-w-7xl mx-auto p-4">
+<div class="flex flex-col lg:flex-row gap-6 h-full w-full max-w-7xl mx-auto p-4" class:justify-center={!((showControls || (!items && !globalSettings)))} class:items-center={!((showControls || (!items && !globalSettings)))}>
   <!-- Canvas Container - Sticky on larger screens -->
   <div class="flex-shrink-0 lg:sticky lg:top-4 lg:self-start">
     <div 
@@ -855,9 +855,8 @@
   </div>
 
   <!-- Controls Container - Scrollable -->
-  <div class="flex-1 min-w-0">
-  
   {#if showControls || (!items && !globalSettings)}
+  <div class="flex-1 min-w-0">
     <div class="rounded-3xl p-4 mb-4 bg-white w-full">
       <h3 class="m-0 mb-4 text-lg font-bold text-gray-700 pb-2">Main Controls</h3>
       <div class="flex flex-col gap-4">
@@ -1168,6 +1167,6 @@
         </div>
       </div>
     {/each}
-  {/if}
   </div>
+  {/if}
 </div>

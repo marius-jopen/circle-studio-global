@@ -649,6 +649,36 @@ export type AllDocumentTypes =
 	| SettingsDocument;
 
 /**
+ * Item in *Circle → Default → Primary → Items*
+ */
+export interface CircleSliceDefaultPrimaryItemsItem {
+	/**
+	 * Text field in *Circle → Default → Primary → Items*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: circle.default.primary.items[].text
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	text: prismic.KeyTextField;
+}
+
+/**
+ * Primary content in *Circle → Default → Primary*
+ */
+export interface CircleSliceDefaultPrimary {
+	/**
+	 * Items field in *Circle → Default → Primary*
+	 *
+	 * - **Field Type**: Group
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: circle.default.primary.items[]
+	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+	 */
+	items: prismic.GroupField<Simplify<CircleSliceDefaultPrimaryItemsItem>>;
+}
+
+/**
  * Default variation for Circle Slice
  *
  * - **API ID**: `default`
@@ -657,7 +687,7 @@ export type AllDocumentTypes =
  */
 export type CircleSliceDefault = prismic.SharedSliceVariation<
 	'default',
-	Record<string, never>,
+	Simplify<CircleSliceDefaultPrimary>,
 	never
 >;
 
@@ -846,6 +876,8 @@ declare module '@prismicio/client' {
 			SettingsDocumentData,
 			AllDocumentTypes,
 			CircleSlice,
+			CircleSliceDefaultPrimaryItemsItem,
+			CircleSliceDefaultPrimary,
 			CircleSliceVariation,
 			CircleSliceDefault,
 			DocumentationSlice,
