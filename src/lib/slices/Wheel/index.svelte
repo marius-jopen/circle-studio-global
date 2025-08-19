@@ -12,7 +12,7 @@
 
 	let items = $state<string[]>([]);
 	let urls = $state<string[]>([]);
-	const rotationSpeed = 20;
+	const rotationSpeed = 200;
 
 	onMount(async () => {
 		const client = createClient();

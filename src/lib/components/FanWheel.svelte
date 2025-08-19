@@ -1,9 +1,9 @@
 <script lang="ts">
 	// API required by assignment
 	export let items: string[] = [];
-export let urls: (string | null | undefined)[] | undefined = undefined; // optional parallel hrefs
+	export let urls: (string | null | undefined)[] | undefined = undefined; // optional parallel hrefs
 	export let radius: number = 200; // px
-	export let rotationSpeed: number = 20; // seconds per full rotation
+	export let rotationSpeed: number = 60; // seconds per full rotation
 	export let fontSize: number = 20; // optional text size
 
 	$: size = radius * 2;
