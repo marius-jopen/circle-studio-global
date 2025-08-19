@@ -48,7 +48,6 @@
 					case 2: return 60; // Two portraits
 					case 3: return 55; // Three portraits
 					case 4: return 55; // Four portraits - increased from 45%
-					case 5: return 40; // Five portraits - increased from 25%
 					default: return 55; // Fallback for more items
 				}
 			default:
@@ -399,7 +398,7 @@
 	}
 	
 	/* Hide controls container when used as overlay */
-	:global(.bigwheel-overlay > div > div:last-child) {
+	:global(.bigwheel-overlay > div > div:nth-child(2)) {
 		display: none !important;
 	}
 	
