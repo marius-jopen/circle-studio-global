@@ -15,7 +15,6 @@
 		twoSquares: { weight: 12, itemsPerRow: 2, dimension: 'square' as const },
 		twoLandscapes: { weight: 8, itemsPerRow: 2, dimension: 'landscape' as const },
 		threeSquares: { weight: 10, itemsPerRow: 3, dimension: 'square' as const },
-		fivePortraits: { weight: 15, itemsPerRow: 5, dimension: 'portrait' as const },
 		fourPortraits: { weight: 20, itemsPerRow: 4, dimension: 'portrait' as const },
 		oneLandscape: { weight: 20, itemsPerRow: 1, dimension: 'landscape' as const }
 	};
@@ -35,24 +34,28 @@
 		return items.some((i) => i?.preview_video_url_landscape || i?.preview_image_landscape?.url);
 	}
 
-	// Normalize layout to ensure we never have a 3-column portrait row with only 2 valid items
-	// Filter out projects that cannot render for the row's dimension, then convert 3-portrait/2-items → 2-square
-	$: normalizedLayout = randomizedLayout.map((row): LayoutRow => {
-		const supportedProjects = row.projects.filter((p) => projectSupportsDimension(p, row.dimension));
-		if (row.dimension === 'portrait' && supportedProjects.length === 2) {
+	// Normalize layout and always set columns to match actual item count
+	// Convert portrait rows with 2 items to squares and drop empty rows
+	$: normalizedLayout = randomizedLayout
+		.map((row): LayoutRow => {
+			const supportedProjects = row.projects.filter((p) => projectSupportsDimension(p, row.dimension));
+			if (row.dimension === 'portrait' && supportedProjects.length === 2) {
+				return {
+					...row,
+					projects: supportedProjects,
+					dimension: 'square',
+					gridCols: getGridColsClass(2),
+					configuredItemsPerRow: 2
+				};
+			}
 			return {
 				...row,
 				projects: supportedProjects,
-				dimension: 'square',
-				gridCols: getGridColsClass(2),
-				configuredItemsPerRow: 2
+				gridCols: getGridColsClass(supportedProjects.length),
+				configuredItemsPerRow: supportedProjects.length
 			};
-		}
-		return {
-			...row,
-			projects: supportedProjects
-		};
-	});
+		})
+		.filter((row) => row.projects.length > 0);
 	
 	// Debug layout rows for portrait 3 cases
 	$: {
@@ -97,6 +100,19 @@
 		let lastItemCount: number | null = null;
 		
 		if (projectsToDistribute.length === 0) return finalRows;
+
+		// If 1–4 items remain, render them in a single row to avoid partial rows
+		if (projectsToDistribute.length <= 4) {
+			const count = projectsToDistribute.length;
+			finalRows.push({
+				type: count === 1 ? 'oneLandscape' : (count === 2 ? 'twoSquares' : 'threeSquares'),
+				projects: projectsToDistribute.splice(0, count),
+				dimension: 'square',
+				gridCols: getGridColsClass(count),
+				configuredItemsPerRow: count
+			});
+			return finalRows;
+		}
 		
 		// Get the last item count from the previous row to maintain alternation
 		if (previousLayoutType) {
@@ -111,9 +127,6 @@
 			// Available layout options based on remaining projects
 			const availableOptions: Array<{layout: keyof typeof LAYOUT_CONFIG, items: number}> = [];
 			
-			if (projectsToDistribute.length >= 5) {
-				availableOptions.push({layout: 'fivePortraits', items: 5});
-			}
 			if (projectsToDistribute.length >= 4) {
 				availableOptions.push({layout: 'fourPortraits', items: 4});
 			}
