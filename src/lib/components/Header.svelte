@@ -47,7 +47,7 @@
 				</a>
 				
 				<!-- Navigation Links -->
-				<ul class="flex items-right space-x-6" class:pointer-events-auto={!faded} class:pointer-events-none={faded}>
+				<ul class="flex items-right space-x-6 pr-3" class:pointer-events-auto={!faded} class:pointer-events-none={faded}>
 					{#each settings.data.navigation_header as navItem}
 						<li>
 							<PrismicLink 
