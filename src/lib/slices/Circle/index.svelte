@@ -1,8 +1,9 @@
 <script lang="ts">
 	import type { Content } from '@prismicio/client';
 	import type { SliceComponentProps } from '@prismicio/svelte';
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import BigWheel from '$lib/components/BigWheel.svelte';
+
 
 	type Props = SliceComponentProps<Content.CircleSlice>;
 
@@ -10,15 +11,92 @@
 
 	// Collect non-empty texts from the repeatable group
 	const texts = (slice.primary.items ?? [])
-		.map((item) => item.text ?? '')
-		.filter((t) => t && t.trim().length > 0);
+		.map((item) => (item.text ?? '').trim())
+		.filter((t) => !!t);
 
-	// Choose a random text on client only to avoid SSR hydration mismatch
+	// State & timing
+	let selectedIndex = $state<number>(-1);
 	let selectedText = $state<string | null>(null);
+
+	let fadeInTimeSec = $state(2.0);
+	let fadeOutTimeSec = $state(2.0);
+	let visibleTimeSec = $state(6);
+	let gapTimeSec = $state(1);
+
+	// BigWheel manual triggers
+	let triggerFadeIn = $state(false);
+	let triggerFadeOut = $state(false);
+
+	// Internal timers
+	let cycleTimeoutA: ReturnType<typeof setTimeout> | null = null;
+	let cycleTimeoutB: ReturnType<typeof setTimeout> | null = null;
+
+	function randomIndexDifferentFrom(current: number, length: number): number {
+		if (length <= 1) return 0;
+		let next = current;
+		while (next === current) {
+			const arr = new Uint32Array(1);
+			crypto.getRandomValues(arr);
+			next = arr[0] % length;
+		}
+		return next;
+	}
+
+	function pickInitial() {
+		if (texts.length === 0) return;
+		const arr = new Uint32Array(1);
+		crypto.getRandomValues(arr);
+		selectedIndex = arr[0] % texts.length;
+		selectedText = texts[selectedIndex];
+	}
+
+	function pickNext() {
+		if (texts.length === 0) return;
+		selectedIndex = randomIndexDifferentFrom(selectedIndex, texts.length);
+		selectedText = texts[selectedIndex];
+	}
+
+	function pulseFade(kind: 'in' | 'out') {
+		if (kind === 'in') {
+			triggerFadeIn = true;
+			setTimeout(() => (triggerFadeIn = false), 50);
+		} else {
+			triggerFadeOut = true;
+			setTimeout(() => (triggerFadeOut = false), 50);
+		}
+	}
+
+	function startCycle(initial: boolean) {
+		// Optionally trigger the initial fade-in
+		if (initial) {
+			pulseFade('in');
+		}
+
+		// After fade-in + visible time, fade out
+		if (cycleTimeoutA) clearTimeout(cycleTimeoutA);
+		cycleTimeoutA = setTimeout(() => {
+			pulseFade('out');
+
+			// After fade-out completes + gap, switch text and fade in again, then loop
+			if (cycleTimeoutB) clearTimeout(cycleTimeoutB);
+			cycleTimeoutB = setTimeout(() => {
+				pickNext();
+				pulseFade('in');
+				startCycle(false);
+			}, (fadeOutTimeSec + gapTimeSec) * 1000);
+		}, (fadeInTimeSec + visibleTimeSec) * 1000);
+	}
+
 	onMount(() => {
 		if (texts.length > 0) {
-			selectedText = texts[Math.floor(Math.random() * texts.length)];
+			pickInitial();
+			startCycle(true);
 		}
+	});
+
+	onDestroy(() => {
+		if (cycleTimeoutA) clearTimeout(cycleTimeoutA);
+		if (cycleTimeoutB) clearTimeout(cycleTimeoutB);
 	});
 </script>
 
@@ -47,8 +125,10 @@
 						textColor: '#000000',
 						transparentBackground: true,
 						manualMode: true,
-						fadeInTime: 0,
-						fadeOutTime: 0
+						fadeInTime: fadeInTimeSec,
+						fadeOutTime: fadeOutTimeSec,
+						triggerFadeIn: triggerFadeIn,
+						triggerFadeOut: triggerFadeOut
 					}
 				}}
 			/>
