@@ -5,12 +5,14 @@
 		hlsUrl: string;
 		posterImage?: any;
 		classes?: string;
+		playbackRate?: number;
 	}
 
 	const {
 		hlsUrl,
 		posterImage = null,
-		classes = 'w-full h-auto rounded object-cover mb-3'
+		classes = 'w-full h-auto rounded object-cover mb-3',
+		playbackRate = 1
 	}: Props = $props();
 
 	let videoElement: HTMLVideoElement;
@@ -22,6 +24,7 @@
 		if (videoElement) {
 			videoElement.muted = true;
 			videoElement.autoplay = true;
+			videoElement.playbackRate = playbackRate;
 			const tryPlay = () => {
 				const p = videoElement.play();
 				if (p && typeof p.then === 'function') {
@@ -48,6 +51,13 @@
 					videoElement.src = hlsUrl;
 				}
 			});
+		}
+	});
+
+	// Keep playbackRate in sync with prop changes (Svelte runes)
+	$effect(() => {
+		if (videoElement) {
+			videoElement.playbackRate = playbackRate;
 		}
 	});
 </script>

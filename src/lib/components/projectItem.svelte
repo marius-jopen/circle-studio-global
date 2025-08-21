@@ -286,6 +286,7 @@
 						hlsUrl={videoUrl}
 						posterImage={imageField} 
 						classes="w-full h-auto rounded object-cover {aspectClass}"
+						playbackRate={isHovering ? 0.5 : 1}
 					/>
 					<!-- BigWheel positioned directly over the video -->
 					<div 
@@ -343,6 +344,7 @@
 						hlsUrl={videoUrl}
 						posterImage={imageField} 
 						classes="w-full h-auto rounded object-cover {aspectClass}"
+						playbackRate={isHovering ? 0.5 : 1}
 					/>
 					<!-- BigWheel positioned directly over the video -->
 					<div 
