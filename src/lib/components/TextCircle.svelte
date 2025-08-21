@@ -13,6 +13,7 @@
   export let paused: boolean = false;
   export let textColor: string = "#000000";
   export let autoTextSize: boolean = false; // When true, scale font to fill circumference
+  export let startInvisible: boolean = false; // If true, start with letters invisible
   
   // Fade animation props
   export let fadeInTime: number = 3; // seconds to fade in all letters
@@ -431,12 +432,20 @@
 
   // Initialize fade animation on mount
   onMount(() => {
-    // Start in fully visible state by default
     const letters = text.split('');
-    letterOpacities = new Array(letters.length).fill(1);
-    letterFadeStartTimes = new Array(letters.length).fill(0);
-    fadePhase = 'fullyVisible';
-    phaseStartTime = 0;
+    if (startInvisible) {
+      // Start hidden and wait for manual trigger to fade in
+      letterOpacities = new Array(letters.length).fill(0);
+      letterFadeStartTimes = new Array(letters.length).fill(0);
+      fadePhase = 'paused';
+      phaseStartTime = 0;
+    } else {
+      // Default: fully visible
+      letterOpacities = new Array(letters.length).fill(1);
+      letterFadeStartTimes = new Array(letters.length).fill(0);
+      fadePhase = 'fullyVisible';
+      phaseStartTime = 0;
+    }
     
     startAnimation();
     return () => stopAnimation();

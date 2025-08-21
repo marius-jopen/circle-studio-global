@@ -2,7 +2,7 @@
 	import type { Content } from '@prismicio/client';
 	import type { SliceComponentProps } from '@prismicio/svelte';
 	import BigWheel from '../../components/BigWheel.svelte';
-	import { onMount, onDestroy } from 'svelte';
+	import { onMount } from 'svelte';
 
 	type Props = SliceComponentProps<Content.InputSlice>;
 
@@ -20,6 +20,11 @@
 	// Will be computed responsively based on available viewport space
 	let containerSizePercent = $state<number>(100);
 
+	// One-time fade-in control
+	let manualModeState = $state<boolean>(true);
+	let startInvisibleState = $state<boolean>(true);
+	let triggerFadeInState = $state<boolean>(false);
+
 	function updateWheelSize() {
 		if (!sectionEl) return;
 		const rect = sectionEl.getBoundingClientRect();
@@ -34,6 +39,13 @@
 		updateWheelSize();
 		const handleResize = () => updateWheelSize();
 		window.addEventListener('resize', handleResize);
+		// Trigger one-time fade in shortly after mount
+		setTimeout(() => {
+			triggerFadeInState = true;
+			setTimeout(() => {
+				triggerFadeInState = false;
+			}, 100);
+		}, 50);
 		return () => {
 			window.removeEventListener('resize', handleResize);
 		};
@@ -59,9 +71,12 @@
 			paused: false,
 			textColor: '#000000',
 			transparentBackground: true,
-			manualMode: true,
-			fadeInTime: 0,
-			fadeOutTime: 0
+			manualMode: manualModeState,
+			startInvisible: startInvisibleState,
+			triggerFadeIn: triggerFadeInState,
+			fadeInTime: 2.5,
+			fadeOutTime: 0,
+			triggerFadeOut: false
 		}
 	});
 </script>

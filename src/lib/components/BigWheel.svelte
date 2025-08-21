@@ -36,6 +36,7 @@
       manualMode?: boolean;
       triggerFadeIn?: boolean;
       triggerFadeOut?: boolean;
+      startInvisible?: boolean;
     };
   } = {
     uiVisible: false,
@@ -173,6 +174,9 @@
   $: activeTriggerFadeOut = (showControls || (!items && !globalSettings))
     ? triggerFadeOut
     : (globalSettings?.triggerFadeOut ?? triggerFadeOut);
+  $: activeStartInvisible = (showControls || (!items && !globalSettings))
+    ? false
+    : (globalSettings?.startInvisible ?? false);
 
   // Initialize from props if uiVisible is true from the start
   onMount(() => {
@@ -843,6 +847,7 @@
             manualMode={activeManualMode}
             triggerFadeIn={activeTriggerFadeIn}
             triggerFadeOut={activeTriggerFadeOut}
+            startInvisible={activeStartInvisible}
             autoTextSize={circle.autoTextSize ?? false}
             bind:this={textCircleRefs[i]}
             />
