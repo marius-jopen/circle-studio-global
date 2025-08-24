@@ -243,7 +243,14 @@
 		<track kind="captions" src="" label="Captions" />
 	</video>
 
-	
+	<!-- Semi-transparent overlay for better control readability -->
+	{#if controls && hasSoundMode}
+	<div 
+		class="absolute inset-0 bg-black/10 transition-opacity duration-200 pointer-events-none"
+		class:opacity-100={isHovering && showControls}
+		class:opacity-0={!isHovering || !showControls}
+	></div>
+	{/if}
 
 	{#if controls && hasSoundMode}
 	<div 
