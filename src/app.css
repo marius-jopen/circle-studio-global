@@ -15,3 +15,23 @@ h2, .h2 {
 .paragraph-1 {
     @apply text-xl;
 }
+
+/* Custom search input styling */
+.search-input-field {
+    background-color: #f3f3f3 !important;
+    border-radius: 24px !important;
+    border: none !important;
+    box-shadow: none !important;
+    font-size: 30px !important;
+    padding: 24px 24px 16px 24px !important;
+    color: #737373 !important;
+}
+
+.search-input-field:hover {
+    color: #000000 !important;
+}
+
+.search-input-field:focus {
+    outline: none !important;
+    border: 2px solid #000000 !important;
+}

@@ -99,7 +99,7 @@
 			type="text"
 			placeholder="Type text for the circle..."
 			bind:value={wheelText}
-			class="px-6 pt-3.5 text-neutral-500 hover:text-black transition-colors duration-300 pb-4 bg-[#f3f3f3] rounded-3xl w-full max-w-xl text-3xl outline-none focus:outline-none focus:ring-0 focus:border-black"
+			class="px-6 pt-3.5 text-neutral-500 hover:text-black transition-colors duration-300 pb-4 bg-white rounded-3xl w-full max-w-xl text-3xl outline-none focus:outline-none focus:ring-0 focus:border-black"
 		/>
 	</div>
 </section>

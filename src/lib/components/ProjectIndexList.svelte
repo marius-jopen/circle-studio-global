@@ -9,6 +9,32 @@
 	// Remove featured projects to avoid duplicates on the home page
 	$: remainingProjects = allProjects.filter(p => !featuredProjectIds.includes(p.id));
 
+	// Search functionality
+	let searchQuery = '';
+	
+	$: filteredProjects = searchQuery.trim() === '' 
+		? remainingProjects 
+		: remainingProjects.filter(project => {
+			const query = searchQuery.toLowerCase();
+			const client = (project.data.client || '').toLowerCase();
+			const title = (project.data.title || '').toLowerCase();
+			const tags = (project.tags || []).join(' ').toLowerCase();
+			
+			// Handle RichTextField for description
+			let description = '';
+			if (project.data.description && Array.isArray(project.data.description)) {
+				description = project.data.description
+					.map((item: any) => item.text || '')
+					.join(' ')
+					.toLowerCase();
+			}
+			
+			return client.includes(query) || 
+				   title.includes(query) || 
+				   tags.includes(query) || 
+				   description.includes(query);
+		});
+
 	function getYear(dateStr: string | null | undefined): string {
 		if (!dateStr) return '';
 		const d = new Date(dateStr as string);
@@ -17,7 +43,7 @@
 	}
 
 	// Sort by date desc, projects without date are pushed to the end
-	$: sortedProjects = [...remainingProjects].sort((a, b) => {
+	$: sortedProjects = [...filteredProjects].sort((a, b) => {
 		const aTime = a.data?.date ? new Date(a.data.date as string).getTime() : -Infinity;
 		const bTime = b.data?.date ? new Date(b.data.date as string).getTime() : -Infinity;
 		return bTime - aTime;
@@ -36,7 +62,17 @@
 	}
 </script>
 
-<div class="divide-y divide-black/10 border-t border-black/10 text-black hover:text-black/25 mt-[150px]">
+<div class="flex justify-end items-center w-full pt-[90px]">
+	<input
+		id="search-input"
+		type="text"
+		bind:value={searchQuery}
+		placeholder="Search projects, clients, tags..."
+		class="px-4 pt-2.5 text-neutral-500 hover:text-black placeholder:text-neutral-400 transition-colors duration-300 pb-3 bg-white rounded-3xl w-full max-w-xs outline-none focus:outline-none focus:ring-0 focus:border-black"
+	/>
+</div>
+
+<div class="divide-y divide-black/10 border-t border-black/10 text-black hover:text-black/25 mt-4">
 	{#each sortedProjects as project}
 		<a href="/work/{project.uid}"
 		   class="block py-2 hover:text-black transition-colors duration-200"
