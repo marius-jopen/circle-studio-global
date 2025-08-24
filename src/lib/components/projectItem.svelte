@@ -76,10 +76,10 @@
 	// Debug logging to understand sizing issues
 	$: {
 		if (projectTitle && containerSizePercent) {
-			console.log(`🎛️ BIGWHEEL SIZE: "${projectTitle}" | ${dimension} | ${itemsPerRow} items | ${containerSizePercent}% container | Mobile: ${isMobile}`);
+			console.log(`🎛️ BIGWHEEL SIZE: "${projectTitle}" | Original: ${dimension} | Effective: ${effectiveDimension} | ${itemsPerRow} items | ${containerSizePercent}% container | Mobile: ${isMobile}`);
 			
 			// Special debug for portrait 3 cases
-			if (dimension === 'portrait' && itemsPerRow === 3) {
+			if (effectiveDimension === 'portrait' && itemsPerRow === 3) {
 				if (containerSizePercent !== 55) {
 					console.error(`❌ PORTRAIT 3 SIZE ERROR: "${projectTitle}" should be 55% but got ${containerSizePercent}%`);
 				} else {
@@ -290,10 +290,18 @@
 {#if clickable}
 	<a href="/work/{projectUid}" class="block " bind:this={projectElement}
 	   on:mouseenter={() => {
-		   if (selectedPreview?.item?.preview_video_url_landscape) {
+		   // Use effective dimension for hover preview (portrait on mobile, original on desktop)
+		   const hoverVideoUrl = effectiveDimension === 'portrait' ? 
+			   selectedPreview?.item?.preview_video_url_portrait : 
+			   selectedPreview?.item?.preview_video_url_landscape;
+		   const hoverPoster = effectiveDimension === 'portrait' ? 
+			   selectedPreview?.item?.preview_image_portrait : 
+			   selectedPreview?.item?.preview_image_landscape;
+		   
+		   if (hoverVideoUrl) {
 			   hoverPreview.set({
-				   url: selectedPreview.item.preview_video_url_landscape,
-				   poster: selectedPreview.item.preview_image_landscape,
+				   url: hoverVideoUrl,
+				   poster: hoverPoster,
 				   uid: projectUid
 			   });
 		   }
@@ -368,10 +376,18 @@
 {:else}
     <div class="block" bind:this={projectElement} role="group"
 	     on:mouseenter={() => {
-		     if (selectedPreview?.item?.preview_video_url_landscape) {
+		     // Use effective dimension for hover preview (portrait on mobile, original on desktop)
+		     const hoverVideoUrl = effectiveDimension === 'portrait' ? 
+			     selectedPreview?.item?.preview_video_url_portrait : 
+			     selectedPreview?.item?.preview_video_url_landscape;
+		     const hoverPoster = effectiveDimension === 'portrait' ? 
+			     selectedPreview?.item?.preview_image_portrait : 
+			     selectedPreview?.item?.preview_image_landscape;
+		     
+		     if (hoverVideoUrl) {
 			     hoverPreview.set({
-				     url: selectedPreview.item.preview_video_url_landscape,
-				     poster: selectedPreview.item.preview_image_landscape,
+				     url: hoverVideoUrl,
+				     poster: hoverPoster,
 				     uid: projectUid
 			     });
 		     }
