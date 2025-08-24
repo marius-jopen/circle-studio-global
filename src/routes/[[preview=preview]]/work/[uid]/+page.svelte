@@ -40,6 +40,8 @@
 						playMode="has-sound"
 						controls={true}
 						context="main"
+						width={item.width || 1920}
+						height={item.height || 1080}
 					/>
 				{:else if item.main_image?.url}
 					<PrismicImage 
@@ -60,6 +62,8 @@
 								playMode="has-sound"
 								controls={true}
 								context="main"
+								width={item.width || 1920}
+								height={item.height || 1080}
 							/>
 						{:else if item.main_image?.url}
 							<PrismicImage 

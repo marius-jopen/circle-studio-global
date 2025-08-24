@@ -101,6 +101,20 @@
 								"label": "Main Video Url",
 								"placeholder": ""
 							}
+						},
+						"width": {
+							"type": "Number",
+							"config": {
+								"label": "Width",
+								"placeholder": ""
+							}
+						},
+						"height": {
+							"type": "Number",
+							"config": {
+								"label": "Height",
+								"placeholder": ""
+							}
 						}
 					}
 				}

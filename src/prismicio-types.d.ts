@@ -427,6 +427,26 @@ export interface ProjectsDocumentDataMainItem {
 	 * - **Documentation**: https://prismic.io/docs/fields/text
 	 */
 	main_video_url: prismic.KeyTextField;
+
+	/**
+	 * Width field in *Projects → Main*
+	 *
+	 * - **Field Type**: Number
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: projects.main[].width
+	 * - **Documentation**: https://prismic.io/docs/fields/number
+	 */
+	width: prismic.NumberField;
+
+	/**
+	 * Height field in *Projects → Main*
+	 *
+	 * - **Field Type**: Number
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: projects.main[].height
+	 * - **Documentation**: https://prismic.io/docs/fields/number
+	 */
+	height: prismic.NumberField;
 }
 
 /**

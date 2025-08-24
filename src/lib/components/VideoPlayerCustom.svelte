@@ -8,6 +8,8 @@
 		playMode?: string | 'no-sound' | 'has-sound';
 		controls?: boolean;
 		context?: string;
+		width?: number;
+		height?: number;
 	}
 
 	const {
@@ -16,7 +18,9 @@
 		classes = 'w-full h-auto rounded object-cover mb-3',
 		playMode = 'no-sound',
 		controls = false,
-		context = undefined
+		context = undefined,
+		width = 1920,
+		height = 1080
 	}: Props = $props();
 
 	let videoElement: HTMLVideoElement;
@@ -208,9 +212,10 @@
 
 
 <div 
-	class="relative {classes} overflow-hidden bg-black rounded-lg"
+	class="relative {classes} overflow-hidden bg-white rounded-lg"
 	role="group"
 	bind:this={containerElement}
+	style="aspect-ratio: {width}/{height};"
 	onmouseenter={() => { if (suppressUI) return; isHovering = true; showSoundIcon = true; if (controls) { showControls = true; notifyControlsShown(); } scheduleAutoHide(); }}
 	onmouseleave={() => { isHovering = false; clearAutoHide(); showControls = false; notifyControlsHidden(); }}
 	onmousemove={() => { if (suppressUI) return; showSoundIcon = true; if (controls) { showControls = true; notifyControlsShown(); } scheduleAutoHide(); }}
