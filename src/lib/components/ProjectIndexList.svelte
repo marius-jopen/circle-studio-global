@@ -7,6 +7,9 @@
 	export let allProjects: ProjectsDocument[] = [];
 	export let featuredProjectIds: string[] = [];
 
+	// Mobile detection
+	let isMobile = false;
+
 	// Remove featured projects to avoid duplicates on the home page
 	$: remainingProjects = allProjects.filter(p => !featuredProjectIds.includes(p.id));
 
@@ -66,6 +69,17 @@
 	let visibleItems = new Set<number>();
 	
 	onMount(() => {
+		// Check if we're on mobile
+		const checkMobile = () => {
+			isMobile = window.innerWidth < 768;
+		};
+		
+		// Initial check
+		checkMobile();
+		
+		// Listen for resize events
+		window.addEventListener('resize', checkMobile);
+		
 		// Trigger staggered animation after component mounts
 		setTimeout(() => {
 			sortedProjects.forEach((_, index) => {
@@ -75,42 +89,54 @@
 				}, index * 50);
 			});
 		}, 100);
+		
+		return () => {
+			window.removeEventListener('resize', checkMobile);
+		};
 	});
 </script>
 
-<div class="flex justify-end items-center w-full pt-[90px]">
+<div class="flex justify-center md:justify-end items-center w-full pt-[180px] md:pt-[90px]">
 	<input
 		id="search-input"
 		type="text"
 		bind:value={searchQuery}
 		placeholder="Search projects, clients, tags..."
-		class="px-4 pt-2.5 text-neutral-500 hover:text-black placeholder:text-neutral-400 transition-colors duration-400 pb-3 bg-white rounded-3xl w-full max-w-xs outline-none focus:outline-none focus:ring-0 focus:border-black"
+		class="px-4 pt-2.5 text-neutral-500 hover:text-black placeholder:text-neutral-400 transition-colors duration-400 pb-3 bg-white rounded-3xl w-full max-w-xs outline-none focus:outline-none focus:ring-0 focus:border-black text-xs md:text-base"
 	/>
 </div>
 
-<div class="divide-y divide-black/10 border-t border-black/10 text-black hover:text-black/25 mt-4">
+<div class="divide-y divide-black/10 border-t border-black/10 text-black md:hover:text-black/25 mt-4">
 	{#each sortedProjects as project, index}
 		<a href="/work/{project.uid}"
-		   class="block py-2 hover:text-black transition-all duration-500 ease-out {visibleItems.has(index) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}"
+		   class="block py-2 transition-all duration-500 ease-out {visibleItems.has(index) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'} {isMobile ? '' : 'hover:text-black'}"
 		   onmouseenter={() => {
-			   const p = pickRandomLandscape(project);
-			   if (p) hoverPreview.set({ url: p.videoUrl, poster: p.poster, uid: project.uid });
+			   // Only show hover preview on desktop
+			   if (!isMobile) {
+				   const p = pickRandomLandscape(project);
+				   if (p) hoverPreview.set({ url: p.videoUrl, poster: p.poster, uid: project.uid });
+			   }
 		   }}
 		   onmouseleave={() => {
-			   const current = get(hoverPreview);
-			   if (current?.uid === project.uid) hoverPreview.set({ url: null });
+			   // Only clear hover preview on desktop
+			   if (!isMobile) {
+				   const current = get(hoverPreview);
+				   if (current?.uid === project.uid) hoverPreview.set({ url: null });
+			   }
 		   }}
 		>
-			<div class="grid grid-cols-12 items-center gap-2 paragraph-1">
-				<div class="col-span-4 text-left tracking-wide">{project.data.client}</div>
-				<div class="col-span-4 text-left">{project.data.title}</div>
-				<div class="col-span-3 text-left whitespace-nowrap overflow-hidden text-ellipsis">
-					{#if project.tags && project.tags.length > 0}
-						{project.tags.join(', ')}
-					{/if}
-				</div>
-				<div class="col-span-1 text-right">{getYear(project.data.date)}</div>
+					<div class="grid grid-cols-12 items-center gap-2 paragraph-1">
+			<div class="col-span-6 md:col-span-4 text-left tracking-wide text-xs md:text-base">{project.data.client}</div>
+			<div class="col-span-6 md:col-span-4 text-left text-xs md:text-base">{project.data.title}</div>
+			<!-- Tags column - hidden on mobile -->
+			<div class="col-span-3 text-left whitespace-nowrap overflow-hidden text-ellipsis hidden md:block">
+				{#if project.tags && project.tags.length > 0}
+					{project.tags.join(', ')}
+				{/if}
 			</div>
+			<!-- Date column - hidden on mobile -->
+			<div class="col-span-1 text-right hidden md:block">{getYear(project.data.date)}</div>
+		</div>
 		</a>
 	{/each}
 </div>
@@ -119,6 +145,26 @@
 	/* Staggered animation for list items */
 	div > a {
 		transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+	}
+	
+	/* Mobile-specific adjustments */
+	@media (max-width: 767px) {
+		/* Ensure proper spacing on mobile */
+		.paragraph-1 {
+			font-size: 0.875rem;
+			line-height: 1.25rem;
+		}
+		
+		/* Adjust grid gap for mobile */
+		.grid {
+			gap: 0.5rem;
+		}
+		
+		/* Optimize touch experience on mobile */
+		div > a {
+			cursor: pointer;
+			-webkit-tap-highlight-color: transparent;
+		}
 	}
 </style>
 
