@@ -258,7 +258,7 @@
 </script>
 
 {#if clickable}
-	<a href="/work/{projectUid}" class="block brightness-[95%]" bind:this={projectElement}
+	<a href="/work/{projectUid}" class="block " bind:this={projectElement}
 	   on:mouseenter={() => {
 		   if (selectedPreview?.item?.preview_video_url_landscape) {
 			   hoverPreview.set({

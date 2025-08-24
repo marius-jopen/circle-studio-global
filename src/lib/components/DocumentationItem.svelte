@@ -5,7 +5,7 @@
 	export let item: any;
 </script>
 
-<div class="block brightness-[97%]">
+<div class="block">
 	{#if item}
 		{@const imageField = item.image}
 		{@const videoUrl = item.video_url}

@@ -36,7 +36,7 @@
 					<VideoPlayerCustom 
 						hlsUrl={item.main_video_url}
 						posterImage={item.main_image} 
-						classes="w-full h-auto rounded-none brightness-[95%]"
+						classes="w-full h-auto rounded-none"
 						playMode="has-sound"
 						controls={true}
 						context="main"
@@ -56,7 +56,7 @@
 							<VideoPlayerCustom 
 								hlsUrl={item.main_video_url}
 								posterImage={item.main_image} 
-								classes="w-full h-auto rounded-none brightness-[95%]"
+								classes="w-full h-auto rounded-none"
 								playMode="has-sound"
 								controls={true}
 								context="main"
