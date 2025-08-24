@@ -252,7 +252,10 @@
 		class:opacity-0={!isHovering || !showControls}
 	>
 		<button
-			class="relative block w-full h-3 pointer-events-auto"
+			class="relative block w-full h-3 pointer-events-auto transition-opacity duration-400"
+			class:opacity-100={isHovering && showControls}
+			class:opacity-0={!isHovering || !showControls}
+			class:pointer-events-none={!isHovering || !showControls}
 			role="slider"
 			aria-valuemin="0"
 			aria-valuemax="100"

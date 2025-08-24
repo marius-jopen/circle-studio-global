@@ -7,6 +7,7 @@
     import ProjectIndexList from '$lib/components/ProjectIndexList.svelte';
     import GlobalPreviewPlayer from '$lib/components/GlobalPreviewPlayer.svelte';
     import { onMount } from 'svelte';
+	import { viewMode, initializeViewMode } from '$lib/stores';
 
 	export let data;
 
@@ -31,33 +32,29 @@
 		return ids;
 	})();
 
-	// UI state: switch between grid (ProjectIndex) and list (ProjectIndexList)
-	let viewMode: 'grid' | 'list' = 'grid';
-
-	function setView(mode: 'grid' | 'list') {
-		viewMode = mode;
-		try {
-			localStorage.setItem('indexViewMode', mode);
-		} catch {}
-	}
-
 	onMount(() => {
-		try {
-			const url = new URL(window.location.href);
-			const fromQuery = url.searchParams.get('view');
-			const stored = localStorage.getItem('indexViewMode');
-			const initial = (fromQuery === 'grid' || fromQuery === 'list')
-				? (fromQuery as 'grid' | 'list')
-				: (stored === 'grid' || stored === 'list' ? (stored as 'grid' | 'list') : null);
-			if (initial && initial !== viewMode) {
-				viewMode = initial;
-			}
-		} catch {}
+		// Always check localStorage and set the correct view mode
+		const stored = localStorage.getItem('indexViewMode');
+		console.log('🏠 Home page - onMount, stored view mode:', stored);
+		console.log('🏠 Home page - current viewMode store value:', $viewMode);
+		
+		if (stored === 'grid' || stored === 'list') {
+			console.log('🏠 Home page - setting view mode from localStorage:', stored);
+			// Use setViewMode to ensure proper store updates and localStorage sync
+			import('$lib/stores').then(({ setViewMode }) => {
+				console.log('🏠 Home page - calling setViewMode with:', stored);
+				setViewMode(stored as 'grid' | 'list');
+				console.log('🏠 Home page - setViewMode completed, new store value:', $viewMode);
+			});
+		} else {
+			console.log('🏠 Home page - no stored view mode, initializing...');
+			initializeViewMode();
+		}
 	});
 </script>
 
-<!-- Minimal view switch at top-center, styled like navigation -->
-<div class="fixed left-1/2 -translate-x-1/2 top-4 z-[60] pointer-events-auto select-none">
+<!-- Remove the view switch selector from the top-center -->
+<!-- <div class="fixed left-1/2 -translate-x-1/2 top-4 z-[60] pointer-events-auto select-none">
     <div class="flex items-center gap-3 font-medium">
         <button
             class="transition-colors hover:text-gray-900 focus:outline-none"
@@ -77,7 +74,7 @@
             List
         </button>
     </div>
-</div>
+</div> -->
 
 <div class="px-3 mt-14">
 	{#if isFilled.contentRelationship(data.page.data.feature_project)}
@@ -98,7 +95,7 @@
 		</div>
 	{/if}
 
-	{#if viewMode === 'grid'}
+	{#if $viewMode === 'grid'}
 		<ProjectIndex allProjects={data.allProjects} {featuredProjectIds} />
 	{:else}
 		<ProjectIndexList allProjects={data.allProjects} {featuredProjectIds} />

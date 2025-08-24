@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-body {
+p {
     @apply text-xl;
 }
 
