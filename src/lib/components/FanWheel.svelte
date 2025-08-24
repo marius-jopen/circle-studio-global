@@ -2,13 +2,31 @@
 	// API required by assignment
 	export let items: string[] = [];
 	export let urls: (string | null | undefined)[] | undefined = undefined; // optional parallel hrefs
-	export let radius: number = 200; // px
+	export let radius: number = 50; // px
 	export let rotationSpeed: number = 60; // seconds per full rotation
 	export let fontSize: number = 20; // optional text size
 
 	$: size = radius * 2;
 	$: count = Math.max(items.length, 1);
 	const angleFor = (i: number) => (i / count) * 360;
+
+	// Function to calculate text width for positioning
+	function getTextWidth(text: string): number {
+		const canvas = document.createElement('canvas');
+		const context = canvas.getContext('2d');
+		if (context) {
+			context.font = `${fontSize}px sans-serif`;
+			return context.measureText(text).width;
+		}
+		return 0;
+	}
+
+	// Calculate the adjusted radius for right-aligned text
+	function getAdjustedRadius(text: string): number {
+		const textWidth = getTextWidth(text);
+		// Add half the text width to move the right edge to the inner boundary
+		return radius + (textWidth / 2);
+	}
 </script>
 
 <div class="w-full h-full grid place-items-center">
@@ -23,12 +41,12 @@
 							target="_blank"
 							rel="noopener noreferrer"
 							class="block whitespace-nowrap select-none"
-							style={`transform: rotate(${angleFor(i)}deg) translateY(-${radius}px) rotate(90deg); transform-origin:50% 50%; font-size:${fontSize}px;`}
+							style={`transform: rotate(${angleFor(i)}deg) translateY(-${getAdjustedRadius(label)}px) rotate(90deg); transform-origin:50% 50%; font-size:${fontSize}px;`}
 						>{label}</a>
 					{:else}
 						<span
 							class="block whitespace-nowrap select-none pointer-events-none"
-							style={`transform: rotate(${angleFor(i)}deg) translateY(-${radius}px) rotate(90deg); transform-origin:50% 50%; font-size:${fontSize}px;`}
+							style={`transform: rotate(${angleFor(i)}deg) translateY(-${getAdjustedRadius(label)}px) rotate(90deg); transform-origin:50% 50%; font-size:${fontSize}px;`}
 						>{label}</span>
 					{/if}
 				</div>
