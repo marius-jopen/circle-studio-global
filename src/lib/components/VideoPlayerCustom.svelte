@@ -222,7 +222,7 @@
 >
 	<video
 		bind:this={videoElement}
-		class="w-full h-full object-cover "
+		class="w-full h-full object-cover scale-[100.5%]"
 		poster={posterImage?.url || ''}
 		preload="auto"
 		loop
