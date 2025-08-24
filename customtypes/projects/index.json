@@ -45,7 +45,7 @@
 			"video_is_dark": {
 				"type": "Boolean",
 				"config": {
-					"label": "Video is dark",
+					"label": "Video starts dark",
 					"placeholder_false": "false",
 					"placeholder_true": "true",
 					"default_value": false

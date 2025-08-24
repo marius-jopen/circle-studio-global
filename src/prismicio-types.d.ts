@@ -525,7 +525,7 @@ interface ProjectsDocumentData {
 	description: prismic.RichTextField;
 
 	/**
-	 * Video is dark field in *Projects*
+	 * Video starts dark field in *Projects*
 	 *
 	 * - **Field Type**: Boolean
 	 * - **Placeholder**: *None*
