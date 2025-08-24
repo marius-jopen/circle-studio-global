@@ -8,56 +8,6 @@
 
 	// State to control visibility and prevent flash
 	let isReady = false;
-	let persistentProjectOrder: ProjectsDocument[] = [];
-
-	// Get or create persistent project order
-	function getPersistentProjectOrder(projects: ProjectsDocument[]): ProjectsDocument[] {
-		console.log('🔄 getPersistentProjectOrder called with', projects.length, 'projects');
-		
-		// Check if we're in browser environment
-		if (typeof window === 'undefined') {
-			console.log('🌐 Server-side rendering, creating temporary order');
-			return shuffleArray([...projects]);
-		}
-		
-		// Try to get stored order first
-		const storedOrder = localStorage.getItem('projectIndexOrder');
-		console.log('💾 Stored order from localStorage:', storedOrder);
-		
-		if (storedOrder) {
-			try {
-				const storedIds = JSON.parse(storedOrder);
-				console.log('📋 Parsed stored IDs:', storedIds);
-				
-				// Check if the stored order matches current projects
-				if (storedIds.length === projects.length) {
-					// Try to reconstruct the order from stored IDs
-					const orderedProjects = storedIds.map((id: string) => 
-						projects.find(p => p.id === id)
-					).filter(Boolean);
-					
-					if (orderedProjects.length === projects.length) {
-						console.log('✅ Stored order matches current projects, using it');
-						return orderedProjects as ProjectsDocument[];
-					} else {
-						console.log('❌ Stored order reconstruction failed, creating new one');
-					}
-				} else {
-					console.log('❌ Stored order length mismatch, creating new one');
-				}
-			} catch (e) {
-				console.log('❌ Failed to parse stored project order, creating new one');
-			}
-		}
-		
-		// Create new random order and store it
-		console.log('🎲 Creating new random order');
-		const newOrder = shuffleArray([...projects]);
-		const orderIds = newOrder.map(p => p.id);
-		localStorage.setItem('projectIndexOrder', JSON.stringify(orderIds));
-		console.log('💾 New order saved to localStorage:', orderIds);
-		return newOrder;
-	}
 
 	// Configuration for layout randomization
 	const LAYOUT_CONFIG = {
@@ -73,7 +23,7 @@
 	$: remainingProjects = allProjects.filter(project => !featuredProjectIds.includes(project.id));
 
 	// Randomize layout only when we have stable data
-	$: randomizedLayout = isReady ? createRandomizedLayout(getPersistentProjectOrder(remainingProjects)) : [];
+	$: randomizedLayout = isReady ? createRandomizedLayout(shuffleArray(remainingProjects)) : [];
 
 	function projectSupportsDimension(project: ProjectsDocument, dimension: 'portrait' | 'square' | 'landscape'): boolean {
 		const items = Array.isArray(project.data?.preview) ? (project.data.preview as any[]) : [];
@@ -120,9 +70,6 @@
 
 	// Watch for when data is stable and ready to display
 	$: if (allProjects.length > 0 && !isReady) {
-		// Initialize persistent project order
-		persistentProjectOrder = getPersistentProjectOrder(remainingProjects);
-		
 		// Use setTimeout to ensure the layout calculation completes before showing
 		setTimeout(() => {
 			isReady = true;
