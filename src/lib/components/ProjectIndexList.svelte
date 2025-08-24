@@ -36,7 +36,7 @@
 	}
 </script>
 
-<div class="divide-y divide-black/20 text-black hover:text-black/50">
+<div class="divide-y divide-black/10 border-t border-black/10 text-black hover:text-black/25 mt-[150px]">
 	{#each sortedProjects as project}
 		<a href="/work/{project.uid}"
 		   class="block py-2 hover:text-black transition-colors duration-200"
@@ -49,7 +49,7 @@
 			   if (current?.uid === project.uid) hoverPreview.set({ url: null });
 		   }}
 		>
-			<div class="grid grid-cols-12 items-center gap-2">
+			<div class="grid grid-cols-12 items-center gap-2 paragraph-1">
 				<div class="col-span-4 text-left tracking-wide">{project.data.client}</div>
 				<div class="col-span-4 text-left">{project.data.title}</div>
 				<div class="col-span-3 text-left whitespace-nowrap overflow-hidden text-ellipsis">
