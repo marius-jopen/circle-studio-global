@@ -238,89 +238,11 @@
 		<track kind="captions" src="" label="Captions" />
 	</video>
 
-	{#if controls && hasSoundMode}
-	<div class="absolute inset-0 flex items-center justify-center pointer-events-none -mt-4">
-		<div 
-			class="group flex flex-col items-center gap-0 pointer-events-auto text-white transition-opacity duration-400"
-			class:opacity-100={isHovering && showControls}
-			class:opacity-0={!isHovering || !showControls}
-			style="width:25%;"
-		>
-			{#if hasSoundMode && !isFullscreen}
-			<button
-				class="text-xl cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
-				aria-label={isMuted ? 'Unmute video' : 'Mute video'}
-				onclick={(e) => {
-					e.stopPropagation();
-					if (!videoElement) return;
-					videoElement.muted = !videoElement.muted;
-					isMuted = videoElement.muted;
-					if (!isMuted) notifyVideoPlayingWithSound();
-					else notifyVideoSoundOff();
-					scheduleAutoHide();
-				}}
-			>
-				Sound {isMuted ? 'On' : 'Off'}
-			</button>
-			{/if}
-
-			<button
-				class="text-xl cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
-				aria-label={isPlaying ? 'Pause video' : 'Play video'}
-				onclick={() => {
-					if (!videoElement) return;
-					if (videoElement.paused) { videoElement.play(); } else { videoElement.pause(); }
-					scheduleAutoHide();
-				}}
-			>
-				{isPlaying ? 'Pause' : 'Play'}
-			</button>
-
-			<button
-				class="text-xl cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
-				aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
-				onclick={async () => {
-					if (!containerElement) return;
-					try {
-						if (!document.fullscreenElement) {
-							await containerElement.requestFullscreen();
-							isFullscreen = true;
-						} else {
-							await document.exitFullscreen();
-							isFullscreen = false;
-						}
-					} catch (e) {}
-					scheduleAutoHide();
-				}}
-			>
-				{isFullscreen ? 'Return' : 'Fullscreen'}
-			</button>
-
-			<button 
-			onclick={() => {
-				if (!videoElement) return;
-				videoElement.currentTime = 0;
-				currentTime = 0;
-				scheduleAutoHide();
-			}}
-			class="text-xl cursor-pointer tabular-nums opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200 cursor-default">
-				{(() => {
-					const s = (n: number) => Math.floor(n).toString().padStart(2, '0');
-					const mins = Math.floor(currentTime / 60);
-					const secs = Math.floor(currentTime % 60);
-					const dmins = Math.floor(duration / 60);
-					const dsecs = Math.floor(duration % 60);
-					return `${mins}:${s(secs)} / ${dmins}:${s(dsecs)}`;
-				})()}
-			</button>
-
-		</div>
-	</div>
-	{/if}
+	
 
 	{#if controls && hasSoundMode}
 	<div 
-		class="absolute left-3 right-3 bottom-3 transition-opacity duration-200 opacity-70 pointer-events-none"
+		class="absolute left-3 right-3 bottom-3 transition-opacity w-full duration-200 opacity-70 pointer-events-none"
 		class:opacity-70={isHovering && showControls}
 		class:opacity-0={!isHovering || !showControls}
 	>
@@ -335,13 +257,95 @@
 			ontouchstart={startScrubTouch}
 		>
 			<!-- Centered thin visible track -->
-			<div class="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-0.5 bg-white/40 rounded">
+			<div class="absolute left-0  right-3 top-1/2 -translate-y-1/2 h-0.5 bg-white/40 rounded w-[calc(100%-1.5rem)]">
 				<div 
 					class="h-full bg-white rounded"
 					style={`width: ${duration > 0 ? (currentTime / duration) * 100 : 0}%`}
 				></div>
 			</div>
 		</button>
+
+		<div class="text-white w-full">
+			{#if controls && hasSoundMode}
+				<div class="flex px-3 pointer-events-none w-full">
+					<div 
+						class="w-full pr-3 flex flex-row justify-between pointer-events-auto text-white transition-opacity duration-400"
+						class:opacity-100={isHovering && showControls}
+						class:opacity-0={!isHovering || !showControls}
+					>
+
+							<button 
+							onclick={() => {
+								if (!videoElement) return;
+								videoElement.currentTime = 0;
+								currentTime = 0;
+								scheduleAutoHide();
+							}}
+							class="h2 text-left w-1/4 cursor-pointer tabular-nums opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200 cursor-default">
+								{(() => {
+									const s = (n: number) => Math.floor(n).toString().padStart(2, '0');
+									const mins = Math.floor(currentTime / 60);
+									const secs = Math.floor(currentTime % 60);
+									const dmins = Math.floor(duration / 60);
+									const dsecs = Math.floor(duration % 60);
+									return `${mins}:${s(secs)} / ${dmins}:${s(dsecs)}`;
+								})()}
+							</button>
+
+
+
+						<button
+							class="h2 w-1/4 cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
+							aria-label={isPlaying ? 'Pause video' : 'Play video'}
+							onclick={() => {
+								if (!videoElement) return;
+								if (videoElement.paused) { videoElement.play(); } else { videoElement.pause(); }
+								scheduleAutoHide();
+							}}
+						>
+							{isPlaying ? 'Pause' : 'Play'}
+						</button>
+
+						<button
+						class="h2 w-1/4 cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
+						aria-label={isMuted ? 'Unmute video' : 'Mute video'}
+						onclick={(e) => {
+							e.stopPropagation();
+							if (!videoElement) return;
+							videoElement.muted = !videoElement.muted;
+							isMuted = videoElement.muted;
+							if (!isMuted) notifyVideoPlayingWithSound();
+							else notifyVideoSoundOff();
+							scheduleAutoHide();
+						}}
+					>
+						Sound {isMuted ? 'On' : 'Off'}
+					</button>
+						
+
+						<button
+							class="h2 text-right w-1/4 cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
+							aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+							onclick={async () => {
+								if (!containerElement) return;
+								try {
+									if (!document.fullscreenElement) {
+										await containerElement.requestFullscreen();
+										isFullscreen = true;
+									} else {
+										await document.exitFullscreen();
+										isFullscreen = false;
+									}
+								} catch (e) {}
+								scheduleAutoHide();
+							}}
+						>
+							{isFullscreen ? 'Back' : 'Fullscreen'}
+						</button>
+					</div>
+				</div>
+			{/if}
+		</div>
 	</div>
 	{/if}
 </div>
