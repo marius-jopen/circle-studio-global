@@ -62,7 +62,7 @@
 	});
 </script>
 
-<div class="relative {classes} overflow-hidden bg-black rounded-lg">
+<div class="relative {classes} overflow-hidden bg-white rounded-lg">
 	<video
 		bind:this={videoElement}
 		class="w-full h-full object-cover"

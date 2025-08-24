@@ -137,7 +137,8 @@
 					<!-- Grid/List selector -->
 					<div class="relative">
 						<button
-							class="font-medium transition-colors hover:text-gray-900 focus:outline-none min-w-[60px] text-left cursor-pointer"
+							class="font-medium transition-all duration-600 ease-in-out hover:text-gray-900 focus:outline-none min-w-[60px] text-left cursor-pointer"
+							class:dark-mode={isDarkMode}
 							onclick={handleViewModeClick}
 							onmouseenter={() => isViewModeHovering = true}
 							onmouseleave={() => isViewModeHovering = false}
@@ -200,9 +201,11 @@
 	/* Dark mode styling for Grid/List selector button */
 	:global(header.dark-mode button.dark-mode) {
 		color: #ffffff !important;
+		transition: color 0.6s ease-in-out;
 	}
 
 	:global(header.dark-mode button.dark-mode:hover) {
 		color: #e5e7eb !important;
+		transition: color 0.6s ease-in-out;
 	}
 </style> 

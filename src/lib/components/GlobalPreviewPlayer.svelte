@@ -8,7 +8,7 @@
     <VideoPlayerSimple
       hlsUrl={$hoverPreview.url}
       posterImage={$hoverPreview.poster}
-      classes="w-[360px] h-auto rounded-md shadow-lg"
+      classes="w-[460px] h-auto rounded-md"
     />
   </div>
 {/if}
