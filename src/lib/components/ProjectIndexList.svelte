@@ -2,6 +2,7 @@
 	import type { ProjectsDocument } from '../../prismicio-types';
     import { hoverPreview } from '$lib/stores/preview';
     import { get } from 'svelte/store';
+    import { onMount } from 'svelte';
 
 	export let allProjects: ProjectsDocument[] = [];
 	export let featuredProjectIds: string[] = [];
@@ -60,6 +61,21 @@
 			poster: item.preview_image_landscape
 		};
 	}
+
+	// Animation state - track which items are visible
+	let visibleItems = new Set<number>();
+	
+	onMount(() => {
+		// Trigger staggered animation after component mounts
+		setTimeout(() => {
+			sortedProjects.forEach((_, index) => {
+				setTimeout(() => {
+					visibleItems.add(index);
+					visibleItems = visibleItems; // trigger reactivity
+				}, index * 50);
+			});
+		}, 100);
+	});
 </script>
 
 <div class="flex justify-end items-center w-full pt-[90px]">
@@ -68,14 +84,14 @@
 		type="text"
 		bind:value={searchQuery}
 		placeholder="Search projects, clients, tags..."
-		class="px-4 pt-2.5 text-neutral-500 hover:text-black placeholder:text-neutral-400 transition-colors duration-300 pb-3 bg-white rounded-3xl w-full max-w-xs outline-none focus:outline-none focus:ring-0 focus:border-black"
+		class="px-4 pt-2.5 text-neutral-500 hover:text-black placeholder:text-neutral-400 transition-colors duration-400 pb-3 bg-white rounded-3xl w-full max-w-xs outline-none focus:outline-none focus:ring-0 focus:border-black"
 	/>
 </div>
 
 <div class="divide-y divide-black/10 border-t border-black/10 text-black hover:text-black/25 mt-4">
-	{#each sortedProjects as project}
+	{#each sortedProjects as project, index}
 		<a href="/work/{project.uid}"
-		   class="block py-2 hover:text-black transition-colors duration-200"
+		   class="block py-2 hover:text-black transition-all duration-500 ease-out {visibleItems.has(index) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}"
 		   onmouseenter={() => {
 			   const p = pickRandomLandscape(project);
 			   if (p) hoverPreview.set({ url: p.videoUrl, poster: p.poster, uid: project.uid });
@@ -98,5 +114,12 @@
 		</a>
 	{/each}
 </div>
+
+<style>
+	/* Staggered animation for list items */
+	div > a {
+		transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+	}
+</style>
 
 

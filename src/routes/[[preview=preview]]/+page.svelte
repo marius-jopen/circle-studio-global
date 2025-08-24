@@ -32,6 +32,16 @@
 		return ids;
 	})();
 
+	// Track previous view mode to detect changes
+	let previousViewMode = $viewMode;
+
+	// Watch for view mode changes and scroll to top
+	$: if (previousViewMode !== $viewMode) {
+		previousViewMode = $viewMode;
+		// Scroll to top when view mode changes
+		window.scrollTo({ top: 0 });
+	}
+
 	onMount(() => {
 		// Always check localStorage and set the correct view mode
 		const stored = localStorage.getItem('indexViewMode');
