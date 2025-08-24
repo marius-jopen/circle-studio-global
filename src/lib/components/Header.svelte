@@ -25,36 +25,67 @@
 				<!-- Logo/Home Link -->
 				<a 
 					href="/" 
-					class="block -mt-6 transition-colors duration-600"
+					class="block -mt-6 transition-all duration-600 relative"
 					class:pointer-events-auto={!faded}
 					class:pointer-events-none={faded}
 					onmouseenter={() => { isHovering = true; }}
 					onmouseleave={() => { isHovering = false; }}
 				>
-					<BigWheel 
-						config={{
-							uiVisible: false,
-							items: [{
-								text: 'CIRCLE STUDIO GLOBAL',
-								rotationSpeed: isHovering ? 2 : 0.15,
-								spacingAmplitudePercent: 0,
-								spacingSpeed: 0,
-								rotationStart: 0,
-								animationType: 'sin'
-							}],
-							globalSettings: {
-								containerSizePercent: 30,
-								fontSizePercent: 15.7,
-								distancePercent: 0,
-								paused: false,
-								textColor: isDarkMode ? '#ffffff' : '#000000',
-								transparentBackground: true,
-								manualMode: true,
-								fadeInTime: 0,
-								fadeOutTime: 0
-							}
-						}}
-					/>
+					<!-- Black Wheel (default) -->
+					<div class="absolute top-0 left-0 transition-opacity duration-600" class:opacity-0={isDarkMode} class:opacity-100={!isDarkMode}>
+						<BigWheel 
+							config={{
+								uiVisible: false,
+								items: [{
+									text: 'CIRCLE STUDIO GLOBAL',
+									rotationSpeed: isHovering ? 2 : 0.15,
+									spacingAmplitudePercent: 0,
+									spacingSpeed: 0,
+									rotationStart: 0,
+									animationType: 'sin'
+								}],
+								globalSettings: {
+									containerSizePercent: 30,
+									fontSizePercent: 15.7,
+									distancePercent: 0,
+									paused: false,
+									textColor: '#000000',
+									transparentBackground: true,
+									manualMode: true,
+									fadeInTime: 0,
+									fadeOutTime: 0
+								}
+							}}
+						/>
+					</div>
+					
+					<!-- White Wheel (dark mode) -->
+					<div class="absolute top-0 left-0 transition-opacity duration-600" class:opacity-100={isDarkMode} class:opacity-0={!isDarkMode}>
+						<BigWheel 
+							config={{
+								uiVisible: false,
+								items: [{
+									text: 'CIRCLE STUDIO GLOBAL',
+									rotationSpeed: isHovering ? 2 : 0.15,
+									spacingAmplitudePercent: 0,
+									spacingSpeed: 0,
+									rotationStart: 0,
+									animationType: 'sin'
+								}],
+								globalSettings: {
+									containerSizePercent: 30,
+									fontSizePercent: 15.7,
+									distancePercent: 0,
+									paused: false,
+									textColor: '#ffffff',
+									transparentBackground: true,
+									manualMode: true,
+									fadeInTime: 0,
+									fadeOutTime: 0
+								}
+							}}
+						/>
+					</div>
 				</a>
 				
 				<!-- Navigation Links -->

@@ -247,7 +247,7 @@
 
 	{#if controls && hasSoundMode}
 	<div 
-		class="absolute left-3 right-3 bottom-3 transition-opacity w-full duration-200 opacity-70 pointer-events-none"
+		class="absolute left-3 right-3 bottom-3 transition-opacity w-full duration-200 opacity-80 pointer-events-none"
 		class:opacity-70={isHovering && showControls}
 		class:opacity-0={!isHovering || !showControls}
 	>
