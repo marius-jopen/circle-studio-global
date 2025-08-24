@@ -9,6 +9,9 @@
 	let isViewModeHovering = $state(false);
 	let currentPath = $state('');
 	
+	// Override faded state when hovering over the wheel to prevent unwanted fading
+	let effectiveFaded = $derived(isHovering ? false : faded);
+	
 	// Get current path only on client side
 	$effect(() => {
 		if (typeof window !== 'undefined') {
@@ -61,8 +64,8 @@
 <!-- Navigation Header -->
 {#if settings?.data?.navigation_header}
 	<header class="fixed top-0 z-50 w-full pointer-events-none transition-all duration-600" 
-		class:opacity-0={faded} 
-		class:opacity-100={!faded}
+		class:opacity-0={effectiveFaded} 
+		class:opacity-100={!effectiveFaded}
 		class:dark-mode={isDarkMode}>
 		<nav class="px-3 py-4">
 			<div class="flex justify-between w-full">
@@ -70,19 +73,19 @@
 				<a 
 					href="/" 
 					class="block -mt-6 transition-all duration-600 relative"
-					class:pointer-events-auto={!faded}
-					class:pointer-events-none={faded}
+					class:pointer-events-auto={!effectiveFaded}
+					class:pointer-events-none={effectiveFaded}
 					onmouseenter={() => { isHovering = true; }}
 					onmouseleave={() => { isHovering = false; }}
 				>
 					<!-- Black Wheel (default) -->
-					<div class="absolute top-0 left-0 transition-opacity duration-600" class:opacity-0={isDarkMode} class:opacity-100={!isDarkMode}>
+					<div class="absolute top-0 left-0 transition-opacity duration-600 z-10" class:opacity-0={isDarkMode} class:opacity-100={!isDarkMode}>
 						<BigWheel 
 							config={{
 								uiVisible: false,
 								items: [{
 									text: 'CIRCLE STUDIO GLOBAL',
-									rotationSpeed: isHovering ? 2 : 0.15,
+									rotationSpeed: isHovering ? 1 : 0.2,
 									spacingAmplitudePercent: 0,
 									spacingSpeed: 0,
 									rotationStart: 0,
@@ -104,13 +107,13 @@
 					</div>
 					
 					<!-- White Wheel (dark mode) -->
-					<div class="absolute top-0 left-0 transition-opacity duration-600" class:opacity-100={isDarkMode} class:opacity-0={!isDarkMode}>
+					<div class="absolute top-0 left-0 transition-opacity duration-600 z-10" class:opacity-100={isDarkMode} class:opacity-0={!isDarkMode}>
 						<BigWheel 
 							config={{
 								uiVisible: false,
 								items: [{
 									text: 'CIRCLE STUDIO GLOBAL',
-									rotationSpeed: isHovering ? 2 : 0.15,
+									rotationSpeed: isHovering ? 1 : 0.2,
 									spacingAmplitudePercent: 0,
 									spacingSpeed: 0,
 									rotationStart: 0,
@@ -133,7 +136,7 @@
 				</a>
 				
 				<!-- Add Grid/List selector before the navigation -->
-				<div class="flex items-center" class:pointer-events-auto={!faded} class:pointer-events-none={faded}>
+				<div class="flex items-center" class:pointer-events-auto={!effectiveFaded} class:pointer-events-none={effectiveFaded}>
 					<!-- Grid/List selector -->
 					<div class="relative">
 						<button
@@ -176,6 +179,41 @@
 {/if} 
 
 <style>
+	/* Ensure header is above all other content */
+	header {
+		z-index: 9999;
+		/* Don't disable pointer events on the entire header */
+	}
+
+	/* Make the logo link properly handle pointer events */
+	header a[href="/"] {
+		pointer-events: auto;
+		z-index: 10000;
+		position: relative;
+	}
+
+	/* Ensure wheels are above everything and handle pointer events correctly */
+	header a[href="/"] > div {
+		pointer-events: auto;
+		z-index: 10001;
+		cursor: pointer;
+	}
+
+	/* Prevent any cursor conflicts on wheel hover */
+	header a[href="/"]:hover {
+		cursor: pointer !important;
+	}
+
+	header a[href="/"]:hover > div {
+		cursor: pointer !important;
+	}
+
+	/* Ensure BigWheel components don't interfere with cursor */
+	:global(header a[href="/"] canvas) {
+		pointer-events: none;
+		cursor: pointer;
+	}
+
 	/* Dark mode navigation links - target PrismicLink components */
 	:global(header.dark-mode li.dark-mode *) {
 		color: #ffffff !important;

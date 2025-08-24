@@ -31,6 +31,10 @@
   let lastTimestamp = 0;
   let elapsedTime = 0;
 
+  // Audio-aware throttling
+  let audioThrottleLevel = 0; // 0 = normal, 1 = reduced, 2 = minimal
+  let lastAudioCheck = 0;
+
   // Fade animation state
   let letterOpacities: number[] = [];
   let letterFadeStartTimes: number[] = [];
@@ -234,6 +238,9 @@
       animValue = 0.5 + 0.5 * Math.sin(time * spacingSpeed * 2 * Math.PI);
     }
 
+    // Optimize drawing when audio is playing
+    const shouldOptimize = audioThrottleLevel > 0;
+    
     for (let i = 0; i < letters.length; i++) {
       const letterArc = (letterWidths[i] / circumference) * 2 * Math.PI;
       const spacing = (spacingAmplitude / 100) * circumference * animValue;
@@ -251,6 +258,14 @@
       
       ctx.textAlign = 'center';
       ctx.textBaseline = 'alphabetic';
+      
+      // Skip drawing very transparent letters when optimizing
+      if (shouldOptimize && opacity < 0.1) {
+        ctx.restore();
+        currentAngle += letterArc + spacingArc;
+        continue;
+      }
+      
       ctx.fillText(letters[i], 0, 0);
       ctx.restore();
       currentAngle += letterArc + spacingArc;
@@ -291,11 +306,66 @@
     }
   }
 
+  // Optimized animation using setTimeout for better audio compatibility
+  function animateOptimized() {
+    if (!paused) {
+      // Use fixed time step for consistent rotation regardless of frame timing
+      const deltaTime = 1 / 60; // 60 FPS target
+      rotation += rotationSpeed * deltaTime;
+      elapsedTime += deltaTime;
+      
+      // Update fade animations
+      updateFadeAnimation();
+      updateLetterOpacities();
+    }
+    
+    draw();
+    
+    if (isAnimating) {
+      // Audio-aware throttling
+      const now = Date.now();
+      if (now - lastAudioCheck > 1000) { // Check every second
+        checkAudioThrottling();
+        lastAudioCheck = now;
+      }
+      
+      // Adjust timing based on audio throttle level
+      let delay = 16; // Default 60 FPS
+      if (audioThrottleLevel === 1) delay = 32; // 30 FPS
+      if (audioThrottleLevel === 2) delay = 50; // 20 FPS
+      
+      setTimeout(animateOptimized, delay);
+    }
+  }
+
+  // Check if video is playing with sound and adjust throttling
+  function checkAudioThrottling() {
+    if (!browser) return;
+    
+    // Look for video elements playing with sound
+    const videos = document.querySelectorAll('video');
+    let hasAudioPlaying = false;
+    
+    videos.forEach(video => {
+      if (!video.paused && !video.muted && video.volume > 0) {
+        hasAudioPlaying = true;
+      }
+    });
+    
+    // Adjust throttle level based on audio state
+    if (hasAudioPlaying) {
+      audioThrottleLevel = Math.min(audioThrottleLevel + 1, 2);
+    } else {
+      audioThrottleLevel = Math.max(audioThrottleLevel - 1, 0);
+    }
+  }
+
   function startAnimation() {
     if (!isAnimating) {
       isAnimating = true;
       lastTimestamp = 0;
-      animationFrame = requestAnimationFrame(animate);
+      // Use optimized animation for better audio compatibility
+      animateOptimized();
     }
   }
 
@@ -459,5 +529,10 @@ canvas {
   display: block;
   margin: 0 auto;
   background: transparent;
+  /* Hardware acceleration for smoother animations */
+  transform: translateZ(0);
+  will-change: transform;
+  /* Audio-aware throttling - reduce repaints when audio is playing */
+  image-rendering: optimizeSpeed;
 }
 </style> 

@@ -117,7 +117,7 @@
 		</div>
 	{/if}
 
-<div class="mx-auto px-3">
+<div class="mx-auto px-3 paragraph-1">
 	<!-- Project Info -->
 	<div class="mb-32 grid grid-cols-2 gap-2 w-full">
 		<div class="col-span-1">
