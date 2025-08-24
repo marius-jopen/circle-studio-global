@@ -42,6 +42,15 @@
 					"multi": "paragraph,strong,em,hyperlink"
 				}
 			},
+			"video_is_dark": {
+				"type": "Boolean",
+				"config": {
+					"label": "Video is dark",
+					"placeholder_false": "false",
+					"placeholder_true": "true",
+					"default_value": false
+				}
+			},
 			"preview": {
 				"type": "Group",
 				"config": {

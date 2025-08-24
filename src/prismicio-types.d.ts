@@ -525,6 +525,18 @@ interface ProjectsDocumentData {
 	description: prismic.RichTextField;
 
 	/**
+	 * Video is dark field in *Projects*
+	 *
+	 * - **Field Type**: Boolean
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: false
+	 * - **API ID Path**: projects.video_is_dark
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
+	 */
+	video_is_dark: prismic.BooleanField;
+
+	/**
 	 * Preview field in *Projects*
 	 *
 	 * - **Field Type**: Group
