@@ -13,6 +13,9 @@
 	export let clickable: boolean = true;
 	export let itemsPerRow: number = 1;
 	
+	// Mobile detection
+	let isMobile = false;
+	
 	// Get project data - handle both full documents and content relationships
 	$: projectData = project.data || project;
 	$: projectTitle = projectData?.title || 'Untitled Project';
@@ -20,14 +23,27 @@
 	$: projectDate = projectData?.date || '';
 	
 	// Get aspect ratio class based on dimension
+	// On mobile, always use portrait aspect ratio
+	$: effectiveDimension = isMobile ? 'portrait' : dimension;
 	$: aspectClass = {
 		landscape: 'aspect-video',
 		square: 'aspect-square',
 		portrait: 'aspect-[3/4]'
-	}[dimension];
+	}[effectiveDimension];
 
 	// Calculate container size based on dimension and items per row
-	function getContainerSizePercent(dimension: string, itemsPerRow: number): number {
+	function getContainerSizePercent(dimension: string, itemsPerRow: number, isMobile: boolean): number {
+		if (isMobile) {
+			// Mobile: consistent sizing regardless of items per row
+			switch (dimension) {
+				case 'landscape': return 90; // Full width landscape
+				case 'square': return 85; // Full width square
+				case 'portrait': return 80; // Full width portrait
+				default: return 85;
+			}
+		}
+		
+		// Desktop: original responsive sizing
 		switch (dimension) {
 			case 'landscape':
 				switch (itemsPerRow) {
@@ -55,12 +71,12 @@
 		}
 	}
 
-	$: containerSizePercent = getContainerSizePercent(dimension, itemsPerRow);
+	$: containerSizePercent = getContainerSizePercent(dimension, itemsPerRow, isMobile);
 	
 	// Debug logging to understand sizing issues
 	$: {
 		if (projectTitle && containerSizePercent) {
-			console.log(`🎛️ BIGWHEEL SIZE: "${projectTitle}" | ${dimension} | ${itemsPerRow} items | ${containerSizePercent}% container`);
+			console.log(`🎛️ BIGWHEEL SIZE: "${projectTitle}" | ${dimension} | ${itemsPerRow} items | ${containerSizePercent}% container | Mobile: ${isMobile}`);
 			
 			// Special debug for portrait 3 cases
 			if (dimension === 'portrait' && itemsPerRow === 3) {
@@ -183,7 +199,8 @@
 	}
 	
 	// Only show text after component is mounted, user hovers, render complete, AND not navigating
-	$: showText = isMounted && isHovering && initialRenderComplete && !isNavigating;
+	// On mobile, always show static text instead of BigWheel
+	$: showText = isMobile ? false : (isMounted && isHovering && initialRenderComplete && !isNavigating);
 	
 	// Debug logging for showText state
 	$: if (projectTitle) {
@@ -191,6 +208,17 @@
 	}
 	
 	onMount(() => {
+		// Check if we're on mobile
+		const checkMobile = () => {
+			isMobile = window.innerWidth < 768;
+		};
+		
+		// Initial check
+		checkMobile();
+		
+		// Listen for resize events
+		window.addEventListener('resize', checkMobile);
+		
 		// Listen for welcome dismissal
 		const handleWelcomeDismissed = () => {
 			welcomeDismissed = true;
@@ -226,6 +254,7 @@
 		
 		return () => {
 			window.removeEventListener('welcome-dismissed', handleWelcomeDismissed);
+			window.removeEventListener('resize', checkMobile);
 		};
 	});
 	
@@ -245,12 +274,13 @@
 		const allItems = Array.isArray(projectData?.preview) ? projectData.preview : [];
 		if (allItems.length === 0) return null;
 
-		const preferred = filterItemsForDimension(allItems, dimension);
+		// On mobile, always prefer portrait assets
+		const preferred = filterItemsForDimension(allItems, effectiveDimension);
 		const candidates = preferred.length > 0 ? preferred : allItems;
 		const selectedIndex = Math.floor(Math.random() * candidates.length);
 		const selectedItem = candidates[selectedIndex];
 
-		console.log(`🎲 Project "${projectTitle}": Selected preview with dimension ${dimension}. ` +
+		console.log(`🎲 Project "${projectTitle}": Selected preview with dimension ${effectiveDimension} (original: ${dimension}). ` +
 			(preferred.length > 0 ? `From ${preferred.length} supported items.` : `No direct match; fell back to any of ${allItems.length}.`));
 
 		return { item: selectedItem, index: selectedIndex };
@@ -275,8 +305,8 @@
 		<!-- {projectUid} -->
 		{#if selectedPreview}		
 			{@const preview = selectedPreview.item}
-			{@const imageField = dimension === 'portrait' ? preview?.preview_image_portrait : preview?.preview_image_landscape}
-			{@const videoUrl = dimension === 'portrait' ? preview?.preview_video_url_portrait : preview?.preview_video_url_landscape}
+			{@const imageField = effectiveDimension === 'portrait' ? preview?.preview_image_portrait : preview?.preview_image_landscape}
+			{@const videoUrl = effectiveDimension === 'portrait' ? preview?.preview_video_url_portrait : preview?.preview_video_url_landscape}
 			
 			{#if videoUrl}
 				<div class="relative" role="group"
@@ -288,13 +318,23 @@
 						classes="w-full h-auto rounded object-cover {aspectClass}"
 						playbackRate={isHovering ? 0.5 : 1}
 					/>
-					<!-- BigWheel positioned directly over the video -->
-					<div 
-						class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay"
-						class:force-hidden={isNavigating || !initialRenderComplete || !isMounted}
-					>
-						<BigWheel {config} />
-					</div>
+					<!-- BigWheel positioned directly over the video (desktop only) -->
+					{#if !isMobile}
+						<div 
+							class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay"
+							class:force-hidden={isNavigating || !initialRenderComplete || !isMounted}
+						>
+							<BigWheel {config} />
+						</div>
+					{/if}
+					
+					<!-- Mobile static text overlay (always visible on mobile) -->
+					{#if isMobile}
+						<div class="absolute bottom-0 left-0 right-0 p-3 text-white">
+							<div class="text-sm">{projectTitle}</div>
+							<div class="text-sm">{projectClient}</div>
+						</div>
+					{/if}
 				</div>
 			{:else if imageField?.url}
 				<div class="relative" role="group"
@@ -304,13 +344,23 @@
 						field={imageField} 
 						class="w-full h-auto rounded {aspectClass} object-cover"
 					/>
-					<!-- BigWheel positioned directly over the image -->
-					<div 
-						class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay"
-						class:force-hidden={isNavigating || !initialRenderComplete || !isMounted}
-					>
-						<BigWheel {config} />
-					</div>
+					<!-- BigWheel positioned directly over the image (desktop only) -->
+					{#if !isMobile}
+						<div 
+							class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay"
+							class:force-hidden={isNavigating || !initialRenderComplete || !isMounted}
+						>
+							<BigWheel {config} />
+						</div>
+					{/if}
+					
+					<!-- Mobile static text overlay (always visible on mobile) -->
+					{#if isMobile}
+						<div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white">
+							<div class="text-sm font-medium">{projectTitle}</div>
+							<div class="text-xs opacity-80">{projectClient}</div>
+						</div>
+					{/if}
 				</div>
 			{/if}
 		{/if}
@@ -333,8 +383,8 @@
 		
 		{#if selectedPreview}		
 			{@const preview = selectedPreview.item}
-			{@const imageField = dimension === 'portrait' ? preview?.preview_image_portrait : preview?.preview_image_landscape}
-			{@const videoUrl = dimension === 'portrait' ? preview?.preview_video_url_portrait : preview?.preview_video_url_landscape}
+			{@const imageField = effectiveDimension === 'portrait' ? preview?.preview_image_portrait : preview?.preview_image_landscape}
+			{@const videoUrl = effectiveDimension === 'portrait' ? preview?.preview_video_url_portrait : preview?.preview_video_url_landscape}
 			
 			{#if videoUrl}
 				<div class="relative" role="group"
@@ -346,13 +396,23 @@
 						classes="w-full h-auto rounded object-cover {aspectClass}"
 						playbackRate={isHovering ? 0.5 : 1}
 					/>
-					<!-- BigWheel positioned directly over the video -->
-					<div 
-						class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay"
-						class:force-hidden={isNavigating || !initialRenderComplete || !isMounted}
-					>
-						<BigWheel {config} />
-					</div>
+					<!-- BigWheel positioned directly over the video (desktop only) -->
+					{#if !isMobile}
+						<div 
+							class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay"
+							class:force-hidden={isNavigating || !initialRenderComplete || !isMounted}
+						>
+							<BigWheel {config} />
+						</div>
+					{/if}
+					
+					<!-- Mobile static text overlay (always visible on mobile) -->
+					{#if isMobile}
+						<div class="absolute bottom-0 left-0 right-0 p-3 text-white">
+							<div class="text-sm font-medium">{projectTitle}</div>
+							<div class="text-xs opacity-80">{projectClient}</div>
+						</div>
+					{/if}
 				</div>
 			{:else if imageField?.url}
 				<div class="relative" role="group"
@@ -362,13 +422,23 @@
 						field={imageField} 
 						class="w-full h-auto rounded {aspectClass} object-cover"
 					/>
-					<!-- BigWheel positioned directly over the image -->
-					<div 
-						class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay"
-						class:force-hidden={isNavigating || !initialRenderComplete || !isMounted}
-					>
-						<BigWheel {config} />
-					</div>
+					<!-- BigWheel positioned directly over the image (desktop only) -->
+					{#if !isMobile}
+						<div 
+							class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay"
+							class:force-hidden={isNavigating || !initialRenderComplete || !isMounted}
+						>
+							<BigWheel {config} />
+						</div>
+					{/if}
+					
+					<!-- Mobile static text overlay (always visible on mobile) -->
+					{#if isMobile}
+						<div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white">
+							<div class="text-sm font-medium">{projectTitle}</div>
+							<div class="text-xs opacity-80">{projectClient}</div>
+						</div>
+					{/if}
 				</div>
 			{/if}
 		{/if}
@@ -439,5 +509,22 @@
 	:global(.bigwheel-overlay *) {
 		color: white !important;
 		fill: white !important;
+	}
+	
+	/* Mobile-specific adjustments */
+	@media (max-width: 767px) {
+		:global(.bigwheel-overlay > div > div:first-child) {
+			transform: scale(0.9) !important;
+		}
+		
+			/* Ensure mobile text overlay is properly positioned and styled */
+	:global(.mobile-text-overlay) {
+		z-index: 20 !important;
+	}
+	
+	/* Style all mobile text overlays */
+	:global([class*="bg-gradient-to-t"][class*="text-white"]) {
+		z-index: 20 !important;
+	}
 	}
 </style>

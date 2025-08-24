@@ -447,19 +447,19 @@
 	function getGridColsClass(itemsPerRow: number): string {
 		switch (itemsPerRow) {
 			case 1: return 'grid-cols-1';
-			case 2: return 'grid-cols-2';
-			case 3: return 'grid-cols-3';
-			case 4: return 'grid-cols-4';
-			default: return 'grid-cols-3';
+			case 2: return 'grid-cols-1 md:grid-cols-2';
+			case 3: return 'grid-cols-1 md:grid-cols-3';
+			case 4: return 'grid-cols-1 md:grid-cols-4';
+			default: return 'grid-cols-1 md:grid-cols-3';
 		}
 	}
 </script>
 
 <div>
 	{#if isReady && normalizedLayout.length > 0}
-		<div class="space-y-2">
+		<div class="space-y-2 space-y-2 ">
 			{#each normalizedLayout as row}
-				<div class="grid dimension-{row.dimension} {row.gridCols} gap-2">
+				<div class="grid dimension-{row.dimension} {row.gridCols} gap-2 gap-2">
 					{#each row.projects as project}
 						<ProjectItem dimension={row.dimension} itemsPerRow={row.configuredItemsPerRow} {project} />
 					{/each}
