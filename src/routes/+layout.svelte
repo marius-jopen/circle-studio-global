@@ -3,6 +3,7 @@
 	import { page } from '$app/state';
 	import { repositoryName } from '$lib/prismicio';
 	import Header from '$lib/components/Header.svelte';
+	import Footer from '$lib/components/Footer.svelte';
 	import Welcome from '$lib/components/Welcome.svelte';
 	import { onMount } from 'svelte';
 	import { afterNavigate } from '$app/navigation';
@@ -183,5 +184,7 @@
 <main >
 	{@render children()}
 </main>
+
+<Footer settings={data.settings} />
 
 <PrismicPreview {repositoryName} /> 
