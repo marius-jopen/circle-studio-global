@@ -14,7 +14,7 @@
 		<!-- {playMode} -->
 		<!-- {displayPlayMode} -->
 		{#if videoUrl}
-			<div class="relative">
+			<div class="relative brightness-[95%]">
 				<!-- Video: {displayPlayMode} -->
 				<VideoPlayerCustom 
 					playMode={displayPlayMode}
@@ -25,7 +25,7 @@
 				/>
 			</div>
 		{:else if imageField?.url}
-			<div class="relative">
+			<div class="relative brightness-[95%]">
 				<!-- Image -->
 				<PrismicImage 
 					field={imageField} 

@@ -48,13 +48,13 @@
 			case 'landscape':
 				switch (itemsPerRow) {
 					case 1: return 80; // Single landscape - biggest
-					case 2: return 50; // Two landscapes side by side
+					case 2: return 40; // Two landscapes side by side
 					default: return 50; // Fallback for more items
 				}
 			case 'square':
 				switch (itemsPerRow) {
 					case 1: return 70; // Single square
-					case 2: return 50; // Two squares side by side
+					case 2: return 60; // Two squares side by side
 					case 3: return 55; // Three squares
 					default: return 35; // Fallback for more items
 				}
@@ -62,8 +62,8 @@
 				switch (itemsPerRow) {
 					case 1: return 65; // Single portrait
 					case 2: return 60; // Two portraits
-					case 3: return 55; // Three portraits
-					case 4: return 55; // Four portraits - increased from 45%
+					case 3: return 50; // Three portraits
+					case 4: return 40; // Four portraits - increased from 45%
 					default: return 55; // Fallback for more items
 				}
 			default:
@@ -317,13 +317,13 @@
 			{@const videoUrl = effectiveDimension === 'portrait' ? preview?.preview_video_url_portrait : preview?.preview_video_url_landscape}
 			
 			{#if videoUrl}
-				<div class="relative" role="group"
+				<div class="relative brightness-[95%]" role="group"
 					 on:mouseenter={() => isHovering = true}
 					 on:mouseleave={() => isHovering = false}>
 					<VideoPlayerSimple 
 						hlsUrl={videoUrl}
 						posterImage={imageField} 
-						classes="w-full h-auto rounded object-cover {aspectClass}"
+						classes="w-full h-auto rounded object-cover hover:brightness-60 transition-all duration-300 {aspectClass}"
 						playbackRate={isHovering ? 0.5 : 1}
 					/>
 					<!-- BigWheel positioned directly over the video (desktop only) -->
@@ -345,12 +345,12 @@
 					{/if}
 				</div>
 			{:else if imageField?.url}
-				<div class="relative" role="group"
+				<div class="relative brightness-[95%]" role="group"
 					 on:mouseenter={() => isHovering = true}
 					 on:mouseleave={() => isHovering = false}>
 					<PrismicImage 
 						field={imageField} 
-						class="w-full h-auto rounded {aspectClass} object-cover"
+						class="w-full h-auto rounded hover:brightness-60 transition-all duration-300 {aspectClass} object-cover"
 					/>
 					<!-- BigWheel positioned directly over the image (desktop only) -->
 					{#if !isMobile}
