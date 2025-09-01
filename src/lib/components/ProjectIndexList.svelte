@@ -102,7 +102,7 @@
 		type="text"
 		bind:value={searchQuery}
 		placeholder="Search projects, clients, tags..."
-		class="px-4 pt-2.5 text-neutral-500 hover:text-black placeholder:text-neutral-400 transition-colors duration-400 pb-3 bg-white rounded-3xl w-full max-w-xs outline-none focus:outline-none focus:ring-0 focus:border-black text-xs md:text-base"
+		class="px-4 pt-2.5 text-neutral-500 hover:text-black placeholder:text-neutral-400 transition-colors duration-400 pb-3 bg-neutral-100 rounded-3xl w-full max-w-xs outline-none focus:outline-none focus:ring-0 focus:border-black text-xs md:text-base"
 	/>
 </div>
 
