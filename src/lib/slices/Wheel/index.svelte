@@ -32,7 +32,7 @@
 	});
 </script>
 
-<section class="pt-24" data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
+<section class="mb-8 mt-8" data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
 	<div class="flex justify-center items-center w-full pt-24 pb-24">
 		<FanWheel {items} {urls} radius={200} rotationSpeed={rotationSpeed} fontSize={26} />
 	</div>

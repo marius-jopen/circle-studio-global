@@ -58,3 +58,9 @@ h2, .h2 {
     outline: none !important;
     border: 2px solid #000000 !important;
 }
+
+/* Global content container
+   Adjust here to change site-wide max width behavior (including mobile breakpoints) */
+.content-container {
+    @apply max-w-8/12 mx-auto;
+}

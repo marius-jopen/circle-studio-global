@@ -2,39 +2,39 @@
 	import type { Content } from '@prismicio/client';
 	import type { SliceComponentProps } from '@prismicio/svelte';
 
+
 	type Props = SliceComponentProps<Content.SpacerSlice>;
 
 	const { slice }: Props = $props();
+
+	// Map select values to Tailwind vertical padding scale
+	const sizeToPaddingValue: Record<NonNullable<Content.SpacerSliceDefaultPrimary['spacer_mobile']>, number> = {
+		none: 0,
+		xs: 8,
+		sm: 12,
+		md: 16,
+		xl: 24,
+		xxl: 32
+	};
+
+	function getPyClass(size: Content.SpacerSliceDefaultPrimary['spacer_mobile']): string {
+		const v = size ? sizeToPaddingValue[size] : 0;
+		return v === 0 ? 'py-0' : `py-${v}`;
+	}
+
+	const mobileSize = slice.primary.spacer_mobile ?? 'none';
+	const desktopSize = slice.primary.spacer_desktop ?? mobileSize;
+
+	const mobilePy = getPyClass(mobileSize);
+	const desktopPy = getPyClass(desktopSize);
 </script>
 
-<section data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
-	Placeholder component for {slice.slice_type} (variation: {slice.variation}) slices.
-	<br />
-	<strong>You can edit this slice directly in your code editor.</strong>
-	<!--
-	💡 Use Prismic MCP with your code editor
-	
-	Get AI-powered help to build your slice components — based on your actual model.
-	
-	▶️ Setup:
-	1. Add a new MCP Server in your code editor:
-	
-	{
-	  "mcpServers": {
-	    "Prismic MCP": {
-	      "command": "npx",
-	      "args": ["-y", "@prismicio/mcp-server@latest"]
-	    }
-	  }
-	}
-	
-	2. Select a model optimized for coding (e.g. Claude 3.7 Sonnet or similar)
-	
-	✅ Then open your slice file and ask your code editor:
-		"Code this slice"
-	
-	Your code editor reads your slice model and helps you code faster ⚡
-	🎙️ Give your feedback: https://community.prismic.io/t/help-us-shape-the-future-of-slice-creation/19505
-	📚 Documentation: https://prismic.io/docs/ai#code-with-prismics-mcp-server
-	-->
+<section
+	class={`px-3 ${mobilePy} md:${desktopPy}`}
+	data-slice-type={slice.slice_type}
+	data-slice-variation={slice.variation}
+>
+	{#if slice.primary.line}
+		<div class="w-full h-px bg-neutral-200" aria-hidden="true"></div>
+	{/if}
 </section>
