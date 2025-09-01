@@ -19,8 +19,19 @@
 		oneLandscape: { weight: 20, itemsPerRow: 1, dimension: 'landscape' as const }
 	};
 
-	// Filter out featured projects to show only remaining projects
-	$: remainingProjects = allProjects.filter(project => !featuredProjectIds.includes(project.id));
+	// Dedupe by id, then filter out featured projects to show only remaining projects
+	function dedupeProjectsById(projects: ProjectsDocument[]): ProjectsDocument[] {
+		const seen = new Set<string>();
+		return projects.filter((p) => {
+			const key = p.id || p.uid;
+			if (!key) return false;
+			if (seen.has(key)) return false;
+			seen.add(key);
+			return true;
+		});
+	}
+
+	$: remainingProjects = dedupeProjectsById(allProjects).filter((project) => !featuredProjectIds.includes(project.id));
 
 	// Randomize layout only when we have stable data
 	$: randomizedLayout = isReady ? createRandomizedLayout(shuffleArray(remainingProjects)) : [];
