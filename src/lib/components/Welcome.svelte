@@ -99,8 +99,8 @@
     ],
     globalSettings: {
       containerSizePercent: 100,
-      fontSizePercent: 9,
-      distancePercent: 1,
+      fontSizePercent: 7,
+      distancePercent: 0.8,
       paused: false,
       textColor: '#000000',
       backgroundColor: '#ffffff',
