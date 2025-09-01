@@ -29,6 +29,8 @@
 					classes="w-full h-auto rounded object-cover"
 					controlsTextClass={controlsTextClass}
 					controls={true}
+					width="auto"
+					height="auto"
 				/>
 			</div>
 		{:else if imageField?.url}

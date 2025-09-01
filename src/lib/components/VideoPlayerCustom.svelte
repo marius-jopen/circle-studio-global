@@ -9,8 +9,8 @@
 		controls?: boolean;
 		context?: string;
 		controlsTextClass?: string;
-		width?: number;
-		height?: number;
+		width?: number | 'auto';
+		height?: number | 'auto';
 	}
 
 	const {
@@ -24,6 +24,14 @@
 		width = 1920,
 		height = 1080
 	}: Props = $props();
+
+	const useFixedAspect = $derived(typeof width === 'number' && typeof height === 'number');
+	const containerStyle = $derived(useFixedAspect ? `aspect-ratio: ${width}/${height};` : '');
+	const videoClass = $derived(
+		useFixedAspect
+			? 'w-full h-full object-cover scale-[100.5%] cursor-pointer'
+			: 'w-full h-auto object-contain cursor-pointer'
+	);
 
 	let videoElement: HTMLVideoElement;
     let isHovering = $state(false);
@@ -227,7 +235,7 @@
 	class="relative {classes} overflow-hidden bg-white rounded-lg"
 	role="group"
 	bind:this={containerElement}
-	style="aspect-ratio: {width}/{height};"
+	style={containerStyle}
 	onclick={togglePlayPause}
 	onmouseenter={() => { if (suppressUI) return; isHovering = true; showSoundIcon = true; if (controls) { showControls = true; notifyControlsShown(); } scheduleAutoHide(); }}
 	onmouseleave={() => { isHovering = false; clearAutoHide(); showControls = false; notifyControlsHidden(); }}
@@ -235,7 +243,7 @@
 >
 	<video
 		bind:this={videoElement}
-		class="w-full h-full object-cover scale-[100.5%] cursor-pointer"
+		class={videoClass}
 		poster={posterImage?.url || ''}
 		preload="auto"
 		loop
