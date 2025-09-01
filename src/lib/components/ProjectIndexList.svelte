@@ -46,6 +46,21 @@
 		return String(d.getFullYear());
 	}
 
+	function formatDateToMonthDotDayDotYear(value: string | null | undefined): string {
+		if (!value) return '';
+		const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value as string);
+		if (m) {
+			const [, y, mm, dd] = m;
+			return `${mm}.${dd}.${y}`;
+		}
+		const d = new Date(value as string);
+		if (Number.isNaN(d.getTime())) return '';
+		const mm = String(d.getMonth() + 1).padStart(2, '0');
+		const dd = String(d.getDate()).padStart(2, '0');
+		const y = String(d.getFullYear());
+		return `${mm}.${dd}.${y}`;
+	}
+
 	// Sort by date desc, projects without date are pushed to the end
 	$: sortedProjects = [...filteredProjects].sort((a, b) => {
 		const aTime = a.data?.date ? new Date(a.data.date as string).getTime() : -Infinity;
@@ -135,7 +150,7 @@
 				{/if}
 			</div>
 			<!-- Date column - hidden on mobile -->
-			<div class="col-span-1 text-right hidden md:blocktext-xs md:text-base">{getYear(project.data.date)}</div>
+			<div class="col-span-1 text-right hidden md:block text-xs md:text-base">{formatDateToMonthDotDayDotYear(project.data.date as string)}</div>
 		</div>
 		</a>
 	{/each}

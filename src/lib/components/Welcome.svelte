@@ -18,7 +18,21 @@
   $: isProjectPage = page?.route?.id?.includes('/work/[uid]');
   $: projectTitle = isProjectPage ? (page?.data?.project?.data?.title || page?.data?.title || 'Project') : '';
   $: projectClient = isProjectPage ? (page?.data?.project?.data?.client || 'Client') : '';
-  $: projectDate = isProjectPage ? (page?.data?.project?.data?.date || '') : '';
+  function formatDateToMonthDotDayDotYear(value: string): string {
+    if (!value) return '';
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+    if (m) {
+      const [, y, mm, dd] = m;
+      return `${mm}.${dd}.${y}`;
+    }
+    const d = new Date(value);
+    if (Number.isNaN(d.getTime())) return '';
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    const y = String(d.getFullYear());
+    return `${mm}.${dd}.${y}`;
+  }
+  $: projectDate = isProjectPage ? formatDateToMonthDotDayDotYear(page?.data?.project?.data?.date || '') : '';
   
   // Only show welcome screen on project pages
   $: {
@@ -313,9 +327,7 @@
     height: 100%;
   }
 
-  .wheel-container {
-    /* Container for the wheel - visible immediately */
-  }
+  
 
   .click-hint {
     position: absolute;
