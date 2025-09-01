@@ -1,0 +1,39 @@
+{
+  "id": "feature_list",
+  "type": "SharedSlice",
+  "name": "FeatureList",
+  "description": "FeatureList",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "take_collaborators_automatically": {
+          "type": "Boolean",
+          "config": {
+            "label": "Take Collaborators Automatically",
+            "placeholder_false": "false",
+            "placeholder_true": "true",
+            "default_value": false
+          }
+        },
+        "items": {
+          "type": "Link",
+          "config": {
+            "label": "Items",
+            "placeholder": "",
+            "select": null,
+            "allowTargetBlank": true,
+            "allowText": true,
+            "repeat": true
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

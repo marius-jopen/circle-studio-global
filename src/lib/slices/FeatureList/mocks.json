@@ -1,0 +1,28 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"take_collaborators_automatically": {
+				"__TYPE__": "BooleanContent",
+				"value": false
+			},
+			"items": {
+				"__TYPE__": "RepeatableContent",
+				"type": "Link",
+				"value": [
+					{
+						"__TYPE__": "LinkContent",
+						"key": "2502e2e0-c954-497a-91c8-cb98a5311d48",
+						"value": {
+							"__TYPE__": "ExternalLink",
+							"url": "http://google.com",
+							"text": "stronger"
+						}
+					}
+				]
+			}
+		},
+		"items": []
+	}
+]

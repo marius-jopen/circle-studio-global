@@ -2,6 +2,7 @@
 
 import Circle from './Circle/index.svelte';
 import Documentation from './Documentation/index.svelte';
+import FeatureList from './FeatureList/index.svelte';
 import Input from './Input/index.svelte';
 import RichText from './RichText/index.svelte';
 import Wheel from './Wheel/index.svelte';
@@ -9,6 +10,7 @@ import Wheel from './Wheel/index.svelte';
 export const components = {
 	circle: Circle,
 	documentation: Documentation,
+	feature_list: FeatureList,
 	input: Input,
 	rich_text: RichText,
 	wheel: Wheel

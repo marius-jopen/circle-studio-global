@@ -198,7 +198,13 @@ export type HomeDocument<Lang extends string = string> = prismic.PrismicDocument
 	Lang
 >;
 
-type PageDocumentDataSlicesSlice = InputSlice | WheelSlice | CircleSlice | RichTextSlice;
+type PageDocumentDataSlicesSlice =
+	| DocumentationSlice
+	| FeatureListSlice
+	| InputSlice
+	| WheelSlice
+	| CircleSlice
+	| RichTextSlice;
 
 /**
  * Content for Page documents
@@ -826,6 +832,59 @@ type DocumentationSliceVariation = DocumentationSliceDefault;
 export type DocumentationSlice = prismic.SharedSlice<'documentation', DocumentationSliceVariation>;
 
 /**
+ * Primary content in *FeatureList → Default → Primary*
+ */
+export interface FeatureListSliceDefaultPrimary {
+	/**
+	 * Take Collaborators Automatically field in *FeatureList → Default → Primary*
+	 *
+	 * - **Field Type**: Boolean
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: false
+	 * - **API ID Path**: feature_list.default.primary.take_collaborators_automatically
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
+	 */
+	take_collaborators_automatically: prismic.BooleanField;
+
+	/**
+	 * Items field in *FeatureList → Default → Primary*
+	 *
+	 * - **Field Type**: Link
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: feature_list.default.primary.items
+	 * - **Documentation**: https://prismic.io/docs/fields/link
+	 */
+	items: prismic.Repeatable<prismic.LinkField<string, string, unknown, prismic.FieldState, never>>;
+}
+
+/**
+ * Default variation for FeatureList Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type FeatureListSliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Simplify<FeatureListSliceDefaultPrimary>,
+	never
+>;
+
+/**
+ * Slice variation for *FeatureList*
+ */
+type FeatureListSliceVariation = FeatureListSliceDefault;
+
+/**
+ * FeatureList Shared Slice
+ *
+ * - **API ID**: `feature_list`
+ * - **Description**: FeatureList
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type FeatureListSlice = prismic.SharedSlice<'feature_list', FeatureListSliceVariation>;
+
+/**
  * Default variation for Input Slice
  *
  * - **API ID**: `default`
@@ -971,6 +1030,10 @@ declare module '@prismicio/client' {
 			DocumentationSliceDefaultPrimary,
 			DocumentationSliceVariation,
 			DocumentationSliceDefault,
+			FeatureListSlice,
+			FeatureListSliceDefaultPrimary,
+			FeatureListSliceVariation,
+			FeatureListSliceDefault,
 			InputSlice,
 			InputSliceVariation,
 			InputSliceDefault,
