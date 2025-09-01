@@ -52,6 +52,10 @@
 	onMount(() => {
 		const handleNavigationClick = (e: Event) => {
 			const target = e.target as HTMLElement;
+			// Ignore clicks coming from video components/controls
+			if (target.closest('[data-video-interactive="true"]') || target.closest('[data-video-control="true"]')) {
+				return;
+			}
 			if (target.closest('a') || target.closest('button')) {
 				sessionStorage.setItem('circle-studio-navigating', 'true');
 				sessionStorage.setItem('user-has-interacted', 'true');

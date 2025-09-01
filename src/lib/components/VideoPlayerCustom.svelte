@@ -11,6 +11,9 @@
 		controlsTextClass?: string;
 		width?: number | 'auto';
 		height?: number | 'auto';
+		autoplayOnMount?: boolean;
+		defaultMuted?: boolean;
+		unmuteOnUserPlay?: boolean;
 	}
 
 	const {
@@ -22,7 +25,10 @@
 		context = undefined,
 		controlsTextClass = 'h2',
 		width = 1920,
-		height = 1080
+		height = 1080,
+		autoplayOnMount = true,
+		defaultMuted = true,
+		unmuteOnUserPlay = false
 	}: Props = $props();
 
 	const useFixedAspect = $derived(typeof width === 'number' && typeof height === 'number');
@@ -35,7 +41,7 @@
 
 	let videoElement: HTMLVideoElement;
     let isHovering = $state(false);
-    let isMuted = $state(true);
+    let isMuted = $state(defaultMuted);
     let showSoundIcon = $state(true);
 	const videoId = Math.random().toString(36).slice(2);
 	let isPlaying = $state(false);
@@ -78,11 +84,28 @@
     function togglePlayPause() {
         if (!videoElement) return;
         if (videoElement.paused) {
+            if (unmuteOnUserPlay && videoElement.muted) {
+                videoElement.muted = false;
+                isMuted = false;
+                notifyVideoPlayingWithSound();
+            }
             videoElement.play();
         } else {
             videoElement.pause();
         }
         scheduleAutoHide();
+    }
+
+    // Expose imperative play to allow first-click synchronous playback from parent
+    export function playNow(unmute: boolean = false) {
+        if (!videoElement) return;
+        if (unmute) {
+            videoElement.muted = false;
+            isMuted = false;
+            notifyVideoPlayingWithSound();
+        }
+        try { videoElement.play(); } catch (e) {}
+        showControls = true;
     }
 
     function positionToPercent(clientX: number): number {
@@ -180,30 +203,47 @@
     const hasSoundMode = $derived(playMode === 'has-sound' || playMode === 'has sound');
 
 	onMount(() => {
-		// Always autoplay muted and ensure playback kicks in
+		// Configure initial mute/autoplay based on props
 		if (videoElement) {
-			videoElement.muted = true;
-			isMuted = true;
-			videoElement.autoplay = true;
-			const tryPlay = () => {
-				const p = videoElement.play();
-				if (p && typeof p.then === 'function') {
-					p.catch(() => {
-						videoElement.muted = true;
-						isMuted = true;
-						videoElement.play().catch(() => {});
-					});
+			videoElement.muted = defaultMuted;
+			isMuted = defaultMuted;
+			videoElement.autoplay = autoplayOnMount;
+			if (autoplayOnMount) {
+				const tryPlay = () => {
+					const p = videoElement.play();
+					if (p && typeof p.then === 'function') {
+						p.catch(() => {
+							// If autoplay with sound is blocked, ensure muted and retry
+							videoElement.muted = true;
+							isMuted = true;
+							videoElement.play().catch(() => {});
+						});
+					}
+				};
+				if (videoElement.readyState >= 2) {
+					tryPlay();
+				} else {
+					videoElement.addEventListener('loadeddata', tryPlay, { once: true });
 				}
-			};
-			if (videoElement.readyState >= 2) {
-				tryPlay();
-			} else {
-				videoElement.addEventListener('loadeddata', tryPlay, { once: true });
 			}
 		}
 
 		// Listen for other videos unmuting
 		window.addEventListener('video-playing-with-sound', handleOtherVideoPlaying);
+
+		// Listen for external play requests (used by no-autoplay poster click)
+		const playRequestHandler = (event: Event) => {
+			const { context: requestContext } = (event as CustomEvent).detail || {};
+			if (!videoElement) return;
+			if (requestContext && context && requestContext === context) {
+				if (unmuteOnUserPlay) {
+					videoElement.muted = false;
+					isMuted = false;
+				}
+				videoElement.play().catch(() => {});
+			}
+		};
+		window.addEventListener('video-play-request', playRequestHandler);
 
 		// Track fullscreen state
 		const fsHandler = () => {
@@ -226,6 +266,7 @@
 		return () => {
 			window.removeEventListener('video-playing-with-sound', handleOtherVideoPlaying);
 			document.removeEventListener('fullscreenchange', fsHandler);
+			window.removeEventListener('video-play-request', playRequestHandler);
 		};
 	});
 </script>
@@ -233,10 +274,13 @@
 
 <div 
 	class="relative {classes} overflow-hidden bg-white rounded-lg"
-	role="group"
+	role="button"
+	data-video-interactive="true"
 	bind:this={containerElement}
 	style={containerStyle}
+	tabindex="0"
 	onclick={togglePlayPause}
+	onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); togglePlayPause(); } }}
 	onmouseenter={() => { if (suppressUI) return; isHovering = true; showSoundIcon = true; if (controls) { showControls = true; notifyControlsShown(); } scheduleAutoHide(); }}
 	onmouseleave={() => { isHovering = false; clearAutoHide(); showControls = false; notifyControlsHidden(); }}
 	onmousemove={() => { if (suppressUI) return; showSoundIcon = true; if (controls) { showControls = true; notifyControlsShown(); } scheduleAutoHide(); }}
@@ -247,8 +291,8 @@
 		poster={posterImage?.url || ''}
 		preload="auto"
 		loop
-		muted
-		autoplay
+		muted={isMuted}
+		autoplay={autoplayOnMount}
 		playsinline
 		ontimeupdate={() => { currentTime = videoElement.currentTime; }}
 		onloadedmetadata={() => { duration = videoElement.duration; }}
@@ -280,6 +324,7 @@
 		class:opacity-0={!isHovering || !showControls}
 	>
 		<button
+			data-video-control="true"
 			class="relative block w-full h-3 pointer-events-auto transition-opacity duration-400"
 			class:opacity-100={isHovering && showControls}
 			class:opacity-0={!isHovering || !showControls}
