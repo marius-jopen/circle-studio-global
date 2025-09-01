@@ -199,6 +199,7 @@ export type HomeDocument<Lang extends string = string> = prismic.PrismicDocument
 >;
 
 type PageDocumentDataSlicesSlice =
+	| VideoSlice
 	| SpacerSlice
 	| DocumentationSlice
 	| FeatureListSlice
@@ -1046,6 +1047,68 @@ type SpacerSliceVariation = SpacerSliceDefault;
 export type SpacerSlice = prismic.SharedSlice<'spacer', SpacerSliceVariation>;
 
 /**
+ * Primary content in *Video → Default → Primary*
+ */
+export interface VideoSliceDefaultPrimary {
+	/**
+	 * Image field in *Video → Default → Primary*
+	 *
+	 * - **Field Type**: Image
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: video.default.primary.image
+	 * - **Documentation**: https://prismic.io/docs/fields/image
+	 */
+	image: prismic.ImageField<never>;
+
+	/**
+	 * VideoUrl field in *Video → Default → Primary*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: video.default.primary.videourl
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	videourl: prismic.KeyTextField;
+
+	/**
+	 * Options field in *Video → Default → Primary*
+	 *
+	 * - **Field Type**: Select
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: video.default.primary.options
+	 * - **Documentation**: https://prismic.io/docs/fields/select
+	 */
+	options: prismic.SelectField<'no-autoplay' | 'autoplay-has-sound' | 'autoplay-no-sound'>;
+}
+
+/**
+ * Default variation for Video Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type VideoSliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Simplify<VideoSliceDefaultPrimary>,
+	never
+>;
+
+/**
+ * Slice variation for *Video*
+ */
+type VideoSliceVariation = VideoSliceDefault;
+
+/**
+ * Video Shared Slice
+ *
+ * - **API ID**: `video`
+ * - **Description**: Video
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type VideoSlice = prismic.SharedSlice<'video', VideoSliceVariation>;
+
+/**
  * Primary content in *Wheel → Default → Primary*
  */
 export interface WheelSliceDefaultPrimary {
@@ -1163,6 +1226,10 @@ declare module '@prismicio/client' {
 			SpacerSliceDefaultPrimary,
 			SpacerSliceVariation,
 			SpacerSliceDefault,
+			VideoSlice,
+			VideoSliceDefaultPrimary,
+			VideoSliceVariation,
+			VideoSliceDefault,
 			WheelSlice,
 			WheelSliceDefaultPrimary,
 			WheelSliceVariation,
