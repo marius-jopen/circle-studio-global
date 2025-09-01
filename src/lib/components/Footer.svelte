@@ -6,7 +6,7 @@
   const currentYear = new Date().getFullYear();
 </script>
 
-<footer class="w-full px-3 py-4 mt-10">
+<footer class="w-full px-3 pb-4">
   <div class="flex justify-between items-center w-full border-t border-gray-200 pt-3">
     <div class="text-sm">© {currentYear} Circle Studio</div>
     {#if settings?.data?.navigation_footer?.length}

@@ -224,6 +224,18 @@ interface PageDocumentData {
 	title: prismic.RichTextField;
 
 	/**
+	 * No Footer field in *Page*
+	 *
+	 * - **Field Type**: Boolean
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: false
+	 * - **API ID Path**: page.no_footer
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
+	 */
+	no_footer: prismic.BooleanField;
+
+	/**
 	 * Slice Zone field in *Page*
 	 *
 	 * - **Field Type**: Slice Zone

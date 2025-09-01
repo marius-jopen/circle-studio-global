@@ -189,6 +189,8 @@
 	{@render children()}
 </main>
 
-<Footer settings={data.settings} />
+{#if !(page?.data?.page?.data?.no_footer ?? false)}
+	<Footer settings={data.settings} />
+{/if}
 
 <PrismicPreview {repositoryName} /> 
