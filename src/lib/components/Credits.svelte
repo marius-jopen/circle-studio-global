@@ -9,8 +9,8 @@
 </script>
 
 {#if credits && credits.length > 0}
-	<section class="mb-12">
-		<h2 class="text-center font-normal mb-8 ">Credits</h2>
+	<section class="mb-12 mt-8">
+		<div class="text-center font-normal mb-4 ">Credits</div>
 		<div class="text-black hover:text-gray-400">
 			{#each credits as credit}
 				{#if credit.label && credit.person && credit.person.length > 0}

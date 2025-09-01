@@ -11,8 +11,17 @@ export async function load({ params, fetch, cookies }) {
 			fetchLinks: ['people.name'] // Fetch the name field from linked people documents
 		});
 
+		// Get 3 random related projects excluding current
+		const allProjects = await client.getAllByType('projects');
+		const supportsPortrait = (p: any) =>
+			Array.isArray(p?.data?.preview) && p.data.preview.some((i: any) => i?.preview_video_url_portrait || i?.preview_image_portrait?.url);
+		const otherProjects = allProjects.filter((p) => p.id !== project.id).filter(supportsPortrait);
+		const shuffled = [...otherProjects].sort(() => Math.random() - 0.5);
+		const relatedProjects = shuffled.slice(0, 3);
+
 		return {
 			project,
+			relatedProjects,
 			title: project.data.title || 'Project',
 			meta_description: project.data.meta_description,
 			meta_title: project.data.meta_title,

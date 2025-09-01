@@ -3,6 +3,7 @@
 	import type { PageProps } from './$types';
 	import VideoPlayerCustom from '$lib/components/VideoPlayerCustom.svelte';
 	import Credits from '$lib/components/Credits.svelte';
+	import RelatedProjects from '$lib/components/RelatedProjects.svelte';
 	import { onMount } from 'svelte';
 
 	import { components } from '$lib/slices';
@@ -11,6 +12,7 @@
 	
 	const project = $derived(data.project);
 	const projectData = $derived(project.data);
+	const relatedProjects = $derived(data.relatedProjects);
 
 	// Dispatch video_is_dark state to layout when component mounts
 	onMount(() => {
@@ -140,4 +142,11 @@
 
 	<!-- Credits -->
 	<Credits credits={projectData.credits} />
+
+	<!-- Related Projects -->
+	{#if relatedProjects && relatedProjects.length > 0}
+		<div class="mt-16">
+			<RelatedProjects projects={relatedProjects} />
+		</div>
+	{/if}
 </div>
