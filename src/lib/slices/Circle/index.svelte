@@ -18,9 +18,9 @@
 	let selectedIndex = $state<number>(-1);
 	let selectedText = $state<string | null>(null);
 
-	let fadeInTimeSec = $state(2.0);
-	let fadeOutTimeSec = $state(2.0);
-	let visibleTimeSec = $state(6);
+	let fadeInTimeSec = $state(1.7);
+	let fadeOutTimeSec = $state(1.7);
+	let visibleTimeSec = $state(4.7);
 	let gapTimeSec = $state(1);
 
 	// BigWheel manual triggers
