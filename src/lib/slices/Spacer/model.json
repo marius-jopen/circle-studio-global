@@ -50,6 +50,15 @@
               "xxl"
             ]
           }
+        },
+        "max_width": {
+          "type": "Boolean",
+          "config": {
+            "label": "Max Width",
+            "placeholder_false": "false",
+            "placeholder_true": "true",
+            "default_value": false
+          }
         }
       },
       "items": {}

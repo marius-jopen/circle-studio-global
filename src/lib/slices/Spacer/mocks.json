@@ -11,6 +11,10 @@
 				"__TYPE__": "FieldContent",
 				"value": "xxl",
 				"type": "Select"
+			},
+			"max_width": {
+				"__TYPE__": "BooleanContent",
+				"value": true
 			}
 		},
 		"items": []

@@ -1005,6 +1005,17 @@ export interface SpacerSliceDefaultPrimary {
 	 * - **Documentation**: https://prismic.io/docs/fields/select
 	 */
 	spacer_mobile: prismic.SelectField<'none' | 'xs' | 'sm' | 'md' | 'xl' | 'xxl'>;
+
+	/**
+	 * Max Width field in *Spacer → Default → Primary*
+	 *
+	 * - **Field Type**: Boolean
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: false
+	 * - **API ID Path**: spacer.default.primary.max_width
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
+	 */
+	max_width: prismic.BooleanField;
 }
 
 /**

@@ -62,5 +62,5 @@ h2, .h2 {
 /* Global content container
    Adjust here to change site-wide max width behavior (including mobile breakpoints) */
 .content-container {
-    @apply max-w-8/12 mx-auto;
+    @apply max-w-9/12 mx-auto;
 }
