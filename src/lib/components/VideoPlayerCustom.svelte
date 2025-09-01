@@ -20,7 +20,7 @@
 		playMode = 'no-sound',
 		controls = false,
 		context = undefined,
-		controlsTextClass = '',
+		controlsTextClass = 'h2',
 		width = 1920,
 		height = 1080
 	}: Props = $props();
@@ -65,6 +65,16 @@
             clearTimeout(hideUiTimeout);
             hideUiTimeout = undefined;
         }
+    }
+
+    function togglePlayPause() {
+        if (!videoElement) return;
+        if (videoElement.paused) {
+            videoElement.play();
+        } else {
+            videoElement.pause();
+        }
+        scheduleAutoHide();
     }
 
     function positionToPercent(clientX: number): number {
@@ -218,13 +228,14 @@
 	role="group"
 	bind:this={containerElement}
 	style="aspect-ratio: {width}/{height};"
+	onclick={togglePlayPause}
 	onmouseenter={() => { if (suppressUI) return; isHovering = true; showSoundIcon = true; if (controls) { showControls = true; notifyControlsShown(); } scheduleAutoHide(); }}
 	onmouseleave={() => { isHovering = false; clearAutoHide(); showControls = false; notifyControlsHidden(); }}
 	onmousemove={() => { if (suppressUI) return; showSoundIcon = true; if (controls) { showControls = true; notifyControlsShown(); } scheduleAutoHide(); }}
 >
 	<video
 		bind:this={videoElement}
-		class="w-full h-full object-cover scale-[100.5%]"
+		class="w-full h-full object-cover scale-[100.5%] cursor-pointer"
 		poster={posterImage?.url || ''}
 		preload="auto"
 		loop
@@ -270,8 +281,8 @@
 			aria-valuemax="100"
 			aria-valuenow={(duration > 0 ? (currentTime / duration) * 100 : 0)}
 			aria-label="Seek"
-			onmousedown={startScrubMouse}
-			ontouchstart={startScrubTouch}
+			onmousedown={(e) => { e.stopPropagation(); startScrubMouse(e as MouseEvent); }}
+			ontouchstart={(e) => { e.stopPropagation(); startScrubTouch(e as TouchEvent); }}
 		>
 			<!-- Centered thin visible track -->
 			<div class="absolute left-0  right-3 top-1/2 -translate-y-1/2 h-0.5 bg-white/40 rounded w-[calc(100%-1.5rem)]">
@@ -292,7 +303,8 @@
 					>
 
 							<button 
-							onclick={() => {
+							onclick={(e) => {
+								e.stopPropagation();
 								if (!videoElement) return;
 								videoElement.currentTime = 0;
 								currentTime = 0;
@@ -314,11 +326,7 @@
 						<button
 							class="{controlsTextClass} w-1/4 cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
 							aria-label={isPlaying ? 'Pause video' : 'Play video'}
-							onclick={() => {
-								if (!videoElement) return;
-								if (videoElement.paused) { videoElement.play(); } else { videoElement.pause(); }
-								scheduleAutoHide();
-							}}
+							onclick={(e) => { e.stopPropagation(); togglePlayPause(); }}
 						>
 							{isPlaying ? 'Pause' : 'Play'}
 						</button>
@@ -337,13 +345,14 @@
 						}}
 					>
 						Sound {isMuted ? 'On' : 'Off'}
-					</button>
+						</button>
 						
 
 						<button
 							class="{controlsTextClass} text-right w-1/4 cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
 							aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
-							onclick={async () => {
+							onclick={async (e) => {
+								e.stopPropagation();
 								if (!containerElement) return;
 								try {
 									if (!document.fullscreenElement) {
