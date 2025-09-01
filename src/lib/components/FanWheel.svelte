@@ -14,6 +14,7 @@
     // For testing denser wheels: repeat items N times around the circle
     export let repeat: number = 3;
 	import { browser } from '$app/environment';
+	import { onMount } from 'svelte';
 
 	$: size = radius * 2;
 	$: repeatSafe = Math.max(1, Math.floor(repeat));
@@ -21,6 +22,38 @@
 	$: renderUrls = urls ? (Array.from({ length: repeatSafe }, () => urls as (string | null | undefined)[]).flat()) : undefined;
 	$: count = Math.max(renderItems.length, 1);
 	const angleFor = (i: number) => (i / count) * 360;
+
+	// When hovering a label, slow down rotation significantly
+	let hovering = false;
+	const hoverSlowdownFactor = 2.5; // > 2 means more than half speed
+
+	// requestAnimationFrame-driven rotation to avoid animation restart jumps
+	let angle = 0; // degrees
+	let currentSpeedDegPerSec = 360 / rotationSpeed; // degrees per second
+	$: targetSpeedDegPerSec = 360 / (hovering ? rotationSpeed * hoverSlowdownFactor : rotationSpeed);
+
+	let rafId = 0;
+	let lastTime = 0;
+	function loop(now: number) {
+		if (!lastTime) lastTime = now;
+		const dt = (now - lastTime) / 1000; // seconds
+		lastTime = now;
+		// Smoothly ease current speed toward target speed
+		const tau = 0.35; // seconds to reach ~63% toward target
+		const alpha = 1 - Math.exp(-dt / Math.max(1e-3, tau));
+		currentSpeedDegPerSec += (targetSpeedDegPerSec - currentSpeedDegPerSec) * alpha;
+		angle = (angle + currentSpeedDegPerSec * dt) % 360;
+		rafId = requestAnimationFrame(loop);
+	}
+
+	onMount(() => {
+		if (browser) {
+			rafId = requestAnimationFrame(loop);
+		}
+		return () => {
+			if (rafId) cancelAnimationFrame(rafId);
+		};
+	});
 
 	// Function to calculate text width for positioning
 	function getTextWidth(text: string): number {
@@ -53,10 +86,10 @@
 
 <div class="w-full h-full grid place-items-center py-20">
 	<div class="relative" style={`width:${outerWidth}px;height:${outerHeight}px`}>
-		<!-- Rotor spinning the entire circle -->
-		<div class="absolute inset-0 animate-spin text-black wheel" style={`animation-duration:${rotationSpeed}s`}>
+		<!-- Rotor spinning the entire circle (smooth rAF-driven) -->
+		<div class="absolute inset-0 text-black wheel" style={`transform: rotate(${angle}deg); will-change: transform;`}>
 			{#each renderItems as label, i}
-				<div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+				<div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" role="group" on:mouseenter={() => (hovering = true)} on:mouseleave={() => (hovering = false)}>
 					{#if renderUrls && renderUrls[i]}
 						<a
 							href={renderUrls[i] as string}
