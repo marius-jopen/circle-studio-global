@@ -15,7 +15,7 @@
           <li>
             <PrismicLink
               field={navItem}
-              class="hover:text-gray-900 transition-colors duration-300 text-sm"
+              class="hover:text-neutral-900 transition-colors duration-300 text-sm"
             >
               {navItem.text || 'Link'}
             </PrismicLink>

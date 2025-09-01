@@ -866,7 +866,7 @@
   {#if showControls || (!items && !globalSettings)}
   <div class="flex-1 min-w-0">
     <div class="rounded-3xl p-4 mb-4 bg-white w-full">
-      <h3 class="m-0 mb-4 text-lg font-bold text-gray-700 pb-2">Main Controls</h3>
+      <h3 class="m-0 mb-4 text-lg font-bold text-neutral-700 pb-2">Main Controls</h3>
       <div class="flex flex-col gap-4">
         <Slider 
           label="Canvas Size" 
@@ -933,7 +933,7 @@
     
     <!-- Fade Animation Controls -->
     <div class="bg-white rounded-3xl p-4 mb-4 w-full">
-      <h3 class="m-0 mb-4 text-lg font-bold text-gray-700 border-b border-gray-200 pb-2">Fade Animation</h3>
+      <h3 class="m-0 mb-4 text-lg font-bold text-neutral-700 border-b border-gray-200 pb-2">Fade Animation</h3>
       <div class="flex flex-col gap-4">
         <Checkbox 
           bind:checked={manualMode}
@@ -994,7 +994,7 @@
     
     <!-- Export & Recording Controls -->
     <div class="bg-white rounded-3xl p-4 mb-4 w-full">
-      <h3 class="m-0 mb-4 text-lg font-bold text-gray-700 border-b border-gray-200 pb-2">Export & Recording</h3>
+      <h3 class="m-0 mb-4 text-lg font-bold text-neutral-700 border-b border-gray-200 pb-2">Export & Recording</h3>
       <div class="flex flex-col gap-4">
         <Input 
           type="number"
@@ -1036,7 +1036,7 @@
     
     <!-- Background Media Controls -->
     <div class="bg-white rounded-3xl p-4 mb-4 w-full">
-      <h3 class="m-0 mb-4 text-lg font-bold text-gray-700 border-b border-gray-200 pb-2">Background Media</h3>
+      <h3 class="m-0 mb-4 text-lg font-bold text-neutral-700 border-b border-gray-200 pb-2">Background Media</h3>
       <div class="flex flex-col gap-4">
         <FileUpload
           label="Background Image/Video"
@@ -1110,7 +1110,7 @@
     
           {#each circles as circle, i (i)}
         <div class="bg-white rounded-3xl p-4 mb-4 w-full">
-          <h3 class="m-0 mb-4 text-lg font-bold text-gray-700 border-b border-gray-200 pb-2">Circle {i + 1}: {circle.text}</h3>
+          <h3 class="m-0 mb-4 text-lg font-bold text-neutral-700 border-b border-gray-200 pb-2">Circle {i + 1}: {circle.text}</h3>
         <div class="flex flex-col gap-4">
           <Input 
             type="text"

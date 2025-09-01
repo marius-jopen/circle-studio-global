@@ -11,7 +11,7 @@
 {#if credits && credits.length > 0}
 	<section class="mb-12 mt-8">
 		<div class="text-center font-normal mb-4 ">Credits</div>
-		<div class="text-black hover:text-gray-400">
+		<div class="text-black hover:text-neutral-400">
 			{#each credits as credit}
 				{#if credit.label && credit.person && credit.person.length > 0}
 					<div class="flex justify-between gap-3 hover:text-black transition-colors duration-200">

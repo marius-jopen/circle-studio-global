@@ -15,9 +15,9 @@
 <label class="block border border-gray-300 rounded-xl p-2 mb-2 bg-gray-50 transition-all duration-200
   {disabled ? 'opacity-60 cursor-not-allowed' : 'hover:border-blue-500 hover:bg-blue-50'}">
   <div class="flex justify-between items-center mb-1">
-    <span class="font-medium text-gray-700 text-sm">{label}: {displayValue}</span>
+    <span class="font-medium text-neutral-700 text-sm">{label}: {displayValue}</span>
     {#if tooltip}
-      <span class="text-xs text-gray-500">{tooltip}</span>
+      <span class="text-xs text-neutral-500">{tooltip}</span>
     {/if}
   </div>
   <input 

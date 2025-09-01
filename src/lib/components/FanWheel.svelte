@@ -11,10 +11,15 @@
      * - 'tight': uses text height for top/bottom, reducing empty space (may clip during rotation)
      */
     export let fit: 'safe' | 'tight' = 'tight';
+    // For testing denser wheels: repeat items N times around the circle
+    export let repeat: number = 3;
 	import { browser } from '$app/environment';
 
 	$: size = radius * 2;
-	$: count = Math.max(items.length, 1);
+	$: repeatSafe = Math.max(1, Math.floor(repeat));
+	$: renderItems = Array.from({ length: repeatSafe }, () => items).flat();
+	$: renderUrls = urls ? (Array.from({ length: repeatSafe }, () => urls as (string | null | undefined)[]).flat()) : undefined;
+	$: count = Math.max(renderItems.length, 1);
 	const angleFor = (i: number) => (i / count) * 360;
 
 	// Function to calculate text width for positioning
@@ -46,23 +51,23 @@
 	$: outerHeight = 2 * (radius + (fit === 'safe' ? maxTextWidth : fontSize));
 </script>
 
-<div class="w-full h-full grid place-items-center">
+<div class="w-full h-full grid place-items-center py-20">
 	<div class="relative" style={`width:${outerWidth}px;height:${outerHeight}px`}>
 		<!-- Rotor spinning the entire circle -->
-		<div class="absolute inset-0 animate-spin" style={`animation-duration:${rotationSpeed}s`}>
-			{#each items as label, i}
+		<div class="absolute inset-0 animate-spin text-black hover:text-neutral-400" style={`animation-duration:${rotationSpeed}s`}>
+			{#each renderItems as label, i}
 				<div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-					{#if urls && urls[i]}
+					{#if renderUrls && renderUrls[i]}
 						<a
-							href={urls[i] as string}
+							href={renderUrls[i] as string}
 							target="_blank"
 							rel="noopener noreferrer"
-							class="block whitespace-nowrap select-none"
+							class="block whitespace-nowrap select-none transition-colors duration-200 hover:text-black"
 							style={`transform: rotate(${angleFor(i)}deg) translateY(-${getAdjustedRadius(label)}px) rotate(90deg); transform-origin:50% 50%; font-size:${fontSize}px;`}
 						>{label}</a>
 					{:else}
 						<span
-							class="block whitespace-nowrap select-none pointer-events-none"
+							class="block whitespace-nowrap select-none transition-colors duration-200 hover:text-black"
 							style={`transform: rotate(${angleFor(i)}deg) translateY(-${getAdjustedRadius(label)}px) rotate(90deg); transform-origin:50% 50%; font-size:${fontSize}px;`}
 						>{label}</span>
 					{/if}

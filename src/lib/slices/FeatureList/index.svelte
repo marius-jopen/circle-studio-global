@@ -41,12 +41,12 @@
 	const manualRight = manualLinks.slice(manualMid);
 </script>
 
-<section class="mb-8 mt-6 content-container paragraph-1" data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
+<section class="mb-8 mt-6 content-container h2" data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
 	{#if slice.primary.take_collaborators_automatically}
 		{#if collaborators.length}
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
 				<div class="text-center md:text-left font-normal">{isFilled.keyText(slice.primary.title) ? slice.primary.title : ''}</div>
-				<div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-x-8 text-black hover:text-gray-400">
+				<div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-x-8 text-black hover:text-neutral-400">
 					<ul>
 						{#each collabLeft as person}
 							<li class="hover:text-black transition-colors duration-200">
@@ -76,7 +76,7 @@
 		{#if manualLinks.length}
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
 				<div class="text-center md:text-left font-normal">{isFilled.keyText(slice.primary.title) ? slice.primary.title : ''}</div>
-				<div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-x-8 text-black hover:text-gray-400">
+				<div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-x-8 text-black hover:text-neutral-400">
 					<ul>
 						{#each manualLeft as link}
 							<li class="hover:text-black transition-colors duration-200">

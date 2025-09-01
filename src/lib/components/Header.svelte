@@ -259,7 +259,7 @@
 						<!-- Grid/List selector -->
 						<div class="relative">
 							<button
-								class="font-medium transition-all duration-600 ease-in-out hover:text-gray-900 focus:outline-none min-w-[60px] text-left cursor-pointer"
+								class="font-medium transition-all duration-600 ease-in-out hover:text-neutral-900 focus:outline-none min-w-[60px] text-left cursor-pointer"
 								class:dark-mode={isDarkMode}
 								onclick={handleViewModeClick}
 								onmouseenter={() => isViewModeHovering = true}
@@ -284,7 +284,7 @@
 								<li class:dark-mode={isDarkMode}>
 									<PrismicLink 
 										field={navItem} 
-										class="hover:text-gray-900 transition-colors duration-600 font-medium"
+										class="hover:text-neutral-900 transition-colors duration-600 font-medium"
 									>
 										{navItem.text || 'Link'}
 									</PrismicLink>

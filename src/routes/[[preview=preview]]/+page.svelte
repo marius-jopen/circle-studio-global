@@ -67,7 +67,7 @@
 <!-- <div class="fixed left-1/2 -translate-x-1/2 top-4 z-[60] pointer-events-auto select-none">
     <div class="flex items-center gap-3 font-medium">
         <button
-            class="transition-colors hover:text-gray-900 focus:outline-none"
+            class="transition-colors hover:text-neutral-900 focus:outline-none"
             class:opacity-40={viewMode !== 'grid'}
             aria-pressed={viewMode === 'grid'}
             onclick={() => setView('grid')}
@@ -76,7 +76,7 @@
         </button>
 
         <button
-            class="transition-colors hover:text-gray-900 focus:outline-none"
+            class="transition-colors hover:text-neutral-900 focus:outline-none"
             class:opacity-40={viewMode !== 'list'}
             aria-pressed={viewMode === 'list'}
             onclick={() => setView('list')}

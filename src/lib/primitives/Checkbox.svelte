@@ -27,9 +27,9 @@
     {/if}
   </span>
   {#if label}
-    <span class="font-medium text-gray-700 text-sm">{label}</span>
+    <span class="font-medium text-neutral-700 text-sm">{label}</span>
   {/if}
   {#if tooltip}
-    <span class="text-xs text-gray-500 ml-auto">{tooltip}</span>
+    <span class="text-xs text-neutral-500 ml-auto">{tooltip}</span>
   {/if}
 </label> 

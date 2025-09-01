@@ -15,7 +15,7 @@
   <div class="flex items-center gap-2">
     <div class="rounded-full bg-red-500 animate-pulse
       {size === 'sm' ? 'w-2 h-2' : size === 'lg' ? 'w-4 h-4' : 'w-3 h-3'}"></div>
-    <span class="font-mono font-bold text-gray-700
+    <span class="font-mono font-bold text-neutral-700
       {size === 'sm' ? 'text-sm' : size === 'lg' ? 'text-xl' : 'text-lg'}">{formatTime(elapsedTime)}</span>
   </div>
 {/if} 

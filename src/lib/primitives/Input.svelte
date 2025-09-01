@@ -16,12 +16,12 @@
 <div class="flex flex-col gap-1 {fullWidth ? 'w-full' : ''}">
   {#if label}
     <div class="flex justify-between items-center">
-      <label for="input-{Math.random()}" class="font-medium text-gray-700 text-sm">
+      <label for="input-{Math.random()}" class="font-medium text-neutral-700 text-sm">
         {label}
         {#if required}<span class="text-red-500 ml-0.5">*</span>{/if}
       </label>
       {#if tooltip}
-        <span class="text-xs text-gray-500">{tooltip}</span>
+        <span class="text-xs text-neutral-500">{tooltip}</span>
       {/if}
     </div>
   {/if}
@@ -40,7 +40,7 @@
       on:blur
       class="p-2 border border-gray-300 rounded-lg text-base font-inherit transition-all duration-200 bg-white
         focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100
-        disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed
+        disabled:bg-gray-100 disabled:text-neutral-500 disabled:cursor-not-allowed
         {error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : ''}"
     />
   {:else if type === 'number'}
@@ -60,7 +60,7 @@
       on:blur
       class="p-2 border border-gray-300 rounded-lg text-base font-inherit transition-all duration-200 bg-white
         focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100
-        disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed
+        disabled:bg-gray-100 disabled:text-neutral-500 disabled:cursor-not-allowed
         [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
         {error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : ''}"
     />
@@ -93,7 +93,7 @@
       on:blur
       class="p-2 border border-gray-300 rounded-lg text-base font-inherit transition-all duration-200 bg-white
         focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100
-        disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed
+        disabled:bg-gray-100 disabled:text-neutral-500 disabled:cursor-not-allowed
         {error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : ''}"
     />
   {:else if type === 'password'}
@@ -110,7 +110,7 @@
       on:blur
       class="p-2 border border-gray-300 rounded-lg text-base font-inherit transition-all duration-200 bg-white
         focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100
-        disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed
+        disabled:bg-gray-100 disabled:text-neutral-500 disabled:cursor-not-allowed
         {error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : ''}"
     />
   {/if}

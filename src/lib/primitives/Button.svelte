@@ -12,7 +12,7 @@
     {size === 'sm' ? 'px-2 py-1 text-sm' : size === 'lg' ? 'px-6 py-3 text-lg' : 'px-4 py-2 text-base'}
     {rounded ? 'rounded-full aspect-square p-2' : 'rounded-full'}
     {variant === 'primary' ? 'bg-gray-400 text-white hover:bg-gray-600' : ''}
-    {variant === 'secondary' ? 'bg-gray-100 text-gray-600 border border-gray-300 hover:bg-gray-200' : ''}
+    {variant === 'secondary' ? 'bg-gray-100 text-neutral-600 border border-gray-300 hover:bg-gray-200' : ''}
     {variant === 'danger' ? 'bg-red-400 text-white hover:bg-red-600' : ''}
     {variant === 'fade' ? 'bg-blue-400 text-white hover:bg-blue-600' : ''}
     {variant === 'record' ? (recording ? 'bg-blue-600 animate-pulse' : 'bg-red-400 hover:bg-red-600') + ' text-white' : ''}
