@@ -126,7 +126,7 @@
 		   }}
 		>
 					<div class="grid grid-cols-12 items-center gap-2 paragraph-1">
-			<div class="col-span-6 md:col-span-4 text-left tracking-wide text-xs md:text-base font-medium">{project.data.client}</div>
+			<div class="col-span-6 md:col-span-4 text-left tracking-wide text-xs md:text-base">{project.data.client}</div>
 			<div class="col-span-6 md:col-span-4 text-left text-xs md:text-base">{project.data.title}</div>
 			<!-- Tags column - hidden on mobile -->
 			<div class="col-span-3 text-left text-xs md:text-base whitespace-nowrap overflow-hidden text-ellipsis hidden md:block">
