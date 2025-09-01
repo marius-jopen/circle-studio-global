@@ -5,6 +5,13 @@
 	export let radius: number = 50; // px
 	export let rotationSpeed: number = 60; // seconds per full rotation
 	export let fontSize: number = 20; // optional text size
+    /**
+     * Controls how generously the container is sized vertically.
+     * - 'safe': guarantees no overflow during rotation by using text width
+     * - 'tight': uses text height for top/bottom, reducing empty space (may clip during rotation)
+     */
+    export let fit: 'safe' | 'tight' = 'tight';
+	import { browser } from '$app/environment';
 
 	$: size = radius * 2;
 	$: count = Math.max(items.length, 1);
@@ -12,6 +19,10 @@
 
 	// Function to calculate text width for positioning
 	function getTextWidth(text: string): number {
+		if (!browser) {
+			// SSR-safe rough estimate (character count × average width factor)
+			return text.length * (fontSize * 0.6);
+		}
 		const canvas = document.createElement('canvas');
 		const context = canvas.getContext('2d');
 		if (context) {
@@ -27,10 +38,16 @@
 		// Add half the text width to move the right edge to the inner boundary
 		return radius + (textWidth / 2);
 	}
+
+	// Compute the maximum text width to size the outer container
+	$: maxTextWidth = Math.max(0, ...items.map((t) => getTextWidth(t)));
+	// Outer size: width accounts for longest label; height configurable by `fit`
+	$: outerWidth = 2 * (radius + maxTextWidth);
+	$: outerHeight = 2 * (radius + (fit === 'safe' ? maxTextWidth : fontSize));
 </script>
 
 <div class="w-full h-full grid place-items-center">
-	<div class="relative" style={`width:${size}px;height:${size}px`}>
+	<div class="relative" style={`width:${outerWidth}px;height:${outerHeight}px`}>
 		<!-- Rotor spinning the entire circle -->
 		<div class="absolute inset-0 animate-spin" style={`animation-duration:${rotationSpeed}s`}>
 			{#each items as label, i}
