@@ -8,6 +8,7 @@
 		playMode?: string | 'no-sound' | 'has-sound';
 		controls?: boolean;
 		context?: string;
+		controlsTextClass?: string;
 		width?: number;
 		height?: number;
 	}
@@ -19,6 +20,7 @@
 		playMode = 'no-sound',
 		controls = false,
 		context = undefined,
+		controlsTextClass = '',
 		width = 1920,
 		height = 1080
 	}: Props = $props();
@@ -296,7 +298,7 @@
 								currentTime = 0;
 								scheduleAutoHide();
 							}}
-							class="h2 text-left w-1/4 cursor-pointer tabular-nums opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200 cursor-default">
+							class="{controlsTextClass} text-left w-1/4 cursor-pointer tabular-nums opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200 cursor-default">
 								{(() => {
 									const s = (n: number) => Math.floor(n).toString().padStart(2, '0');
 									const mins = Math.floor(currentTime / 60);
@@ -310,7 +312,7 @@
 
 
 						<button
-							class="h2 w-1/4 cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
+							class="{controlsTextClass} w-1/4 cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
 							aria-label={isPlaying ? 'Pause video' : 'Play video'}
 							onclick={() => {
 								if (!videoElement) return;
@@ -322,7 +324,7 @@
 						</button>
 
 						<button
-						class="h2 w-1/4 cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
+						class="{controlsTextClass} w-1/4 cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
 						aria-label={isMuted ? 'Unmute video' : 'Mute video'}
 						onclick={(e) => {
 							e.stopPropagation();
@@ -339,7 +341,7 @@
 						
 
 						<button
-							class="h2 text-right w-1/4 cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
+							class="{controlsTextClass} text-right w-1/4 cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
 							aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
 							onclick={async () => {
 								if (!containerElement) return;

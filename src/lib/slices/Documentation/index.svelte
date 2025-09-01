@@ -18,7 +18,8 @@
 		}
 	};
 	
-	const gridClass = $derived(getGridCols(slice.primary.items_per_row || '3'));
+	const itemsPerRow = $derived(slice.primary.items_per_row || '3');
+	const gridClass = $derived(getGridCols(itemsPerRow));
 </script>
 
 <section 
@@ -29,7 +30,7 @@
 	{#if slice.primary.items && slice.primary.items.length > 0}
 		<div class="grid gap-2 {gridClass}">
 			{#each slice.primary.items as item}
-				<DocumentationItem {item} />
+				<DocumentationItem {item} itemsPerRow={itemsPerRow} />
 			{/each}
 		</div>
 	{/if}

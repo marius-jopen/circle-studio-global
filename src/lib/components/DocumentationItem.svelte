@@ -2,7 +2,13 @@
 	import { PrismicImage } from '@prismicio/svelte';
 	import VideoPlayerCustom from './VideoPlayerCustom.svelte';
 
-	export let item: any;
+	interface Props {
+		item: any;
+		itemsPerRow?: string;
+	}
+	const { item, itemsPerRow }: Props = $props();
+
+	const controlsTextClass = $derived((itemsPerRow ?? '1') === '1' ? 'h2' : ((itemsPerRow === '2') ? 'text-base' : 'text-sm'));
 </script>
 
 <div class="block">
@@ -21,6 +27,7 @@
 					hlsUrl={videoUrl}
 					posterImage={imageField} 
 					classes="w-full h-auto rounded object-cover"
+					controlsTextClass={controlsTextClass}
 					controls={true}
 				/>
 			</div>
