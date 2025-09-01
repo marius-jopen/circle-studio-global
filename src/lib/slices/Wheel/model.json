@@ -11,7 +11,28 @@
       "version": "initial",
       "description": "Default",
       "imageUrl": "",
-      "primary": {},
+      "primary": {
+        "take_collaborators_automatically": {
+          "type": "Boolean",
+          "config": {
+            "label": "Take Collaborators Automatically",
+            "placeholder_false": "false",
+            "placeholder_true": "true",
+            "default_value": false
+          }
+        },
+        "items": {
+          "type": "Link",
+          "config": {
+            "label": "Items",
+            "placeholder": "",
+            "select": null,
+            "allowTargetBlank": true,
+            "allowText": true,
+            "repeat": true
+          }
+        }
+      },
       "items": {}
     }
   ]

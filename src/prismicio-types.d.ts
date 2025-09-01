@@ -199,6 +199,7 @@ export type HomeDocument<Lang extends string = string> = prismic.PrismicDocument
 >;
 
 type PageDocumentDataSlicesSlice =
+	| SpacerSlice
 	| DocumentationSlice
 	| FeatureListSlice
 	| InputSlice
@@ -480,7 +481,14 @@ export interface ProjectsDocumentDataCreditsItem {
 	person: prismic.Repeatable<prismic.LinkField<string, string, unknown, prismic.FieldState, never>>;
 }
 
-type ProjectsDocumentDataSlicesSlice = DocumentationSlice;
+type ProjectsDocumentDataSlicesSlice =
+	| WheelSlice
+	| CircleSlice
+	| FeatureListSlice
+	| InputSlice
+	| RichTextSlice
+	| SpacerSlice
+	| DocumentationSlice;
 
 /**
  * Content for Projects documents
@@ -855,6 +863,16 @@ export interface FeatureListSliceDefaultPrimary {
 	 * - **Documentation**: https://prismic.io/docs/fields/link
 	 */
 	items: prismic.Repeatable<prismic.LinkField<string, string, unknown, prismic.FieldState, never>>;
+
+	/**
+	 * Title field in *FeatureList → Default → Primary*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: feature_list.default.primary.title
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	title: prismic.KeyTextField;
 }
 
 /**
@@ -954,6 +972,95 @@ type RichTextSliceVariation = RichTextSliceDefault;
 export type RichTextSlice = prismic.SharedSlice<'rich_text', RichTextSliceVariation>;
 
 /**
+ * Primary content in *Spacer → Default → Primary*
+ */
+export interface SpacerSliceDefaultPrimary {
+	/**
+	 * Line field in *Spacer → Default → Primary*
+	 *
+	 * - **Field Type**: Boolean
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: false
+	 * - **API ID Path**: spacer.default.primary.line
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
+	 */
+	line: prismic.BooleanField;
+
+	/**
+	 * Spacer Desktop field in *Spacer → Default → Primary*
+	 *
+	 * - **Field Type**: Select
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: spacer.default.primary.spacer_desktop
+	 * - **Documentation**: https://prismic.io/docs/fields/select
+	 */
+	spacer_desktop: prismic.SelectField<'none' | 'xs' | 'sm' | 'md' | 'xl' | 'xxl'>;
+
+	/**
+	 * Spacer mobile field in *Spacer → Default → Primary*
+	 *
+	 * - **Field Type**: Select
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: spacer.default.primary.spacer_mobile
+	 * - **Documentation**: https://prismic.io/docs/fields/select
+	 */
+	spacer_mobile: prismic.SelectField<'none' | 'xs' | 'sm' | 'md' | 'xl' | 'xxl'>;
+}
+
+/**
+ * Default variation for Spacer Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type SpacerSliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Simplify<SpacerSliceDefaultPrimary>,
+	never
+>;
+
+/**
+ * Slice variation for *Spacer*
+ */
+type SpacerSliceVariation = SpacerSliceDefault;
+
+/**
+ * Spacer Shared Slice
+ *
+ * - **API ID**: `spacer`
+ * - **Description**: Spacer
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type SpacerSlice = prismic.SharedSlice<'spacer', SpacerSliceVariation>;
+
+/**
+ * Primary content in *Wheel → Default → Primary*
+ */
+export interface WheelSliceDefaultPrimary {
+	/**
+	 * Take Collaborators Automatically field in *Wheel → Default → Primary*
+	 *
+	 * - **Field Type**: Boolean
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: false
+	 * - **API ID Path**: wheel.default.primary.take_collaborators_automatically
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
+	 */
+	take_collaborators_automatically: prismic.BooleanField;
+
+	/**
+	 * Items field in *Wheel → Default → Primary*
+	 *
+	 * - **Field Type**: Link
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: wheel.default.primary.items
+	 * - **Documentation**: https://prismic.io/docs/fields/link
+	 */
+	items: prismic.Repeatable<prismic.LinkField<string, string, unknown, prismic.FieldState, never>>;
+}
+
+/**
  * Default variation for Wheel Slice
  *
  * - **API ID**: `default`
@@ -962,7 +1069,7 @@ export type RichTextSlice = prismic.SharedSlice<'rich_text', RichTextSliceVariat
  */
 export type WheelSliceDefault = prismic.SharedSliceVariation<
 	'default',
-	Record<string, never>,
+	Simplify<WheelSliceDefaultPrimary>,
 	never
 >;
 
@@ -1041,7 +1148,12 @@ declare module '@prismicio/client' {
 			RichTextSliceDefaultPrimary,
 			RichTextSliceVariation,
 			RichTextSliceDefault,
+			SpacerSlice,
+			SpacerSliceDefaultPrimary,
+			SpacerSliceVariation,
+			SpacerSliceDefault,
 			WheelSlice,
+			WheelSliceDefaultPrimary,
 			WheelSliceVariation,
 			WheelSliceDefault
 		};

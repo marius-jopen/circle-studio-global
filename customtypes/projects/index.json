@@ -160,6 +160,24 @@
 				"fieldset": "Slice Zone",
 				"config": {
 					"choices": {
+						"wheel": {
+							"type": "SharedSlice"
+						},
+						"circle": {
+							"type": "SharedSlice"
+						},
+						"feature_list": {
+							"type": "SharedSlice"
+						},
+						"input": {
+							"type": "SharedSlice"
+						},
+						"rich_text": {
+							"type": "SharedSlice"
+						},
+						"spacer": {
+							"type": "SharedSlice"
+						},
 						"documentation": {
 							"type": "SharedSlice"
 						}

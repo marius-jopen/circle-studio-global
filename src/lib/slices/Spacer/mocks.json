@@ -1,0 +1,18 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"line": {
+				"__TYPE__": "BooleanContent",
+				"value": true
+			},
+			"spacer_desktop": {
+				"__TYPE__": "FieldContent",
+				"value": "xxl",
+				"type": "Select"
+			}
+		},
+		"items": []
+	}
+]

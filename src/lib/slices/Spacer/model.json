@@ -1,0 +1,58 @@
+{
+  "id": "spacer",
+  "type": "SharedSlice",
+  "name": "Spacer",
+  "description": "Spacer",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "line": {
+          "type": "Boolean",
+          "config": {
+            "label": "Line",
+            "placeholder_false": "false",
+            "placeholder_true": "true",
+            "default_value": false
+          }
+        },
+        "spacer_desktop": {
+          "type": "Select",
+          "config": {
+            "label": "Spacer Desktop",
+            "placeholder": "",
+            "options": [
+              "none",
+              "xs",
+              "sm",
+              "md",
+              "xl",
+              "xxl"
+            ]
+          }
+        },
+        "spacer_mobile": {
+          "type": "Select",
+          "config": {
+            "label": "Spacer mobile",
+            "placeholder": "",
+            "options": [
+              "none",
+              "xs",
+              "sm",
+              "md",
+              "xl",
+              "xxl"
+            ]
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

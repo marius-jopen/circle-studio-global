@@ -12,8 +12,8 @@
 				"type": "Link",
 				"value": [
 					{
-						"__TYPE__": "LinkContent",
 						"key": "2502e2e0-c954-497a-91c8-cb98a5311d48",
+						"__TYPE__": "LinkContent",
 						"value": {
 							"__TYPE__": "ExternalLink",
 							"url": "http://google.com",
@@ -21,6 +21,11 @@
 						}
 					}
 				]
+			},
+			"title": {
+				"__TYPE__": "FieldContent",
+				"value": "nails",
+				"type": "Text"
 			}
 		},
 		"items": []

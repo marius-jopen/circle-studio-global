@@ -5,6 +5,7 @@ import Documentation from './Documentation/index.svelte';
 import FeatureList from './FeatureList/index.svelte';
 import Input from './Input/index.svelte';
 import RichText from './RichText/index.svelte';
+import Spacer from './Spacer/index.svelte';
 import Wheel from './Wheel/index.svelte';
 
 export const components = {
@@ -13,5 +14,6 @@ export const components = {
 	feature_list: FeatureList,
 	input: Input,
 	rich_text: RichText,
+	spacer: Spacer,
 	wheel: Wheel
 };

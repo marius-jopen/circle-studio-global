@@ -7,7 +7,7 @@
 	const { slice }: Props = $props();
 </script>
 
-<section class="px-3 max-w-8/12 mx-auto pb-24">
+<section class="max-w-8/12 mx-auto pb-24">
 	<PrismicRichText
 		field={slice.primary.content} />
 </section>

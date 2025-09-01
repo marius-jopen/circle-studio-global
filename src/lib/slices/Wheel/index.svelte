@@ -15,13 +15,20 @@
 	const rotationSpeed = 200;
 
 	onMount(async () => {
-		const client = createClient();
-		const docs = await client.getAllByType('people', {
-			orderings: [{ field: 'my.people.name', direction: 'asc' }],
-			pageSize: 200
-		});
-		items = docs.map((d) => (d.data.name as string) || d.uid);
-		urls = docs.map((d) => asLink(d.data.link) || '#');
+		const primary: any = (slice as any).primary;
+		if (primary?.take_collaborators_automatically) {
+			const client = createClient();
+			const docs = await client.getAllByType('people', {
+				orderings: [{ field: 'my.people.name', direction: 'asc' }],
+				pageSize: 200
+			});
+			items = docs.map((d) => (d.data.name as string) || d.uid);
+			urls = docs.map((d) => asLink(d.data.link) || '#');
+		} else {
+			const manualLinks: any[] = primary?.items || [];
+			items = manualLinks.map((l) => l?.text || asLink(l) || '');
+			urls = manualLinks.map((l) => asLink(l) || '#');
+		}
 	});
 </script>
 
