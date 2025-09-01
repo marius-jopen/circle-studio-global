@@ -54,7 +54,7 @@
 <div class="w-full h-full grid place-items-center py-20">
 	<div class="relative" style={`width:${outerWidth}px;height:${outerHeight}px`}>
 		<!-- Rotor spinning the entire circle -->
-		<div class="absolute inset-0 animate-spin text-black hover:text-neutral-400" style={`animation-duration:${rotationSpeed}s`}>
+		<div class="absolute inset-0 animate-spin text-black wheel" style={`animation-duration:${rotationSpeed}s`}>
 			{#each renderItems as label, i}
 				<div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
 					{#if renderUrls && renderUrls[i]}
@@ -78,5 +78,13 @@
 </div>
 
 <style>
-/* No additional styles required; layout done via transforms and Tailwind classes */
+/* Layout is done via transforms and Tailwind classes */
+.wheel:has(a:hover),
+.wheel:has(span:hover) {
+	color: rgb(163 163 163); /* tailwind neutral-400 */
+}
+.wheel a:hover,
+.wheel span:hover {
+	color: rgb(0 0 0); /* black */
+}
 </style>

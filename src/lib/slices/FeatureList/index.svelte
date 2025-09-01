@@ -41,7 +41,7 @@
 	const manualRight = manualLinks.slice(manualMid);
 </script>
 
-<section class="mb-8 mt-6 content-container h2" data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
+<section class="mb-8 mt-6 content-container h1" data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
 	{#if slice.primary.take_collaborators_automatically}
 		{#if collaborators.length}
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
