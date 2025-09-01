@@ -273,7 +273,7 @@
 
 
 <div 
-	class="relative {classes} overflow-hidden bg-white rounded-lg"
+	class="relative {classes} overflow-hidden bg-neutral-100 rounded-lg"
 	role="button"
 	data-video-interactive="true"
 	bind:this={containerElement}
