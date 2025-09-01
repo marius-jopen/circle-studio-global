@@ -163,7 +163,7 @@
     if (!measureCanvas) measureCanvas = document.createElement('canvas');
     const ctx = measureCanvas.getContext('2d');
     if (!ctx) return baseFontSize;
-    ctx.font = `${baseFontSize}px sans-serif`;
+    ctx.font = `${baseFontSize}px "CircularXXWeb", Arial, Helvetica, sans-serif`;
     const letters = textStr.split('');
     const totalWidth = letters.reduce((sum, l) => sum + ctx.measureText(l).width, 0);
     const circumference = 2 * Math.PI * r;
@@ -206,7 +206,7 @@
     // Use elapsedTime instead of performance.now() to allow freezing animations
     const time = elapsedTime;
     const letters = text.split('');
-    ctx.font = `${effectiveFontSize}px sans-serif`;
+    ctx.font = `${effectiveFontSize}px "CircularXXWeb", Arial, Helvetica, sans-serif`;
     const letterWidths = letters.map(l => ctx.measureText(l).width);
     const totalWidth = letterWidths.reduce((a, b) => a + b, 0);
     const circumference = 2 * Math.PI * radius;
@@ -249,7 +249,7 @@
       ctx.save();
       ctx.rotate(angle);
       ctx.translate(0, -radius);
-      ctx.font = `${effectiveFontSize}px sans-serif`;
+      ctx.font = `${effectiveFontSize}px "CircularXXWeb", Arial, Helvetica, sans-serif`;
       
       // Apply opacity from fade animation
       const opacity = letterOpacities[i] || 0;
@@ -402,7 +402,7 @@
     ctx.rotate(rotation + (rotationStart * Math.PI / 180));
     
     // Use a proper font with better scaling properties
-    const fontFamily = "'Arial', 'Helvetica', sans-serif";
+    const fontFamily = '"CircularXXWeb", Arial, Helvetica, sans-serif';
     
     // Enable better text rendering
     ctx.textRendering = 'geometricPrecision';
@@ -502,6 +502,16 @@
 
   // Initialize fade animation on mount
   onMount(() => {
+    // Ensure custom font is loaded for accurate measurements
+    if (browser && (document as any).fonts?.load) {
+      try {
+        // Load a typical size; metrics will be correct for others
+        (document as any).fonts.load('16px "CircularXXWeb"').then(() => {
+          draw();
+        }).catch(() => {});
+      } catch {}
+    }
+    
     const letters = text.split('');
     if (startInvisible) {
       // Start hidden and wait for manual trigger to fade in

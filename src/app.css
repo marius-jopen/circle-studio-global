@@ -1,5 +1,28 @@
 @import "tailwindcss";
 
+/* CircularXX Web - default site font */
+@font-face {
+    font-family: "CircularXXWeb";
+    src: url("/circular/CircularXXWeb-Regular.woff2") format("woff2"),
+         url("/circular/CircularXXWeb-Regular.woff") format("woff");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "CircularXXWeb";
+    src: url("/circular/CircularXXWeb-Bold.woff2") format("woff2"),
+         url("/circular/CircularXXWeb-Bold.woff") format("woff");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+html, body {
+    font-family: "CircularXXWeb", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
+}
+
 p {
     @apply text-xl;
 }
