@@ -408,10 +408,10 @@
 							aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
 							onclick={async (e) => {
 								e.stopPropagation();
-								if (!containerElement) return;
+								if (!videoElement) return;
 								try {
 									if (!document.fullscreenElement) {
-										await containerElement.requestFullscreen();
+										await videoElement.requestFullscreen();
 										isFullscreen = true;
 									} else {
 										await document.exitFullscreen();
