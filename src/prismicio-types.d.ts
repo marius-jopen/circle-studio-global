@@ -300,15 +300,15 @@ type PeopleDocumentDataSlicesSlice = never;
  */
 interface PeopleDocumentData {
 	/**
-	 * Name field in *People*
+	 * Title field in *People*
 	 *
 	 * - **Field Type**: Text
 	 * - **Placeholder**: *None*
-	 * - **API ID Path**: people.name
+	 * - **API ID Path**: people.title
 	 * - **Tab**: Main
 	 * - **Documentation**: https://prismic.io/docs/fields/text
 	 */
-	name: prismic.KeyTextField;
+	title: prismic.KeyTextField;
 
 	/**
 	 * Link field in *People*

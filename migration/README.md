@@ -1,90 +1,64 @@
-## Credits import tool
+# Prismic Migration Tools
 
-Script to parse HTML credits, create missing People, and attach them to a Project's `credits` group in Prismic.
+This folder contains tools for migrating data from CSV to Prismic CMS.
 
-### Requirements
-- Node 18+
-- Repo dependencies installed (`npm i`)
+## Structure
 
-### Environment setup (.env)
-Create a `.env` file at the project root (or `migration/.env`):
+- **`functions/`** - Active migration scripts and utilities
+- **`legacy/`** - Old test scripts, debug tools, and experimental code
+- **`input/`** - Source data files (CSV)
+- **`output/`** - Generated data files (JSON)
+
+## Quick Start
+
+1. **Prepare your data:**
+   ```bash
+   node migration/functions/csv-to-json.mjs
+   ```
+
+2. **Import people to Prismic:**
+   ```bash
+   node migration/functions/people-import-from-json-final.mjs [count]
+   ```
+
+3. **Check results:**
+   ```bash
+   node migration/functions/check-existing-documents.mjs
+   ```
+
+## Environment Setup
+
+Create a `.env` file at the project root:
 
 ```
 PRISMIC_WRITE_TOKEN=your_write_token
-# Optional if your repo is private for reads
 PRISMIC_ACCESS_TOKEN=your_access_token
 ```
 
-The script auto-loads `.env`. If the root `.env` is missing, it will also try `migration/.env`. No need to prefix commands with tokens.
+## What to Share with Prismic Team
 
-### Usage
+If you need to share this with the Prismic team, include:
 
-1) Save your credits HTML block to a file, e.g. `./credits.html`.
+- `functions/` folder (all active scripts)
+- `input/` folder (sample data)
+- `output/` folder (generated data)
+- This README
+- `.env.example` (with placeholder values)
 
-2) Generate JSON from HTML (edit before applying):
+**Do NOT share:**
+- `.env` file (contains real tokens)
+- `legacy/` folder (experimental code)
+- `node_modules/` folder
 
-```bash
-node migration/credits-import.mjs --file ./migration/test-1.html --gen-json=true
-```
+## Migration Process
 
-This creates `./test-1.json` with a structure like:
+1. **Data Preparation**: CSV → JSON conversion with proper Prismic formatting
+2. **Import**: Batch creation of people documents via Migration API
+3. **Verification**: Check that documents were created successfully
+4. **Publishing**: Manual publishing of Migration Release in Prismic dashboard
 
-```json
-{
-  "project": "test-1",
-  "rows": [
-    { "label": "Creative Director", "people": [{ "name": "Santiago Carrasquilla", "url": "https://..." }] }
-  ]
-}
-```
+## Notes
 
-Tip: review and correct the JSON before applying.
-- Fix split labels/names if needed, e.g. change
-  - `"Technical Directors Julen Keoni, Nick Apple and"` → label: `"Technical Directors"`; people: `"Julen Keoni"`, `"Nick Apple"`, `"Kyle Daum"`.
-  - `"Color by J"` + person `"orge Valandia"` → label: `"Color"`; person: `"Jorge Velandia"` with URL.
-
-2.5) Optional: Paste the generated JSON into this AI chat for a quick review/fix before applying.
-
-3) Dry run one file (project inferred from filename):
-
-```bash
-node migration/credits-import.mjs --file ./migration/test-1.json
-```
-
-4) Apply one file (HTML or the edited JSON):
-
-```bash
-node migration/credits-import.mjs --project test-1 --file ./migration/test-1.html --dry-run=false
-
-# Or from JSON after manual edits
-node migration/credits-import.mjs --file ./migration/test-1.json --dry-run=false
-```
-
-5) Batch process a directory (project inferred from each filename):
-
-```bash
-# All *.html or *.json in ./migration will be processed; filename (without extension) is the project slug
-node migration/credits-import.mjs --dir ./migration
-
-# Apply changes for all files
-node migration/credits-import.mjs --dir ./migration --dry-run=false
-```
-
-### Behavior
-- Parses each `<br>`-separated line for a label (text before the first link) and anchors as people
-- Person name is taken from the anchor text (leading `@` removed)
-- Deduplicates by link URL or name
-- Reuses existing People by URL or name; otherwise creates new People with `name` and `link`
-- Merges into the Project's `credits` group by matching `label` (case-insensitive), appending unique people
-
-### Notes
-- Repository name is read from `slicemachine.config.json` unless `PRISMIC_REPOSITORY`/`PRISMIC_REPO` is provided
-- For Instagram links ending with `#`, the trailing hash is removed
- - `.env` is auto-loaded if present
-
-### Draft vs Published projects
-- The importer reads projects from the public Content API, which returns published documents only.
-- If a project is saved but not published, publish it once to run the import, then unpublish if desired.
-- Advanced (not implemented here): updating by document ID or using a preview ref could avoid publishing. If you want this, let’s add `--project-id` / `--ref` support.
-
-
+- Documents created via Migration API are placed in a "Migration Release" in draft state
+- You must manually publish the release in Prismic dashboard to make documents visible
+- The Migration API is separate from the Content API and has different visibility rules

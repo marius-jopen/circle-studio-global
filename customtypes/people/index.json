@@ -12,10 +12,10 @@
 					"label": "UID"
 				}
 			},
-			"name": {
+			"title": {
 				"type": "Text",
 				"config": {
-					"label": "Name",
+					"label": "Title",
 					"placeholder": ""
 				}
 			},

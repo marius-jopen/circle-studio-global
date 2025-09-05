@@ -1,0 +1,12 @@
+{
+  "totalRecords": 253,
+  "validPeople": 252,
+  "emptyRecords": 1,
+  "exportDate": "2025-09-05T10:49:00.235Z",
+  "fields": {
+    "name": "Name (from CSV)",
+    "instagramLink": "Instagram Link (from CSV)",
+    "uid": "Generated UID (slugified name)",
+    "prismicFormat": "Ready for Prismic Migration API"
+  }
+}
