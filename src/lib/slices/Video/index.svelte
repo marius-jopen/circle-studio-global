@@ -21,14 +21,14 @@
 </script>
 
 <section data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
-	<div class="content-container">
+	<div class="">
 		{#if videoUrl}
 			<div class="relative">
 				<VideoPlayerCustom
 					bind:this={playerRef}
 					hlsUrl={videoUrl}
 					posterImage={imageField}
-					classes="w-full h-auto rounded object-cover"
+					classes="w-full h-auto rounded-none object-cover"
 					controls={true}
 					playMode={isNoAutoplay ? 'has-sound' : playMode}
 					context={context}
