@@ -271,6 +271,62 @@
 			window.removeEventListener('video-play-request', playRequestHandler);
 		};
 	});
+
+	// Handle URL changes when navigating between projects
+	$effect(() => {
+		if (!videoElement || !hlsUrl) return;
+		
+		// Reset video state
+		isPlaying = false;
+		currentTime = 0;
+		duration = 0;
+		
+		if (useHls) {
+			import('hls.js').then(({ default: Hls }) => {
+				if (Hls.isSupported()) {
+					// Destroy existing HLS instance if any
+					if (videoElement.hls) {
+						videoElement.hls.destroy();
+					}
+					
+					const hls = new Hls({ autoStartLoad: true });
+					hls.loadSource(hlsUrl);
+					hls.attachMedia(videoElement);
+					
+					// Store HLS instance for cleanup
+					videoElement.hls = hls;
+				} else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+					videoElement.src = hlsUrl;
+				}
+			});
+		} else {
+			videoElement.src = videoUrl;
+		}
+		
+		// Reset mute state and autoplay
+		videoElement.muted = defaultMuted;
+		isMuted = defaultMuted;
+		videoElement.autoplay = autoplayOnMount;
+		
+		if (autoplayOnMount) {
+			const tryPlay = () => {
+				const p = videoElement.play();
+				if (p && typeof p.then === 'function') {
+					p.catch(() => {
+						videoElement.muted = true;
+						isMuted = true;
+						videoElement.play().catch(() => {});
+					});
+				}
+			};
+			
+			if (videoElement.readyState >= 2) {
+				tryPlay();
+			} else {
+				videoElement.addEventListener('loadeddata', tryPlay, { once: true });
+			}
+		}
+	});
 </script>
 
 
