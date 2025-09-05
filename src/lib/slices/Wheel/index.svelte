@@ -26,8 +26,46 @@
 			urls = docs.map((d) => asLink(d.data.link) || '#');
 		} else {
 			const manualLinks: any[] = primary?.items || [];
-			items = manualLinks.map((l) => l?.text || asLink(l) || '');
-			urls = manualLinks.map((l) => asLink(l) || '#');
+			const client = createClient();
+			
+			// Process each manual link
+			const processedItems = await Promise.all(
+				manualLinks.map(async (link) => {
+					// If there's custom text, use it
+					if (link?.text) {
+						return {
+							text: link.text,
+							url: asLink(link) || '#'
+						};
+					}
+					
+					// If it's a content relationship (person), fetch the person's name
+					if (link?.link_type === 'Document' && link?.uid) {
+						try {
+							const doc = await client.getByUID('people', link.uid);
+							return {
+								text: doc.data.title || doc.uid,
+								url: asLink(doc.data.link) || '#'
+							};
+						} catch (error) {
+							console.warn(`Could not fetch person with UID: ${link.uid}`, error);
+							return {
+								text: link.uid || 'Unknown',
+								url: asLink(link) || '#'
+							};
+						}
+					}
+					
+					// Fallback for other link types
+					return {
+						text: link?.text || asLink(link) || 'Unknown',
+						url: asLink(link) || '#'
+					};
+				})
+			);
+			
+			items = processedItems.map(item => item.text);
+			urls = processedItems.map(item => item.url);
 		}
 	});
 </script>
