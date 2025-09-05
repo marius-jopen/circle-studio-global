@@ -18,7 +18,7 @@
 	let controlsTextClass = $state('h2');
 	$effect(() => {
 		const mainItemsCount = projectData.main?.length || 0;
-		if (mainItemsCount === 1) controlsTextClass = 'h2';
+		if (mainItemsCount === 1) controlsTextClass = 'text-4xl';
 		else if (mainItemsCount === 2) controlsTextClass = 'text-base';
 		else controlsTextClass = 'text-sm';
 	});
@@ -87,7 +87,7 @@
 					<VideoPlayerCustom 
 						hlsUrl={item.main_video_url}
 						posterImage={item.main_image} 
-						classes="w-full h-auto rounded-none"
+						classes="w-full h-auto !rounded-none"
 						playMode="has-sound"
 						controls={true}
 						context="main"
@@ -98,7 +98,7 @@
 				{:else if item.main_image?.url}
 					<PrismicImage 
 						field={item.main_image} 
-						class="w-full h-auto rounded-none"
+						class="w-full h-auto !rounded-none"
 					/>
 				{/if}
 			<!-- Multiple items: side by side on desktop, stacked on mobile -->
@@ -113,7 +113,12 @@
 							// Mobile: no rounded corners
 							const baseClasses = 'w-full h-auto';
 							
-							// Desktop: conditional rounded corners
+							// If only one item, no rounded corners at all
+							if (projectData.main.length === 1) {
+								return `${baseClasses} !rounded-none`;
+							}
+							
+							// Desktop: conditional rounded corners for multiple items
 							if (projectData.main.length === 2) {
 								if (isFirst) return `${baseClasses} !rounded-none md:!rounded-br-lg md:!rounded-tl-none md:!rounded-tr-none md:!rounded-bl-none`;
 								if (isLast) return `${baseClasses} !rounded-none md:!rounded-bl-lg md:!rounded-tl-none md:!rounded-tr-none md:!rounded-br-none`;
@@ -184,3 +189,18 @@
 		</div>
 	{/if}
 </div>
+
+<style>
+	/* Force remove rounded corners for single videos */
+	#main-media .rounded-none,
+	#main-media [class*="rounded"],
+	#main-media * {
+		border-radius: 0 !important;
+	}
+	
+	/* Specifically target video containers */
+	#main-media > div,
+	#main-media > div > div {
+		border-radius: 0 !important;
+	}
+</style>

@@ -331,7 +331,7 @@
 
 
 <div 
-	class="relative {classes} overflow-hidden bg-neutral-100 rounded-lg cursor-pointer"
+	class="relative {classes} overflow-hidden bg-neutral-100 cursor-pointer"
 	role="button"
 	data-video-interactive="true"
 	bind:this={containerElement}

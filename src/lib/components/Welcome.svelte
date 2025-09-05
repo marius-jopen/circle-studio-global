@@ -264,7 +264,7 @@
 
 {#if showWelcome}
   <div 
-    class="welcome-overlay"
+    class="welcome-overlay cursor-pointer z-30"
     class:background-visible={backgroundVisible}
     class:home-page={isHomePage}
     bind:this={welcomeElement}
@@ -274,8 +274,8 @@
     tabindex="0"
     aria-label="Click to continue to website"
   >
-    <div class="welcome-content">
-      <div class="wheel-container">
+    <div class="welcome-content cursor-pointer z-30">
+      <div class="wheel-container cursor-pointer">
         {#if wheelVisible}
           <BigWheel config={welcomeConfig} />
         {/if}
@@ -283,7 +283,7 @@
       
       <!-- Fixed positioned click hint to prevent layout jumps - only show on project pages -->
       {#if isProjectPage}
-        <div class="click-hint" class:visible={fadePhase === 'lettersVisible'}>
+        <div class="click-hint cursor-pointer z-30" class:visible={fadePhase === 'lettersVisible'}>
           Click anywhere to continue
         </div>
       {/if}
