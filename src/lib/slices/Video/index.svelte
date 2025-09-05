@@ -23,7 +23,7 @@
 <section data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
 	<div class="">
 		{#if videoUrl}
-			<div class="relative">
+			<div class="relative cursor-pointer">
 				<VideoPlayerCustom
 					bind:this={playerRef}
 					hlsUrl={videoUrl}

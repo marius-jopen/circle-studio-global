@@ -275,7 +275,7 @@
 
 
 <div 
-	class="relative {classes} overflow-hidden bg-neutral-100 rounded-lg"
+	class="relative {classes} overflow-hidden bg-neutral-100 rounded-lg cursor-pointer"
 	role="button"
 	data-video-interactive="true"
 	bind:this={containerElement}
@@ -365,7 +365,7 @@
 								currentTime = 0;
 								scheduleAutoHide();
 							}}
-							class="{controlsTextClass} text-left w-1/4 cursor-pointer tabular-nums opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200 cursor-default">
+							class="{controlsTextClass} text-left w-1/4 cursor-pointer tabular-nums opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200">
 								{(() => {
 									const s = (n: number) => Math.floor(n).toString().padStart(2, '0');
 									const mins = Math.floor(currentTime / 60);
