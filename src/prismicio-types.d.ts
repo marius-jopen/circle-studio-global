@@ -516,7 +516,7 @@ interface ProjectsDocumentData {
 	 * - **Tab**: Main
 	 * - **Documentation**: https://prismic.io/docs/fields/select
 	 */
-	year: prismic.SelectField<'2010' | '2'>;
+	year: prismic.SelectField<'2010' | '2022' | '2023' | '2024' | '2025' | '2026' | '2027'>;
 
 	/**
 	 * Month field in *Projects*
@@ -527,18 +527,20 @@ interface ProjectsDocumentData {
 	 * - **Tab**: Main
 	 * - **Documentation**: https://prismic.io/docs/fields/select
 	 */
-	month: prismic.SelectField<'January' | '2'>;
-
-	/**
-	 * Date field in *Projects*
-	 *
-	 * - **Field Type**: Date
-	 * - **Placeholder**: *None*
-	 * - **API ID Path**: projects.date
-	 * - **Tab**: Main
-	 * - **Documentation**: https://prismic.io/docs/fields/date
-	 */
-	date: prismic.DateField;
+	month: prismic.SelectField<
+		| 'January'
+		| 'February'
+		| 'March'
+		| 'April'
+		| 'May'
+		| 'June'
+		| 'July'
+		| 'August'
+		| 'September'
+		| 'October'
+		| 'November'
+		| 'December'
+	>;
 
 	/**
 	 * Title field in *Projects*

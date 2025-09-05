@@ -17,7 +17,7 @@
 				"config": {
 					"label": "Year",
 					"placeholder": "",
-					"options": ["2010", "2"]
+					"options": ["2010", "2022", "2023", "2024", "2025", "2026", "2027"]
 				}
 			},
 			"month": {
@@ -25,14 +25,20 @@
 				"config": {
 					"label": "Month",
 					"placeholder": "",
-					"options": ["January", "2"]
-				}
-			},
-			"date": {
-				"type": "Date",
-				"config": {
-					"label": "Date",
-					"placeholder": ""
+					"options": [
+						"January",
+						"February",
+						"March",
+						"April",
+						"May",
+						"June",
+						"July",
+						"August",
+						"September",
+						"October",
+						"November",
+						"December"
+					]
 				}
 			},
 			"title": {

@@ -39,33 +39,29 @@
 				   description.includes(query);
 		});
 
-	function getYear(dateStr: string | null | undefined): string {
-		if (!dateStr) return '';
-		const d = new Date(dateStr as string);
-		if (Number.isNaN(d.getTime())) return '';
-		return String(d.getFullYear());
+
+	function formatYear(year: string | null | undefined): string {
+		if (!year) return '';
+		return year;
 	}
 
-	function formatDateToMonthDotDayDotYear(value: string | null | undefined): string {
-		if (!value) return '';
-		const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value as string);
-		if (m) {
-			const [, y, mm, dd] = m;
-			return `${mm}.${dd}.${y}`;
-		}
-		const d = new Date(value as string);
-		if (Number.isNaN(d.getTime())) return '';
-		const mm = String(d.getMonth() + 1).padStart(2, '0');
-		const dd = String(d.getDate()).padStart(2, '0');
-		const y = String(d.getFullYear());
-		return `${mm}.${dd}.${y}`;
-	}
-
-	// Sort by date desc, projects without date are pushed to the end
+	// Sort by year and month desc, projects without year/month are pushed to the end
 	$: sortedProjects = [...filteredProjects].sort((a, b) => {
-		const aTime = a.data?.date ? new Date(a.data.date as string).getTime() : -Infinity;
-		const bTime = b.data?.date ? new Date(b.data.date as string).getTime() : -Infinity;
-		return bTime - aTime;
+		const aYear = a.data?.year ? parseInt(a.data.year as string) : -Infinity;
+		const bYear = b.data?.year ? parseInt(b.data.year as string) : -Infinity;
+		
+		// If years are different, sort by year
+		if (aYear !== bYear) {
+			return bYear - aYear;
+		}
+		
+		// If years are the same, sort by month
+		const monthOrder = ["January", "February", "March", "April", "May", "June", 
+			"July", "August", "September", "October", "November", "December"];
+		const aMonth = a.data?.month ? monthOrder.indexOf(a.data.month as string) : -1;
+		const bMonth = b.data?.month ? monthOrder.indexOf(b.data.month as string) : -1;
+		
+		return bMonth - aMonth;
 	});
 
 	function pickRandomLandscape(project: ProjectsDocument) {
@@ -149,8 +145,8 @@
 					{project.tags.join(', ')}
 				{/if}
 			</div>
-			<!-- Date column - hidden on mobile -->
-			<div class="col-span-1 text-right hidden md:block text-xs md:text-base">{formatDateToMonthDotDayDotYear(project.data.date as string)}</div>
+			<!-- Year column - hidden on mobile -->
+			<div class="col-span-1 text-right hidden md:block text-xs md:text-base">{formatYear(project.data.year as string)}</div>
 		</div>
 		</a>
 	{/each}
