@@ -1,0 +1,48 @@
+{
+  "timestamp": "2025-09-05T12:28:24.820Z",
+  "project": "The Final",
+  "totalCredits": 6,
+  "successfulCredits": 1,
+  "missingPeople": 7,
+  "creditsStructure": [
+    {
+      "label": "Audio Mix",
+      "person": [
+        {
+          "link_type": "Document",
+          "id": "aLrTDhEAACIAfcSK"
+        }
+      ]
+    }
+  ],
+  "missingPeopleList": [
+    {
+      "position": "Director",
+      "name": "Santiago Carrasquilla"
+    },
+    {
+      "position": "Director",
+      "name": "Nick Apple"
+    },
+    {
+      "position": "Airbrush Paintings",
+      "name": "Nick Apple"
+    },
+    {
+      "position": "Editor",
+      "name": "Camilo Ojeda"
+    },
+    {
+      "position": "Editor",
+      "name": "Santiago Carrasquilla"
+    },
+    {
+      "position": "Design",
+      "name": "Agua Studio"
+    },
+    {
+      "position": "Color Grade",
+      "name": "Jorge Velandia"
+    }
+  ]
+}

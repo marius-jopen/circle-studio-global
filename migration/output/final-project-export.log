@@ -1,0 +1,113 @@
+{
+  "timestamp": "2025-09-05T12:37:28.401Z",
+  "project": "The Final",
+  "steps": [
+    {
+      "step": 1,
+      "description": "Read project credits data",
+      "status": "success",
+      "creditsCount": 6
+    },
+    {
+      "step": 2,
+      "description": "Fetch all people from Prismic",
+      "status": "success",
+      "peopleCount": 100
+    },
+    {
+      "step": 3,
+      "description": "Create people lookup map",
+      "status": "success",
+      "lookupEntries": 100
+    },
+    {
+      "step": 4,
+      "description": "Find The Final project in Prismic",
+      "status": "success",
+      "projectId": "aH_IwxEAAB8AC1dO",
+      "projectUid": "the-final"
+    },
+    {
+      "step": 5,
+      "description": "Process credits and find people",
+      "status": "success",
+      "creditsProcessed": 6,
+      "creditsWithPeople": 2,
+      "foundPeopleCount": 2,
+      "missingPeopleCount": 7
+    },
+    {
+      "step": 6,
+      "description": "Generate complete export data",
+      "status": "success",
+      "exportPath": "/Users/mariusjopen/Websites/Github/circle-studio-global/migration/output/final-project-complete-export.json"
+    }
+  ],
+  "errors": [],
+  "finalCredits": [
+    {
+      "label": "Editor",
+      "person": [
+        {
+          "link_type": "Document",
+          "id": "aLrTIhEAACEAfcTQ"
+        }
+      ]
+    },
+    {
+      "label": "Audio Mix",
+      "person": [
+        {
+          "link_type": "Document",
+          "id": "aLrTDhEAACIAfcSK"
+        }
+      ]
+    }
+  ],
+  "foundPeople": [
+    {
+      "originalName": "Fabian Palacios V.",
+      "foundName": "fabian palacios v",
+      "id": "aLrTIhEAACEAfcTQ",
+      "uid": "fabian-palacios-v-1757074143872-40",
+      "position": "Editor"
+    },
+    {
+      "originalName": "Oro Studio",
+      "foundName": "oro studio",
+      "id": "aLrTDhEAACIAfcSK",
+      "uid": "oro-studio-1757074143872-27",
+      "position": "Audio Mix"
+    }
+  ],
+  "missingPeople": [
+    {
+      "position": "Director",
+      "name": "Santiago Carrasquilla"
+    },
+    {
+      "position": "Director",
+      "name": "Nick Apple"
+    },
+    {
+      "position": "Airbrush Paintings",
+      "name": "Nick Apple"
+    },
+    {
+      "position": "Editor",
+      "name": "Camilo Ojeda"
+    },
+    {
+      "position": "Editor",
+      "name": "Santiago Carrasquilla"
+    },
+    {
+      "position": "Design",
+      "name": "Agua Studio"
+    },
+    {
+      "position": "Color Grade",
+      "name": "Jorge Velandia"
+    }
+  ]
+}

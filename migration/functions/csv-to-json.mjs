@@ -67,6 +67,7 @@ async function exportCSVToJSON() {
             lang: 'en-us',
             title: record.Name.trim(),
             data: {
+              title: record.Name.trim(), // Custom title field inside data
               link: instagramLink ? {
                 link_type: 'Web',
                 url: instagramLink

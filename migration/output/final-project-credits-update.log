@@ -1,0 +1,105 @@
+{
+  "timestamp": "2025-09-05T12:24:54.852Z",
+  "project": "The Final",
+  "totalCredits": 6,
+  "processedCredits": 6,
+  "successfulCredits": 1,
+  "failedCredits": 5,
+  "missingPeople": [
+    {
+      "position": "Director",
+      "personName": "Santiago Carrasquilla",
+      "status": "not_found"
+    },
+    {
+      "position": "Director",
+      "personName": "Nick Apple",
+      "status": "not_found"
+    },
+    {
+      "position": "Airbrush Paintings",
+      "personName": "Nick Apple",
+      "status": "not_found"
+    },
+    {
+      "position": "Editor",
+      "personName": "Camilo Ojeda",
+      "status": "not_found"
+    },
+    {
+      "position": "Editor",
+      "personName": "Santiago Carrasquilla",
+      "status": "not_found"
+    },
+    {
+      "position": "Editor",
+      "personName": "Fabian Palacios V.",
+      "status": "not_found"
+    },
+    {
+      "position": "Design",
+      "personName": "Agua Studio",
+      "status": "not_found"
+    },
+    {
+      "position": "Color Grade",
+      "personName": "Jorge Velandia",
+      "status": "not_found"
+    }
+  ],
+  "errors": [
+    {
+      "message": "Failed to update project: 404 Not Found - {\n  \"message\":\"no Route matched with those values\",\n  \"request_id\":\"f541640320c7a4088a63753cbee95356\"\n}",
+      "timestamp": "2025-09-05T12:24:56.376Z"
+    }
+  ],
+  "details": [
+    {
+      "position": "Director",
+      "personName": "Santiago Carrasquilla",
+      "status": "not_found"
+    },
+    {
+      "position": "Director",
+      "personName": "Nick Apple",
+      "status": "not_found"
+    },
+    {
+      "position": "Airbrush Paintings",
+      "personName": "Nick Apple",
+      "status": "not_found"
+    },
+    {
+      "position": "Editor",
+      "personName": "Camilo Ojeda",
+      "status": "not_found"
+    },
+    {
+      "position": "Editor",
+      "personName": "Santiago Carrasquilla",
+      "status": "not_found"
+    },
+    {
+      "position": "Editor",
+      "personName": "Fabian Palacios V.",
+      "status": "not_found"
+    },
+    {
+      "position": "Design",
+      "personName": "Agua Studio",
+      "status": "not_found"
+    },
+    {
+      "position": "Color Grade",
+      "personName": "Jorge Velandia",
+      "status": "not_found"
+    },
+    {
+      "position": "Audio Mix",
+      "personName": "Oro Studio",
+      "status": "found",
+      "personId": "aLrTDhEAACIAfcSK"
+    }
+  ],
+  "status": "error"
+}

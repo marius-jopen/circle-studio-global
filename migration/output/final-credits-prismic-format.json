@@ -1,0 +1,75 @@
+{
+  "timestamp": "2025-09-05T12:33:07.051Z",
+  "project": "The Final",
+  "creditsStructure": [
+    {
+      "label": "Editor",
+      "person": [
+        {
+          "link_type": "Document",
+          "id": "aLrTIhEAACEAfcTQ"
+        }
+      ]
+    },
+    {
+      "label": "Audio Mix",
+      "person": [
+        {
+          "link_type": "Document",
+          "id": "aLrTDhEAACIAfcSK"
+        }
+      ]
+    }
+  ],
+  "foundPeople": [
+    {
+      "originalName": "Fabian Palacios V.",
+      "foundName": "fabian palacios v",
+      "id": "aLrTIhEAACEAfcTQ",
+      "uid": "fabian-palacios-v-1757074143872-40"
+    },
+    {
+      "originalName": "Oro Studio",
+      "foundName": "oro studio",
+      "id": "aLrTDhEAACIAfcSK",
+      "uid": "oro-studio-1757074143872-27"
+    }
+  ],
+  "missingPeople": [
+    {
+      "position": "Director",
+      "name": "Santiago Carrasquilla"
+    },
+    {
+      "position": "Director",
+      "name": "Nick Apple"
+    },
+    {
+      "position": "Airbrush Paintings",
+      "name": "Nick Apple"
+    },
+    {
+      "position": "Editor",
+      "name": "Camilo Ojeda"
+    },
+    {
+      "position": "Editor",
+      "name": "Santiago Carrasquilla"
+    },
+    {
+      "position": "Design",
+      "name": "Agua Studio"
+    },
+    {
+      "position": "Color Grade",
+      "name": "Jorge Velandia"
+    }
+  ],
+  "instructions": {
+    "step1": "Go to 'The Final' project in Prismic",
+    "step2": "Open the Credits section",
+    "step3": "Clear existing credits (if any)",
+    "step4": "For each credit entry above: Click 'Add item in Credits', Enter position in 'Label' field, Search and link people in 'Person' field",
+    "step5": "Save the project"
+  }
+}

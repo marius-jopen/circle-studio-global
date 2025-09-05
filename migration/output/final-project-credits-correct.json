@@ -1,0 +1,47 @@
+{
+  "project": "The Final",
+  "credits": [
+    {
+      "label": "Editor",
+      "person": [
+        {
+          "link_type": "Document",
+          "id": "aLrTIhEAACEAfcTQ"
+        }
+      ]
+    },
+    {
+      "label": "Audio Mix",
+      "person": [
+        {
+          "link_type": "Document",
+          "id": "aLrTDhEAACIAfcSK"
+        }
+      ]
+    }
+  ],
+  "foundPeople": {
+    "Fabian Palacios V.": [
+      {
+        "id": "aLrTIhEAACEAfcTQ",
+        "uid": "fabian-palacios-v-1757074143872-40",
+        "title": "Fabian Palacios V"
+      }
+    ],
+    "Oro Studio": [
+      {
+        "id": "aLrTDhEAACIAfcSK",
+        "uid": "oro-studio-1757074143872-27",
+        "title": "Oro Studio"
+      }
+    ]
+  },
+  "missingPeople": [
+    "Santiago Carrasquilla",
+    "Nick Apple",
+    "Camilo Ojeda",
+    "Agua Studio",
+    "Jorge Velandia"
+  ],
+  "timestamp": "2025-09-05T12:46:46.444Z"
+}

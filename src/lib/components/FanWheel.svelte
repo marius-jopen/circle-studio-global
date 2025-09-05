@@ -12,7 +12,7 @@
      */
     export let fit: 'safe' | 'tight' = 'tight';
     // For testing denser wheels: repeat items N times around the circle
-    export let repeat: number = 3;
+    export let repeat: number = 1;
 	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
 

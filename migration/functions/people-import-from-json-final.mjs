@@ -28,7 +28,7 @@ async function importPeopleFromJSON() {
 
   try {
     // Load the JSON data
-    const jsonPath = join(__dirname, 'output/people-prismic-format.json');
+    const jsonPath = join(__dirname, '../output/people-prismic-format.json');
     const jsonContent = readFileSync(jsonPath, 'utf8');
     const peopleData = JSON.parse(jsonContent);
     

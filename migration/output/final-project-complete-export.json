@@ -1,0 +1,824 @@
+{
+  "project": {
+    "id": "aH_IwxEAAB8AC1dO",
+    "uid": "the-final",
+    "type": "projects",
+    "data": {
+      "year": "2024",
+      "month": "December",
+      "title": "The Final",
+      "client": null,
+      "description": [
+        {
+          "type": "paragraph",
+          "text": "‘THE FINAL: Argentina vs France’ is an animated short produced by Santiago Carrasquilla. The film celebrates one of the most epic football matches ever played, condensing a game full of goals, emotions, and drama into just one minute. \nFeaturing 550 meticulously airbrushed paintings by Chicago-based artist Nicke Apple, each frame is brought to life with breathtaking beauty. \nAt the heart of THE FINAL is the fierce battle between two of the greatest football legends of all time: Messi and Mbappé. The film captures the strength and glory of both teams, while also acknowledging the bittersweet reality that, in the end, only one can claim victory.",
+          "spans": [],
+          "direction": "ltr"
+        }
+      ],
+      "video_is_dark": false,
+      "preview": [
+        {
+          "preview_image_landscape": {
+            "dimensions": {
+              "width": 3300,
+              "height": 2548
+            },
+            "alt": null,
+            "copyright": null,
+            "url": "https://images.prismic.io/circle-studio-global/aKOVPqTt2nPbab8C_the_final__argentina_vs_france_MiniMoments_Horizontal_Still_006.jpg?auto=format,compress",
+            "id": "aKOVPqTt2nPbab8C",
+            "edit": {
+              "x": 0,
+              "y": 0,
+              "zoom": 1,
+              "background": "transparent"
+            }
+          },
+          "preview_video_url_landscape": "https://player.vimeo.com/external/1111063219.m3u8?s=08182d83dc5069092f8d9dbfab97cf69a52ab6da&logging=false",
+          "preview_image_portrait": {
+            "dimensions": {
+              "width": 1080,
+              "height": 1350
+            },
+            "alt": null,
+            "copyright": null,
+            "url": "https://images.prismic.io/circle-studio-global/aKOZf6Tt2nPbab84_the_final__argentina_vs_france_MiniMoments_Vertical_Still_006.jpg?auto=format,compress",
+            "id": "aKOZf6Tt2nPbab84",
+            "edit": {
+              "x": 0,
+              "y": 0,
+              "zoom": 1,
+              "background": "transparent"
+            }
+          },
+          "preview_video_url_portrait": "https://player.vimeo.com/external/1111063615.m3u8?s=b705cfb0a37f10bca2802426df88ad38c4b0329f&logging=false"
+        },
+        {
+          "preview_image_landscape": {
+            "dimensions": {
+              "width": 3300,
+              "height": 2548
+            },
+            "alt": null,
+            "copyright": null,
+            "url": "https://images.prismic.io/circle-studio-global/aKOVP6Tt2nPbab8D_the_final__argentina_vs_france_MiniMoments_Horizontal_Still_007.jpg?auto=format,compress",
+            "id": "aKOVP6Tt2nPbab8D",
+            "edit": {
+              "x": 0,
+              "y": 0,
+              "zoom": 1,
+              "background": "transparent"
+            }
+          },
+          "preview_video_url_landscape": "https://player.vimeo.com/external/1111063263.m3u8?s=940977b51135d012cc329fb4809d27fd5a210aae&logging=false",
+          "preview_image_portrait": {
+            "dimensions": {
+              "width": 1080,
+              "height": 1350
+            },
+            "alt": null,
+            "copyright": null,
+            "url": "https://images.prismic.io/circle-studio-global/aKOZwqTt2nPbab9B_the_final__argentina_vs_france_MiniMoments_Vertical_Still_007.jpg?auto=format,compress",
+            "id": "aKOZwqTt2nPbab9B",
+            "edit": {
+              "x": 0,
+              "y": 0,
+              "zoom": 1,
+              "background": "transparent"
+            }
+          },
+          "preview_video_url_portrait": "https://player.vimeo.com/external/1111063637.m3u8?s=c65547b0243d70036369cf73445251d3385e4eb7&logging=false"
+        },
+        {
+          "preview_image_landscape": {
+            "dimensions": {
+              "width": 3300,
+              "height": 2548
+            },
+            "alt": null,
+            "copyright": null,
+            "url": "https://images.prismic.io/circle-studio-global/aKOVPKTt2nPbab7__the_final__argentina_vs_france_MiniMoments_Horizontal_Still_003.jpg?auto=format,compress",
+            "id": "aKOVPKTt2nPbab7_",
+            "edit": {
+              "x": 0,
+              "y": 0,
+              "zoom": 1,
+              "background": "transparent"
+            }
+          },
+          "preview_video_url_landscape": "https://player.vimeo.com/external/1111063107.m3u8?s=26816c24262d2c5b37788eb6282b418cd94d167a&logging=false",
+          "preview_image_portrait": {
+            "dimensions": {
+              "width": 1080,
+              "height": 1350
+            },
+            "alt": null,
+            "copyright": null,
+            "url": "https://images.prismic.io/circle-studio-global/aKOaX6Tt2nPbab9c_the_final__argentina_vs_france_MiniMoments_Vertical_Still_003.jpg?auto=format,compress",
+            "id": "aKOaX6Tt2nPbab9c",
+            "edit": {
+              "x": 0,
+              "y": 0,
+              "zoom": 1,
+              "background": "transparent"
+            }
+          },
+          "preview_video_url_portrait": "https://player.vimeo.com/external/1111063544.m3u8?s=62cafeb2ba36d62ee8b5d80c942df46dea82f445&logging=false"
+        },
+        {
+          "preview_image_landscape": {
+            "dimensions": {
+              "width": 3300,
+              "height": 2548
+            },
+            "alt": null,
+            "copyright": null,
+            "url": "https://images.prismic.io/circle-studio-global/aKOVOaTt2nPbab79_the_final__argentina_vs_france_MiniMoments_Horizontal_Still_001.jpg?auto=format,compress",
+            "id": "aKOVOaTt2nPbab79",
+            "edit": {
+              "x": 0,
+              "y": 0,
+              "zoom": 1,
+              "background": "transparent"
+            }
+          },
+          "preview_video_url_landscape": "https://player.vimeo.com/external/1111063046.m3u8?s=f17df06d4b2e59dd9a42d53fc498a67e3f6925da&logging=false",
+          "preview_image_portrait": {
+            "dimensions": {
+              "width": 1080,
+              "height": 1350
+            },
+            "alt": null,
+            "copyright": null,
+            "url": "https://images.prismic.io/circle-studio-global/aKOcZqTt2nPbab9-_the_final__argentina_vs_france_MiniMoments_Vertical_Still_001.jpg?auto=format,compress",
+            "id": "aKOcZqTt2nPbab9-",
+            "edit": {
+              "x": 0,
+              "y": 0,
+              "zoom": 1,
+              "background": "transparent"
+            }
+          },
+          "preview_video_url_portrait": "https://player.vimeo.com/external/1111063493.m3u8?s=ff7127e97bfb5dc0e6ce4b99ca14661235517b73&logging=false"
+        }
+      ],
+      "main": [
+        {
+          "main_image": {
+            "dimensions": {
+              "width": 3300,
+              "height": 2548
+            },
+            "alt": null,
+            "copyright": null,
+            "url": "https://images.prismic.io/circle-studio-global/aH_J71GsbswqTJgi_the_final__argentina_vs_france_-a_short_film_by_art_camp-_Still.jpg?auto=format,compress",
+            "id": "aH_J71GsbswqTJgi",
+            "edit": {
+              "x": 0,
+              "y": 0,
+              "zoom": 1,
+              "background": "transparent"
+            }
+          },
+          "main_video_url": "https://player.vimeo.com/external/1097717726.m3u8?s=eb576ef41a77eec2ba321ea2c2a63e145b9655a2&logging=false",
+          "width": 3300,
+          "height": 2548
+        }
+      ],
+      "credits": [
+        {
+          "label": "Editor",
+          "person": [
+            {
+              "link_type": "Document",
+              "id": "aLrTIhEAACEAfcTQ"
+            }
+          ]
+        },
+        {
+          "label": "Audio Mix",
+          "person": [
+            {
+              "link_type": "Document",
+              "id": "aLrTDhEAACIAfcSK"
+            }
+          ]
+        }
+      ],
+      "slices": [
+        {
+          "variation": "default",
+          "version": "initial",
+          "items": [],
+          "primary": {
+            "items_per_row": "2",
+            "items": [
+              {
+                "image": {
+                  "dimensions": {
+                    "width": 3300,
+                    "height": 2548
+                  },
+                  "alt": null,
+                  "copyright": null,
+                  "url": "https://images.prismic.io/circle-studio-global/aKOVOqTt2nPbab7-_the_final__argentina_vs_france_MiniMoments_Horizontal_Still_002.jpg?auto=format,compress",
+                  "id": "aKOVOqTt2nPbab7-",
+                  "edit": {
+                    "x": 0,
+                    "y": 0,
+                    "zoom": 1,
+                    "background": "transparent"
+                  }
+                },
+                "video_url": "https://player.vimeo.com/external/1111063067.m3u8?s=265fb3cee5a74bda4794aa774f32652c87ac801a&logging=false",
+                "play": "no-sound"
+              },
+              {
+                "image": {
+                  "dimensions": {
+                    "width": 3300,
+                    "height": 2548
+                  },
+                  "alt": null,
+                  "copyright": null,
+                  "url": "https://images.prismic.io/circle-studio-global/aKOVOaTt2nPbab79_the_final__argentina_vs_france_MiniMoments_Horizontal_Still_001.jpg?auto=format,compress",
+                  "id": "aKOVOaTt2nPbab79",
+                  "edit": {
+                    "x": 0,
+                    "y": 0,
+                    "zoom": 1,
+                    "background": "transparent"
+                  }
+                },
+                "video_url": "https://player.vimeo.com/external/1111063046.m3u8?s=f17df06d4b2e59dd9a42d53fc498a67e3f6925da&logging=false",
+                "play": "no-sound"
+              }
+            ]
+          },
+          "id": "documentation$43e71652-ee06-49c6-9bf0-d7b5fda91a45",
+          "slice_type": "documentation",
+          "slice_label": null
+        },
+        {
+          "variation": "default",
+          "version": "initial",
+          "items": [],
+          "primary": {
+            "items_per_row": "1",
+            "items": [
+              {
+                "image": {
+                  "dimensions": {
+                    "width": 3300,
+                    "height": 2548
+                  },
+                  "alt": null,
+                  "copyright": null,
+                  "url": "https://images.prismic.io/circle-studio-global/aKOVPKTt2nPbab7__the_final__argentina_vs_france_MiniMoments_Horizontal_Still_003.jpg?auto=format,compress",
+                  "id": "aKOVPKTt2nPbab7_",
+                  "edit": {
+                    "x": 0,
+                    "y": 0,
+                    "zoom": 1,
+                    "background": "transparent"
+                  }
+                },
+                "video_url": "https://player.vimeo.com/external/1111063107.m3u8?s=26816c24262d2c5b37788eb6282b418cd94d167a&logging=false",
+                "play": "no-sound"
+              }
+            ]
+          },
+          "id": "documentation$b304dbcb-b790-4399-a3ac-5f1f024410f1",
+          "slice_type": "documentation",
+          "slice_label": null
+        },
+        {
+          "variation": "default",
+          "version": "initial",
+          "items": [],
+          "primary": {
+            "items_per_row": "3",
+            "items": [
+              {
+                "image": {
+                  "dimensions": {
+                    "width": 3300,
+                    "height": 2548
+                  },
+                  "alt": null,
+                  "copyright": null,
+                  "url": "https://images.prismic.io/circle-studio-global/aKOVPaTt2nPbab8A_the_final__argentina_vs_france_MiniMoments_Horizontal_Still_004.jpg?auto=format,compress",
+                  "id": "aKOVPaTt2nPbab8A",
+                  "edit": {
+                    "x": 0,
+                    "y": 0,
+                    "zoom": 1,
+                    "background": "transparent"
+                  }
+                },
+                "video_url": "https://player.vimeo.com/external/1111063145.m3u8?s=6f2b5d0217dee0e689b43d3d7717ffc102a110ae&logging=false",
+                "play": "no-sound"
+              },
+              {
+                "image": {
+                  "dimensions": {
+                    "width": 3300,
+                    "height": 2548
+                  },
+                  "alt": null,
+                  "copyright": null,
+                  "url": "https://images.prismic.io/circle-studio-global/aKOVPaTt2nPbab8B_the_final__argentina_vs_france_MiniMoments_Horizontal_Still_005.jpg?auto=format,compress",
+                  "id": "aKOVPaTt2nPbab8B",
+                  "edit": {
+                    "x": 0,
+                    "y": 0,
+                    "zoom": 1,
+                    "background": "transparent"
+                  }
+                },
+                "video_url": "https://player.vimeo.com/external/1111063181.m3u8?s=d904277579d56742de4d072c1c0f5de833db96db&logging=false",
+                "play": "no-sound"
+              },
+              {
+                "image": {
+                  "dimensions": {
+                    "width": 3300,
+                    "height": 2548
+                  },
+                  "alt": null,
+                  "copyright": null,
+                  "url": "https://images.prismic.io/circle-studio-global/aKOVPqTt2nPbab8C_the_final__argentina_vs_france_MiniMoments_Horizontal_Still_006.jpg?auto=format,compress",
+                  "id": "aKOVPqTt2nPbab8C",
+                  "edit": {
+                    "x": 0,
+                    "y": 0,
+                    "zoom": 1,
+                    "background": "transparent"
+                  }
+                },
+                "video_url": "https://player.vimeo.com/external/1111063219.m3u8?s=08182d83dc5069092f8d9dbfab97cf69a52ab6da&logging=false",
+                "play": "no-sound"
+              }
+            ]
+          },
+          "id": "documentation$ca0b7b56-7b36-4b9f-a3f0-a8557f9a91bc",
+          "slice_type": "documentation",
+          "slice_label": null
+        },
+        {
+          "variation": "default",
+          "version": "initial",
+          "items": [],
+          "primary": {
+            "items_per_row": "1",
+            "items": [
+              {
+                "image": {
+                  "dimensions": {
+                    "width": 1500,
+                    "height": 1500
+                  },
+                  "alt": null,
+                  "copyright": null,
+                  "url": "https://images.prismic.io/circle-studio-global/aKOWXKTt2nPbab8S_the_final__argentina_vs_france_Still_001.jpg?auto=format,compress",
+                  "id": "aKOWXKTt2nPbab8S",
+                  "edit": {
+                    "x": 0,
+                    "y": 0,
+                    "zoom": 1,
+                    "background": "transparent"
+                  }
+                },
+                "video_url": null,
+                "play": "no-sound"
+              }
+            ]
+          },
+          "id": "documentation$127db321-4ce6-4059-b7a3-b9a84c354d57",
+          "slice_type": "documentation",
+          "slice_label": null
+        },
+        {
+          "variation": "default",
+          "version": "initial",
+          "items": [],
+          "primary": {
+            "items_per_row": "2",
+            "items": [
+              {
+                "image": {
+                  "dimensions": {
+                    "width": 3300,
+                    "height": 2548
+                  },
+                  "alt": null,
+                  "copyright": null,
+                  "url": "https://images.prismic.io/circle-studio-global/aKOVP6Tt2nPbab8D_the_final__argentina_vs_france_MiniMoments_Horizontal_Still_007.jpg?auto=format,compress",
+                  "id": "aKOVP6Tt2nPbab8D",
+                  "edit": {
+                    "x": 0,
+                    "y": 0,
+                    "zoom": 1,
+                    "background": "transparent"
+                  }
+                },
+                "video_url": "https://player.vimeo.com/external/1111063263.m3u8?s=940977b51135d012cc329fb4809d27fd5a210aae&logging=false",
+                "play": "no-sound"
+              },
+              {
+                "image": {
+                  "dimensions": {
+                    "width": 3300,
+                    "height": 2548
+                  },
+                  "alt": null,
+                  "copyright": null,
+                  "url": "https://images.prismic.io/circle-studio-global/aKOVQKTt2nPbab8E_the_final__argentina_vs_france_MiniMoments_Horizontal_Still_008.jpg?auto=format,compress",
+                  "id": "aKOVQKTt2nPbab8E",
+                  "edit": {
+                    "x": 0,
+                    "y": 0,
+                    "zoom": 1,
+                    "background": "transparent"
+                  }
+                },
+                "video_url": "https://player.vimeo.com/external/1111063307.m3u8?s=5f8bd1ce584fb3783a64323bc10d22be2537bc29&logging=false",
+                "play": "no-sound"
+              }
+            ]
+          },
+          "id": "documentation$a11024eb-4f51-4d7e-9bc5-b898ba1171ff",
+          "slice_type": "documentation",
+          "slice_label": null
+        },
+        {
+          "variation": "default",
+          "version": "initial",
+          "items": [],
+          "primary": {
+            "items_per_row": "3",
+            "items": [
+              {
+                "image": {
+                  "dimensions": {
+                    "width": 1080,
+                    "height": 1350
+                  },
+                  "alt": null,
+                  "copyright": null,
+                  "url": "https://images.prismic.io/circle-studio-global/aKOXHKTt2nPbab8Y_the_final__argentina_vs_france_Still_021.jpg?auto=format,compress",
+                  "id": "aKOXHKTt2nPbab8Y",
+                  "edit": {
+                    "x": 0,
+                    "y": 0,
+                    "zoom": 1,
+                    "background": "transparent"
+                  }
+                },
+                "video_url": null,
+                "play": "no-sound"
+              },
+              {
+                "image": {
+                  "dimensions": {
+                    "width": 1080,
+                    "height": 1350
+                  },
+                  "alt": null,
+                  "copyright": null,
+                  "url": "https://images.prismic.io/circle-studio-global/aKOXMKTt2nPbab8b_the_final__argentina_vs_france_Still_022.jpg?auto=format,compress",
+                  "id": "aKOXMKTt2nPbab8b",
+                  "edit": {
+                    "x": 0,
+                    "y": 0,
+                    "zoom": 1,
+                    "background": "transparent"
+                  }
+                },
+                "video_url": null,
+                "play": "no-sound"
+              },
+              {
+                "image": {
+                  "dimensions": {
+                    "width": 1080,
+                    "height": 1350
+                  },
+                  "alt": null,
+                  "copyright": null,
+                  "url": "https://images.prismic.io/circle-studio-global/aKOXH6Tt2nPbab8Z_the_final__argentina_vs_france_Still_023.jpg?auto=format,compress",
+                  "id": "aKOXH6Tt2nPbab8Z",
+                  "edit": {
+                    "x": 0,
+                    "y": 0,
+                    "zoom": 1,
+                    "background": "transparent"
+                  }
+                },
+                "video_url": null,
+                "play": "no-sound"
+              }
+            ]
+          },
+          "id": "documentation$7be09111-6183-4d58-b1f6-92396e1a1df7",
+          "slice_type": "documentation",
+          "slice_label": null
+        },
+        {
+          "variation": "default",
+          "version": "initial",
+          "items": [],
+          "primary": {
+            "items_per_row": "1",
+            "items": [
+              {
+                "image": {
+                  "dimensions": {
+                    "width": 3300,
+                    "height": 2548
+                  },
+                  "alt": null,
+                  "copyright": null,
+                  "url": "https://images.prismic.io/circle-studio-global/aKOVQaTt2nPbab8F_the_final__argentina_vs_france_MiniMoments_Horizontal_Still_009.jpg?auto=format,compress",
+                  "id": "aKOVQaTt2nPbab8F",
+                  "edit": {
+                    "x": 0,
+                    "y": 0,
+                    "zoom": 1,
+                    "background": "transparent"
+                  }
+                },
+                "video_url": "https://player.vimeo.com/external/1111063327.m3u8?s=68dd6017557b44cafafdb7c7e1e64f23982ebac6&logging=false",
+                "play": "no-sound"
+              }
+            ]
+          },
+          "id": "documentation$961086c2-ecfc-4196-a88b-f6db134d35f7",
+          "slice_type": "documentation",
+          "slice_label": null
+        },
+        {
+          "variation": "default",
+          "version": "initial",
+          "items": [],
+          "primary": {
+            "items_per_row": "2",
+            "items": [
+              {
+                "image": {
+                  "dimensions": {
+                    "width": 1080,
+                    "height": 1350
+                  },
+                  "alt": null,
+                  "copyright": null,
+                  "url": "https://images.prismic.io/circle-studio-global/aKOX_qTt2nPbab8g_the_final__argentina_vs_france_Still_025.jpg?auto=format,compress",
+                  "id": "aKOX_qTt2nPbab8g",
+                  "edit": {
+                    "x": 0,
+                    "y": 0,
+                    "zoom": 1,
+                    "background": "transparent"
+                  }
+                },
+                "video_url": null,
+                "play": "no-sound"
+              },
+              {
+                "image": {
+                  "dimensions": {
+                    "width": 1080,
+                    "height": 1350
+                  },
+                  "alt": null,
+                  "copyright": null,
+                  "url": "https://images.prismic.io/circle-studio-global/aKOX_qTt2nPbab8h_the_final__argentina_vs_france_Still_027.jpg?auto=format,compress",
+                  "id": "aKOX_qTt2nPbab8h",
+                  "edit": {
+                    "x": 0,
+                    "y": 0,
+                    "zoom": 1,
+                    "background": "transparent"
+                  }
+                },
+                "video_url": null,
+                "play": "no-sound"
+              }
+            ]
+          },
+          "id": "documentation$5b67eea9-de44-49c6-bd4c-a8ca8a270f1f",
+          "slice_type": "documentation",
+          "slice_label": null
+        },
+        {
+          "variation": "default",
+          "version": "initial",
+          "items": [],
+          "primary": {
+            "items_per_row": "3",
+            "items": [
+              {
+                "image": {
+                  "dimensions": {
+                    "width": 3300,
+                    "height": 2548
+                  },
+                  "alt": null,
+                  "copyright": null,
+                  "url": "https://images.prismic.io/circle-studio-global/aKOVQ6Tt2nPbab8H_the_final__argentina_vs_france_MiniMoments_Horizontal_Still_010.jpg?auto=format,compress",
+                  "id": "aKOVQ6Tt2nPbab8H",
+                  "edit": {
+                    "x": 0,
+                    "y": 0,
+                    "zoom": 1,
+                    "background": "transparent"
+                  }
+                },
+                "video_url": "https://player.vimeo.com/external/1111063352.m3u8?s=4f379289b1e98bb868c41ed74a1e32c738025cd1&logging=false",
+                "play": "no-sound"
+              },
+              {
+                "image": {
+                  "dimensions": {
+                    "width": 3300,
+                    "height": 2548
+                  },
+                  "alt": null,
+                  "copyright": null,
+                  "url": "https://images.prismic.io/circle-studio-global/aKOVQ6Tt2nPbab8I_the_final__argentina_vs_france_MiniMoments_Horizontal_Still_011.jpg?auto=format,compress",
+                  "id": "aKOVQ6Tt2nPbab8I",
+                  "edit": {
+                    "x": 0,
+                    "y": 0,
+                    "zoom": 1,
+                    "background": "transparent"
+                  }
+                },
+                "video_url": "https://player.vimeo.com/external/1111063380.m3u8?s=b8ce19190f2fe759dba8e0f40986a3a193143a11&logging=false",
+                "play": "no-sound"
+              },
+              {
+                "image": {
+                  "dimensions": {
+                    "width": 3300,
+                    "height": 2548
+                  },
+                  "alt": null,
+                  "copyright": null,
+                  "url": "https://images.prismic.io/circle-studio-global/aKOVRKTt2nPbab8K_the_final__argentina_vs_france_MiniMoments_Horizontal_Still_012.jpg?auto=format,compress",
+                  "id": "aKOVRKTt2nPbab8K",
+                  "edit": {
+                    "x": 0,
+                    "y": 0,
+                    "zoom": 1,
+                    "background": "transparent"
+                  }
+                },
+                "video_url": "https://player.vimeo.com/external/1111063434.m3u8?s=ecd261386cf5f3e9e10145e4321d2daf45286ddd&logging=false",
+                "play": "no-sound"
+              }
+            ]
+          },
+          "id": "documentation$75fccaeb-d95b-4fe6-a1fd-965b2de3e9a6",
+          "slice_type": "documentation",
+          "slice_label": null
+        },
+        {
+          "variation": "default",
+          "version": "initial",
+          "items": [],
+          "primary": {
+            "items_per_row": "1",
+            "items": [
+              {
+                "image": {
+                  "dimensions": {
+                    "width": 2100,
+                    "height": 1500
+                  },
+                  "alt": null,
+                  "copyright": null,
+                  "url": "https://images.prismic.io/circle-studio-global/aKOZBqTt2nPbab8y_the_final__argentina_vs_france_Still_002.jpg?auto=format,compress",
+                  "id": "aKOZBqTt2nPbab8y",
+                  "edit": {
+                    "x": 0,
+                    "y": 0,
+                    "zoom": 1,
+                    "background": "transparent"
+                  }
+                },
+                "video_url": null,
+                "play": "no-sound"
+              }
+            ]
+          },
+          "id": "documentation$de006802-96cf-441a-91bb-a84536cb9683",
+          "slice_type": "documentation",
+          "slice_label": null
+        }
+      ],
+      "meta_title": null,
+      "meta_description": null,
+      "meta_image": {}
+    }
+  },
+  "credits": [
+    {
+      "label": "Editor",
+      "person": [
+        {
+          "link_type": "Document",
+          "id": "aLrTIhEAACEAfcTQ"
+        }
+      ]
+    },
+    {
+      "label": "Audio Mix",
+      "person": [
+        {
+          "link_type": "Document",
+          "id": "aLrTDhEAACIAfcSK"
+        }
+      ]
+    }
+  ],
+  "foundPeople": [
+    {
+      "originalName": "Fabian Palacios V.",
+      "foundName": "fabian palacios v",
+      "id": "aLrTIhEAACEAfcTQ",
+      "uid": "fabian-palacios-v-1757074143872-40",
+      "position": "Editor"
+    },
+    {
+      "originalName": "Oro Studio",
+      "foundName": "oro studio",
+      "id": "aLrTDhEAACIAfcSK",
+      "uid": "oro-studio-1757074143872-27",
+      "position": "Audio Mix"
+    }
+  ],
+  "missingPeople": [
+    {
+      "position": "Director",
+      "name": "Santiago Carrasquilla"
+    },
+    {
+      "position": "Director",
+      "name": "Nick Apple"
+    },
+    {
+      "position": "Airbrush Paintings",
+      "name": "Nick Apple"
+    },
+    {
+      "position": "Editor",
+      "name": "Camilo Ojeda"
+    },
+    {
+      "position": "Editor",
+      "name": "Santiago Carrasquilla"
+    },
+    {
+      "position": "Design",
+      "name": "Agua Studio"
+    },
+    {
+      "position": "Color Grade",
+      "name": "Jorge Velandia"
+    }
+  ],
+  "prismicFormat": {
+    "credits": [
+      {
+        "label": "Editor",
+        "person": [
+          {
+            "link_type": "Document",
+            "id": "aLrTIhEAACEAfcTQ"
+          }
+        ]
+      },
+      {
+        "label": "Audio Mix",
+        "person": [
+          {
+            "link_type": "Document",
+            "id": "aLrTDhEAACIAfcSK"
+          }
+        ]
+      }
+    ]
+  },
+  "instructions": {
+    "manualUpdate": {
+      "step1": "Go to 'The Final' project in Prismic",
+      "step2": "Open the Credits section",
+      "step3": "Clear existing credits (if any)",
+      "step4": "For each credit entry below, click 'Add item in Credits' and link the people",
+      "step5": "Save the project"
+    }
+  },
+  "timestamp": "2025-09-05T12:39:51.592Z"
+}

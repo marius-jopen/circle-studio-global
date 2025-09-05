@@ -1,0 +1,2141 @@
+{
+  "projects": [
+    {
+      "title": "BELLADONNA",
+      "client": "ARMADO YOUNG",
+      "credits": [
+        {
+          "position": "Director",
+          "name": "Armando Young"
+        },
+        {
+          "position": "Director of Photography",
+          "name": "Oliver Lanzenberg"
+        },
+        {
+          "position": "Gaffer",
+          "name": "Axel Lanzenberg"
+        },
+        {
+          "position": "Key Grip",
+          "name": "Swelee Joseph"
+        },
+        {
+          "position": "1st Assistant Camera",
+          "name": ["Danny Flanagan", "Ryan Nocella"]
+        },
+        {
+          "position": "2nd Unit DP",
+          "name": "Axel Lanzenberg"
+        },
+        {
+          "position": "2nd Unit AC",
+          "name": "Aaron Shapiro"
+        },
+        {
+          "position": "Production Manager",
+          "name": "Matt Knudsen"
+        },
+        {
+          "position": "Production Coordinator",
+          "name": "Matthew Kagen"
+        },
+        {
+          "position": "Production Assistant",
+          "name": ["Lucian Maisel", "Justin Nekrutman"]
+        },
+        {
+          "position": "Animation",
+          "name": "Saad Moosajee"
+        },
+        {
+          "position": "Color",
+          "name": "Kath Raisch"
+        },
+        {
+          "position": "Audio Mastering",
+          "name": "Alex Sterling"
+        }
+      ]
+    },
+    {
+      "title": "LOVED ONES",
+      "client": "ARMADO YOUNG",
+      "credits": [
+        {
+          "position": "Director",
+          "name": "Santiago Carrasquilla"
+        },
+        {
+          "position": "Producer",
+          "name": "Jos Diaz Contreras"
+        },
+        {
+          "position": "Cinematography",
+          "name": "Axel Lanzengerg"
+        },
+        {
+          "position": "Assistant Camera",
+          "name": "Aaron Shapiro"
+        },
+        {
+          "position": "Color",
+          "name": "Irving Harvey"
+        },
+        {
+          "position": "3D Modeling",
+          "name": "Nick Neuland"
+        },
+        {
+          "position": "3D Printing",
+          "name": "NYU LaGuardia Print Studio"
+        }
+      ]
+    },
+    {
+      "title": "RIDE OR DIE",
+      "client": "BOYS NOISE & KELSY LU FT. CHILLY GONZALES",
+      "credits": [
+        {
+          "position": "Director",
+          "name": ["Art Camp", "Danae Gosset", "Danica Tan"]
+        },
+        {
+          "position": "Creative Director",
+          "name": ["Chris Alborano", "Tal Midyan", "Kathryn Kvas"]
+        },
+        {
+          "position": "Art Director",
+          "name": ["Danae Gosset", "Danica Tan"]
+        },
+        {
+          "position": "Producer",
+          "name": ["Art Camp", "Danae Gosset", "Danica Tan", "JJ Russo", "Jerry Li"]
+        },
+        {
+          "position": "Co-Director",
+          "name": "Mac Ross"
+        },
+        {
+          "position": "Styling",
+          "name": ["Becky Akinyode", "Kelsey Lu"]
+        },
+        {
+          "position": "3D Animation Director",
+          "name": "Danica Tan"
+        },
+        {
+          "position": "Simulation Director",
+          "name": "Matt Knudsen"
+        },
+        {
+          "position": "3D Art Director",
+          "name": ["Vasco Gross", "Matt Knudsen"]
+        },
+        {
+          "position": "3D Modeler & Designer",
+          "name": "Nicole Tan"
+        },
+        {
+          "position": "3D Character Animation & Rigging",
+          "name": "Farrah Silberman"
+        },
+        {
+          "position": "3D Garment Designer & Modeler",
+          "name": ["Nicole Tan", "Danica Tan", "TrappistM0nk"]
+        },
+        {
+          "position": "3D Additional Character Animation",
+          "name": "Nicole Tan"
+        },
+        {
+          "position": "3D Animator & Landscape Artist",
+          "name": ["Vasco Gross", "Luke Hall"]
+        },
+        {
+          "position": "3D Water Simulation Artist",
+          "name": "Yang Gao"
+        },
+        {
+          "position": "3D Additional Designer & Animator",
+          "name": "Morgan O'Brien"
+        },
+        {
+          "position": "2D Animation Director",
+          "name": "Danae Gosset"
+        },
+        {
+          "position": "2D Animator",
+          "name": ["Christin Kim", "Anna Chandler", "Britton Korbel", "Tianying Yu", "Tianyi Zhou", "Jeremy Higgins"]
+        },
+        {
+          "position": "Print Designer",
+          "name": "Sabrina Mai"
+        },
+        {
+          "position": "Storyboard Artist",
+          "name": "Mac Ross"
+        },
+        {
+          "position": "Research and Asset Curation",
+          "name": ["Jerry Li", "JJ Russo"]
+        }
+      ]
+    },
+    {
+      "title": "MARIANA TRENCH",
+      "client": "BRIGHT EYES",
+      "credits": [
+        {
+          "position": "Director",
+          "name": "Art Camp"
+        },
+        {
+          "position": "3D Animation Director & Art Director",
+          "name": "Danica Tan"
+        },
+        {
+          "position": "3D Animator & Technical Director",
+          "name": "Matt Knudsen"
+        },
+        {
+          "position": "3D Animator & Designer",
+          "name": "Vasco Gross"
+        },
+        {
+          "position": "3D Animation Intern",
+          "name": "Aarman Roy"
+        },
+        {
+          "position": "2D Animation Director & Art Director",
+          "name": "Jeremy Higgins"
+        },
+        {
+          "position": "2D Animator & Designer",
+          "name": ["Britton Korbel", "Christin Kim", "Anna Chandler", "Kyle Daum", "Jasmine Haomin Shi", "Mike Witzel", "Katie Yu Kyung Lee", "Zheyu Wang"]
+        },
+        {
+          "position": "Executive Producer",
+          "name": "Fern Diaz"
+        },
+        {
+          "position": "Producer & Story Editor",
+          "name": ["J.J. Russo", "Jerry Li"]
+        },
+        {
+          "position": "Storyboards & Concept",
+          "name": "Mac Ross"
+        },
+        {
+          "position": "Story Concepts",
+          "name": "Matt Kagen"
+        }
+      ]
+    },
+    {
+      "title": "DIG",
+      "client": "DIG INN",
+      "credits": [
+        {
+          "position": "Strategy Lead",
+          "name": "Fern Diaz"
+        },
+        {
+          "position": "Lead Art Director and Designer",
+          "name": "Alex Stikeleather"
+        },
+        {
+          "position": "Design",
+          "name": ["Eugene Lee", "Jenny Mascia", "Min Kim", "Yuting Xie"]
+        },
+        {
+          "position": "3D",
+          "name": ["Saad Moosaje", "Matt Knudsen"]
+        },
+        {
+          "position": "Language",
+          "name": ["Nick Parish", "Lydia Booz", "Matthew Kagen", "Jeff Ihaza", "Fern Diaz"]
+        },
+        {
+          "position": "Photography",
+          "name": "Oliver Lanzenberg"
+        }
+      ]
+    },
+    {
+      "title": "ELIZABETH'S SMILE",
+      "client": "ELIZABETH'S SMILE",
+      "credits": [
+        {
+          "position": "Director",
+          "name": "Santiago Carrasquilla"
+        },
+        {
+          "position": "Executive Producer",
+          "name": ["Angela Foster", "Kimi Porter Thomas", "Rodrigo Niño"]
+        },
+        {
+          "position": "Creative Director",
+          "name": ["Jeffrey Rozman", "Nate Richards"]
+        },
+        {
+          "position": "Director of Photography",
+          "name": "Oliver Lanzenberg"
+        },
+        {
+          "position": "3D Animation Director",
+          "name": "Nathan Schmitt"
+        },
+        {
+          "position": "3D Generalist & Technical Director",
+          "name": "Jonnatan Paz"
+        },
+        {
+          "position": "3D Simulation Artist",
+          "name": ["Florencia Monza", "Jonnatan Paz", "Atharva Raut"]
+        },
+        {
+          "position": "3D Character Animator",
+          "name": "Florencia Monza"
+        },
+        {
+          "position": "3D Animator",
+          "name": "Jonnatan Paz"
+        },
+        {
+          "position": "Motion Capture Artist",
+          "name": "Florencia Monza"
+        },
+        {
+          "position": "Story Board Artist",
+          "name": "Nick Apple"
+        },
+        {
+          "position": "2D Animation Director",
+          "name": "Britton Korbel"
+        },
+        {
+          "position": "2D Animation",
+          "name": ["Britton Korbel", "Zaira Calderón"]
+        },
+        {
+          "position": "Type Design and Animation",
+          "name": "Lela Fand"
+        },
+        {
+          "position": "Editor",
+          "name": ["Andrew Barell", "Santiago Carrasquilla", "Matt Knudsen"]
+        },
+        {
+          "position": "Assistant Editor",
+          "name": "Fabian Palacios"
+        },
+        {
+          "position": "1ST AC",
+          "name": "Kyle Sather"
+        },
+        {
+          "position": "2ND AC",
+          "name": "Taylor Myers"
+        },
+        {
+          "position": "CAM OP",
+          "name": "Sebastian Slayter"
+        },
+        {
+          "position": "Key Grip",
+          "name": "Paul Alban"
+        },
+        {
+          "position": "Mixer",
+          "name": "Connor Chase"
+        },
+        {
+          "position": "Production Designer",
+          "name": "Wayne Neho"
+        },
+        {
+          "position": "Key Make up & Hair",
+          "name": "Sophie Ono"
+        },
+        {
+          "position": "Producer",
+          "name": ["Santiago Carrasquilla", "Zaira Calderón"]
+        },
+        {
+          "position": "Production Intern",
+          "name": "Lela Fand"
+        }
+      ]
+    },
+    {
+      "title": "AGÜITA",
+      "client": "GABRIEL GARZÓN MONTANO",
+      "credits": [
+        {
+          "position": "Director",
+          "name": "Santiago Carraquilla"
+        },
+        {
+          "position": "Director of Photography",
+          "name": "Oliver Lanzenberg"
+        },
+        {
+          "position": "1st AC",
+          "name": "Danny Flanagan"
+        },
+        {
+          "position": "Steadicam Operator",
+          "name": "Nathan Stern"
+        },
+        {
+          "position": "Title Design",
+          "name": "Matt Knudsen"
+        },
+        {
+          "position": "Producer & Stylist",
+          "name": "Tatiana Echeverri"
+        },
+        {
+          "position": "Producer",
+          "name": "Alejandra Laverde"
+        },
+        {
+          "position": "Booking Agent & Producer",
+          "name": "Jonathan Correa"
+        },
+        {
+          "position": "1st AD",
+          "name": "Jeisson Moreno"
+        },
+        {
+          "position": "Choreography",
+          "name": "@mulahttaz"
+        }
+      ]
+    },
+    {
+      "title": "FRUITFLIES",
+      "client": "GABRIEL GARZÓN MONTANO",
+      "credits": [
+        {
+          "position": "Director",
+          "name": ["Santiago Carrasquilla", "Tighe Kellner", "Saad Moosajee"]
+        },
+        {
+          "position": "Animated by",
+          "name": "Saad Moosajee"
+        },
+        {
+          "position": "Cinematography",
+          "name": "Oliver Lanzenberg"
+        },
+        {
+          "position": "Producer",
+          "name": ["Jos Diaz Contreras", "Jerry Li"]
+        },
+        {
+          "position": "Co Producer",
+          "name": "Jonah Small"
+        },
+        {
+          "position": "Art Direction",
+          "name": ["Matt Knudsen", "John Conklin"]
+        },
+        {
+          "position": "Stedicam Operator",
+          "name": "Calvin Falk"
+        },
+        {
+          "position": "1st Assistant Camera",
+          "name": "Danny Flanagan"
+        },
+        {
+          "position": "Wardrobe Stylist",
+          "name": "Lauren Levin"
+        },
+        {
+          "position": "Rendering Support",
+          "name": ["Mark Ross", "Adam Ferestad", "Steve Sanders"]
+        },
+        {
+          "position": "Color",
+          "name": "Kath Raisch"
+        }
+      ]
+    },
+    {
+      "title": "BOMBO FABRIKA",
+      "client": "GABRIEL GARZÓN MONTANO",
+      "credits": [
+        {
+          "position": "Director",
+          "name": "Santiago Carrasquilla"
+        },
+        {
+          "position": "Co-Director",
+          "name": "Guillermo Camacho"
+        },
+        {
+          "position": "Cinematography",
+          "name": "Oliver Lanzenberg"
+        },
+        {
+          "position": "Producer",
+          "name": "Jos Diaz Contreras"
+        },
+        {
+          "position": "Co-Producer",
+          "name": "Guillermo Camacho"
+        },
+        {
+          "position": "Color",
+          "name": "Irving Harvey"
+        }
+      ]
+    },
+    {
+      "title": "CRAWL",
+      "client": "GABRIEL GARZÓN MONTANO",
+      "credits": [
+        {
+          "position": "Director",
+          "name": "Santiago Carrasquilla"
+        },
+        {
+          "position": "Co-Director",
+          "name": "Pablo Delcan"
+        },
+        {
+          "position": "Cinematography",
+          "name": "Oliver Lanzenberg"
+        },
+        {
+          "position": "Producer",
+          "name": "Jos Diaz Contreras"
+        },
+        {
+          "position": "Co Producer",
+          "name": "Lex Corwin"
+        },
+        {
+          "position": "Animations",
+          "name": "Delcan&Company"
+        },
+        {
+          "position": "Color",
+          "name": "Irving Harvey"
+        }
+      ]
+    },
+    {
+      "title": "MY BALLOON",
+      "client": "GABRIEL GARZÓN MONTANO",
+      "credits": [
+        {
+          "position": "Director",
+          "name": "Santiago Carrasquilla"
+        },
+        {
+          "position": "Cinematography",
+          "name": "Oliver Lanzenberg"
+        },
+        {
+          "position": "Producer",
+          "name": "Jos Diaz"
+        },
+        {
+          "position": "Color",
+          "name": "Irving Harvey"
+        }
+      ]
+    },
+    {
+      "title": "HERMÈS",
+      "client": "HERMÈS",
+      "credits": [
+        {
+          "position": "Director",
+          "name": ["Santiago Carrasquilla", "Danae Gosset"]
+        },
+        {
+          "position": "Art Director",
+          "name": ["Danae Gosset", "Santiago Carrasquilla"]
+        },
+        {
+          "position": "3D Lead",
+          "name": "Vasco Gross"
+        },
+        {
+          "position": "3D Design and Animation",
+          "name": ["Vasco Gross", "Jean-Baptiste Castel"]
+        },
+        {
+          "position": "3D Modeler",
+          "name": "David Bonilla"
+        },
+        {
+          "position": "Additional 3D Design",
+          "name": "Steven Guas"
+        },
+        {
+          "position": "2D Lead",
+          "name": "Aliénor Delaporte"
+        },
+        {
+          "position": "2D Design and Animation",
+          "name": ["Aliénor Delaporte", "Britton", "Lea Becquet"]
+        },
+        {
+          "position": "Post Production Assistant",
+          "name": "Kyle Daum"
+        },
+        {
+          "position": "Music",
+          "name": "Timotée Pedron-Desclaux"
+        },
+        {
+          "position": "Executive Producer",
+          "name": ["Jos Diaz Contreras", "Santiago Carrasquilla"]
+        }
+      ]
+    },
+    {
+      "title": "Silk Scarfs",
+      "client": "HERMÈS",
+      "credits": []
+    },
+    {
+      "title": "LA BELLE EST LA BÊTE",
+      "client": "INDOCHINE",
+      "credits": [
+        {
+          "position": "Executive Producer",
+          "name": "Georges Bermann"
+        },
+        {
+          "position": "Director",
+          "name": "Santiago Carrasquilla"
+        },
+        {
+          "position": "Co Director",
+          "name": ["Chan Yu Chen", "Nathan Schmitt"]
+        },
+        {
+          "position": "Choreography",
+          "name": ["Rhia Davenport", "Akira Uchida"]
+        },
+        {
+          "position": "Dancer",
+          "name": ["Rhia Davenport", "Akira Uchida", "Sasha Seaward"]
+        },
+        {
+          "position": "3D Technical Director",
+          "name": "Jonnatan Paz"
+        },
+        {
+          "position": "Simulation Artist",
+          "name": "Atharva Raut"
+        },
+        {
+          "position": "3D Generalist",
+          "name": ["Florencia Monza", "Jonnatan Paz", "Daniel Jimenez", "Atharva Raut", "David Bonilla", "Chan Yu Chen", "Nathan Schmitt"]
+        },
+        {
+          "position": "Fabric Simulation",
+          "name": ["Florencia Monza", "Jonnatan Paz", "Daniel Jimenez"]
+        },
+        {
+          "position": "Producer",
+          "name": ["Santiago Carrasquilla", "Auguste Bas", "Fabian Palacios V."]
+        },
+        {
+          "position": "Editor",
+          "name": ["Santiago Carrasquilla", "Fabian Palacios V."]
+        },
+        {
+          "position": "Art Director",
+          "name": ["Santiago Carrasquila", "Chan Yu Chen", "Nathan Schmitt", "Fabian Palacios V.", "Atharva Raut"]
+        },
+        {
+          "position": "3D Character Development",
+          "name": ["Florencia Monza", "Jonnatan Paz"]
+        },
+        {
+          "position": "3D Character Modeler",
+          "name": ["Florencia Monza", "Jonnatan Paz"]
+        },
+        {
+          "position": "3D Modeler",
+          "name": ["David Bonilla", "Jonnatan Paz", "Daniel Jimenez"]
+        },
+        {
+          "position": "3D Texture Artist",
+          "name": ["David Bonilla", "Daniel Jiménez", "Jonnatan Paz"]
+        },
+        {
+          "position": "Color",
+          "name": ["Royal Post", "Hadrian Kalmbach"]
+        },
+        {
+          "position": "Production Assistant",
+          "name": ["Zaira Calderón", "Jane Park"]
+        },
+        {
+          "position": "Motion Capture Technical Director",
+          "name": ["Sammy Sords", "Derek Chan"]
+        },
+        {
+          "position": "Motion Capture Dancer",
+          "name": ["Rhea Davenport", "Akira Uchida", "Sasha Seaward"]
+        },
+        {
+          "position": "Technology Advisor",
+          "name": "Kevin Peter He"
+        },
+        {
+          "position": "Design",
+          "name": "Anna Chandler"
+        }
+      ]
+    },
+    {
+      "title": "LIMN",
+      "client": "TOBIAS REES",
+      "credits": []
+    },
+    {
+      "title": "LA FELICIDAD SE CONSIGUE CON COSAS MUY SIMPLES",
+      "client": "LUIS BENZ",
+      "credits": []
+    },
+    {
+      "title": "MARINE SNOW",
+      "client": "MARINE SNOW",
+      "credits": [
+        {
+          "position": "Director & Producer",
+          "name": "Santiago Carrasquilla"
+        },
+        {
+          "position": "Music",
+          "name": "Ary Warnaar"
+        },
+        {
+          "position": "3D & Technical Director",
+          "name": "Steven Guas"
+        },
+        {
+          "position": "3D Art & Animation Lead",
+          "name": "Nathan Schmitt"
+        },
+        {
+          "position": "3D Character Animation",
+          "name": "Solene Cauchie"
+        },
+        {
+          "position": "3D Modeler",
+          "name": ["Charlotte Fargier", "David Bonilla"]
+        },
+        {
+          "position": "Concept & Storyboard Artist",
+          "name": "Mike Witzel"
+        },
+        {
+          "position": "Art Director",
+          "name": ["Santiago Carrasquilla", "Steven Guas", "Nathan Schmitt", "Mike Witzel", "David Bonilla"]
+        },
+        {
+          "position": "FX & Simulation Artist",
+          "name": "Alexis Prost"
+        },
+        {
+          "position": "Texture Artist & 3D Generalist",
+          "name": "David Bonilla"
+        },
+        {
+          "position": "Designer & Animator",
+          "name": "Vasco Gross"
+        },
+        {
+          "position": "Co-Producer",
+          "name": "Alexis Prost"
+        },
+        {
+          "position": "Executive Producer",
+          "name": ["Santiago Carrasquilla", "Jos Diaz Contreras"]
+        },
+        {
+          "position": "Creative Director",
+          "name": ["Sean Gedorio", "Khalisha Tambunan", "PORTO ROCHA", "Cecilia Azcarate", "Tony Lashley"]
+        }
+      ]
+    },
+    {
+      "title": "MOYNAT",
+      "client": "MOYNAT",
+      "credits": [
+        {
+          "position": "Creative Direction",
+          "name": "Santiago Carrasquilla"
+        },
+        {
+          "position": "Director",
+          "name": ["Alexis Prost", "Solene Cauchie"]
+        },
+        {
+          "position": "Animation",
+          "name": ["Solene Cauchie", "Alexis Prost"]
+        }
+      ]
+    },
+    {
+      "title": "NIA DACOSTA",
+      "client": "ONCE & FUTURE",
+      "credits": []
+    },
+    {
+      "title": "MONOGRAM FILM",
+      "client": "PROENZA SCHOULER",
+      "credits": [
+        {
+          "position": "Creative Direction",
+          "name": ["Proenza Schouler", "Santiago Carraquilla"]
+        },
+        {
+          "position": "Producer",
+          "name": "Santiago Carrasquilla"
+        },
+        {
+          "position": "3D Animation",
+          "name": ["Jonnatan Paz", "Camilo Cipriani"]
+        }
+      ]
+    },
+    {
+      "title": "THE FLIP SHOULDER BAG",
+      "client": "PROENZA SCHOULER",
+      "credits": [
+        {
+          "position": "Director and Producer",
+          "name": "Santiago Carraquilla"
+        },
+        {
+          "position": "3D",
+          "name": "Jonnatan Paz"
+        },
+        {
+          "position": "Production Assistant and Design",
+          "name": "Zaira Calderón"
+        },
+        {
+          "position": "Sound",
+          "name": "Ary Warnaar"
+        }
+      ]
+    },
+    {
+      "title": "ILLY CUPS",
+      "client": "SAGMEISTER",
+      "credits": [
+        {
+          "position": "Director",
+          "name": "Santiago Carrasquilla"
+        },
+        {
+          "position": "3d Animation & Design",
+          "name": "Steven Guas"
+        },
+        {
+          "position": "Music",
+          "name": "Ary Warnaar"
+        }
+      ]
+    },
+    {
+      "title": "NOW IS BETTER (Manatee)",
+      "client": "SAGMEISTER",
+      "credits": [
+        {
+          "position": "Director",
+          "name": "Santiago Carrasquilla"
+        },
+        {
+          "position": "DP",
+          "name": "Oliver Lanzenberg"
+        },
+        {
+          "position": "3D Character Animation",
+          "name": "Solene Cauchie"
+        },
+        {
+          "position": "3D Manatee Modeler",
+          "name": "Kamel Lots"
+        },
+        {
+          "position": "3D Generalist",
+          "name": "Jonnatan Paz"
+        },
+        {
+          "position": "Texture & 3D Generalist",
+          "name": "David Bonilla"
+        },
+        {
+          "position": "Compositing",
+          "name": "Julen Keoni"
+        },
+        {
+          "position": "AI Experiments",
+          "name": "Jeremy Higgins"
+        },
+        {
+          "position": "Music",
+          "name": "Ary Warnaar"
+        },
+        {
+          "position": "Manatee voice",
+          "name": "Tato Carrasquilla"
+        },
+        {
+          "position": "SFX and Audio Mix",
+          "name": "Oro Sound"
+        }
+      ]
+    },
+    {
+      "title": "NOW IS BETTER_BOOK",
+      "client": "SAGMEISTER",
+      "credits": []
+    },
+    {
+      "title": "SAGMEISTER 123",
+      "client": "SAGMEISTER",
+      "credits": [
+        {
+          "position": "Director",
+          "name": "Santiago Carrasquilla"
+        },
+        {
+          "position": "3D Animation Director",
+          "name": "Nathan Schmitt"
+        },
+        {
+          "position": "Technical Director and Simulation Artist",
+          "name": "Jonnatan Paz"
+        },
+        {
+          "position": "Texture & 3D Generalist",
+          "name": "David Bonilla"
+        },
+        {
+          "position": "Music",
+          "name": ["Ary Warnaar", "Oro Studio", "Santiago Carrasquilla"]
+        },
+        {
+          "position": "Editor",
+          "name": ["Santiago Carrasquilla", "Matt Knudsen"]
+        },
+        {
+          "position": "3D Generalist",
+          "name": "Steven Guas"
+        },
+        {
+          "position": "2D Animator",
+          "name": "Jeremy Higgings"
+        },
+        {
+          "position": "Post VFX",
+          "name": "Haolun Liu"
+        }
+      ]
+    },
+    {
+      "title": "BEAUTIFUL NUMBERS",
+      "client": "SAGMEISTER",
+      "credits": [
+        {
+          "position": "Director",
+          "name": "Santiago Carrasquilla"
+        },
+        {
+          "position": "Cinematography",
+          "name": "Oliver Lanzenberg"
+        },
+        {
+          "position": "3D Animation",
+          "name": "Steven Guas"
+        },
+        {
+          "position": "Music",
+          "name": "Space People"
+        },
+        {
+          "position": "Additional design and editing",
+          "name": "Ming Hsun Yu"
+        }
+      ]
+    },
+    {
+      "title": "A PEARL by MITSKI",
+      "client": "SPOTIFY",
+      "credits": [
+        {
+          "position": "Director",
+          "name": "Saad Moosajee"
+        },
+        {
+          "position": "Co-Director",
+          "name": "Danae Gosset"
+        },
+        {
+          "position": "Design",
+          "name": ["Saad Moosajee", "Danae Gosset"]
+        },
+        {
+          "position": "3D Animation",
+          "name": "Saad Moosajee"
+        },
+        {
+          "position": "Cel Animation",
+          "name": "Danae Gosset"
+        },
+        {
+          "position": "Technical Direction",
+          "name": "James Bartolozzi"
+        },
+        {
+          "position": "Designer",
+          "name": "Eugene Lee"
+        }
+      ]
+    },
+    {
+      "title": "STORY",
+      "client": "STORY",
+      "credits": [
+        {
+          "position": "Creative Director",
+          "name": "Tal Midyan"
+        },
+        {
+          "position": "Director",
+          "name": "Santiago Carrasquilla"
+        },
+        {
+          "position": "Head of Operations",
+          "name": "Jesse Kahn"
+        },
+        {
+          "position": "Creative team",
+          "name": ["Iida Jonsson", "Ssi Saarinen"]
+        },
+        {
+          "position": "Copywriter",
+          "name": "Tom Biddulph"
+        },
+        {
+          "position": "Producer",
+          "name": ["Santiago Carrasquilla", "Nick Apple", "Matt Knudsen"]
+        },
+        {
+          "position": "Artist",
+          "name": ["Nick Apple", "Mike Witzel", "Britton Korbel", "Damian Alquichire", "Courtney Williams"]
+        },
+        {
+          "position": "Images created by",
+          "name": ["Marius Jopen", "Santiago Carrasquilla"]
+        },
+        {
+          "position": "Technical Director",
+          "name": ["Julen Keoni", "Nick Apple", "Kyle Daum"]
+        },
+        {
+          "position": "Animator",
+          "name": "Julen Keoni"
+        },
+        {
+          "position": "Lead Compositor & Post Producer",
+          "name": "Kyle Daum"
+        },
+        {
+          "position": "VFX",
+          "name": "Julen Keoni"
+        },
+        {
+          "position": "Editor",
+          "name": ["Santiago Carrasquilla", "Matt Knudsen"]
+        },
+        {
+          "position": "Additional Art",
+          "name": ["Jayne Park", "Paula Kühn"]
+        },
+        {
+          "position": "Music",
+          "name": "Young at Work"
+        },
+        {
+          "position": "Voice over",
+          "name": "Chloe Mei-li Bundt"
+        },
+        {
+          "position": "SFX",
+          "name": "Oro Sound"
+        },
+        {
+          "position": "Color",
+          "name": "Jorge Valandia"
+        },
+        {
+          "position": "Production assistant",
+          "name": "Zaira Calderón"
+        }
+      ]
+    },
+    {
+      "title": "TELFAR WALLETS",
+      "client": "TELFAR",
+      "credits": [
+        {
+          "position": "Director",
+          "name": "Santiago Carrasquilla"
+        },
+        {
+          "position": "Music",
+          "name": "Ary Warnaar"
+        },
+        {
+          "position": "3D Director",
+          "name": "Jonnatan Paz"
+        },
+        {
+          "position": "3D Animator",
+          "name": ["Kyle Daum", "Camilo Ciprian"]
+        },
+        {
+          "position": "3D Generalist",
+          "name": "David Bonilla"
+        },
+        {
+          "position": "3D Simulation Artist",
+          "name": "Atharva Raut"
+        },
+        {
+          "position": "2D Animator",
+          "name": "Jeremy Higgins"
+        },
+        {
+          "position": "Edit and Production",
+          "name": "Matt Knudsen"
+        },
+        {
+          "position": "Production Assistant",
+          "name": "Zaira Calderon"
+        }
+      ]
+    },
+    {
+      "title": "TELFAR WALLET LOOPS",
+      "client": "TELFAR",
+      "credits": [
+        {
+          "position": "Art Director",
+          "name": "Santiago Carrasquilla"
+        },
+        {
+          "position": "3D Animator",
+          "name": ["Kyle Daum", "David Bonilla", "Jonnatan Paz"]
+        },
+        {
+          "position": "3D Simulation Artist",
+          "name": "Atharva Raut"
+        },
+        {
+          "position": "Production & Designer",
+          "name": "Zaira Calderón"
+        }
+      ]
+    },
+    {
+      "title": "TELFAR PILLS",
+      "client": "TELFAR",
+      "credits": [
+        {
+          "position": "Director",
+          "name": ["Santiago Carrasquilla", "Babak Radboy"]
+        },
+        {
+          "position": "3D Director",
+          "name": "Chan Yu Chen"
+        },
+        {
+          "position": "3D Animator",
+          "name": ["Chan Yu Chen", "Jonnatan Paz", "Kyle Daum"]
+        },
+        {
+          "position": "Music",
+          "name": "Ary Warnaar"
+        },
+        {
+          "position": "Editor",
+          "name": "Matt Knudsen"
+        },
+        {
+          "position": "3D Modeler",
+          "name": "Jack Millet"
+        },
+        {
+          "position": "3D Texture Artist",
+          "name": ["David Bonilla", "Camilo Ciprian"]
+        },
+        {
+          "position": "3D Generalist",
+          "name": "David Bonilla"
+        },
+        {
+          "position": "3D Simulation Artist",
+          "name": ["Atharva Raut", "Jonnatan Paz"]
+        },
+        {
+          "position": "2D Animator",
+          "name": "Chan Yu Chen"
+        },
+        {
+          "position": "Lighting",
+          "name": "Chan Yu Chen"
+        },
+        {
+          "position": "Production Assistant",
+          "name": "Zaira Calderón"
+        },
+        {
+          "position": "Sound Design",
+          "name": "Oro Sound Studio"
+        }
+      ]
+    },
+    {
+      "title": "AJ39_TrashTalk_Motion_Poster",
+      "client": "NIKE",
+      "credits": [
+        {
+          "position": "Unveil Extended VO",
+          "name": "David Teele"
+        },
+        {
+          "position": "3D Animation Director",
+          "name": ["Chan Yu Chen", "Steven Guas", "Nathan Smith"]
+        },
+        {
+          "position": "3D Technical Director",
+          "name": "Jonnatan Paz"
+        },
+        {
+          "position": "Simulation Artist",
+          "name": ["Atharva Raut", "Alexis Prost", "Jonnatan Paz"]
+        },
+        {
+          "position": "3D Modeler",
+          "name": "Jonnatan Paz"
+        },
+        {
+          "position": "Art Director",
+          "name": ["Anna Chandler", "Santiago Carrasquilla"]
+        },
+        {
+          "position": "Designer Animator",
+          "name": "Anna Chandler"
+        },
+        {
+          "position": "Editor",
+          "name": ["Santiago Carrasquilla", "Matt Knudsen"]
+        },
+        {
+          "position": "Producer",
+          "name": ["Jerry Li", "Matt Knudsen"]
+        },
+        {
+          "position": "Production Assistant",
+          "name": "Zaira Calderón"
+        },
+        {
+          "position": "2D Animator",
+          "name": ["Haolun Liu", "Jeremy Higgins"]
+        },
+        {
+          "position": "Music & Sound Design",
+          "name": "Ary Warnaar"
+        }
+      ]
+    },
+    {
+      "title": "AJ39_TrashTalk_Motion",
+      "client": "NIKE",
+      "credits": [
+        {
+          "position": "Global Art Director",
+          "name": "Warren Cochrane"
+        },
+        {
+          "position": "Art Director",
+          "name": "Farah Kafei"
+        },
+        {
+          "position": "Writer",
+          "name": "Jon Moy"
+        },
+        {
+          "position": "Director & Executive Producer",
+          "name": "Santiago Carrasquilla"
+        },
+        {
+          "position": "Creative Director & Executive Producer",
+          "name": "Jos Diaz Contreras"
+        },
+        {
+          "position": "Producer",
+          "name": "Jerry Li"
+        },
+        {
+          "position": "Unveil Player",
+          "name": ["Carlos Lantigua", "DJ Lee"]
+        },
+        {
+          "position": "Director of Photography",
+          "name": "Oliver Lanzenberg"
+        },
+        {
+          "position": "1st AD",
+          "name": "Elizabeth Smith"
+        },
+        {
+          "position": "Colorist",
+          "name": "Ben Federman"
+        },
+        {
+          "position": "Scenic Artist",
+          "name": "Krista Cohen"
+        },
+        {
+          "position": "Art PA",
+          "name": ["Britton Korbel", "Zaira Calderón"]
+        },
+        {
+          "position": "VFX",
+          "name": "Pretend VFX"
+        },
+        {
+          "position": "3D Animation Director",
+          "name": ["Chan Yu Chen", "Steven Guas", "Nathan Smith"]
+        },
+        {
+          "position": "3D Technical Director",
+          "name": "Jonnatan Paz"
+        },
+        {
+          "position": "Simulation Artist",
+          "name": ["Atharva Raut", "Alexis Prost", "Jonnatan Paz"]
+        },
+        {
+          "position": "3D Modeler",
+          "name": "Jonnatan Paz"
+        },
+        {
+          "position": "Art Director",
+          "name": ["Anna Chandler", "Santiago Carrasquilla"]
+        },
+        {
+          "position": "Designer Animator",
+          "name": "Anna Chandler"
+        },
+        {
+          "position": "Editor",
+          "name": ["Santiago Carrasquilla", "Matt Knudsen"]
+        },
+        {
+          "position": "Producer",
+          "name": ["Jerry Li", "Matt Knudsen"]
+        },
+        {
+          "position": "Production Assistant",
+          "name": "Zaira Calderón"
+        },
+        {
+          "position": "2D Animator",
+          "name": ["Haolun Liu", "Jeremy Higgins"]
+        },
+        {
+          "position": "Music & Sound Design",
+          "name": "Ary Warnaar"
+        }
+      ]
+    },
+    {
+      "title": "AJ39_Group_Motion_Preview",
+      "client": "NIKE",
+      "credits": [
+        {
+          "position": "3D Animation Director",
+          "name": ["Chan Yu Chen", "Steven Guas", "Nathan Smith"]
+        },
+        {
+          "position": "3D Technical Director",
+          "name": "Jonnatan Paz"
+        },
+        {
+          "position": "Simulation Artist",
+          "name": ["Atharva Raut", "Alexis Prost", "Jonnatan Paz"]
+        },
+        {
+          "position": "3D Modeler",
+          "name": "Jonnatan Paz"
+        },
+        {
+          "position": "Art Director",
+          "name": ["Anna Chandler", "Santiago Carrasquilla"]
+        },
+        {
+          "position": "Designer Animator",
+          "name": "Anna Chandler"
+        },
+        {
+          "position": "Editor",
+          "name": ["Santiago Carrasquilla", "Matt Knudsen"]
+        },
+        {
+          "position": "Producer",
+          "name": ["Jerry Li", "Matt Knudsen"]
+        },
+        {
+          "position": "Production Assistant",
+          "name": "Zaira Calderón"
+        },
+        {
+          "position": "2D Animator",
+          "name": ["Haolun Liu", "Jeremy Higgins"]
+        },
+        {
+          "position": "Music & Sound Design",
+          "name": "Ary Warnaar"
+        }
+      ]
+    },
+    {
+      "title": "AJ39_Colorway_GIF",
+      "client": "NIKE",
+      "credits": [
+        {
+          "position": "3D Animation Director",
+          "name": ["Chan Yu Chen", "Steven Guas", "Nathan Smith"]
+        },
+        {
+          "position": "3D Technical Director",
+          "name": "Jonnatan Paz"
+        },
+        {
+          "position": "Simulation Artist",
+          "name": ["Atharva Raut", "Alexis Prost", "Jonnatan Paz"]
+        },
+        {
+          "position": "3D Modeler",
+          "name": "Jonnatan Paz"
+        },
+        {
+          "position": "Art Director",
+          "name": ["Anna Chandler", "Santiago Carrasquilla"]
+        },
+        {
+          "position": "Designer Animator",
+          "name": "Anna Chandler"
+        },
+        {
+          "position": "Editor",
+          "name": ["Santiago Carrasquilla", "Matt Knudsen"]
+        },
+        {
+          "position": "Producer",
+          "name": ["Jerry Li", "Matt Knudsen"]
+        },
+        {
+          "position": "Production Assistant",
+          "name": "Zaira Calderón"
+        },
+        {
+          "position": "2D Animator",
+          "name": ["Haolun Liu", "Jeremy Higgins"]
+        },
+        {
+          "position": "Music & Sound Design",
+          "name": "Ary Warnaar"
+        }
+      ]
+    },
+    {
+      "title": "AJ39_Hero_Stills",
+      "client": "NIKE",
+      "credits": [
+        {
+          "position": "3D Animation Director",
+          "name": ["Chan Yu Chen", "Steven Guas", "Nathan Smith"]
+        },
+        {
+          "position": "3D Technical Director",
+          "name": "Jonnatan Paz"
+        },
+        {
+          "position": "Simulation Artist",
+          "name": ["Atharva Raut", "Alexis Prost", "Jonnatan Paz"]
+        },
+        {
+          "position": "3D Modeler",
+          "name": "Jonnatan Paz"
+        },
+        {
+          "position": "Art Director",
+          "name": ["Anna Chandler", "Santiago Carrasquilla"]
+        },
+        {
+          "position": "Designer Animator",
+          "name": "Anna Chandler"
+        },
+        {
+          "position": "Editor",
+          "name": ["Santiago Carrasquilla", "Matt Knudsen"]
+        },
+        {
+          "position": "Producer",
+          "name": ["Jerry Li", "Matt Knudsen"]
+        },
+        {
+          "position": "Production Assistant",
+          "name": "Zaira Calderón"
+        },
+        {
+          "position": "2D Animator",
+          "name": ["Haolun Liu", "Jeremy Higgins"]
+        }
+      ]
+    },
+    {
+      "title": "AJ39_Group_Stills",
+      "client": "NIKE",
+      "credits": [
+        {
+          "position": "3D Animation Director",
+          "name": ["Chan Yu Chen", "Steven Guas", "Nathan Smith"]
+        },
+        {
+          "position": "3D Technical Director",
+          "name": "Jonnatan Paz"
+        },
+        {
+          "position": "Simulation Artist",
+          "name": ["Atharva Raut", "Alexis Prost", "Jonnatan Paz"]
+        },
+        {
+          "position": "3D Modeler",
+          "name": "Jonnatan Paz"
+        },
+        {
+          "position": "Art Director",
+          "name": ["Anna Chandler", "Santiago Carrasquilla"]
+        },
+        {
+          "position": "Designer Animator",
+          "name": "Anna Chandler"
+        },
+        {
+          "position": "Editor",
+          "name": ["Santiago Carrasquilla", "Matt Knudsen"]
+        },
+        {
+          "position": "Producer",
+          "name": ["Jerry Li", "Matt Knudsen"]
+        },
+        {
+          "position": "Production Assistant",
+          "name": "Zaira Calderón"
+        },
+        {
+          "position": "2D Animator",
+          "name": ["Haolun Liu", "Jeremy Higgins"]
+        }
+      ]
+    },
+    {
+      "title": "AJ39_BTD",
+      "client": "NIKE",
+      "credits": [
+        {
+          "position": "Unveil Extended VO",
+          "name": "David Teele"
+        },
+        {
+          "position": "3D Animation Director",
+          "name": ["Chan Yu Chen", "Steven Guas", "Nathan Smith"]
+        },
+        {
+          "position": "3D Technical Director",
+          "name": "Jonnatan Paz"
+        },
+        {
+          "position": "Simulation Artist",
+          "name": ["Atharva Raut", "Alexis Prost", "Jonnatan Paz"]
+        },
+        {
+          "position": "3D Modeler",
+          "name": "Jonnatan Paz"
+        },
+        {
+          "position": "Art Director",
+          "name": ["Anna Chandler", "Santiago Carrasquilla"]
+        },
+        {
+          "position": "Designer Animator",
+          "name": "Anna Chandler"
+        },
+        {
+          "position": "Editor",
+          "name": ["Santiago Carrasquilla", "Matt Knudsen"]
+        },
+        {
+          "position": "Producer",
+          "name": ["Jerry Li", "Matt Knudsen"]
+        },
+        {
+          "position": "Production Assistant",
+          "name": "Zaira Calderón"
+        },
+        {
+          "position": "2D Animator",
+          "name": ["Haolun Liu", "Jeremy Higgins"]
+        },
+        {
+          "position": "Music & Sound Design",
+          "name": "Ary Warnaar"
+        }
+      ]
+    },
+    {
+      "title": "LUCA DONCIC",
+      "client": "NIKE JORDAN",
+      "credits": [
+        {
+          "position": "Director & Producer",
+          "name": "Santiago Carrasquilla"
+        },
+        {
+          "position": "Creative Director",
+          "name": "Warren Cochrane"
+        },
+        {
+          "position": "3D Art Direction",
+          "name": ["Chan Yu Chen", "Atharva Raut"]
+        },
+        {
+          "position": "3D Technical Director",
+          "name": "Jonnatan Paz"
+        },
+        {
+          "position": "3D Modeler",
+          "name": "Jonnatan Paz"
+        },
+        {
+          "position": "Simulation",
+          "name": "Florencia Monza"
+        },
+        {
+          "position": "Editor",
+          "name": "Camilo Ojeda"
+        },
+        {
+          "position": "Color",
+          "name": "Jorge Velandia"
+        },
+        {
+          "position": "Basketball Players /Talent",
+          "name": ["Dimitri Weeks", "@Rah_antisocial"]
+        },
+        {
+          "position": "SFX",
+          "name": "Oro Sound"
+        },
+        {
+          "position": "Motion Capture Technical Director",
+          "name": ["Samuel Sords", "Eric Chang"]
+        }
+      ]
+    },
+    {
+      "title": "A'JA WILSON FIRST SHOE A'ONE CAMPAIGN",
+      "client": "NIKE JORDAN",
+      "credits": [
+        {
+          "position": "Creative Director and Executive Producer",
+          "name": "Santiago Carrasquilla"
+        },
+        {
+          "position": "Creative Director at NIKE",
+          "name": "Farah Sofia"
+        },
+        {
+          "position": "3D Technical Director",
+          "name": "Jonnatan Paz"
+        },
+        {
+          "position": "3D Modeler",
+          "name": ["Jonnatan Paz", "David Bonilla", "Daniel Jimenez"]
+        },
+        {
+          "position": "Production and Design",
+          "name": "Zaira Calderón"
+        }
+      ]
+    },
+    {
+      "title": "TELFAR PUFF",
+      "client": "TELFAR",
+      "credits": [
+        {
+          "position": "Creative Director",
+          "name": "Babak Radboy"
+        },
+        {
+          "position": "Music",
+          "name": ["Ian Isiah", "Preachgold"]
+        },
+        {
+          "position": "Sound Design",
+          "name": "Lars Probert"
+        },
+        {
+          "position": "Executive Producer",
+          "name": ["Ladin Awad", "Irina Cocimarov"]
+        },
+        {
+          "position": "Producer & Co-Director",
+          "name": "Santiago Carrasquilla"
+        },
+        {
+          "position": "Editor",
+          "name": ["Anthony Valdez", "Porous Freak", "Miwa Sakulrat", "Santiago Carrasquilla"]
+        },
+        {
+          "position": "3D Technical Director",
+          "name": "Jonnatan Paz"
+        },
+        {
+          "position": "3D Animator & Art Director",
+          "name": ["Chan Yu Chen", "Nathan Schmitt"]
+        },
+        {
+          "position": "3D Simulation Artist",
+          "name": ["Florencia Monza", "Jonnatan Paz", "Atharva Raut"]
+        },
+        {
+          "position": "3D Garment Modeler",
+          "name": ["Florencia Monza", "Jonnatan Paz"]
+        },
+        {
+          "position": "3D Animator",
+          "name": "Kyle Daum"
+        },
+        {
+          "position": "3D Character Modeler",
+          "name": ["Florencia Monza", "Jonnatan Paz"]
+        },
+        {
+          "position": "3D Bag Modeler",
+          "name": "Jack Billet"
+        },
+        {
+          "position": "3D Texture Artist",
+          "name": ["David Bonilla", "Jonnatan Paz"]
+        },
+        {
+          "position": "Assistant Editor",
+          "name": ["Matt Knudsen", "Santiago Carrasquilla"]
+        },
+        {
+          "position": "Co-Producer",
+          "name": ["Zaira Calderón", "Matt Knudsen"]
+        },
+        {
+          "position": "Post Production Producer",
+          "name": ["Chuka Chukuma", "Zaira Calderón", "Matt Knudsen"]
+        },
+        {
+          "position": "Executive Assistant",
+          "name": "Chris Hamberger"
+        },
+        {
+          "position": "Motion Capture Technical Director",
+          "name": ["Sammy Sords", "Eric Chang"]
+        },
+        {
+          "position": "Motion Capture Assistant Technical Director",
+          "name": "Andrew Litton"
+        }
+      ]
+    },
+    {
+      "title": "TELFAR PUFF PARTY",
+      "client": "TELFAR",
+      "credits": [
+        {
+          "position": "Creative Director",
+          "name": "Babak Radboy"
+        },
+        {
+          "position": "Executive Producer",
+          "name": ["Ladin Awad", "Irina Cocimarov"]
+        },
+        {
+          "position": "Director",
+          "name": ["Santiago Carrasquilla", "Chan Yu Chen"]
+        },
+        {
+          "position": "Music",
+          "name": ["Felipe Duran", "Ary Warnaar"]
+        },
+        {
+          "position": "Producer & Editor",
+          "name": "Santiago Carrasquilla"
+        },
+        {
+          "position": "3D Technical Director",
+          "name": "Jonnatan Paz"
+        },
+        {
+          "position": "3D Animator & Art Director",
+          "name": ["Chan Yu Chen", "Nathan Schmitt"]
+        },
+        {
+          "position": "3D Simulation Artist",
+          "name": ["Florencia Monza", "Jonnatan Paz", "Atharva Raut"]
+        },
+        {
+          "position": "3D Garment Modeler",
+          "name": ["Florencia Monza", "Jonnatan Paz"]
+        },
+        {
+          "position": "3D Animator",
+          "name": "Kyle Daum"
+        },
+        {
+          "position": "3D Character Modeler",
+          "name": ["Florencia Monza", "Jonnatan Paz"]
+        },
+        {
+          "position": "3D Bag Modeler",
+          "name": "Jack Billet"
+        },
+        {
+          "position": "3D Texture Artist",
+          "name": ["David Bonilla", "Jonnatan Paz"]
+        },
+        {
+          "position": "Assistant Editor",
+          "name": ["Matt Knudsen", "Santiago Carrasquilla"]
+        },
+        {
+          "position": "Co-Producer",
+          "name": ["Zaira Calderón", "Matt Knudsen"]
+        },
+        {
+          "position": "Post Production Producer",
+          "name": ["Chuka Chukuma", "Zaira Calderón", "Matt Knudsen"]
+        },
+        {
+          "position": "Executive Assistant",
+          "name": "Chris Hamberger"
+        },
+        {
+          "position": "Motion Capture Technical Director",
+          "name": ["Sammy Sords", "Eric Chang"]
+        },
+        {
+          "position": "Motion Capture Assistant Technical Director",
+          "name": "Andrew Litton"
+        }
+      ]
+    },
+    {
+      "title": "TELFAR PUFF REMIX",
+      "client": "TELFAR",
+      "credits": [
+        {
+          "position": "Director",
+          "name": ["Santiago Carrasquilla", "Marius Jopen"]
+        },
+        {
+          "position": "2D Illustration & Animation",
+          "name": "Britton Korbel"
+        },
+        {
+          "position": "AI Development",
+          "name": "Marius Jopen"
+        },
+        {
+          "position": "Music",
+          "name": "Ary Warnaar"
+        },
+        {
+          "position": "Sound Design",
+          "name": "Oro Sound Studio"
+        },
+        {
+          "position": "Editor",
+          "name": ["Santiago Carrasquilla", "Fabian Palacios"]
+        },
+        {
+          "position": "Post Producer",
+          "name": ["Fabian Palacios", "Zaira Calderón"]
+        }
+      ]
+    },
+    {
+      "title": "YOU ARE THE BEST THING ABOUT ME",
+      "client": "U2",
+      "credits": [
+        {
+          "position": "Director",
+          "name": "Santiago Carrasquilla"
+        }
+      ]
+    },
+    {
+      "title": "BE A RAINBOW",
+      "client": "WELCOME.US",
+      "credits": [
+        {
+          "position": "Director",
+          "name": "Santiago Carrasquilla"
+        },
+        {
+          "position": "Producer",
+          "name": ["Santiago Carrasquilla", "Matt Knudsen", "Kyle Daum"]
+        },
+        {
+          "position": "Editor",
+          "name": ["Matt Knudsen", "Santiago Carrasquilla"]
+        },
+        {
+          "position": "Art Director",
+          "name": ["Art Camp", "Droga5"]
+        },
+        {
+          "position": "3D Director & Designer",
+          "name": "Jean-Baptiste Castel"
+        },
+        {
+          "position": "3D Designer",
+          "name": "Kyle Daum"
+        },
+        {
+          "position": "3D Modeler",
+          "name": "David Bonilla"
+        },
+        {
+          "position": "2D Animator",
+          "name": ["Haolun Liu", "Kyle Daum"]
+        },
+        {
+          "position": "Cel Animator",
+          "name": ["Britton Korbel", "Camila Amorocho", "Danilo Ramirez", "Jeremy Higgins", "Mike Witzel", "Nick Apple", "Zaira Calderon", "Zhoutong Qi"]
+        },
+        {
+          "position": "Storyboard Artist",
+          "name": "Mike Witzel"
+        },
+        {
+          "position": "Production Assistant",
+          "name": "Laura Carrasquilla"
+        },
+        {
+          "position": "Post Production Assistant",
+          "name": "Bishal Pandey"
+        },
+        {
+          "position": "Executive Producer",
+          "name": ["Jos Diaz Contreras", "Santiago Carrasquilla"]
+        }
+      ]
+    },
+    {
+      "title": "AWAKENING",
+      "client": "WYNN RESORTS",
+      "credits": [
+        {
+          "position": "Director",
+          "name": ["Jos Diaz Contreras", "Santiago Carrasquilla"]
+        },
+        {
+          "position": "Writer",
+          "name": ["Kelly Sue Deconnick", "Jos Diaz Contreras"]
+        },
+        {
+          "position": "Producer",
+          "name": ["Tom Pellegrini", "Troy Underwood", "Ines Palmas", "Bad Halpin", "Kelly Sue Deconnick"]
+        },
+        {
+          "position": "Casting",
+          "name": "Sarah Jane Sherman"
+        },
+        {
+          "position": "Darkness voiced by",
+          "name": "Claudia Jolly"
+        },
+        {
+          "position": "Score",
+          "name": "Brian Tyler"
+        },
+        {
+          "position": "Executive Producer",
+          "name": ["Angela Foster", "Mark Bracco", "Linda Gierahn"]
+        },
+        {
+          "position": "Co-producer",
+          "name": "Connor Hannon"
+        },
+        {
+          "position": "Co-executive Producer",
+          "name": ["Bernie Yuman", "Michael Curry"]
+        },
+        {
+          "position": "Associate Producer",
+          "name": "Jonah Hihaonna"
+        },
+        {
+          "position": "Production Associate",
+          "name": "Lauren Collette"
+        },
+        {
+          "position": "Production Consultant",
+          "name": "Divi Crockett"
+        },
+        {
+          "position": "3D Animation Director",
+          "name": ["Stephen Guas", "Nathan Smith"]
+        },
+        {
+          "position": "3D Generalist",
+          "name": ["Vasco Gross", "Alexis Prost", "Atharva Raut", "Jonnatan Paz", "Laureano Solis"]
+        },
+        {
+          "position": "3D Character Animator",
+          "name": ["Solene Gauchie", "Margaux Kempff", "Florencia Monza"]
+        },
+        {
+          "position": "Motion Capture Artist",
+          "name": ["Laureano Solis", "Florencia Monza"]
+        },
+        {
+          "position": "3D Modeler",
+          "name": ["Charlotte Fargier", "Solene Gauchie", "David Bonilla"]
+        },
+        {
+          "position": "Texture Artist",
+          "name": "David Bonilla"
+        },
+        {
+          "position": "Simulation Artist",
+          "name": ["Alexis Prost", "Atharva Raut", "Florencia Monza", "Jonnatan Paz"]
+        },
+        {
+          "position": "Hair and Groom Artist",
+          "name": "Jade Astoux"
+        },
+        {
+          "position": "Motion Capture Actor",
+          "name": ["Damani Pompey", "Laureano Solis", "Steven Guas", "Florencia Monza"]
+        },
+        {
+          "position": "2D Animation Director",
+          "name": ["Britton Korbel", "Nick Apple"]
+        },
+        {
+          "position": "2D Animator",
+          "name": ["Britton Korbel", "Nick Apple", "Camila Amorocho", "Jeremy Higgins", "Mike Witzel", "Zaira Calderón", "Zhoutong Qi"]
+        },
+        {
+          "position": "Additional 2D Art Direction",
+          "name": ["Danae Gosset", "Aliénor Delaporte"]
+        },
+        {
+          "position": "Storyboard Artist",
+          "name": ["Nick Apple", "Mike Witzel", "Jos Diaz Contreras"]
+        },
+        {
+          "position": "Concept Artist",
+          "name": ["Nick Apple", "Jos Diaz Contreras"]
+        },
+        {
+          "position": "Art Director",
+          "name": ["Santiago Carrasquilla", "Jos Diaz Contreras", "Stephen Guas", "Nathan Smith"]
+        },
+        {
+          "position": "Editor",
+          "name": "Jos Diaz Contreras"
+        },
+        {
+          "position": "Assistant Editor",
+          "name": ["Fabian Palacios V", "Jerry Li"]
+        },
+        {
+          "position": "Composite Artist",
+          "name": ["Haolun Liu", "Steven Guas"]
+        },
+        {
+          "position": "Designer",
+          "name": ["Isabelle Brawley", "Anna Chandeller", "Atharva Raut"]
+        },
+        {
+          "position": "Producer",
+          "name": ["Santiago Carrasquilla", "Jos Diaz Contreras", "Jerry Li"]
+        },
+        {
+          "position": "Post Production Producer",
+          "name": "Jerry Li"
+        },
+        {
+          "position": "Production Coordinator",
+          "name": "Zaira Calderón"
+        },
+        {
+          "position": "Production Assistant",
+          "name": ["JJ Russo", "Chris Panicker"]
+        }
+      ]
+    },
+    {
+      "title": "THE FINAL",
+      "client": "",
+      "credits": [
+        {
+          "position": "Director",
+          "name": ["Santiago Carrasquilla", "Nick Apple"]
+        },
+        {
+          "position": "Airbrush Paintings",
+          "name": "Nick Apple"
+        },
+        {
+          "position": "Editor",
+          "name": ["Camilo Ojeda", "Santiago Carrasquilla", "Fabian Palacios V."]
+        },
+        {
+          "position": "Design",
+          "name": "Agua Studio"
+        },
+        {
+          "position": "Color Grade",
+          "name": "Jorge Velandia"
+        },
+        {
+          "position": "Audio Mix",
+          "name": "Oro Studio"
+        }
+      ]
+    }
+  ]
+}

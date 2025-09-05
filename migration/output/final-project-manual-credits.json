@@ -1,0 +1,90 @@
+{
+  "project": "The Final",
+  "projectId": "aH_IwxEAAB8AC1dO",
+  "projectUid": "the-final",
+  "credits": [
+    {
+      "label": "Director",
+      "person": [
+        {
+          "link_type": "Document",
+          "id": "aLrTAhEAACIAfcRm"
+        }
+      ]
+    },
+    {
+      "label": "Editor",
+      "person": [
+        {
+          "link_type": "Document",
+          "id": "aLrTAhEAACIAfcRm"
+        },
+        {
+          "link_type": "Document",
+          "id": "aLrTIhEAACEAfcTQ"
+        }
+      ]
+    },
+    {
+      "label": "Color Grade",
+      "person": [
+        {
+          "link_type": "Document",
+          "id": "aLrTEhEAACEAfcSZ"
+        }
+      ]
+    },
+    {
+      "label": "Audio Mix",
+      "person": [
+        {
+          "link_type": "Document",
+          "id": "aLrTDhEAACIAfcSK"
+        }
+      ]
+    }
+  ],
+  "foundPeople": {
+    "Santiago Carrasquilla": [
+      {
+        "id": "aLrTAhEAACIAfcRm",
+        "uid": "santiago-carrasquila-1757074143872-20",
+        "title": "Santiago Carrasquila"
+      }
+    ],
+    "Jorge Velandia": [
+      {
+        "id": "aLrTEhEAACEAfcSZ",
+        "uid": "jorge-valandia-1757074143872-30",
+        "title": "Jorge Valandia"
+      }
+    ],
+    "Fabian Palacios V.": [
+      {
+        "id": "aLrTIhEAACEAfcTQ",
+        "uid": "fabian-palacios-v-1757074143872-40",
+        "title": "Fabian Palacios V"
+      }
+    ],
+    "Oro Studio": [
+      {
+        "id": "aLrTDhEAACIAfcSK",
+        "uid": "oro-studio-1757074143872-27",
+        "title": "Oro Studio"
+      }
+    ]
+  },
+  "missingPeople": [
+    "Nick Apple",
+    "Camilo Ojeda",
+    "Agua Studio"
+  ],
+  "manualInstructions": {
+    "step1": "Go to your Prismic dashboard",
+    "step2": "Navigate to 'The Final' project",
+    "step3": "Edit the project",
+    "step4": "Find the 'Credits' field",
+    "step5": "Replace the existing credits with the provided JSON"
+  },
+  "timestamp": "2025-09-05T12:56:20.750Z"
+}

@@ -1,0 +1,56 @@
+{
+  "timestamp": "2025-09-05T12:29:04.850Z",
+  "project": "The Final",
+  "requiredPeople": [
+    "Santiago Carrasquilla",
+    "Nick Apple",
+    "Camilo Ojeda",
+    "Fabian Palacios V.",
+    "Agua Studio",
+    "Jorge Velandia",
+    "Oro Studio"
+  ],
+  "foundPeople": [
+    {
+      "originalName": "Fabian Palacios V.",
+      "foundName": "fabian palacios v",
+      "id": "aLrTIhEAACEAfcTQ",
+      "uid": "fabian-palacios-v-1757074143872-40",
+      "matchType": "fuzzy"
+    },
+    {
+      "originalName": "Oro Studio",
+      "foundName": "oro studio",
+      "id": "aLrTDhEAACIAfcSK",
+      "uid": "oro-studio-1757074143872-27",
+      "matchType": "exact"
+    }
+  ],
+  "missingPeople": [
+    "Santiago Carrasquilla",
+    "Nick Apple",
+    "Camilo Ojeda",
+    "Agua Studio",
+    "Jorge Velandia"
+  ],
+  "creditsStructure": [
+    {
+      "label": "Editor",
+      "person": [
+        {
+          "link_type": "Document",
+          "id": "aLrTIhEAACEAfcTQ"
+        }
+      ]
+    },
+    {
+      "label": "Audio Mix",
+      "person": [
+        {
+          "link_type": "Document",
+          "id": "aLrTDhEAACIAfcSK"
+        }
+      ]
+    }
+  ]
+}

@@ -11,6 +11,9 @@
 		containerSizePercent?: number;
 	}
 
+	// Mobile detection
+	const isMobile = $derived(typeof window !== 'undefined' && window.innerWidth < 768);
+
 	const {
 		hlsUrl,
 		posterImage = null,
@@ -98,6 +101,8 @@
 
 	// Optimized autoplay for simultaneous playback
 	const tryPlay = async () => {
+		if (!videoElement) return;
+		
 		try {
 			// Ensure muted for autoplay
 			videoElement.muted = true;
@@ -121,7 +126,9 @@
 				console.log('Autoplay blocked, will require user interaction');
 				// Set up user interaction handler
 				const enableAutoplay = () => {
-					videoElement.play().catch(() => {});
+					if (videoElement) {
+						videoElement.play().catch(() => {});
+					}
 					document.removeEventListener('click', enableAutoplay);
 					document.removeEventListener('touchstart', enableAutoplay);
 				};
@@ -134,18 +141,21 @@
 	onMount(() => {
 		if (videoElement) {
 			videoElement.muted = true;
-			videoElement.autoplay = true;
+			videoElement.autoplay = !isMobile; // Disable autoplay on mobile
 			videoElement.playbackRate = playbackRate;
 			
 			// Set webkit-specific attributes for better iOS compatibility
 			videoElement.setAttribute('webkit-playsinline', 'true');
 			videoElement.setAttribute('x-webkit-airplay', 'allow');
 			
-			// Try to play immediately, regardless of readyState
-			tryPlay();
+			// Only try to play on desktop
+			if (!isMobile) {
+				tryPlay();
+			}
 		}
 
-		if (useHls && videoElement) {
+		// Only load HLS on desktop to save mobile bandwidth
+		if (useHls && videoElement && !isMobile) {
 			import('hls.js').then(async ({ default: Hls }) => {
 				if (Hls.isSupported()) {
 					const networkQuality = await getNetworkQuality();
@@ -195,14 +205,14 @@
 					});
 
 					// Monitor buffer health for quality decisions
-					hls.on(Hls.Events.BUFFER_STALLED, () => {
+					hls.on('bufferstalled' as any, () => {
 						console.log('Buffer stalled - may need quality adjustment');
 					});
 
 					hls.on(Hls.Events.BUFFER_APPENDED, (event, data) => {
 						// Log buffer health for debugging
-						if (data.frag && data.frag.sn % 10 === 0) {
-							console.log(`Buffer appended: frag ${data.frag.sn}, level ${data.frag.level}`);
+						if (data.frag && (data.frag as any).sn % 10 === 0) {
+							console.log(`Buffer appended: frag ${(data.frag as any).sn}, level ${(data.frag as any).level}`);
 						}
 					});
 
@@ -227,11 +237,16 @@
 					});
 
 					hls.loadSource(hlsUrl);
-					hls.attachMedia(videoElement);
-				} else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+					if (videoElement) {
+						hls.attachMedia(videoElement);
+					}
+				} else if (videoElement && videoElement.canPlayType('application/vnd.apple.mpegurl')) {
 					videoElement.src = hlsUrl;
 				}
 			});
+		} else if (useHls && videoElement && isMobile) {
+			// On mobile, just set the poster and don't load video sources
+			videoElement.poster = posterImage?.url || '';
 		}
 	});
 
@@ -244,25 +259,35 @@
 </script>
 
 <div class="relative {classes} overflow-hidden bg-white rounded-lg">
-	<video
-		bind:this={videoElement}
-		class="w-full h-full object-cover"
-		poster={posterImage?.url || ''}
-		preload="auto"
-		loop
-		muted
-		playsinline
-		disablePictureInPicture
-		controlsList="nodownload nofullscreen noremoteplayback"
-		autoplay
-	>
-		{#if useHls}
-			<source src={hlsUrl} type="application/x-mpegURL" />
-			<source src={videoUrl} type="video/mp4" />
-		{:else}
-			<source src={videoUrl} type="video/mp4" />
-		{/if}
-	</video>
+	{#if isMobile}
+		<!-- On mobile, show only the poster image -->
+		<img
+			class="w-full h-full object-cover"
+			src={posterImage?.url || ''}
+			alt="Project preview"
+		/>
+	{:else}
+		<!-- On desktop, show video with autoplay -->
+		<video
+			bind:this={videoElement}
+			class="w-full h-full object-cover"
+			poster={posterImage?.url || ''}
+			preload="auto"
+			loop
+			muted
+			playsinline
+			disablePictureInPicture
+			controlsList="nodownload nofullscreen noremoteplayback"
+			autoplay
+		>
+			{#if useHls}
+				<source src={hlsUrl} type="application/x-mpegURL" />
+				<source src={videoUrl} type="video/mp4" />
+			{:else}
+				<source src={videoUrl} type="video/mp4" />
+			{/if}
+		</video>
+	{/if}
 </div>
 
 <style>

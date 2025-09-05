@@ -1,0 +1,119 @@
+{
+  "timestamp": "2025-09-05T12:36:39.706Z",
+  "project": "The Final",
+  "steps": [
+    {
+      "step": 1,
+      "description": "Read project credits data",
+      "status": "success",
+      "creditsCount": 6
+    },
+    {
+      "step": 2,
+      "description": "Fetch all people from Prismic",
+      "status": "success",
+      "peopleCount": 100
+    },
+    {
+      "step": 3,
+      "description": "Create people lookup map",
+      "status": "success",
+      "lookupEntries": 100
+    },
+    {
+      "step": 4,
+      "description": "Find The Final project in Prismic",
+      "status": "success",
+      "projectId": "aH_IwxEAAB8AC1dO",
+      "projectUid": "the-final"
+    },
+    {
+      "step": 5,
+      "description": "Copy project to migration area",
+      "status": "warning",
+      "statusCode": 400
+    },
+    {
+      "step": 6,
+      "description": "Process credits and find people",
+      "status": "success",
+      "creditsProcessed": 6,
+      "creditsWithPeople": 2,
+      "foundPeopleCount": 2,
+      "missingPeopleCount": 7
+    }
+  ],
+  "errors": [
+    {
+      "message": "Failed to update project: 404 Not Found - {\n  \"message\":\"no Route matched with those values\",\n  \"request_id\":\"5052e85aa5a37a08062cd71ae5e0be1f\"\n}",
+      "timestamp": "2025-09-05T12:36:42.187Z"
+    }
+  ],
+  "finalCredits": [
+    {
+      "label": "Editor",
+      "person": [
+        {
+          "link_type": "Document",
+          "id": "aLrTIhEAACEAfcTQ"
+        }
+      ]
+    },
+    {
+      "label": "Audio Mix",
+      "person": [
+        {
+          "link_type": "Document",
+          "id": "aLrTDhEAACIAfcSK"
+        }
+      ]
+    }
+  ],
+  "foundPeople": [
+    {
+      "originalName": "Fabian Palacios V.",
+      "foundName": "fabian palacios v",
+      "id": "aLrTIhEAACEAfcTQ",
+      "uid": "fabian-palacios-v-1757074143872-40",
+      "position": "Editor"
+    },
+    {
+      "originalName": "Oro Studio",
+      "foundName": "oro studio",
+      "id": "aLrTDhEAACIAfcSK",
+      "uid": "oro-studio-1757074143872-27",
+      "position": "Audio Mix"
+    }
+  ],
+  "missingPeople": [
+    {
+      "position": "Director",
+      "name": "Santiago Carrasquilla"
+    },
+    {
+      "position": "Director",
+      "name": "Nick Apple"
+    },
+    {
+      "position": "Airbrush Paintings",
+      "name": "Nick Apple"
+    },
+    {
+      "position": "Editor",
+      "name": "Camilo Ojeda"
+    },
+    {
+      "position": "Editor",
+      "name": "Santiago Carrasquilla"
+    },
+    {
+      "position": "Design",
+      "name": "Agua Studio"
+    },
+    {
+      "position": "Color Grade",
+      "name": "Jorge Velandia"
+    }
+  ],
+  "status": "error"
+}
