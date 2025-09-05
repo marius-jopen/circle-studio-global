@@ -8,8 +8,8 @@
   const offset = 16;
   const margin = 8;
 
-  let playerWidth = 460; // default, updated via bindings
-  let playerHeight = 260; // default, updated via bindings
+  let playerWidth = 300; // square dimensions for circle
+  let playerHeight = 300; // square dimensions for circle
 
   function handleMouseMove(e: MouseEvent) {
     mouseX = e.clientX;
@@ -36,15 +36,13 @@
 
 {#if $hoverPreview?.url}
   <div
-    class="fixed z-[120] pointer-events-none"
+    class="fixed z-[120] pointer-events-none w-[300px] h-[300px] rounded-full overflow-hidden"
     style="left:0; top:0; transform: translate3d({targetX}px, {targetY}px, 0);"
-    bind:clientWidth={playerWidth}
-    bind:clientHeight={playerHeight}
   >
     <VideoPlayerSimple
       hlsUrl={$hoverPreview.url}
       posterImage={$hoverPreview.poster}
-      classes="w-[460px] h-auto rounded-md"
+      classes="w-[300px] h-[300px] rounded-full overflow-hidden"
     />
   </div>
 {/if}
