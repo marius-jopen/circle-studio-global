@@ -14,6 +14,15 @@
 	const projectData = $derived(project.data);
 	const relatedProjects = $derived(data.relatedProjects);
 
+	// Calculate controls text class based on number of main items
+	let controlsTextClass = $state('h2');
+	$effect(() => {
+		const mainItemsCount = projectData.main?.length || 0;
+		if (mainItemsCount === 1) controlsTextClass = 'h2';
+		else if (mainItemsCount === 2) controlsTextClass = 'text-base';
+		else controlsTextClass = 'text-sm';
+	});
+
 	// Dispatch video_is_dark state to layout when component mounts
 	onMount(() => {
 		console.log('🔍 Project page mounted');
@@ -84,6 +93,7 @@
 						context="main"
 						width={item.width || 1920}
 						height={item.height || 1080}
+						controlsTextClass={controlsTextClass}
 					/>
 				{:else if item.main_image?.url}
 					<PrismicImage 
@@ -106,6 +116,7 @@
 								context="main"
 								width={item.width || 1920}
 								height={item.height || 1080}
+								controlsTextClass={controlsTextClass}
 							/>
 						{:else if item.main_image?.url}
 							<PrismicImage 
