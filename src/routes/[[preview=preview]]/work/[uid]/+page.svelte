@@ -103,14 +103,33 @@
 				{/if}
 			<!-- Multiple items: side by side -->
 			{:else}
-				<div class="flex flex-row gap-3">
-					{#each projectData.main as item}
+				<div class="flex flex-row gap-2">
+					{#each projectData.main as item, index}
+						{@const isFirst = index === 0}
+						{@const isLast = index === projectData.main.length - 1}
+						{@const isMiddle = !isFirst && !isLast}
+						
+						{@const roundedClasses = (() => {
+							if (projectData.main.length === 2) {
+								if (isFirst) return 'w-full h-auto !rounded-br-lg !rounded-tl-none !rounded-tr-none !rounded-bl-none';
+								if (isLast) return 'w-full h-auto !rounded-bl-lg !rounded-tl-none !rounded-tr-none !rounded-br-none';
+							} else if (projectData.main.length === 3) {
+								if (isFirst) return 'w-full h-auto !rounded-br-lg !rounded-tl-none !rounded-tr-none !rounded-bl-none';
+								if (isMiddle) return 'w-full h-auto !rounded-bl-lg !rounded-br-lg !rounded-tl-none !rounded-tr-none';
+								if (isLast) return 'w-full h-auto !rounded-bl-lg !rounded-tl-none !rounded-tr-none !rounded-br-none';
+							}
+							return 'w-full h-auto !rounded-none';
+						})()}
+						
+						<!-- Debug: Log the rounded classes -->
+						{console.log(`Item ${index}: roundedClasses = "${roundedClasses}", isFirst=${isFirst}, isLast=${isLast}, isMiddle=${isMiddle}, totalItems=${projectData.main.length}`)}
+						
 						{#if item.main_video_url}
 							<!-- {item.playmode} -->
 							<VideoPlayerCustom 
 								hlsUrl={item.main_video_url}
 								posterImage={item.main_image} 
-								classes="w-full h-auto rounded-none"
+								classes={roundedClasses}
 								playMode="has-sound"
 								controls={true}
 								context="main"
@@ -121,7 +140,7 @@
 						{:else if item.main_image?.url}
 							<PrismicImage 
 								field={item.main_image} 
-								class="w-full h-auto rounded-none"
+								class={roundedClasses}
 							/>
 						{/if}
 					{/each}
