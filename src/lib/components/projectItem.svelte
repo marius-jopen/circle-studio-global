@@ -328,6 +328,9 @@
 						posterImage={imageField} 
 						classes="w-full h-auto rounded object-cover hover:brightness-60 transition-all duration-300 {aspectClass}"
 						playbackRate={isHovering ? 0.5 : 1}
+						dimension={effectiveDimension}
+						{itemsPerRow}
+						containerSizePercent={containerSizePercent}
 					/>
 					<!-- BigWheel positioned directly over the video (desktop only) -->
 					{#if !isMobile}
@@ -414,6 +417,9 @@
 						posterImage={imageField} 
 						classes="w-full h-auto rounded object-cover {aspectClass}"
 						playbackRate={isHovering ? 0.5 : 1}
+						dimension={effectiveDimension}
+						{itemsPerRow}
+						containerSizePercent={containerSizePercent}
 					/>
 					<!-- BigWheel positioned directly over the video (desktop only) -->
 					{#if !isMobile}
