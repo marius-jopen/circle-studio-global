@@ -26,7 +26,7 @@
 
   $: targetX = Math.min(
     Math.max(mouseX + offset, margin),
-    Math.max(margin, viewportWidth - playerWidth - margin)
+    Math.max(margin, viewportWidth - playerWidth - margin - 15)
   );
   $: targetY = Math.min(
     Math.max(mouseY + offset, margin),
