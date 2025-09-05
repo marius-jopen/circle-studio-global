@@ -101,24 +101,28 @@
 						class="w-full h-auto rounded-none"
 					/>
 				{/if}
-			<!-- Multiple items: side by side -->
+			<!-- Multiple items: side by side on desktop, stacked on mobile -->
 			{:else}
-				<div class="flex flex-row gap-2">
+				<div class="flex flex-col md:flex-row gap-2">
 					{#each projectData.main as item, index}
 						{@const isFirst = index === 0}
 						{@const isLast = index === projectData.main.length - 1}
 						{@const isMiddle = !isFirst && !isLast}
 						
 						{@const roundedClasses = (() => {
+							// Mobile: no rounded corners
+							const baseClasses = 'w-full h-auto';
+							
+							// Desktop: conditional rounded corners
 							if (projectData.main.length === 2) {
-								if (isFirst) return 'w-full h-auto !rounded-br-lg !rounded-tl-none !rounded-tr-none !rounded-bl-none';
-								if (isLast) return 'w-full h-auto !rounded-bl-lg !rounded-tl-none !rounded-tr-none !rounded-br-none';
+								if (isFirst) return `${baseClasses} !rounded-none md:!rounded-br-lg md:!rounded-tl-none md:!rounded-tr-none md:!rounded-bl-none`;
+								if (isLast) return `${baseClasses} !rounded-none md:!rounded-bl-lg md:!rounded-tl-none md:!rounded-tr-none md:!rounded-br-none`;
 							} else if (projectData.main.length === 3) {
-								if (isFirst) return 'w-full h-auto !rounded-br-lg !rounded-tl-none !rounded-tr-none !rounded-bl-none';
-								if (isMiddle) return 'w-full h-auto !rounded-bl-lg !rounded-br-lg !rounded-tl-none !rounded-tr-none';
-								if (isLast) return 'w-full h-auto !rounded-bl-lg !rounded-tl-none !rounded-tr-none !rounded-br-none';
+								if (isFirst) return `${baseClasses} !rounded-none md:!rounded-br-lg md:!rounded-tl-none md:!rounded-tr-none md:!rounded-bl-none`;
+								if (isMiddle) return `${baseClasses} !rounded-none md:!rounded-bl-lg md:!rounded-br-lg md:!rounded-tl-none md:!rounded-tr-none`;
+								if (isLast) return `${baseClasses} !rounded-none md:!rounded-bl-lg md:!rounded-tl-none md:!rounded-tr-none md:!rounded-br-none`;
 							}
-							return 'w-full h-auto !rounded-none';
+							return `${baseClasses} !rounded-none`;
 						})()}
 						
 						<!-- Debug: Log the rounded classes -->
@@ -151,8 +155,8 @@
 
 <div class="mx-auto px-3 paragraph-1">
 	<!-- Project Info -->
-	<div class="mb-32 grid grid-cols-2 gap-2 w-full">
-		<div class="col-span-1">
+	<div class="mb-16 md:mb-32 flex flex-col md:grid md:grid-cols-2 gap-2 w-full">
+		<div class="md:col-span-1 pb-12 md:pb-0">
 			{projectData.title}{projectData.client ? `, ${projectData.client}` : ''}
 		</div>
 		{#if projectData.description}
