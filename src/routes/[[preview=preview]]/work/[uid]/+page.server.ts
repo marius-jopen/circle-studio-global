@@ -8,7 +8,7 @@ export async function load({ params, fetch, cookies }) {
 
 	try {
 		const project = await client.getByUID('projects', params.uid, {
-			fetchLinks: ['people.name'] // Fetch the name field from linked people documents
+			fetchLinks: ['people.title'] // Fetch the title field from linked people documents
 		});
 
 		// Get 3 random related projects excluding current

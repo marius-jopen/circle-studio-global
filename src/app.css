@@ -64,3 +64,11 @@ h2, .h2 {
 .content-container {
     @apply max-w-9/12 mx-auto;
 }
+
+.content-text p {
+    @apply pb-2;
+}
+
+.content-text strong {
+    @apply font-normal;
+}

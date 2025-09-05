@@ -137,7 +137,7 @@
 			{projectData.title}{projectData.client ? `, ${projectData.client}` : ''}
 		</div>
 		{#if projectData.description}
-			<div class="prose prose-lg max-w-none">
+			<div class="prose prose-lg max-w-none content-text">
 				<PrismicRichText field={projectData.description} />
 			</div>
 		{/if}

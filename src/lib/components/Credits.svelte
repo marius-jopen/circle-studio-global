@@ -19,7 +19,7 @@
 						<span class="w-full">
 							{#each credit.person as person, index}
 								<PrismicLink field={person}>
-									{(person as any).data?.name || `Person ${index + 1}`} 
+									{person.data?.title || `Person ${index + 1}`} 
 								</PrismicLink>{#if index < credit.person.length - 1},&nbsp;{/if}
 							{/each}
 						</span>
