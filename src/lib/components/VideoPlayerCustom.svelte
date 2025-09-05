@@ -14,6 +14,7 @@
 		autoplayOnMount?: boolean;
 		defaultMuted?: boolean;
 		unmuteOnUserPlay?: boolean;
+		showControlsOnMount?: boolean;
 	}
 
 	const {
@@ -28,7 +29,8 @@
 		height = 1080,
 		autoplayOnMount = true,
 		defaultMuted = true,
-		unmuteOnUserPlay = false
+		unmuteOnUserPlay = false,
+		showControlsOnMount = false
 	}: Props = $props();
 
 	const useFixedAspect = $derived(typeof width === 'number' && typeof height === 'number');
@@ -47,7 +49,7 @@
 	let isPlaying = $state(false);
 	let currentTime = $state(0);
 	let duration = $state(0);
-    let showControls = $state(true);
+    let showControls = $state(showControlsOnMount);
     let isFullscreen = $state(false);
     let containerElement: HTMLDivElement;
     let hideUiTimeout: ReturnType<typeof setTimeout> | undefined;
@@ -55,7 +57,7 @@
     let isScrubbing = $state(false);
     let scrubLeft = 0;
     let scrubWidth = 1;
-    let lastShowControls = showControls;
+    let lastShowControls = $state(false);
 
     function notifyControlsShown() {
         window.dispatchEvent(new CustomEvent('video-controls-shown', { detail: { videoId, context } }));
@@ -312,23 +314,23 @@
 	{#if controls && hasSoundMode}
 	<div 
 		class="absolute inset-0 bg-black/10 transition-opacity duration-200 pointer-events-none"
-		class:opacity-100={isHovering && showControls}
-		class:opacity-0={!isHovering || !showControls}
+		class:opacity-100={(isHovering && showControls) || (showControlsOnMount && showControls)}
+		class:opacity-0={!isHovering && !showControlsOnMount || !showControls}
 	></div>
 	{/if}
 
 	{#if controls && hasSoundMode}
 	<div 
 		class="absolute left-3 right-3 bottom-3 transition-opacity w-full duration-200 opacity-80 pointer-events-none"
-		class:opacity-70={isHovering && showControls}
-		class:opacity-0={!isHovering || !showControls}
+		class:opacity-70={(isHovering && showControls) || (showControlsOnMount && showControls)}
+		class:opacity-0={!isHovering && !showControlsOnMount || !showControls}
 	>
 		<button
 			data-video-control="true"
 			class="relative block w-full h-3 pointer-events-auto transition-opacity duration-400"
-			class:opacity-100={isHovering && showControls}
-			class:opacity-0={!isHovering || !showControls}
-			class:pointer-events-none={!isHovering || !showControls}
+			class:opacity-100={(isHovering && showControls) || (showControlsOnMount && showControls)}
+			class:opacity-0={!isHovering && !showControlsOnMount || !showControls}
+			class:pointer-events-none={!isHovering && !showControlsOnMount || !showControls}
 			role="slider"
 			aria-valuemin="0"
 			aria-valuemax="100"
@@ -351,8 +353,8 @@
 				<div class="flex px-3 pointer-events-none w-full">
 					<div 
 						class="w-full pr-3 flex flex-row justify-between pointer-events-auto text-white transition-opacity duration-400"
-						class:opacity-100={isHovering && showControls}
-						class:opacity-0={!isHovering || !showControls}
+						class:opacity-100={(isHovering && showControls) || (showControlsOnMount && showControls)}
+						class:opacity-0={!isHovering && !showControlsOnMount || !showControls}
 					>
 
 							<button 

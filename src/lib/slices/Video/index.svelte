@@ -17,7 +17,7 @@
 	const isNoAutoplay = option === 'no-autoplay';
 
 	let showOverlay = $state(isNoAutoplay);
-	let playerRef: any;
+	let playerRef: any = $state();
 </script>
 
 <section data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
@@ -37,6 +37,7 @@
 					unmuteOnUserPlay={isNoAutoplay}
 					width="auto"
 					height="auto"
+					showControlsOnMount={isNoAutoplay}
 				/>
 
 				{#if isNoAutoplay && showOverlay}
