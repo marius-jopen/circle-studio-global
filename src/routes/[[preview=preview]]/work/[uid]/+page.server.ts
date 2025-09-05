@@ -19,6 +19,7 @@ export async function load({ params, fetch, cookies }) {
 		const shuffled = [...otherProjects].sort(() => Math.random() - 0.5);
 		const relatedProjects = shuffled.slice(0, 3);
 
+
 		return {
 			project,
 			relatedProjects,

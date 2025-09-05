@@ -12,6 +12,22 @@
 					"label": "UID"
 				}
 			},
+			"year": {
+				"type": "Select",
+				"config": {
+					"label": "Year",
+					"placeholder": "",
+					"options": ["2010", "2"]
+				}
+			},
+			"month": {
+				"type": "Select",
+				"config": {
+					"label": "Month",
+					"placeholder": "",
+					"options": ["January", "2"]
+				}
+			},
 			"date": {
 				"type": "Date",
 				"config": {

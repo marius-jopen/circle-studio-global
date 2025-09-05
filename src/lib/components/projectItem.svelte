@@ -159,6 +159,13 @@
 		isNavigating = navigationState;
 		
 		console.log(`🚀 ${projectTitle || 'Project'} script init - hasUserInteracted: ${hasUserInteracted}, isNavigating: ${navigationState}`);
+		
+		// Clear navigation state immediately if it's set, as we're now on a new page
+		if (isNavigating) {
+			sessionStorage.removeItem('circle-studio-navigating');
+			isNavigating = false;
+			console.log(`🧹 ${projectTitle}: Navigation flag cleared immediately on init`);
+		}
 	}
 	
 	// Check if mouse is already over this element
@@ -241,15 +248,10 @@
 			console.log(`🎨 ${projectTitle}: Initial render complete`);
 		}, 100);
 		
-		// Clear navigation flag after everything is ready (prevent flash during route changes)
+		// Check for pre-existing hover state after everything is ready
 		setTimeout(() => {
-			if (isNavigating) {
-				sessionStorage.removeItem('circle-studio-navigating');
-				isNavigating = false;
-				console.log(`🧹 ${projectTitle}: Navigation flag cleared, checking for pre-existing hover`);
-				// Check if mouse is already over this project when navigation is cleared
-				setTimeout(() => checkInitialHoverState(), 50);
-			}
+			// Check if mouse is already over this project
+			setTimeout(() => checkInitialHoverState(), 50);
 		}, 500);
 		
 		return () => {
@@ -260,6 +262,7 @@
 	
 	// Get project UID for linking
 	$: projectUid = project.uid || project.id;
+	
 	
 	// Random preview selection logic with dimension support
 	function filterItemsForDimension(items: any[], dim: 'landscape' | 'square' | 'portrait') {

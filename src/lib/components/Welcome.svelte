@@ -116,7 +116,7 @@
       fontSizePercent: 7,
       distancePercent: 0.8,
       paused: false,
-      textColor: '#000000',
+      textColor: '#fff',
       backgroundColor: '#ffffff',
       transparentBackground: true,
       fadeInTime: 0.5,

@@ -508,6 +508,28 @@ type ProjectsDocumentDataSlicesSlice =
  */
 interface ProjectsDocumentData {
 	/**
+	 * Year field in *Projects*
+	 *
+	 * - **Field Type**: Select
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: projects.year
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/select
+	 */
+	year: prismic.SelectField<'2010' | '2'>;
+
+	/**
+	 * Month field in *Projects*
+	 *
+	 * - **Field Type**: Select
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: projects.month
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/select
+	 */
+	month: prismic.SelectField<'January' | '2'>;
+
+	/**
 	 * Date field in *Projects*
 	 *
 	 * - **Field Type**: Date
