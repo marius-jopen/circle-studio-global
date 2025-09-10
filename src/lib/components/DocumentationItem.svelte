@@ -5,8 +5,9 @@
 	interface Props {
 		item: any;
 		itemsPerRow?: string;
+		showVideoOnMobile?: boolean;
 	}
-	const { item, itemsPerRow }: Props = $props();
+	const { item, itemsPerRow, showVideoOnMobile = false }: Props = $props();
 
 	const controlsTextClass = $derived((itemsPerRow ?? '1') === '1' ? 'h2' : ((itemsPerRow === '2') ? 'text-base' : 'text-sm'));
 </script>
@@ -19,7 +20,7 @@
 		{@const displayPlayMode = (playMode === 'autoplay-muted' || playMode === 'auto-muted') ? 'no-sound' : playMode}
 		<!-- {playMode} -->
 		<!-- {displayPlayMode} -->
-		{#if videoUrl}
+		{#if videoUrl && showVideoOnMobile}
 			<div class="relative brightness-[95%]">
 				<!-- Video: {displayPlayMode} -->
 				<VideoPlayerCustom 
