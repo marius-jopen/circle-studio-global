@@ -40,6 +40,16 @@
 			? 'w-full h-full object-cover scale-[100.5%] cursor-pointer'
 			: 'w-full h-auto object-contain cursor-pointer'
 	);
+	
+	// Create responsive text class for mobile controls
+	const mobileControlsTextClass = $derived(() => {
+		// Map controlsTextClass to proper responsive classes
+		let desktopClass = controlsTextClass;
+		if (controlsTextClass === 'h2') {
+			desktopClass = 'text-3xl'; // h2 maps to text-3xl in CSS
+		}
+		return `text-sm md:${desktopClass}`;
+	});
 
 	let videoElement: HTMLVideoElement;
     let isHovering = $state(false);
@@ -421,7 +431,7 @@
 								currentTime = 0;
 								scheduleAutoHide();
 							}}
-							class="{controlsTextClass} text-left w-1/4 cursor-pointer tabular-nums opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200">
+							class="{mobileControlsTextClass} text-left w-1/4 cursor-pointer tabular-nums opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200">
 								{(() => {
 									const s = (n: number) => Math.floor(n).toString().padStart(2, '0');
 									const mins = Math.floor(currentTime / 60);
@@ -435,7 +445,7 @@
 
 
 						<button
-							class="{controlsTextClass} w-1/4 cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
+							class="{mobileControlsTextClass} w-1/4 cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
 							aria-label={isPlaying ? 'Pause video' : 'Play video'}
 							onclick={(e) => { e.stopPropagation(); togglePlayPause(); }}
 						>
@@ -443,7 +453,7 @@
 						</button>
 
 						<button
-						class="{controlsTextClass} w-1/4 cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
+						class="{mobileControlsTextClass} w-1/4 cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
 						aria-label={isMuted ? 'Unmute video' : 'Mute video'}
 						onclick={(e) => {
 							e.stopPropagation();
@@ -460,7 +470,7 @@
 						
 
 						<button
-							class="{controlsTextClass} text-right w-1/4 cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
+							class="{mobileControlsTextClass} text-right w-1/4 cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
 							aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
 							onclick={async (e) => {
 								e.stopPropagation();
