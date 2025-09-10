@@ -18,7 +18,7 @@
 	// ========================================
 	// Set to false to disable videos on mobile (shows images only)
 	// Set to true to enable videos on mobile
-	const ENABLE_VIDEOS_ON_MOBILE = true;
+	const ENABLE_VIDEOS_ON_MOBILE = false;
 	// ========================================
 	
 	// Mobile detection
