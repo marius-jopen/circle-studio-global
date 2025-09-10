@@ -5,42 +5,87 @@
 	let { isDarkMode = false } = $props();
 	
 	let scrollRotation = $state(0);
+	let targetRotation = $state(0);
 	let isScrolling = $state(false);
 	let scrollTimeout: ReturnType<typeof setTimeout>;
+	let animationFrame: number;
 	let lastScrollY = 0;
+	let lastScrollTime = 0;
+	
+	// Smooth animation loop
+	function animate() {
+		// Smooth interpolation towards target rotation
+		const smoothing = 0.15; // Lower = smoother, higher = more responsive
+		scrollRotation += (targetRotation - scrollRotation) * smoothing;
+		
+		// Continue animation if we're still moving or scrolling
+		if (Math.abs(targetRotation - scrollRotation) > 0.1 || isScrolling) {
+			animationFrame = requestAnimationFrame(animate);
+		}
+	}
 	
 	onMount(() => {
+		// Start the animation loop
+		animate();
+		
 		const handleScroll = () => {
-			// Clear existing timeout
-			clearTimeout(scrollTimeout);
-			
-			// Set scrolling state
-			isScrolling = true;
-			
-			// Calculate rotation based on scroll position
+			const now = performance.now();
 			const scrollY = window.scrollY;
-			const scrollSpeed = Math.abs(scrollY - lastScrollY);
-			const direction = scrollY > lastScrollY ? 1 : -1;
+			const deltaY = scrollY - lastScrollY;
+			const deltaTime = now - lastScrollTime;
 			
-			// Update rotation based on scroll speed and direction
-			scrollRotation += scrollSpeed * 0.1 * direction;
-			
-			// Store current scroll position
-			lastScrollY = scrollY;
-			
-			// Set timeout to stop scrolling state
-			scrollTimeout = setTimeout(() => {
-				isScrolling = false;
-			}, 150);
+			// Only update if there's meaningful scroll movement
+			if (Math.abs(deltaY) > 1 && deltaTime > 0) {
+				// Clear existing timeout
+				clearTimeout(scrollTimeout);
+				
+				// Set scrolling state
+				isScrolling = true;
+				
+				// Calculate rotation based on scroll velocity (pixels per millisecond)
+				const velocity = deltaY / deltaTime;
+				const rotationIncrement = velocity * 0.3; // Reduced sensitivity for smoother movement
+				
+				// Update target rotation
+				targetRotation += rotationIncrement;
+				
+				// Store current values
+				lastScrollY = scrollY;
+				lastScrollTime = now;
+				
+				// Restart animation if it's not running
+				if (!animationFrame) {
+					animate();
+				}
+				
+				// Set timeout to stop scrolling state
+				scrollTimeout = setTimeout(() => {
+					isScrolling = false;
+				}, 100); // Reduced timeout for more responsive feel
+			}
 		};
 		
-		// Add scroll listener
-		window.addEventListener('scroll', handleScroll, { passive: true });
+		// Add scroll listener with throttling
+		let ticking = false;
+		const throttledScroll = () => {
+			if (!ticking) {
+				requestAnimationFrame(() => {
+					handleScroll();
+					ticking = false;
+				});
+				ticking = true;
+			}
+		};
+		
+		window.addEventListener('scroll', throttledScroll, { passive: true });
 		
 		// Cleanup
 		return () => {
-			window.removeEventListener('scroll', handleScroll);
+			window.removeEventListener('scroll', throttledScroll);
 			clearTimeout(scrollTimeout);
+			if (animationFrame) {
+				cancelAnimationFrame(animationFrame);
+			}
 		};
 	});
 </script>
@@ -51,7 +96,7 @@
 		<!-- Black Wheel (only wheel used on mobile) -->
 		<div 
 			class="transition-opacity duration-600 z-10 absolute" 
-			style="transform: rotate({scrollRotation}deg) scale(0.5); transition: transform 0.1s ease-out;"
+			style="transform: rotate({scrollRotation}deg) scale(0.5); will-change: transform;"
 		>
 			<BigWheel 
 				config={{
