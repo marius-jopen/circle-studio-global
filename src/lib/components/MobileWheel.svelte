@@ -103,7 +103,7 @@
 						fontSizePercent: 15.7, // Larger text for mobile
 						distancePercent: 0,
 						paused: true, // Pause internal animation since we're controlling rotation externally
-						textColor: '#ffffff',
+						textColor: '#000000', // THIS COULD BE WHITE
 						transparentBackground: true,
 						manualMode: true,
 						fadeInTime: 0,

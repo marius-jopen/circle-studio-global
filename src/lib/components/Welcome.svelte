@@ -352,15 +352,10 @@
     opacity: 0.7;
   }
 
-  /* Ensure the welcome screen works on mobile */
+  /* Hide welcome screen on mobile */
   @media (max-width: 768px) {
-    .welcome-content {
-      padding: 1rem;
-    }
-    
-    .click-hint {
-      font-size: 0.75rem;
-      bottom: 2rem; /* Closer to bottom on mobile */
+    .welcome-overlay {
+      display: none !important;
     }
   }
 </style> 
