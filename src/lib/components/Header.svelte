@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { PrismicLink } from '@prismicio/svelte';
 	import BigWheel from './BigWheel.svelte';
+	import MobileWheel from './MobileWheel.svelte';
 	import { onMount } from 'svelte';
 	import { viewMode, setViewMode, initializeViewMode } from '$lib/stores';
 	
@@ -91,73 +92,8 @@
 		class:dark-mode={isDarkMode}>
 		<nav class="px-3 py-4">
 			<div class="flex justify-between w-full relative">
-				<!-- Mobile: Centered wheel container -->
-				<div class="md:hidden flex-1 flex justify-center">
-					<a 
-						href="/" 
-						class="block -mt-6 transition-all duration-600 relative"
-						class:pointer-events-auto={!effectiveFaded}
-						class:pointer-events-none={effectiveFaded}
-						onmouseenter={() => { isHovering = true; }}
-						onmouseleave={() => { isHovering = false; }}
-					>
-						<!-- Black Wheel (default) -->
-						<div class="transition-opacity duration-600 z-10" class:opacity-0={isDarkMode} class:opacity-100={!isDarkMode}>
-							<BigWheel 
-								config={{
-									uiVisible: false,
-									items: [{
-										text: 'CIRCLE STUDIO GLOBAL',
-										rotationSpeed: isHovering ? 1 : 0.2,
-										spacingAmplitudePercent: 0,
-										spacingSpeed: 0,
-										rotationStart: 0,
-										animationType: 'sin'
-									}],
-									globalSettings: {
-										containerSizePercent: 30,
-										fontSizePercent: 15.7,
-										distancePercent: 0,
-										paused: false,
-										textColor: '#000000',
-										transparentBackground: true,
-										manualMode: true,
-										fadeInTime: 0,
-										fadeOutTime: 0
-									}
-								}}
-							/>
-						</div>
-						
-						<!-- White Wheel (dark mode) -->
-						<div class="transition-opacity duration-600 z-10" class:opacity-100={isDarkMode} class:opacity-0={!isDarkMode}>
-							<BigWheel 
-								config={{
-									uiVisible: false,
-									items: [{
-										text: 'CIRCLE STUDIO GLOBAL',
-										rotationSpeed: isHovering ? 1 : 0.2,
-										spacingAmplitudePercent: 0,
-										spacingSpeed: 0,
-										rotationStart: 0,
-										animationType: 'sin'
-									}],
-									globalSettings: {
-										containerSizePercent: 30,
-										fontSizePercent: 15.7,
-										distancePercent: 0,
-										paused: false,
-										textColor: '#ffffff',
-										transparentBackground: true,
-										manualMode: true,
-										fadeInTime: 0,
-										fadeOutTime: 0
-									}
-								}}
-							/>
-						</div>
-					</a>
-				</div>
+				<!-- Mobile: Centered wheel -->
+				<MobileWheel isDarkMode={isDarkMode} />
 				
 				<!-- Desktop: Left-aligned wheel -->
 				<a 
