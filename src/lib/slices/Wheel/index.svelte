@@ -105,7 +105,7 @@
 					</div>
 				{/if}
 
-				<div class="grid grid-cols-1 text-center gap-0 md:gap-2">
+				<div class="grid grid-cols-1 text-center gap-0 md:gap-2 pb-4">
 					{#each items as item, index}
 						<div class="">
 							{#if urls[index] && urls[index] !== '#'}
@@ -144,7 +144,7 @@
 						<h2 class="text-2xl font-medium text-black">{title}</h2>
 					</div>
 				{/if}
-				<div class="grid grid-cols-1 text-center gap-4 md:gap-6">
+				<div class="grid grid-cols-1 text-center gap-4 md:gap-6 pb-4">
 					{#each items as item, index}
 						<div class="text-center">
 							{#if urls[index] && urls[index] !== '#'}

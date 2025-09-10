@@ -94,11 +94,8 @@
 	}
 
 	function startMobileCycle() {
-		if (mobileCycleTimeout) clearTimeout(mobileCycleTimeout);
-		mobileCycleTimeout = setTimeout(() => {
-			pickNext();
-			startMobileCycle();
-		}, 5000);
+		// Use the same fade animation system as desktop
+		startCycle(true);
 	}
 
 	function checkMobile() {
