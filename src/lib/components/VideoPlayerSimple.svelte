@@ -9,6 +9,7 @@
 		dimension?: 'landscape' | 'square' | 'portrait';
 		itemsPerRow?: number;
 		containerSizePercent?: number;
+		enableOnMobile?: boolean;
 	}
 
 	// Mobile detection
@@ -21,7 +22,8 @@
 		playbackRate = 1,
 		dimension = 'landscape',
 		itemsPerRow = 1,
-		containerSizePercent = 80
+		containerSizePercent = 80,
+		enableOnMobile = false
 	}: Props = $props();
 
 	let videoElement: HTMLVideoElement;
@@ -141,21 +143,21 @@
 	onMount(() => {
 		if (videoElement) {
 			videoElement.muted = true;
-			videoElement.autoplay = !isMobile; // Disable autoplay on mobile
+			videoElement.autoplay = !isMobile || enableOnMobile; // Enable autoplay if mobile videos are enabled
 			videoElement.playbackRate = playbackRate;
 			
 			// Set webkit-specific attributes for better iOS compatibility
 			videoElement.setAttribute('webkit-playsinline', 'true');
 			videoElement.setAttribute('x-webkit-airplay', 'allow');
 			
-			// Only try to play on desktop
-			if (!isMobile) {
+			// Try to play if not mobile OR if mobile videos are enabled
+			if (!isMobile || enableOnMobile) {
 				tryPlay();
 			}
 		}
 
-		// Only load HLS on desktop to save mobile bandwidth
-		if (useHls && videoElement && !isMobile) {
+		// Load HLS if not mobile OR if mobile videos are enabled
+		if (useHls && videoElement && (!isMobile || enableOnMobile)) {
 			import('hls.js').then(async ({ default: Hls }) => {
 				if (Hls.isSupported()) {
 					const networkQuality = await getNetworkQuality();
@@ -259,15 +261,15 @@
 </script>
 
 <div class="relative {classes} overflow-hidden bg-white rounded-lg">
-	{#if isMobile}
-		<!-- On mobile, show only the poster image -->
+	{#if isMobile && !enableOnMobile}
+		<!-- On mobile with videos disabled, show only the poster image -->
 		<img
 			class="w-full h-full object-cover"
 			src={posterImage?.url || ''}
 			alt="Project preview"
 		/>
 	{:else}
-		<!-- On desktop, show video with autoplay -->
+		<!-- On desktop OR mobile with videos enabled, show video with autoplay -->
 		<video
 			bind:this={videoElement}
 			class="w-full h-full object-cover"

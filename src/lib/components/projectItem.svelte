@@ -13,6 +13,14 @@
 	export let clickable: boolean = true;
 	export let itemsPerRow: number = 1;
 	
+	// ========================================
+	// 🎛️ MOBILE VIDEO CONTROL - TOGGLE HERE
+	// ========================================
+	// Set to false to disable videos on mobile (shows images only)
+	// Set to true to enable videos on mobile
+	const ENABLE_VIDEOS_ON_MOBILE = true;
+	// ========================================
+	
 	// Mobile detection
 	let isMobile = false;
 	
@@ -325,7 +333,7 @@
 			{@const imageField = effectiveDimension === 'portrait' ? preview?.preview_image_portrait : preview?.preview_image_landscape}
 			{@const videoUrl = effectiveDimension === 'portrait' ? preview?.preview_video_url_portrait : preview?.preview_video_url_landscape}
 			
-			{#if videoUrl}
+			{#if videoUrl && (!isMobile || ENABLE_VIDEOS_ON_MOBILE)}
 				<div class="relative brightness-[95%]" role="group"
 					 on:mouseenter={() => isHovering = true}
 					 on:mouseleave={() => isHovering = false}>
@@ -337,6 +345,7 @@
 						dimension={effectiveDimension}
 						{itemsPerRow}
 						containerSizePercent={containerSizePercent}
+						enableOnMobile={ENABLE_VIDEOS_ON_MOBILE}
 					/>
 					<!-- BigWheel positioned directly over the video (desktop only) -->
 					{#if !isMobile}
@@ -414,7 +423,7 @@
 			{@const imageField = effectiveDimension === 'portrait' ? preview?.preview_image_portrait : preview?.preview_image_landscape}
 			{@const videoUrl = effectiveDimension === 'portrait' ? preview?.preview_video_url_portrait : preview?.preview_video_url_landscape}
 			
-			{#if videoUrl}
+			{#if videoUrl && (!isMobile || ENABLE_VIDEOS_ON_MOBILE)}
 				<div class="relative" role="group"
 					 on:mouseenter={() => isHovering = true}
 					 on:mouseleave={() => isHovering = false}>
@@ -426,6 +435,7 @@
 						dimension={effectiveDimension}
 						{itemsPerRow}
 						containerSizePercent={containerSizePercent}
+						enableOnMobile={ENABLE_VIDEOS_ON_MOBILE}
 					/>
 					<!-- BigWheel positioned directly over the video (desktop only) -->
 					{#if !isMobile}
