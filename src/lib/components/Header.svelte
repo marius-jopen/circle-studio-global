@@ -9,7 +9,6 @@
 	let isHovering = $state(false);
 	let isViewModeHovering = $state(false);
 	let currentPath = $state('');
-	let isMobileMenuOpen = $state(false);
 	
 	// Override faded state when hovering over the wheel to prevent unwanted fading
 	let effectiveFaded = $derived(isHovering ? false : faded);
@@ -21,7 +20,7 @@
 		}
 	});
 	
-	// Function to handle Grid/List click - navigate to front page with view mode
+	// Function to handle Grid/List click - navigate to front page with view mode (desktop only)
 	function handleViewModeClick() {
 		// Get current path directly in the click handler for reliability
 		const currentPath = window.location.pathname;
@@ -44,30 +43,10 @@
 		}
 	}
 	
-	// Toggle mobile menu
-	function toggleMobileMenu() {
-		isMobileMenuOpen = !isMobileMenuOpen;
-	}
-	
-	// Close mobile menu when clicking outside
-	function closeMobileMenu() {
-		isMobileMenuOpen = false;
-	}
-	
-	// Control body scroll when mobile menu is open
-	$effect(() => {
-		if (typeof document !== 'undefined') {
-			if (isMobileMenuOpen) {
-				document.body.style.overflow = 'hidden';
-			} else {
-				document.body.style.overflow = '';
-			}
-		}
-	});
 	
 	// Initialize view mode from localStorage or URL
 	onMount(() => {
-		// Removed initializeViewMode() call to prevent conflicts
+		initializeViewMode();
 	});
 
 	// Determine if header should be in dark mode
@@ -161,32 +140,17 @@
 					</div>
 				</a>
 				
-				<!-- Mobile Burger Menu Button - Top right -->
-				<button
-					class="md:hidden absolute right-0 top-0 -mt-2 z-50 p-2"
-					class:pointer-events-auto={!effectiveFaded}
-					class:pointer-events-none={effectiveFaded}
-					onclick={toggleMobileMenu}
-					aria-label="Toggle mobile menu"
-				>
-					<div class="w-6 h-6 flex flex-col justify-center items-center">
-						<!-- Top line -->
-						<span 
-							class="w-6 h-0.5 bg-current transition-all duration-300 ease-in-out transform origin-center" 
-							class:rotate-0={!isMobileMenuOpen}
-						></span>
-						<!-- Middle line -->
-						<span 
-							class="w-6 h-0.5 bg-current transition-all duration-300 ease-in-out mt-1.5" 
-							class:opacity-0={isMobileMenuOpen}
-						></span>
-						<!-- Bottom line -->
-						<span 
-							class="w-6 h-0.5 bg-current transition-all duration-300 ease-in-out mt-1.5 transform origin-center" 
-							class:rotate-0={!isMobileMenuOpen}
-						></span>
-					</div>
-				</button>
+				<!-- Mobile Navigation - Top right -->
+				<div class="md:hidden absolute right-0 top-0 -mt-2 z-50 p-2" class:pointer-events-auto={!effectiveFaded} class:pointer-events-none={effectiveFaded}>
+					<nav class="flex items-center space-x-4">
+						<a href="/" class="text-sm font-medium transition-colors duration-600" class:dark-mode={isDarkMode}>
+							Work
+						</a>
+						<a href="/about" class="text-sm font-medium transition-colors duration-600" class:dark-mode={isDarkMode}>
+							About
+						</a>
+					</nav>
+				</div>
 				
 				<!-- Desktop Navigation - Hidden on mobile -->
 				<div class="hidden md:flex items-center" class:pointer-events-auto={!effectiveFaded} class:pointer-events-none={effectiveFaded}>
@@ -231,63 +195,6 @@
 				</div>
 			</div>
 			
-			<!-- Mobile Menu Overlay -->
-			{#if isMobileMenuOpen}
-				<div 
-					class="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 md:hidden transition-opacity duration-300"
-					onclick={closeMobileMenu}
-				></div>
-			{/if}
-			
-			<!-- Mobile Menu Content - Opacity fade instead of slide -->
-			<div 
-				class="fixed inset-0 bg-white/80 backdrop-blur-md z-50 md:hidden transition-opacity duration-300 flex items-center justify-center"
-				class:opacity-100={isMobileMenuOpen}
-				class:opacity-0={!isMobileMenuOpen}
-				class:pointer-events-auto={isMobileMenuOpen}
-				class:pointer-events-none={!isMobileMenuOpen}
-			>
-				<!-- Close button in top right corner -->
-				<button
-					class="absolute top-2 right-3 p-2"
-					onclick={closeMobileMenu}
-					aria-label="Close menu"
-				>
-					<div class="w-6 h-6 flex flex-col justify-center items-center">
-						<span class="w-6 h-0.5 bg-current rotate-45 transform origin-center"></span>
-						<span class="w-6 h-0.5 bg-current -rotate-45 transform origin-center absolute"></span>
-					</div>
-				</button>
-				
-				<div class="text-center space-y-2">
-					<!-- Grid/List selector -->
-					<button
-						class="block w-full py-3 px-6 text-lg"
-						onclick={() => { handleViewModeClick(); closeMobileMenu(); }}
-					>
-						{(() => {
-							if (currentPath === '/' || currentPath === '/preview') {
-								// On front page: show toggle option (what you'll get when you click)
-								return $viewMode === 'grid' ? 'List' : 'Grid';
-							} else {
-								// On other pages: show what you want to go to
-								return $viewMode === 'grid' ? 'List' : 'Grid';
-							}
-						})()}
-					</button>
-					
-					<!-- Navigation Links -->
-					{#each settings.data.navigation_header as navItem}
-						<PrismicLink 
-							field={navItem} 
-							class="block w-full py-3 px-6 text-lg"
-							onclick={closeMobileMenu}
-						>
-							{navItem.text || 'Link'}
-						</PrismicLink>
-					{/each}
-				</div>
-			</div>
 		</nav>
 	</header>
 {/if} 
