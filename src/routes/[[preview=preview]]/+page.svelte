@@ -86,7 +86,7 @@
     </div>
 </div> -->
 
-<div class="px-3 mt-14 ">
+<div class="px-3 mt-12 md:mt-14 ">
 	{#if isFilled.contentRelationship(data.page.data.feature_project)}
 		<div class="pb-4">
 			<ProjectItem dimension="landscape" project={data.page.data.feature_project} />

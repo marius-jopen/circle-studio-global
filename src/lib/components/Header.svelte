@@ -140,13 +140,13 @@
 					</div>
 				</a>
 				
-				<!-- Mobile Navigation - Top right -->
-				<div class="md:hidden absolute right-0 top-0 -mt-2 z-50 p-2" class:pointer-events-auto={!effectiveFaded} class:pointer-events-none={effectiveFaded}>
-					<nav class="flex items-center space-x-4">
-						<a href="/" class="text-sm font-medium transition-colors duration-600" class:dark-mode={isDarkMode}>
+				<!-- Mobile Navigation - Centered -->
+				<div class="md:hidden absolute inset-x-0 top-0 -mt-2 z-50 p-1" class:pointer-events-auto={!effectiveFaded} class:pointer-events-none={effectiveFaded}>
+					<nav class="flex items-center justify-center gap-x-4">
+						<a href="/" class="text-center font-medium transition-colors duration-600" class:dark-mode={isDarkMode}>
 							Work
 						</a>
-						<a href="/about" class="text-sm font-medium transition-colors duration-600" class:dark-mode={isDarkMode}>
+						<a href="/about" class="text-center font-medium transition-colors duration-600" class:dark-mode={isDarkMode}>
 							About
 						</a>
 					</nav>
