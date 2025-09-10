@@ -15,6 +15,7 @@
 	let isMobile = $state(false);
 	let mounted = $state(false);
 	let title = $state<string | null>(null);
+	let isHovering = $state(false);
 	const rotationSpeed = 200;
 
 	function checkMobile() {
@@ -128,13 +129,20 @@
 			</div>
 		{:else if mounted}
 			<!-- Desktop: FanWheel -->
-			<div class="w-full">
+			<div class="w-full relative">
+				<FanWheel {items} {urls} radius={200} rotationSpeed={rotationSpeed} fontSize={26} bind:isHovering />
 				{#if title}
-					<div class="mb-8">
-						<div class="text-3xl font-medium text-black">{title}</div>
+					<!-- Centered title that fades in/out with wheel hover -->
+					<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+						<div 
+							class="text-2xl font-medium text-black transition-opacity duration-400"
+							class:opacity-0={!isHovering}
+							class:opacity-100={isHovering}
+						>
+							{title}
+						</div>
 					</div>
 				{/if}
-				<FanWheel {items} {urls} radius={200} rotationSpeed={rotationSpeed} fontSize={26} />
 			</div>
 		{:else}
 			<!-- SSR Fallback: Simple list -->

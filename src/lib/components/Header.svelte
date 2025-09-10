@@ -98,7 +98,7 @@
 								}],
 								globalSettings: {
 									containerSizePercent: 30,
-									fontSizePercent: 15.7,
+									fontSizePercent: 16.1,
 									distancePercent: 0,
 									paused: false,
 									textColor: '#000000',
@@ -126,7 +126,7 @@
 								}],
 								globalSettings: {
 									containerSizePercent: 30,
-									fontSizePercent: 15.7,
+									fontSizePercent: 16.1,
 									distancePercent: 0,
 									paused: false,
 									textColor: '#ffffff',

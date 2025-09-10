@@ -25,6 +25,7 @@
 
 	// When hovering a label, slow down rotation significantly
 	let hovering = false;
+	export { hovering as isHovering }; // Export for parent component binding
 	const hoverSlowdownFactor = 2.5; // > 2 means more than half speed
 
 	// requestAnimationFrame-driven rotation to avoid animation restart jumps
@@ -84,12 +85,19 @@
 	$: outerHeight = 2 * (radius + (fit === 'safe' ? maxTextWidth : fontSize));
 </script>
 
-<div class="w-full h-full grid place-items-center py-20">
-	<div class="relative" style={`width:${outerWidth}px;height:${outerHeight}px`}>
-		<!-- Rotor spinning the entire circle (smooth rAF-driven) -->
-		<div class="absolute inset-0 text-black wheel" style={`transform: rotate(${angle}deg); will-change: transform;`}>
+	<div class="w-full h-full grid place-items-center py-20">
+		<div 
+			class="relative" 
+			style={`width:${outerWidth}px;height:${outerHeight}px`}
+			role="region"
+			aria-label="Interactive wheel"
+			on:mouseenter={() => (hovering = true)}
+			on:mouseleave={() => (hovering = false)}
+		>
+			<!-- Rotor spinning the entire circle (smooth rAF-driven) -->
+			<div class="absolute inset-0 text-black wheel" style={`transform: rotate(${angle}deg); will-change: transform;`}>
 			{#each renderItems as label, i}
-				<div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" role="group" on:mouseenter={() => (hovering = true)} on:mouseleave={() => (hovering = false)}>
+				<div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" role="group">
 					{#if renderUrls && renderUrls[i]}
 						<a
 							href={renderUrls[i] as string}
