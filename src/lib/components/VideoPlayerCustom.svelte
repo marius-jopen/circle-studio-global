@@ -48,7 +48,14 @@
 		if (controlsTextClass === 'h2') {
 			desktopClass = 'text-3xl'; // h2 maps to text-3xl in CSS
 		}
-		return `text-sm md:${desktopClass}`;
+		
+		// Create mobile-appropriate sizes that scale with desktop
+		// Use very small text for mobile - try text-xs first, if still too big we can go smaller
+		let mobileClass = 'text-xs';
+		
+		const result = `${mobileClass} md:${desktopClass}`;
+		console.log('Video controls text class:', result, 'controlsTextClass:', controlsTextClass);
+		return result;
 	});
 
 	let videoElement: HTMLVideoElement;
@@ -414,15 +421,16 @@
 			</div>
 		</button>
 
-		<div class="text-white w-full">
+		<div class="text-white w-full pr-2 md:pr-0">
 			{#if controls && hasSoundMode}
 				<div class="flex px-3 pointer-events-none w-full">
 					<div 
-						class="w-full pr-3 flex flex-row justify-between pointer-events-auto text-white transition-opacity duration-400"
+						class="w-full pr-3 flex flex-row justify-between md:justify-between pointer-events-auto text-white transition-opacity duration-400"
 						class:opacity-100={(isHovering && showControls) || (showControlsOnMount && showControls)}
 						class:opacity-0={!isHovering && !showControlsOnMount || !showControls}
 					>
 
+							<!-- Time display - hidden on mobile, visible on desktop -->
 							<button 
 							onclick={(e) => {
 								e.stopPropagation();
@@ -431,7 +439,7 @@
 								currentTime = 0;
 								scheduleAutoHide();
 							}}
-							class="{mobileControlsTextClass} text-left w-1/4 cursor-pointer tabular-nums opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200">
+							class="hidden md:block {mobileControlsTextClass} text-left w-1/4 cursor-pointer tabular-nums opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200">
 								{(() => {
 									const s = (n: number) => Math.floor(n).toString().padStart(2, '0');
 									const mins = Math.floor(currentTime / 60);
@@ -445,7 +453,7 @@
 
 
 						<button
-							class="{mobileControlsTextClass} w-1/4 cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
+							class="{mobileControlsTextClass} w-1/3 md:w-1/4 cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200 text-left"
 							aria-label={isPlaying ? 'Pause video' : 'Play video'}
 							onclick={(e) => { e.stopPropagation(); togglePlayPause(); }}
 						>
@@ -453,7 +461,7 @@
 						</button>
 
 						<button
-						class="{mobileControlsTextClass} w-1/4 cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
+						class="{mobileControlsTextClass} w-1/3 md:w-1/4 cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200 text-center"
 						aria-label={isMuted ? 'Unmute video' : 'Mute video'}
 						onclick={(e) => {
 							e.stopPropagation();
@@ -470,7 +478,7 @@
 						
 
 						<button
-							class="{mobileControlsTextClass} text-right w-1/4 cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
+							class="{mobileControlsTextClass} text-right w-1/3 md:w-1/4 cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
 							aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
 							onclick={async (e) => {
 								e.stopPropagation();
