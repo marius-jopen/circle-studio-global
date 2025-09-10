@@ -14,6 +14,9 @@
 		.map((item) => (item.text ?? '').trim())
 		.filter((t) => !!t);
 
+	// Configuration
+	const useBigWheelOnMobile = $state(true); // Set to false to use text display on mobile
+
 	// State & timing
 	let selectedIndex = $state<number>(-1);
 	let selectedText = $state<string | null>(null);
@@ -95,7 +98,7 @@
 		mobileCycleTimeout = setTimeout(() => {
 			pickNext();
 			startMobileCycle();
-		}, 3000);
+		}, 5000);
 	}
 
 	function checkMobile() {
@@ -135,14 +138,48 @@
 </script>
 
 <section data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
-	<div class="flex justify-center items-center w-full pt-24 pb-24 content-container">
+	<div class="flex justify-center items-center w-full pt-24 pb-24 content-container aspect-square md:aspect-auto">
 		{#if selectedText}
 			{#if mounted && isMobile}
-				<div class="text-center px-4 opacity-40 pt-4 px-8">
-					<div class="text-2xl md:text-3xl lg:text-4xl font-medium text-black leading-tight">
-						{selectedText}
+				{#if useBigWheelOnMobile}
+					<div class="w-full max-w-sm opacity-30">
+						<BigWheel
+							config={{
+								uiVisible: false,
+								items: [
+									{
+										text: selectedText,
+										rotationSpeed: 0.2,
+										spacingAmplitudePercent: 0,
+										spacingSpeed: 0,
+										rotationStart: 0,
+										animationType: 'sin',
+										autoTextSize: true,
+									}
+								],
+								globalSettings: {
+									containerSizePercent: 60,
+									fontSizePercent: 16,
+									distancePercent: 0,
+									paused: false,
+									textColor: '#000000',
+									transparentBackground: true,
+									manualMode: true,
+									fadeInTime: fadeInTimeSec,
+									fadeOutTime: fadeOutTimeSec,
+									triggerFadeIn: triggerFadeIn,
+									triggerFadeOut: triggerFadeOut
+								}
+							}}
+						/>
 					</div>
-				</div>
+				{:else}
+					<div class="text-center px-4 opacity-30">
+						<div class="text-2xl font-medium text-black ">
+							{selectedText}
+						</div>
+					</div>
+				{/if}
 			{:else if mounted}
 				<BigWheel
 					config={{
@@ -176,9 +213,9 @@
 			{:else}
 				<!-- Fallback during SSR - show simple text -->
 				<div class="text-center px-4">
-					<h2 class="text-2xl md:text-3xl lg:text-4xl font-medium text-black leading-tight">
+					<div class="text-2xl font-medium text-black ">
 						{selectedText}
-					</h2>
+					</div>
 				</div>
 			{/if}
 		{/if}

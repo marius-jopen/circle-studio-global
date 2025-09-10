@@ -29,7 +29,7 @@ p {
 }
 
 h1, .h1 {
-    @apply text-4xl font-normal leading-tight;
+    @apply text-2xl md:text-4xl font-normal leading-tight;
 }
 
 h2, .h2 {

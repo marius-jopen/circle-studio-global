@@ -1168,6 +1168,16 @@ export interface WheelSliceDefaultPrimary {
 	 * - **Documentation**: https://prismic.io/docs/fields/link
 	 */
 	items: prismic.Repeatable<prismic.LinkField<string, string, unknown, prismic.FieldState, never>>;
+
+	/**
+	 * Title field in *Wheel → Default → Primary*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: wheel.default.primary.title
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	title: prismic.KeyTextField;
 }
 
 /**

@@ -14,6 +14,7 @@
 	let urls = $state<string[]>([]);
 	let isMobile = $state(false);
 	let mounted = $state(false);
+	let title = $state<string | null>(null);
 	const rotationSpeed = 200;
 
 	function checkMobile() {
@@ -27,6 +28,7 @@
 		checkMobile();
 
 		const primary: any = (slice as any).primary;
+		title = primary?.title || null;
 		if (primary?.take_collaborators_automatically) {
 			const client = createClient();
 			const docs = await client.getAllByType('people', {
@@ -96,21 +98,27 @@
 	<div class="flex justify-center items-center w-full md:pt-24 md:pb-24">
 		{#if mounted && isMobile}
 			<!-- Mobile: Two-column list -->
-			<div class="w-full content-container px-4 opacity-40">
-				<div class="grid grid-cols-2 gap-3 md:gap-2">
+			<div class="w-full content-container px-4 opacity-30">
+				{#if title}
+					<div class="mb-6 text-center">
+						<div class="text-2xl font-medium text-black">{title}</div>
+					</div>
+				{/if}
+
+				<div class="grid grid-cols-1 text-center gap-0 md:gap-2">
 					{#each items as item, index}
 						<div class="">
 							{#if urls[index] && urls[index] !== '#'}
 								<a 
 									href={urls[index]} 
-									class="text-xl font-medium text-black block"
+									class="text-2xl font-medium text-black block"
 									target="_blank"
 									rel="noopener noreferrer"
 								>
 									{item}
 								</a>
 							{:else}
-								<span class="text-xl font-medium text-black block">
+								<span class="text-2xl font-medium text-black block">
 									{item}
 								</span>
 							{/if}
@@ -120,11 +128,23 @@
 			</div>
 		{:else if mounted}
 			<!-- Desktop: FanWheel -->
-			<FanWheel {items} {urls} radius={200} rotationSpeed={rotationSpeed} fontSize={26} />
+			<div class="w-full">
+				{#if title}
+					<div class="mb-8">
+						<div class="text-3xl font-medium text-black">{title}</div>
+					</div>
+				{/if}
+				<FanWheel {items} {urls} radius={200} rotationSpeed={rotationSpeed} fontSize={26} />
+			</div>
 		{:else}
 			<!-- SSR Fallback: Simple list -->
 			<div class="w-full max-w-4xl px-4">
-				<div class="grid grid-cols-2 gap-4 md:gap-6">
+				{#if title}
+					<div class="mb-6">
+						<h2 class="text-2xl font-medium text-black">{title}</h2>
+					</div>
+				{/if}
+				<div class="grid grid-cols-1 text-center gap-4 md:gap-6">
 					{#each items as item, index}
 						<div class="text-center">
 							{#if urls[index] && urls[index] !== '#'}
