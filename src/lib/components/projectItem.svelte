@@ -280,7 +280,13 @@
 		// On mobile, always prefer portrait assets
 		const preferred = filterItemsForDimension(allItems, effectiveDimension);
 		const candidates = preferred.length > 0 ? preferred : allItems;
-		const selectedIndex = Math.floor(Math.random() * candidates.length);
+		
+		// Use project ID as seed for consistent "random" selection
+		const hash = (projectData?.id || '').split('').reduce((a: number, b: string) => {
+			a = ((a << 5) - a) + b.charCodeAt(0);
+			return a & a;
+		}, 0);
+		const selectedIndex = Math.abs(hash) % candidates.length;
 		const selectedItem = candidates[selectedIndex];
 
 		console.log(`🎲 Project "${projectTitle}": Selected preview with dimension ${effectiveDimension} (original: ${dimension}). ` +

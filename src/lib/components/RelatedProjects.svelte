@@ -9,8 +9,10 @@
 <div class="mt-24">
     <div class="mb-4 paragraph-1 text-center">More work</div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
-        {#each projects as project}
-            <ProjectItem dimension="portrait" itemsPerRow={3} {project} />
+        {#each projects as project (project.uid)}
+            {#key project.uid}
+                <ProjectItem dimension="portrait" itemsPerRow={3} {project} />
+            {/key}
         {/each}
     </div>
 </div>
