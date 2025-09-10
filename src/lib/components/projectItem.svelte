@@ -119,8 +119,9 @@
 			pauseTime: 1.5,
 			visibleTime: 5,
 			manualMode: true, // Use manual mode for controlled animations
-			triggerFadeIn: showText && !isNavigating, // Double check navigation state
-			triggerFadeOut: !showText || !initialRenderComplete || isNavigating || !isMounted // Force hidden initially
+			triggerFadeIn: isHovering && !isNavigating, // Only fade in when hovering and not navigating
+			triggerFadeOut: (!isHovering && hasEverHovered) || isNavigating, // Fade out when leaving hover (only after having hovered) or during navigation
+			startInvisible: true // Start invisible, only show on hover
 		},
 		items: [
 			{
@@ -157,6 +158,7 @@
 	let initialRenderComplete = false;
 	let isNavigating = false;
 	let projectElement: HTMLElement;
+	let hasEverHovered = false; // Track if user has ever hovered over this item
 	
 	// Check all initial states immediately during script execution (before any rendering)
 	if (browser) {
@@ -304,9 +306,11 @@
 	})();
 </script>
 
-{#if clickable}
+		{#if clickable}
 	<a href="/work/{projectUid}" class="block " bind:this={projectElement}
 	   on:mouseenter={() => {
+		   isHovering = true;
+		   hasEverHovered = true;
 		   // Use effective dimension for hover preview (portrait on mobile, original on desktop)
 		   const hoverVideoUrl = effectiveDimension === 'portrait' ? 
 			   selectedPreview?.item?.preview_video_url_portrait : 
@@ -324,6 +328,7 @@
 		   }
 	   }}
 	   on:mouseleave={() => {
+		   isHovering = false;
 		   hoverPreview.update(s => (s?.uid === projectUid ? { url: null } : s));
 	   }}
 	>
@@ -334,9 +339,7 @@
 			{@const videoUrl = effectiveDimension === 'portrait' ? preview?.preview_video_url_portrait : preview?.preview_video_url_landscape}
 			
 			{#if videoUrl && (!isMobile || ENABLE_VIDEOS_ON_MOBILE)}
-				<div class="relative brightness-[95%]" role="group"
-					 on:mouseenter={() => isHovering = true}
-					 on:mouseleave={() => isHovering = false}>
+				<div class="relative brightness-[95%]" role="group">
 					<VideoPlayerSimple 
 						hlsUrl={videoUrl}
 						posterImage={imageField} 
@@ -366,9 +369,7 @@
 					{/if}
 				</div>
 			{:else if imageField?.url}
-				<div class="relative brightness-[95%]" role="group"
-					 on:mouseenter={() => isHovering = true}
-					 on:mouseleave={() => isHovering = false}>
+				<div class="relative brightness-[95%]" role="group">
 					<PrismicImage 
 						field={imageField} 
 						class="w-full h-auto rounded hover:brightness-60 transition-all duration-300 {aspectClass} object-cover"
@@ -397,6 +398,8 @@
 {:else}
     <div class="block" bind:this={projectElement} role="group"
 	     on:mouseenter={() => {
+		     isHovering = true;
+		     hasEverHovered = true;
 		     // Use effective dimension for hover preview (portrait on mobile, original on desktop)
 		     const hoverVideoUrl = effectiveDimension === 'portrait' ? 
 			     selectedPreview?.item?.preview_video_url_portrait : 
@@ -414,6 +417,7 @@
 		     }
 	     }}
 	     on:mouseleave={() => {
+		     isHovering = false;
 		     hoverPreview.update(s => (s?.uid === projectUid ? { url: null } : s));
 	     }}
 	>
@@ -424,9 +428,7 @@
 			{@const videoUrl = effectiveDimension === 'portrait' ? preview?.preview_video_url_portrait : preview?.preview_video_url_landscape}
 			
 			{#if videoUrl && (!isMobile || ENABLE_VIDEOS_ON_MOBILE)}
-				<div class="relative" role="group"
-					 on:mouseenter={() => isHovering = true}
-					 on:mouseleave={() => isHovering = false}>
+				<div class="relative" role="group">
 					<VideoPlayerSimple 
 						hlsUrl={videoUrl}
 						posterImage={imageField} 
@@ -456,9 +458,7 @@
 					{/if}
 				</div>
 			{:else if imageField?.url}
-				<div class="relative" role="group"
-					 on:mouseenter={() => isHovering = true}
-					 on:mouseleave={() => isHovering = false}>
+				<div class="relative" role="group">
 					<PrismicImage 
 						field={imageField} 
 						class="w-full h-auto rounded {aspectClass} object-cover"
