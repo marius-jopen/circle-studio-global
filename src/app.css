@@ -63,7 +63,7 @@ h2, .h2 {
 /* Global content container
    Adjust here to change site-wide max width behavior (including mobile breakpoints) */
 .content-container {
-    @apply max-w-9/12 mx-auto;
+    @apply px-6 md:px-0 md:max-w-9/12 mx-auto;
 }
 
 .content-text p {

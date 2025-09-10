@@ -17,6 +17,8 @@
 	// State & timing
 	let selectedIndex = $state<number>(-1);
 	let selectedText = $state<string | null>(null);
+	let isMobile = $state(false);
+	let mounted = $state(false);
 
 	let fadeInTimeSec = $state(1.7);
 	let fadeOutTimeSec = $state(1.7);
@@ -30,6 +32,7 @@
 	// Internal timers
 	let cycleTimeoutA: ReturnType<typeof setTimeout> | null = null;
 	let cycleTimeoutB: ReturnType<typeof setTimeout> | null = null;
+	let mobileCycleTimeout: ReturnType<typeof setTimeout> | null = null;
 
 	function randomIndexDifferentFrom(current: number, length: number): number {
 		if (length <= 1) return 0;
@@ -87,51 +90,97 @@
 		}, (fadeInTimeSec + visibleTimeSec) * 1000);
 	}
 
+	function startMobileCycle() {
+		if (mobileCycleTimeout) clearTimeout(mobileCycleTimeout);
+		mobileCycleTimeout = setTimeout(() => {
+			pickNext();
+			startMobileCycle();
+		}, 3000);
+	}
+
+	function checkMobile() {
+		if (typeof window !== 'undefined') {
+			isMobile = window.innerWidth < 768;
+		}
+	}
+
 	onMount(() => {
+		mounted = true;
+		
 		if (texts.length > 0) {
 			pickInitial();
-			startCycle(true);
+			checkMobile();
+			
+			if (isMobile) {
+				startMobileCycle();
+			} else {
+				startCycle(true);
+			}
+		}
+
+		// Listen for resize events to handle mobile/desktop switching
+		if (typeof window !== 'undefined') {
+			window.addEventListener('resize', checkMobile);
 		}
 	});
 
 	onDestroy(() => {
 		if (cycleTimeoutA) clearTimeout(cycleTimeoutA);
 		if (cycleTimeoutB) clearTimeout(cycleTimeoutB);
+		if (mobileCycleTimeout) clearTimeout(mobileCycleTimeout);
+		if (typeof window !== 'undefined') {
+			window.removeEventListener('resize', checkMobile);
+		}
 	});
 </script>
 
 <section data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
-	<div class="flex justify-center items-center w-full pt-24 pb-24">
+	<div class="flex justify-center items-center w-full pt-24 pb-24 content-container">
 		{#if selectedText}
-			<BigWheel
-				config={{
-					uiVisible: false,
-					items: [
-						{
-							text: selectedText,
-							rotationSpeed: 0.2,
-							spacingAmplitudePercent: 0,
-							spacingSpeed: 0,
-							rotationStart: 0,
-							animationType: 'sin',
-							autoTextSize: true,
+			{#if mounted && isMobile}
+				<div class="text-center px-4 opacity-40 pt-4 px-8">
+					<div class="text-2xl md:text-3xl lg:text-4xl font-medium text-black leading-tight">
+						{selectedText}
+					</div>
+				</div>
+			{:else if mounted}
+				<BigWheel
+					config={{
+						uiVisible: false,
+						items: [
+							{
+								text: selectedText,
+								rotationSpeed: 0.2,
+								spacingAmplitudePercent: 0,
+								spacingSpeed: 0,
+								rotationStart: 0,
+								animationType: 'sin',
+								autoTextSize: true,
+							}
+						],
+						globalSettings: {
+							containerSizePercent: 100,
+							fontSizePercent: 9,
+							distancePercent: 0,
+							paused: false,
+							textColor: '#000000',
+							transparentBackground: true,
+							manualMode: true,
+							fadeInTime: fadeInTimeSec,
+							fadeOutTime: fadeOutTimeSec,
+							triggerFadeIn: triggerFadeIn,
+							triggerFadeOut: triggerFadeOut
 						}
-					],
-					globalSettings: {
-						containerSizePercent: 100,
-						fontSizePercent: 9,
-						distancePercent: 0,
-						paused: false,
-						textColor: '#000000',
-						transparentBackground: true,
-						manualMode: true,
-						fadeInTime: fadeInTimeSec,
-						fadeOutTime: fadeOutTimeSec,
-						triggerFadeIn: triggerFadeIn,
-						triggerFadeOut: triggerFadeOut
-					}
-				}}
-			/>
+					}}
+				/>
+			{:else}
+				<!-- Fallback during SSR - show simple text -->
+				<div class="text-center px-4">
+					<h2 class="text-2xl md:text-3xl lg:text-4xl font-medium text-black leading-tight">
+						{selectedText}
+					</h2>
+				</div>
+			{/if}
 		{/if}
 	</div>
 </section>
