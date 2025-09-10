@@ -11,21 +11,24 @@
 	let animationFrame: number;
 	let lastScrollY = 0;
 	let lastScrollTime = 0;
+	let isAnimating = false;
 	
-	// Smooth animation loop
+	// Continuous animation loop that never stops
 	function animate() {
-		// Smooth interpolation towards target rotation
-		const smoothing = 0.15; // Lower = smoother, higher = more responsive
-		scrollRotation += (targetRotation - scrollRotation) * smoothing;
+		// Always continue the animation loop
+		isAnimating = true;
 		
-		// Continue animation if we're still moving or scrolling
-		if (Math.abs(targetRotation - scrollRotation) > 0.1 || isScrolling) {
-			animationFrame = requestAnimationFrame(animate);
-		}
+		// Smooth interpolation towards target rotation
+		const smoothing = 0.12; // Slightly more responsive
+		const diff = targetRotation - scrollRotation;
+		scrollRotation += diff * smoothing;
+		
+		// Continue animation indefinitely
+		animationFrame = requestAnimationFrame(animate);
 	}
 	
 	onMount(() => {
-		// Start the animation loop
+		// Start the continuous animation loop
 		animate();
 		
 		const handleScroll = () => {
@@ -34,8 +37,8 @@
 			const deltaY = scrollY - lastScrollY;
 			const deltaTime = now - lastScrollTime;
 			
-			// Only update if there's meaningful scroll movement
-			if (Math.abs(deltaY) > 1 && deltaTime > 0) {
+			// Only update if there's meaningful scroll movement and time has passed
+			if (Math.abs(deltaY) > 0.5 && deltaTime > 0) {
 				// Clear existing timeout
 				clearTimeout(scrollTimeout);
 				
@@ -44,24 +47,19 @@
 				
 				// Calculate rotation based on scroll velocity (pixels per millisecond)
 				const velocity = deltaY / deltaTime;
-				const rotationIncrement = velocity * 0.3; // Reduced sensitivity for smoother movement
+				const rotationIncrement = velocity * 0.4; // Slightly more sensitive
 				
-				// Update target rotation
+				// Update target rotation (accumulate, don't replace)
 				targetRotation += rotationIncrement;
 				
 				// Store current values
 				lastScrollY = scrollY;
 				lastScrollTime = now;
 				
-				// Restart animation if it's not running
-				if (!animationFrame) {
-					animate();
-				}
-				
 				// Set timeout to stop scrolling state
 				scrollTimeout = setTimeout(() => {
 					isScrolling = false;
-				}, 100); // Reduced timeout for more responsive feel
+				}, 150);
 			}
 		};
 		
@@ -83,6 +81,7 @@
 		return () => {
 			window.removeEventListener('scroll', throttledScroll);
 			clearTimeout(scrollTimeout);
+			isAnimating = false;
 			if (animationFrame) {
 				cancelAnimationFrame(animationFrame);
 			}
