@@ -15,7 +15,7 @@
 			<div class="text-center font-normal mb-4 ">Credits</div>
 				<div class="text-black hover:text-black/25">
 					{#each validCredits as credit}
-					<div class="flex justify-between gap-3 hover:text-black transition-colors duration-200">
+					<div class="flex justify-between gap-3 pb-1 hover:text-black transition-colors duration-200">
 						<span class="text-right w-full">{credit.label}</span>
 						<span class="w-full">
 						{#each credit.person as person, index}
