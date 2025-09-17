@@ -12,6 +12,7 @@
 
   let isActive = $state(false); // whether we swapped image->video
   let isPlaying = $state(false);
+  let isVideoReady = $state(false); // first frame ready, safe to reveal
   let videoEl: HTMLVideoElement | null = $state(null);
   let hls: any = null;
 
@@ -30,6 +31,9 @@
       try { videoEl.pause(); } catch {}
       videoEl.removeEventListener('play', onPlay);
       videoEl.removeEventListener('pause', onPause);
+      videoEl.removeEventListener('loadedmetadata', onLoadedMetadata);
+      videoEl.removeEventListener('loadeddata', onFirstFrameReady);
+      videoEl.removeEventListener('canplay', onFirstFrameReady);
     }
     if (hls) {
       try { hls.destroy(); } catch {}
@@ -37,7 +41,23 @@
     }
     isPlaying = false;
     isActive = false;
+    isVideoReady = false;
   }
+
+  const onLoadedMetadata = () => {
+    if (!videoEl) return;
+    try { videoEl.currentTime = 0; } catch {}
+  };
+
+  const onFirstFrameReady = () => {
+    if (!videoEl) return;
+    const anyVideo: any = videoEl;
+    if (typeof anyVideo.requestVideoFrameCallback === 'function') {
+      anyVideo.requestVideoFrameCallback(() => { isVideoReady = true; });
+    } else {
+      isVideoReady = true;
+    }
+  };
 
   async function handleToggle() {
     if (!item?.video_url || !item?.image?.url) return;
@@ -45,6 +65,7 @@
     if (!isActive) {
       // First click: swap to video and start playback
       isActive = true;
+      isVideoReady = false;
       // Wait next microtask to ensure <video> exists, then play
       queueMicrotask(async () => {
         if (!videoEl) return;
@@ -52,6 +73,10 @@
           // Listen for play/pause to update icon
           videoEl.addEventListener('play', onPlay);
           videoEl.addEventListener('pause', onPause);
+          // Prepare to detect first frame and ensure start at 0
+          videoEl.addEventListener('loadedmetadata', onLoadedMetadata, { once: true } as any);
+          videoEl.addEventListener('loadeddata', onFirstFrameReady, { once: true } as any);
+          videoEl.addEventListener('canplay', onFirstFrameReady, { once: true } as any);
 
           const url: string = item.video_url;
           const isNativeHls = !!videoEl.canPlayType && videoEl.canPlayType('application/vnd.apple.mpegurl');
@@ -132,7 +157,7 @@
       {#if isActive}
         <video
           bind:this={videoEl}
-          class="absolute inset-0 z-10 w-full h-full rounded object-cover no-callout ios-video-fix"
+          class="absolute inset-0 z-10 w-full h-full rounded object-cover no-callout ios-video-fix transition-opacity duration-200 {isVideoReady ? 'opacity-100' : 'opacity-0'}"
           poster={imageField.url}
           playsinline
           muted
