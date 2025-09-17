@@ -293,7 +293,7 @@
 		};
 		document.addEventListener('fullscreenchange', fsHandler);
 
-		if (useHls && videoElement) {
+		if (useHls && videoElement && !isMobile) {
 			import('hls.js').then(({ default: Hls }) => {
 				if (Hls.isSupported()) {
 					const hls = new Hls({ autoStartLoad: true });
@@ -324,26 +324,28 @@
 		currentTime = 0;
 		duration = 0;
 		
-		if (useHls) {
-			import('hls.js').then(({ default: Hls }) => {
-				if (Hls.isSupported()) {
-					// Destroy existing HLS instance if any
-					if ((videoElement as any).hls) {
-						(videoElement as any).hls.destroy();
+		if (!isMobile) {
+			if (useHls) {
+				import('hls.js').then(({ default: Hls }) => {
+					if (Hls.isSupported()) {
+						// Destroy existing HLS instance if any
+						if ((videoElement as any).hls) {
+							(videoElement as any).hls.destroy();
+						}
+						
+						const hls = new Hls({ autoStartLoad: true });
+						hls.loadSource(hlsUrl);
+						hls.attachMedia(videoElement);
+						
+						// Store HLS instance for cleanup
+						(videoElement as any).hls = hls;
+					} else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+						videoElement.src = hlsUrl;
 					}
-					
-					const hls = new Hls({ autoStartLoad: true });
-					hls.loadSource(hlsUrl);
-					hls.attachMedia(videoElement);
-					
-					// Store HLS instance for cleanup
-					(videoElement as any).hls = hls;
-				} else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-					videoElement.src = hlsUrl;
-				}
-			});
-		} else {
-			videoElement.src = videoUrl;
+				});
+			} else {
+				videoElement.src = videoUrl;
+			}
 		}
 		
         // Reset mute state and autoplay (with mobile override)
@@ -394,10 +396,10 @@
 		bind:this={videoElement}
 		class={videoClass}
 		poster={posterImage?.url || ''}
-		preload="auto"
+		preload={isMobile ? 'none' : 'auto'}
 		loop
 		muted={isMuted}
-		autoplay={autoplayOnMount}
+		autoplay={false}
 		playsinline
 		ontimeupdate={() => { currentTime = videoElement.currentTime; }}
 		onloadedmetadata={() => { duration = videoElement.duration; }}
