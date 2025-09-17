@@ -2,7 +2,7 @@
 	import BigWheel from './BigWheel.svelte';
 	import { onMount } from 'svelte';
 	
-	let { isDarkMode = false } = $props();
+	let { isDarkMode = false, scrollSpeedMultiplier = 2 } = $props();
 	
 	let scrollRotation = $state(0);
 	let targetRotation = $state(0);
@@ -47,7 +47,7 @@
 				
 				// Calculate rotation based on scroll velocity (pixels per millisecond)
 				const velocity = deltaY / deltaTime;
-				const rotationIncrement = velocity * 0.4; // Slightly more sensitive
+				const rotationIncrement = velocity * 0.4 * scrollSpeedMultiplier; // Slightly more sensitive (scaled)
 				
 				// Update target rotation (accumulate, don't replace)
 				targetRotation += rotationIncrement;
