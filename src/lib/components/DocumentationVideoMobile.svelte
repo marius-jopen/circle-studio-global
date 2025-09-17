@@ -98,12 +98,14 @@
 
   {#if videoUrl && imageField?.url}
     <div class="relative brightness-[95%] select-none" on:click={handleToggle}>
-      {#if !isActive}
-        <PrismicImage field={imageField} class="w-full h-auto rounded object-cover" />
-      {:else}
+      <!-- Keep the image in the document flow to preserve height -->
+      <PrismicImage field={imageField} class="w-full h-auto rounded object-cover" />
+
+      <!-- Overlay the video absolutely to avoid layout jump -->
+      {#if isActive}
         <video
           bind:this={videoEl}
-          class="w-full h-auto rounded object-cover"
+          class="absolute inset-0 w-full h-full rounded object-cover"
           poster={imageField.url}
           playsinline
           muted
