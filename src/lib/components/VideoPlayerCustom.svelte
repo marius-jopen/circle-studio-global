@@ -423,7 +423,7 @@
 
 		<div class="text-white w-full pr-2 md:pr-0">
 			{#if controls && hasSoundMode}
-				<div class="flex px-3 pointer-events-none w-full">
+				<div class="flex pl-0 pr-1 md:pr-3 pointer-events-none w-full">
 					<div 
 						class="w-full pr-3 flex flex-row justify-between md:justify-between pointer-events-auto text-white transition-opacity duration-400"
 						class:opacity-100={(isHovering && showControls) || (showControlsOnMount && showControls)}

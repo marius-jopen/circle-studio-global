@@ -18,6 +18,27 @@
   const onPlay = () => { isPlaying = true; };
   const onPause = () => { isPlaying = false; };
 
+  function handleKey(event: KeyboardEvent) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handleToggle();
+    }
+  }
+
+  function deactivateVideo() {
+    if (videoEl) {
+      try { videoEl.pause(); } catch {}
+      videoEl.removeEventListener('play', onPlay);
+      videoEl.removeEventListener('pause', onPause);
+    }
+    if (hls) {
+      try { hls.destroy(); } catch {}
+      hls = null;
+    }
+    isPlaying = false;
+    isActive = false;
+  }
+
   async function handleToggle() {
     if (!item?.video_url || !item?.image?.url) return;
 
@@ -75,7 +96,8 @@
       if (videoEl.paused) {
         videoEl.play().catch(() => {});
       } else {
-        videoEl.pause();
+        // Pause and return to image view
+        deactivateVideo();
       }
     }
   }
@@ -97,24 +119,30 @@
   {@const videoUrl = item.video_url}
 
   {#if videoUrl && imageField?.url}
-    <div class="relative brightness-[95%] select-none" on:click={handleToggle}>
+    <div
+      class="relative brightness-[95%] select-none"
+      role="button"
+      tabindex="0"
+      onclick={handleToggle}
+      onkeydown={handleKey}
+    >
       <!-- Keep the image in the document flow to preserve height -->
-      <PrismicImage field={imageField} class="w-full h-auto rounded object-cover" />
+      <PrismicImage field={imageField} class="w-full h-auto rounded object-cover no-callout" />
 
       <!-- Overlay the video absolutely to avoid layout jump -->
       {#if isActive}
         <video
           bind:this={videoEl}
-          class="absolute inset-0 w-full h-full rounded object-cover"
+          class="absolute inset-0 z-10 w-full h-full rounded object-cover no-callout"
           poster={imageField.url}
           playsinline
           muted
           preload="none"
-        />
+        ></video>
       {/if}
 
       <!-- Play/Pause button, subtle rounded corners, bottom-right -->
-      <div class="absolute bottom-1 right-1 rounded-lg p-2">
+      <div class="absolute z-20 bottom-1 right-1 rounded-lg p-2">
         {#if isActive && isPlaying}
           <!-- Pause icon -->
           <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/></svg>
@@ -129,6 +157,6 @@
 
 <style>
   /* Prevent long-press saving on iOS */
-  video, img { -webkit-touch-callout: none; }
+  .no-callout { -webkit-touch-callout: none; }
 </style>
 
