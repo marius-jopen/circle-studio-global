@@ -91,13 +91,12 @@
       return;
     }
 
-    // Already active: toggle play/pause
+    // Already active: toggle play/pause (keep video visible when paused)
     if (videoEl) {
       if (videoEl.paused) {
         videoEl.play().catch(() => {});
       } else {
-        // Pause and return to image view
-        deactivateVideo();
+        videoEl.pause();
       }
     }
   }
@@ -120,23 +119,24 @@
 
   {#if videoUrl && imageField?.url}
     <div
-      class="relative brightness-[95%] select-none"
+      class="relative select-none"
       role="button"
       tabindex="0"
       onclick={handleToggle}
       onkeydown={handleKey}
     >
       <!-- Keep the image in the document flow to preserve height -->
-      <PrismicImage field={imageField} class="w-full h-auto rounded object-cover no-callout" />
+      <PrismicImage field={imageField} class="w-full h-auto rounded object-cover no-callout brightness-[95%]" />
 
       <!-- Overlay the video absolutely to avoid layout jump -->
       {#if isActive}
         <video
           bind:this={videoEl}
-          class="absolute inset-0 z-10 w-full h-full rounded object-cover no-callout"
+          class="absolute inset-0 z-10 w-full h-full rounded object-cover no-callout ios-video-fix"
           poster={imageField.url}
           playsinline
           muted
+          loop
           preload="none"
         ></video>
       {/if}
@@ -158,5 +158,7 @@
 <style>
   /* Prevent long-press saving on iOS */
   .no-callout { -webkit-touch-callout: none; }
+  /* Help iOS Safari composite the video correctly */
+  .ios-video-fix { -webkit-transform: translateZ(0); transform: translateZ(0); backface-visibility: hidden; will-change: transform; }
 </style>
 
