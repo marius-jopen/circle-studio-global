@@ -13,28 +13,28 @@
 	{#if validCredits.length > 0}
 		<section class="mb-12 mt-8">
 			<div class="text-center font-normal mb-4 ">Credits</div>
-			<div class="text-black hover:text-black/25">
-				{#each validCredits as credit}
-				<div class="flex justify-between gap-3 hover:text-black transition-colors duration-200">
-					<span class="text-right w-full">{credit.label}</span>
-					<span class="w-full">
-						{#each credit.person as person, index}
-							{@const personData = person.data}
-							{@const linkUrl = personData?.link?.url || personData?.link}
-							{#if linkUrl}
-								<a href={linkUrl} target="_blank">
-									{personData?.title || `Person ${index + 1}`} 
-								</a>
-							{:else}
-								<span>
-									{personData?.title || `Person ${index + 1}`} 
-								</span>
-							{/if}{#if index < credit.person.length - 1},&nbsp;{/if}
-						{/each}
-					</span>
-				</div>
-			{/each}
-		</div>
-	</section>
+				<div class="text-black hover:text-black/25">
+					{#each validCredits as credit}
+					<div class="flex justify-between gap-3 hover:text-black transition-colors duration-200">
+						<span class="text-right w-full">{credit.label}</span>
+						<span class="w-full">
+							{#each credit.person as person, index}
+								{@const personData = person.data}
+								{@const linkUrl = personData?.link?.url || personData?.link}
+								{#if linkUrl}
+									<a href={linkUrl} target="_blank">
+										{personData?.title || `Person ${index + 1}`} 
+									</a>
+								{:else}
+									<span>
+										{personData?.title || `Person ${index + 1}`} 
+									</span>
+								{/if}{#if index < credit.person.length - 1},&nbsp;{/if}
+							{/each}
+						</span>
+					</div>
+				{/each}
+			</div>
+		</section>
 	{/if}
 {/if} 
