@@ -21,7 +21,7 @@
 		// Smooth interpolation towards target rotation
 		const smoothing = 0.12; // Slightly more responsive
 		const diff = targetRotation - scrollRotation;
-		scrollRotation += diff * smoothing * 10;
+		scrollRotation += diff * smoothing;
 		
 		// Continue animation indefinitely
 		animationFrame = requestAnimationFrame(animate);
