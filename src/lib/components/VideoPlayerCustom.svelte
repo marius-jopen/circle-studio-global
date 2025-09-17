@@ -117,6 +117,38 @@
         scheduleAutoHide();
     }
 
+    async function toggleFullscreen(e?: Event) {
+        if (e) e.stopPropagation();
+        if (!videoElement) return;
+        try {
+            const anyVideo = videoElement as any;
+            const anyDoc = document as any;
+            if (!isFullscreen && !document.fullscreenElement && !anyDoc.webkitFullscreenElement) {
+                if (videoElement.requestFullscreen) {
+                    await videoElement.requestFullscreen();
+                    isFullscreen = true;
+                } else if (typeof anyVideo.webkitEnterFullscreen === 'function' || typeof anyVideo.webkitEnterFullScreen === 'function') {
+                    // iOS Safari fallback to native player fullscreen
+                    (anyVideo.webkitEnterFullscreen || anyVideo.webkitEnterFullScreen).call(anyVideo);
+                    isFullscreen = true;
+                } else if (containerElement && (containerElement as any).requestFullscreen) {
+                    await (containerElement as any).requestFullscreen();
+                    isFullscreen = true;
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    await document.exitFullscreen();
+                } else if (typeof anyDoc.webkitExitFullscreen === 'function') {
+                    anyDoc.webkitExitFullscreen();
+                } else if (typeof (videoElement as any).webkitExitFullscreen === 'function') {
+                    (videoElement as any).webkitExitFullscreen();
+                }
+                isFullscreen = false;
+            }
+        } catch (_) {}
+        scheduleAutoHide();
+    }
+
     // Expose imperative play to allow first-click synchronous playback from parent
     export function playNow(unmute: boolean = false) {
         if (!videoElement) return;
@@ -293,11 +325,15 @@
 		};
 		window.addEventListener('video-play-request', playRequestHandler);
 
-		// Track fullscreen state
-		const fsHandler = () => {
-			isFullscreen = !!document.fullscreenElement;
-		};
-		document.addEventListener('fullscreenchange', fsHandler);
+        // Track fullscreen state
+        const fsHandler = () => {
+            const anyDoc = document as any;
+            isFullscreen = !!(document.fullscreenElement || anyDoc.webkitFullscreenElement);
+        };
+        document.addEventListener('fullscreenchange', fsHandler);
+        // iOS Safari native player events
+        videoElement.addEventListener('webkitbeginfullscreen', () => { isFullscreen = true; });
+        videoElement.addEventListener('webkitendfullscreen', () => { isFullscreen = false; });
 
 		if (useHls && videoElement && !isMobile) {
 			import('hls.js').then(({ default: Hls }) => {
@@ -313,7 +349,7 @@
 
         return () => {
 			window.removeEventListener('video-playing-with-sound', handleOtherVideoPlaying);
-			document.removeEventListener('fullscreenchange', fsHandler);
+            document.removeEventListener('fullscreenchange', fsHandler);
 			window.removeEventListener('video-play-request', playRequestHandler);
             mobileQuery.removeEventListener('change', updateIsMobile);
             coarsePointerQuery.removeEventListener('change', updateIsMobile);
@@ -437,28 +473,30 @@
         class:opacity-70={controlsVisible}
         class:opacity-0={!controlsVisible}
     >
-		<button
-			data-video-control="true"
-            class="relative block w-full h-3 pointer-events-auto transition-opacity duration-400"
-            class:opacity-100={controlsVisible}
-            class:opacity-0={!controlsVisible}
-            class:pointer-events-none={!controlsVisible}
-			role="slider"
-			aria-valuemin="0"
-			aria-valuemax="100"
-			aria-valuenow={(duration > 0 ? (currentTime / duration) * 100 : 0)}
-			aria-label="Seek"
-			onmousedown={(e) => { e.stopPropagation(); startScrubMouse(e as MouseEvent); }}
-			ontouchstart={(e) => { e.stopPropagation(); startScrubTouch(e as TouchEvent); }}
-		>
-			<!-- Centered thin visible track -->
-			<div class="absolute left-0  right-3 top-1/2 -translate-y-1/2 h-0.5 bg-white/40 rounded w-[calc(100%-1.5rem)]">
-				<div 
-					class="h-full bg-white rounded"
-					style={`width: ${duration > 0 ? (currentTime / duration) * 100 : 0}%`}
-				></div>
-			</div>
-		</button>
+        {#if !isMobile}
+            <button
+                data-video-control="true"
+                class="relative block w-full h-3 pointer-events-auto transition-opacity duration-400"
+                class:opacity-100={controlsVisible}
+                class:opacity-0={!controlsVisible}
+                class:pointer-events-none={!controlsVisible}
+                role="slider"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow={(duration > 0 ? (currentTime / duration) * 100 : 0)}
+                aria-label="Seek"
+                onmousedown={(e) => { e.stopPropagation(); startScrubMouse(e as MouseEvent); }}
+                ontouchstart={(e) => { e.stopPropagation(); startScrubTouch(e as TouchEvent); }}
+            >
+                <!-- Centered thin visible track -->
+                <div class="absolute left-0  right-3 top-1/2 -translate-y-1/2 h-0.5 bg-white/40 rounded w-[calc(100%-1.5rem)]">
+                    <div 
+                        class="h-full bg-white rounded"
+                        style={`width: ${duration > 0 ? (currentTime / duration) * 100 : 0}%`}
+                    ></div>
+                </div>
+            </button>
+        {/if}
 
 		<div class="text-white w-full pr-2 md:pr-0">
 			{#if controls && hasSoundMode}
@@ -518,21 +556,8 @@
 
 						<button
 							class="{mobileControlsTextClass} text-right w-1/3 md:w-1/4 cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
-							aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
-							onclick={async (e) => {
-								e.stopPropagation();
-								if (!videoElement) return;
-								try {
-									if (!document.fullscreenElement) {
-										await videoElement.requestFullscreen();
-										isFullscreen = true;
-									} else {
-										await document.exitFullscreen();
-										isFullscreen = false;
-									}
-								} catch (e) {}
-								scheduleAutoHide();
-							}}
+                        aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+                        onclick={toggleFullscreen}
 						>
 							{isFullscreen ? 'Back' : 'Fullscreen'}
 						</button>
