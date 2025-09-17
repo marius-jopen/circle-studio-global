@@ -78,86 +78,88 @@
 </svelte:head>
 
 	<!-- Main Media -->
-	{#if projectData.main && projectData.main.length > 0}
-		<div class="mb-3 mt-12 md:mt-0" id="main-media">
-			<!-- Single item: full width -->
-			{#if projectData.main.length === 1}
-				{@const item = projectData.main[0]}
-				{#if item.main_video_url}
-					<!-- {item.playmode} -->
-					<VideoPlayerCustom 
-						hlsUrl={item.main_video_url}
-						posterImage={item.main_image} 
-						classes="w-full h-auto !rounded-none"
-						playMode="has-sound"
-						controls={true}
-						context="main"
-						width={item.width || 1920}
-						height={item.height || 1080}
-						controlsTextClass={controlsTextClass}
-					/>
-				{:else if item.main_image?.url}
-					<PrismicImage 
-						field={item.main_image} 
-						class="w-full h-auto !rounded-none"
-					/>
-				{/if}
-			<!-- Multiple items: side by side on desktop, stacked on mobile -->
-			{:else}
-				<div class="flex flex-col md:flex-row gap-2">
-					{#each projectData.main as item, index}
-						{@const isFirst = index === 0}
-						{@const isLast = index === projectData.main.length - 1}
-						{@const isMiddle = !isFirst && !isLast}
-						
-						{@const roundedClasses = (() => {
-							// Mobile: no rounded corners
-							const baseClasses = 'w-full h-auto';
+	 {#key projectData.main}
+		{#if projectData.main && projectData.main.length > 0}
+			<div class="mb-3 mt-12 md:mt-0" id="main-media">
+				<!-- Single item: full width -->
+				{#if projectData.main.length === 1}
+					{@const item = projectData.main[0]}
+					{#if item.main_video_url}
+						<!-- {item.playmode} -->
+						<VideoPlayerCustom 
+							hlsUrl={item.main_video_url}
+							posterImage={item.main_image} 
+							classes="w-full h-auto !rounded-none"
+							playMode="has-sound"
+							controls={true}
+							context="main"
+							width={item.width || 1920}
+							height={item.height || 1080}
+							controlsTextClass={controlsTextClass}
+						/>
+					{:else if item.main_image?.url}
+						<PrismicImage 
+							field={item.main_image} 
+							class="w-full h-auto !rounded-none"
+						/>
+					{/if}
+				<!-- Multiple items: side by side on desktop, stacked on mobile -->
+				{:else}
+					<div class="flex flex-col md:flex-row gap-2">
+						{#each projectData.main as item, index}
+							{@const isFirst = index === 0}
+							{@const isLast = index === projectData.main.length - 1}
+							{@const isMiddle = !isFirst && !isLast}
 							
-							// If only one item, no rounded corners at all
-							if (projectData.main.length === 1) {
+							{@const roundedClasses = (() => {
+								// Mobile: no rounded corners
+								const baseClasses = 'w-full h-auto';
+								
+								// If only one item, no rounded corners at all
+								if (projectData.main.length === 1) {
+									return `${baseClasses} !rounded-none`;
+								}
+								
+								// Desktop: conditional rounded corners for multiple items
+								if (projectData.main.length === 2) {
+									if (isFirst) return `${baseClasses} !rounded-none md:!rounded-br-lg md:!rounded-tl-none md:!rounded-tr-none md:!rounded-bl-none`;
+									if (isLast) return `${baseClasses} !rounded-none md:!rounded-bl-lg md:!rounded-tl-none md:!rounded-tr-none md:!rounded-br-none`;
+								} else if (projectData.main.length === 3) {
+									if (isFirst) return `${baseClasses} !rounded-none md:!rounded-br-lg md:!rounded-tl-none md:!rounded-tr-none md:!rounded-bl-none`;
+									if (isMiddle) return `${baseClasses} !rounded-none md:!rounded-bl-lg md:!rounded-br-lg md:!rounded-tl-none md:!rounded-tr-none`;
+									if (isLast) return `${baseClasses} !rounded-none md:!rounded-bl-lg md:!rounded-tl-none md:!rounded-tr-none md:!rounded-br-none`;
+								}
 								return `${baseClasses} !rounded-none`;
-							}
+							})()}
 							
-							// Desktop: conditional rounded corners for multiple items
-							if (projectData.main.length === 2) {
-								if (isFirst) return `${baseClasses} !rounded-none md:!rounded-br-lg md:!rounded-tl-none md:!rounded-tr-none md:!rounded-bl-none`;
-								if (isLast) return `${baseClasses} !rounded-none md:!rounded-bl-lg md:!rounded-tl-none md:!rounded-tr-none md:!rounded-br-none`;
-							} else if (projectData.main.length === 3) {
-								if (isFirst) return `${baseClasses} !rounded-none md:!rounded-br-lg md:!rounded-tl-none md:!rounded-tr-none md:!rounded-bl-none`;
-								if (isMiddle) return `${baseClasses} !rounded-none md:!rounded-bl-lg md:!rounded-br-lg md:!rounded-tl-none md:!rounded-tr-none`;
-								if (isLast) return `${baseClasses} !rounded-none md:!rounded-bl-lg md:!rounded-tl-none md:!rounded-tr-none md:!rounded-br-none`;
-							}
-							return `${baseClasses} !rounded-none`;
-						})()}
-						
-						<!-- Debug: Log the rounded classes -->
-						{console.log(`Item ${index}: roundedClasses = "${roundedClasses}", isFirst=${isFirst}, isLast=${isLast}, isMiddle=${isMiddle}, totalItems=${projectData.main.length}`)}
-						
-						{#if item.main_video_url}
-							<!-- {item.playmode} -->
-							<VideoPlayerCustom 
-								hlsUrl={item.main_video_url}
-								posterImage={item.main_image} 
-								classes={roundedClasses}
-								playMode="has-sound"
-								controls={true}
-								context="main"
-								width={item.width || 1920}
-								height={item.height || 1080}
-								controlsTextClass={controlsTextClass}
-							/>
-						{:else if item.main_image?.url}
-							<PrismicImage 
-								field={item.main_image} 
-								class={roundedClasses}
-							/>
-						{/if}
-					{/each}
-				</div>
-			{/if}
-		</div>
-	{/if}
+							<!-- Debug: Log the rounded classes -->
+							{console.log(`Item ${index}: roundedClasses = "${roundedClasses}", isFirst=${isFirst}, isLast=${isLast}, isMiddle=${isMiddle}, totalItems=${projectData.main.length}`)}
+							
+							{#if item.main_video_url}
+								<!-- {item.playmode} -->
+								<VideoPlayerCustom 
+									hlsUrl={item.main_video_url}
+									posterImage={item.main_image} 
+									classes={roundedClasses}
+									playMode="has-sound"
+									controls={true}
+									context="main"
+									width={item.width || 1920}
+									height={item.height || 1080}
+									controlsTextClass={controlsTextClass}
+								/>
+							{:else if item.main_image?.url}
+								<PrismicImage 
+									field={item.main_image} 
+									class={roundedClasses}
+								/>
+							{/if}
+						{/each}
+					</div>
+				{/if}
+			</div>
+		{/if}
+	 {/key}
 
 <div class="mx-auto px-3 paragraph-1">
 	<!-- Project Info -->
