@@ -369,10 +369,10 @@
 					{/if}
 				</div>
 			{:else if imageField?.url}
-				<div class="relative brightness-[95%]" role="group">
+				<div class="relative brightness-[95%] rounded overflow-hidden " role="group">
 					<PrismicImage 
 						field={imageField} 
-						class="w-full h-auto rounded hover:brightness-60 transition-all duration-300 {aspectClass} object-cover"
+						class="w-full h-auto rounded overflow-hidden hover:brightness-60 transition-all duration-300 {aspectClass} object-cover"
 					/>
 					<!-- BigWheel positioned directly over the image (desktop only) -->
 					{#if !isMobile}
@@ -388,7 +388,7 @@
 					{#if isMobile}
 						<div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white">
 							<div class="text-sm font-medium">{projectTitle}</div>
-							<div class="text-xs opacity-80">{projectClient}</div>
+							<div class="text-sm opacity-60">{projectClient}</div>
 						</div>
 					{/if}
 				</div>

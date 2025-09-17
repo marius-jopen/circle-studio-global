@@ -2,7 +2,8 @@
 	import { SliceZone, PrismicImage, PrismicRichText, PrismicLink } from '@prismicio/svelte';
 	import type { PageProps } from './$types';
 	import VideoPlayerCustom from '$lib/components/VideoPlayerCustom.svelte';
-	import Credits from '$lib/components/Credits.svelte';
+  import Credits from '$lib/components/Credits.svelte';
+  import CreditsMobile from '$lib/components/CreditsMobile.svelte';
 	import RelatedProjects from '$lib/components/RelatedProjects.svelte';
 	import { onMount } from 'svelte';
 
@@ -179,8 +180,13 @@
 		<SliceZone slices={projectData.slices} {components} />
 	{/if}
 
-	<!-- Credits -->
-	<Credits credits={projectData.credits} />
+  <!-- Credits -->
+  <div class="hidden md:block">
+    <Credits credits={projectData.credits} />
+  </div>
+  <div class="block md:hidden">
+    <CreditsMobile credits={projectData.credits} />
+  </div>
 
 	<!-- Related Projects -->
 	{#if relatedProjects && relatedProjects.length > 0}

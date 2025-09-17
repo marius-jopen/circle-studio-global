@@ -102,7 +102,7 @@
 			<div class="w-full content-container px-4 opacity-30">
 				{#if title}
 					<div class="mb-6 text-center">
-						<div class="text-2xl font-medium text-black">{title}</div>
+						<div class="text-xl md:text-2xl font-medium text-black">{title}</div>
 					</div>
 				{/if}
 
@@ -112,14 +112,14 @@
 							{#if urls[index] && urls[index] !== '#'}
 								<a 
 									href={urls[index]} 
-									class="text-2xl font-medium text-black block"
+									class="text-xl md:text-2xl font-medium text-black block"
 									target="_blank"
 									rel="noopener noreferrer"
 								>
 									{item}
 								</a>
 							{:else}
-								<span class="text-2xl font-medium text-black block">
+								<span class="text-xl md:text-2xl font-medium text-black block">
 									{item}
 								</span>
 							{/if}
@@ -135,7 +135,7 @@
 					<!-- Centered title that fades in/out with wheel hover -->
 					<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
 						<div 
-							class="text-2xl font-medium text-black transition-opacity duration-400"
+							class="text-xl md:text-2xl font-medium text-black transition-opacity duration-400"
 							class:opacity-0={!isHovering}
 							class:opacity-100={isHovering}
 						>
@@ -149,7 +149,7 @@
 			<div class="w-full max-w-4xl px-4">
 				{#if title}
 					<div class="mb-6">
-						<h2 class="text-2xl font-medium text-black">{title}</h2>
+						<h2 class="text-xl md:text-2xl font-medium text-black">{title}</h2>
 					</div>
 				{/if}
 				<div class="grid grid-cols-1 text-center gap-4 md:gap-6 pb-4">
