@@ -65,6 +65,18 @@
 
 <!-- Navigation Header -->
 {#if settings?.data?.navigation_header}
+	<!-- Always-visible Mobile Navigation (independent of header fading and dark mode) -->
+	<div class="md:hidden fixed inset-x-0 top-2 z-[10001] p-1 pointer-events-auto mobile-nav">
+		<nav class="flex items-center justify-center gap-x-4">
+			<a href="/" class="text-center font-medium transition-colors duration-600">
+				Work
+			</a>
+			<a href="/about" class="text-center font-medium transition-colors duration-600">
+				About
+			</a>
+		</nav>
+	</div>
+
 	<header class="fixed top-0 z-50 w-full pointer-events-none transition-all duration-600" 
 		class:opacity-0={effectiveFaded} 
 		class:opacity-100={!effectiveFaded}
@@ -140,17 +152,7 @@
 					</div>
 				</a>
 				
-				<!-- Mobile Navigation - Centered -->
-				<div class="md:hidden absolute inset-x-0 top-0 -mt-2 z-50 p-1" class:pointer-events-auto={!effectiveFaded} class:pointer-events-none={effectiveFaded}>
-					<nav class="flex items-center justify-center gap-x-4">
-						<a href="/" class="text-center font-medium transition-colors duration-600" class:dark-mode={isDarkMode}>
-							Work
-						</a>
-						<a href="/about" class="text-center font-medium transition-colors duration-600" class:dark-mode={isDarkMode}>
-							About
-						</a>
-					</nav>
-				</div>
+				<!-- Mobile Navigation removed here; now rendered above header to stay visible -->
 				
 				<!-- Desktop Navigation - Hidden on mobile -->
 				<div class="hidden md:flex items-center" class:pointer-events-auto={!effectiveFaded} class:pointer-events-none={effectiveFaded}>
@@ -267,4 +269,6 @@
 		color: #e5e7eb !important;
 		transition: color 0.6s ease-in-out;
 	}
+
+	/* Mobile nav is always visible and not theme-dependent */
 </style> 
