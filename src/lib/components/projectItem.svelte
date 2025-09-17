@@ -372,7 +372,7 @@
 				<div class="relative brightness-[95%] rounded overflow-hidden " role="group">
 					<PrismicImage 
 						field={imageField} 
-						class="w-full brightness-80 md:brightness-0 h-auto rounded overflow-hidden hover:brightness-60 transition-all duration-300 {aspectClass} object-cover"
+						class="w-full brightness-90 md:brightness-0 h-auto rounded overflow-hidden hover:brightness-60 transition-all duration-300 {aspectClass} object-cover"
 					/>
 					<!-- BigWheel positioned directly over the image (desktop only) -->
 					{#if !isMobile}
