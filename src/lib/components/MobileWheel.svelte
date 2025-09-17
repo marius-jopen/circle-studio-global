@@ -28,6 +28,13 @@
 	}
 	
 	onMount(() => {
+		// Fallback for older mobile browsers: lock a stable vh unit to innerHeight
+		const setAppVh = () => {
+			document.documentElement.style.setProperty('--app-vh', `${window.innerHeight * 0.01}px`);
+		};
+		setAppVh();
+		window.addEventListener('resize', setAppVh, { passive: true });
+
 		// Start the continuous animation loop
 		animate();
 		
@@ -80,6 +87,7 @@
 		// Cleanup
 		return () => {
 			window.removeEventListener('scroll', throttledScroll);
+			window.removeEventListener('resize', setAppVh as any);
 			clearTimeout(scrollTimeout);
 			isAnimating = false;
 			if (animationFrame) {
@@ -90,7 +98,7 @@
 </script>
 
 <!-- Mobile-specific wheel - always centered and non-interactive -->
-<div class="md:hidden fixed inset-0 flex justify-center items-center z-40 pointer-events-none">
+<div class="md:hidden fixed left-0 top-0 flex justify-center items-center z-40 pointer-events-none" style="width: 100vw; height: calc(var(--app-vh, 1vh) * 100); height: 100dvh;">
 	<div class="flex justify-center items-center w-full h-full">
 		<!-- Black Wheel (only wheel used on mobile) -->
 		<div 

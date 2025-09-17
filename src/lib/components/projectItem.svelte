@@ -372,7 +372,7 @@
 				<div class="relative brightness-[95%] rounded overflow-hidden " role="group">
 					<PrismicImage 
 						field={imageField} 
-						class="w-full h-auto rounded overflow-hidden hover:brightness-60 transition-all duration-300 {aspectClass} object-cover"
+						class="w-full brightness-80 md:brightness-0 h-auto rounded overflow-hidden hover:brightness-60 transition-all duration-300 {aspectClass} object-cover"
 					/>
 					<!-- BigWheel positioned directly over the image (desktop only) -->
 					{#if !isMobile}
@@ -386,7 +386,7 @@
 					
 					<!-- Mobile static text overlay (always visible on mobile) -->
 					{#if isMobile}
-						<div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white">
+						<div class="absolute bottom-0 left-0 right-0 p-3 text-white">
 							<div class="text-sm font-medium">{projectTitle}</div>
 							<div class="text-sm opacity-60">{projectClient}</div>
 						</div>
