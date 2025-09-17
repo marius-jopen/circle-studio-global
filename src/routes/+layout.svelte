@@ -181,16 +181,18 @@
 	{/if}
 </svelte:head>
 
-<Welcome />
+<div class="min-h-screen flex flex-col">
+	<Welcome />
 
-<Header settings={data.settings} faded={headerFaded} videoIsDark={videoIsDark} mainMediaVisible={mainMediaVisible} />
+	<Header settings={data.settings} faded={headerFaded} videoIsDark={videoIsDark} mainMediaVisible={mainMediaVisible} />
 
-<main >
-	{@render children()}
-</main>
+	<main class="flex-1">
+		{@render children()}
+	</main>
 
-{#if !(page?.data?.page?.data?.no_footer ?? false)}
-	<Footer settings={data.settings} />
-{/if}
+	{#if !(page?.data?.page?.data?.no_footer ?? false)}
+		<Footer settings={data.settings} />
+	{/if}
+</div>
 
 <PrismicPreview {repositoryName} /> 

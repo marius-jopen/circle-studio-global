@@ -220,32 +220,55 @@
 	const useHls = $derived(hlsUrl && hlsUrl.includes('.m3u8'));
 	const videoUrl = $derived(hlsUrl.replace('.m3u8', '.mp4'));
     const hasSoundMode = $derived(playMode === 'has-sound' || playMode === 'has sound');
+    let isMobile = $state(false);
+    const shouldAutoplay = $derived(autoplayOnMount && !isMobile);
+    const controlsVisible = $derived(
+        // Visible when hovering with controls, when explicitly requested on mount,
+        // or on mobile when we programmatically show controls at start
+        ((isHovering && showControls) || (showControlsOnMount && showControls) || (isMobile && showControls))
+    );
 
-	onMount(() => {
-		// Configure initial mute/autoplay based on props
-		if (videoElement) {
-			videoElement.muted = defaultMuted;
-			isMuted = defaultMuted;
-			videoElement.autoplay = autoplayOnMount;
-			if (autoplayOnMount) {
-				const tryPlay = () => {
-					const p = videoElement.play();
-					if (p && typeof p.then === 'function') {
-						p.catch(() => {
-							// If autoplay with sound is blocked, ensure muted and retry
-							videoElement.muted = true;
-							isMuted = true;
-							videoElement.play().catch(() => {});
-						});
-					}
-				};
-				if (videoElement.readyState >= 2) {
-					tryPlay();
-				} else {
-					videoElement.addEventListener('loadeddata', tryPlay, { once: true });
-				}
-			}
-		}
+    onMount(() => {
+        // Detect mobile environment (screen size or coarse pointer)
+        const mobileQuery = window.matchMedia('(max-width: 767px)');
+        const coarsePointerQuery = window.matchMedia('(pointer: coarse)');
+        const updateIsMobile = () => {
+            isMobile = mobileQuery.matches || coarsePointerQuery.matches;
+        };
+        updateIsMobile();
+        const onResize = () => updateIsMobile();
+        mobileQuery.addEventListener('change', updateIsMobile);
+        coarsePointerQuery.addEventListener('change', updateIsMobile);
+        window.addEventListener('resize', onResize);
+
+        // Configure initial mute/autoplay based on props (with mobile override)
+        if (videoElement) {
+            videoElement.muted = defaultMuted;
+            isMuted = defaultMuted;
+            const initialShouldAutoplay = autoplayOnMount && !isMobile;
+            videoElement.autoplay = initialShouldAutoplay;
+            if (initialShouldAutoplay) {
+                const tryPlay = () => {
+                    const p = videoElement.play();
+                    if (p && typeof p.then === 'function') {
+                        p.catch(() => {
+                            // If autoplay with sound is blocked, ensure muted and retry
+                            videoElement.muted = true;
+                            isMuted = true;
+                            videoElement.play().catch(() => {});
+                        });
+                    }
+                };
+                if (videoElement.readyState >= 2) {
+                    tryPlay();
+                } else {
+                    videoElement.addEventListener('loadeddata', tryPlay, { once: true });
+                }
+            } else {
+                // On mobile, start with visible controls so the user can choose to play
+                showControls = true;
+            }
+        }
 
 		// Listen for other videos unmuting
 		window.addEventListener('video-playing-with-sound', handleOtherVideoPlaying);
@@ -282,10 +305,13 @@
 			});
 		}
 
-		return () => {
+        return () => {
 			window.removeEventListener('video-playing-with-sound', handleOtherVideoPlaying);
 			document.removeEventListener('fullscreenchange', fsHandler);
 			window.removeEventListener('video-play-request', playRequestHandler);
+            mobileQuery.removeEventListener('change', updateIsMobile);
+            coarsePointerQuery.removeEventListener('change', updateIsMobile);
+            window.removeEventListener('resize', onResize);
 		};
 	});
 
@@ -320,12 +346,16 @@
 			videoElement.src = videoUrl;
 		}
 		
-		// Reset mute state and autoplay
-		videoElement.muted = defaultMuted;
-		isMuted = defaultMuted;
-		videoElement.autoplay = autoplayOnMount;
-		
-		if (autoplayOnMount) {
+        // Reset mute state and autoplay (with mobile override)
+        videoElement.muted = defaultMuted;
+        isMuted = defaultMuted;
+        videoElement.autoplay = shouldAutoplay;
+        // Ensure controls are visible initially on mobile
+        if (isMobile) {
+            showControls = true;
+        }
+
+        if (shouldAutoplay) {
 			const tryPlay = () => {
 				const p = videoElement.play();
 				if (p && typeof p.then === 'function') {
@@ -385,25 +415,25 @@
 
 	<!-- Semi-transparent overlay for better control readability -->
 	{#if controls && hasSoundMode}
-	<div 
-		class="absolute inset-0 bg-black/10 transition-opacity duration-200 pointer-events-none"
-		class:opacity-100={(isHovering && showControls) || (showControlsOnMount && showControls)}
-		class:opacity-0={!isHovering && !showControlsOnMount || !showControls}
-	></div>
+    <div 
+        class="absolute inset-0 bg-black/10 transition-opacity duration-200 pointer-events-none"
+        class:opacity-100={controlsVisible}
+        class:opacity-0={!controlsVisible}
+    ></div>
 	{/if}
 
 	{#if controls && hasSoundMode}
-	<div 
-		class="absolute left-3 right-3 bottom-3 transition-opacity w-full duration-200 opacity-80 pointer-events-none"
-		class:opacity-70={(isHovering && showControls) || (showControlsOnMount && showControls)}
-		class:opacity-0={!isHovering && !showControlsOnMount || !showControls}
-	>
+    <div 
+        class="absolute left-3 right-3 bottom-3 transition-opacity w-full duration-200 opacity-80 pointer-events-none"
+        class:opacity-70={controlsVisible}
+        class:opacity-0={!controlsVisible}
+    >
 		<button
 			data-video-control="true"
-			class="relative block w-full h-3 pointer-events-auto transition-opacity duration-400"
-			class:opacity-100={(isHovering && showControls) || (showControlsOnMount && showControls)}
-			class:opacity-0={!isHovering && !showControlsOnMount || !showControls}
-			class:pointer-events-none={!isHovering && !showControlsOnMount || !showControls}
+            class="relative block w-full h-3 pointer-events-auto transition-opacity duration-400"
+            class:opacity-100={controlsVisible}
+            class:opacity-0={!controlsVisible}
+            class:pointer-events-none={!controlsVisible}
 			role="slider"
 			aria-valuemin="0"
 			aria-valuemax="100"
@@ -425,9 +455,9 @@
 			{#if controls && hasSoundMode}
 				<div class="flex pl-0 pr-1 md:pr-3 pointer-events-none w-full">
 					<div 
-						class="w-full pr-3 flex flex-row justify-between md:justify-between pointer-events-auto text-white transition-opacity duration-400"
-						class:opacity-100={(isHovering && showControls) || (showControlsOnMount && showControls)}
-						class:opacity-0={!isHovering && !showControlsOnMount || !showControls}
+                        class="w-full pr-3 flex flex-row justify-between md:justify-between pointer-events-auto text-white transition-opacity duration-400"
+                        class:opacity-100={controlsVisible}
+                        class:opacity-0={!controlsVisible}
 					>
 
 							<!-- Time display - hidden on mobile, visible on desktop -->
