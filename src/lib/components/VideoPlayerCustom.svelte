@@ -75,6 +75,7 @@
     let scrubLeft = 0;
     let scrubWidth = 1;
     let lastShowControls = $state(false);
+    let hasUserPlayed = $state(false);
 
     function notifyControlsShown() {
         window.dispatchEvent(new CustomEvent('video-controls-shown', { detail: { videoId, context } }));
@@ -103,12 +104,13 @@
     function togglePlayPause() {
         if (!videoElement) return;
         if (videoElement.paused) {
-            if (unmuteOnUserPlay && videoElement.muted) {
+            if (effectiveUnmuteOnUserPlay && !hasUserPlayed && videoElement.muted) {
                 videoElement.muted = false;
                 isMuted = false;
                 notifyVideoPlayingWithSound();
             }
             videoElement.play();
+            hasUserPlayed = true;
         } else {
             videoElement.pause();
         }
@@ -221,6 +223,9 @@
 	const videoUrl = $derived(hlsUrl.replace('.m3u8', '.mp4'));
     const hasSoundMode = $derived(playMode === 'has-sound' || playMode === 'has sound');
     let isMobile = $state(false);
+    const effectiveUnmuteOnUserPlay = $derived(
+        unmuteOnUserPlay || (isMobile && context === 'main' && hasSoundMode)
+    );
     const shouldAutoplay = $derived(autoplayOnMount && !isMobile);
     const controlsVisible = $derived(
         // Visible when hovering with controls, when explicitly requested on mount,
@@ -278,11 +283,12 @@
 			const { context: requestContext } = (event as CustomEvent).detail || {};
 			if (!videoElement) return;
 			if (requestContext && context && requestContext === context) {
-				if (unmuteOnUserPlay) {
+                if (effectiveUnmuteOnUserPlay && !hasUserPlayed) {
 					videoElement.muted = false;
 					isMuted = false;
 				}
 				videoElement.play().catch(() => {});
+                hasUserPlayed = true;
 			}
 		};
 		window.addEventListener('video-play-request', playRequestHandler);
@@ -323,6 +329,7 @@
 		isPlaying = false;
 		currentTime = 0;
 		duration = 0;
+        hasUserPlayed = false;
 		
 		if (!isMobile) {
 			if (useHls) {
