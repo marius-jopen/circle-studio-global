@@ -20,17 +20,20 @@
 	
 	const itemsPerRow = $derived(slice.primary.items_per_row || '3');
 	const gridClass = $derived(getGridCols(itemsPerRow));
+	
+	// Check if any items have videos for desktop display
+	const hasVideos = $derived(slice.primary.items?.some(item => item.video_url) || false);
 </script>
 
 <section 
 	data-slice-type={slice.slice_type} 
 	data-slice-variation={slice.variation}
-	class="mx-auto pb-2"
+	class="mx-auto pb-2 {hasVideos ? 'block' : 'block md:hidden'}"
 >
 	{#if slice.primary.items && slice.primary.items.length > 0}
 		<div class="grid gap-2 {gridClass}">
 			{#each slice.primary.items as item}
-				<DocumentationItem {item} itemsPerRow={itemsPerRow} />
+				<DocumentationItem {item} itemsPerRow={itemsPerRow} showVideoOnMobile={false} />
 			{/each}
 		</div>
 	{/if}

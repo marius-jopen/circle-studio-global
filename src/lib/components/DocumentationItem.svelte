@@ -20,8 +20,9 @@
 		{@const displayPlayMode = (playMode === 'autoplay-muted' || playMode === 'auto-muted') ? 'no-sound' : playMode}
 		<!-- {playMode} -->
 		<!-- {displayPlayMode} -->
-		{#if videoUrl && showVideoOnMobile}
-			<div class="relative brightness-[95%]">
+		{#if videoUrl}
+			<!-- Video on desktop only -->
+			<div class="relative brightness-[95%] hidden md:block">
 				<!-- Video: {displayPlayMode} -->
 				<VideoPlayerCustom 
 					playMode={displayPlayMode}
@@ -34,8 +35,10 @@
 					height="auto"
 				/>
 			</div>
-		{:else if imageField?.url}
-			<div class="relative brightness-[95%]">
+		{/if}
+		{#if imageField?.url}
+			<!-- Image on mobile only -->
+			<div class="relative brightness-[95%] block md:hidden">
 				<!-- Image -->
 				<PrismicImage 
 					field={imageField} 
