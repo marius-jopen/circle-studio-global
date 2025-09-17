@@ -37,8 +37,8 @@
 	const containerStyle = $derived(useFixedAspect ? `aspect-ratio: ${width}/${height};` : '');
 	const videoClass = $derived(
 		useFixedAspect
-			? 'w-full h-full object-cover scale-[100.5%] cursor-pointer'
-			: 'w-full h-auto object-contain cursor-pointer'
+			? 'w-full h-full object-cover md:scale-[100.5%] cursor-pointer bg-black'
+			: 'w-full h-auto object-contain cursor-pointer bg-black'
 	);
 	
 	// Create responsive text class for mobile controls
@@ -302,8 +302,8 @@
 			import('hls.js').then(({ default: Hls }) => {
 				if (Hls.isSupported()) {
 					// Destroy existing HLS instance if any
-					if (videoElement.hls) {
-						videoElement.hls.destroy();
+					if ((videoElement as any).hls) {
+						(videoElement as any).hls.destroy();
 					}
 					
 					const hls = new Hls({ autoStartLoad: true });
@@ -311,7 +311,7 @@
 					hls.attachMedia(videoElement);
 					
 					// Store HLS instance for cleanup
-					videoElement.hls = hls;
+					(videoElement as any).hls = hls;
 				} else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
 					videoElement.src = hlsUrl;
 				}
