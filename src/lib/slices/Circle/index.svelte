@@ -15,7 +15,7 @@
 		.filter((t) => !!t);
 
 	// Configuration
-	const useBigWheelOnMobile = $state(true); // Set to false to use text display on mobile
+	const useBigWheelOnMobile = $state(false); // Set to false to use text display on mobile
 
 	// State & timing
 	let selectedIndex = $state<number>(-1);
