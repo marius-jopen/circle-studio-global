@@ -1,8 +1,10 @@
 <script lang="ts">
 	import type { Content } from '@prismicio/client';
 	import type { SliceComponentProps } from '@prismicio/svelte';
-	    import { onMount, onDestroy } from 'svelte';
+    import { onMount, onDestroy } from 'svelte';
 	import BigWheel from '$lib/components/BigWheel.svelte';
+	import TextCircle from '$lib/components/TextCircle.svelte';
+	import { mobileSearchOpen } from '$lib/stores';
 
 
 	type Props = SliceComponentProps<Content.CircleSlice>;
@@ -15,13 +17,14 @@
 		.filter((t) => !!t);
 
 	// Configuration
-	const useBigWheelOnMobile = $state(false); // Set to false to use text display on mobile
+	const useBigWheelOnMobile = $state(false); // Use TextCircle on mobile by default
 
 	// State & timing
 	let selectedIndex = $state<number>(-1);
 	let selectedText = $state<string | null>(null);
 	let isMobile = $state(false);
 	let mounted = $state(false);
+	let mobileContainerSize = $state(320);
 
 	let fadeInTimeSec = $state(1.7);
 	let fadeOutTimeSec = $state(1.7);
@@ -101,11 +104,22 @@
 	function checkMobile() {
 		if (typeof window !== 'undefined') {
 			isMobile = window.innerWidth < 768;
+			const width = window.innerWidth || 360;
+			mobileContainerSize = Math.max(200, Math.min(300, Math.floor(width * 0.6)));
 		}
 	}
 
+    // Route-based visibility (hide on mobile for project/about and when mobile search is open)
+    let pathname = $state('');
+    const isProjectRoute = $derived(pathname.startsWith('/work/'));
+    const isAboutRoute = $derived(pathname === '/about' || pathname.startsWith('/about/'));
+	const hideOnMobile = $derived(isMobile && ($mobileSearchOpen));
+
 	onMount(() => {
 		mounted = true;
+        if (typeof window !== 'undefined') {
+            pathname = window.location.pathname;
+        }
 		
 		if (texts.length > 0) {
 			pickInitial();
@@ -138,44 +152,68 @@
 	<div class="flex justify-center items-center w-full pt-24 pb-24 content-container aspect-square md:aspect-auto">
 		{#if selectedText}
 			{#if mounted && isMobile}
-				{#if useBigWheelOnMobile}
-					<div class="w-full max-w-sm opacity-30">
-						<BigWheel
-							config={{
-								uiVisible: false,
-								items: [
-									{
-										text: selectedText,
-										rotationSpeed: 0.2,
-										spacingAmplitudePercent: 0,
-										spacingSpeed: 0,
-										rotationStart: 0,
-										animationType: 'sin',
-										autoTextSize: true,
-									}
-								],
-								globalSettings: {
-									containerSizePercent: 60,
-									fontSizePercent: 16,
-									distancePercent: 0,
-									paused: false,
-									textColor: '#000000',
-									transparentBackground: true,
-									manualMode: true,
-									fadeInTime: fadeInTimeSec,
-									fadeOutTime: fadeOutTimeSec,
-									triggerFadeIn: triggerFadeIn,
-									triggerFadeOut: triggerFadeOut
-								}
-							}}
-						/>
-					</div>
+				{#if hideOnMobile}
+					<!-- Hidden on mobile for project/about pages and when mobile search is open -->
 				{:else}
-					<div class="text-center px-4 opacity-30">
-						<div class="text-base md:text-2xl font-medium text-black ">
-							{selectedText}
+					{#if useBigWheelOnMobile}
+						<div class="w-full max-w-sm ">
+							<BigWheel
+								config={{
+									uiVisible: false,
+									items: [
+										{
+											text: selectedText,
+											rotationSpeed: 0.2,
+											spacingAmplitudePercent: 0,
+											spacingSpeed: 0,
+											rotationStart: 0,
+											animationType: 'sin',
+											autoTextSize: true,
+										}
+									],
+									globalSettings: {
+										containerSizePercent: 60,
+										fontSizePercent: 16,
+										distancePercent: 0,
+										paused: false,
+										textColor: '#171717',
+										transparentBackground: true,
+										manualMode: true,
+										fadeInTime: fadeInTimeSec,
+										fadeOutTime: fadeOutTimeSec,
+										triggerFadeIn: triggerFadeIn,
+										triggerFadeOut: triggerFadeOut
+									}
+								}}
+							/>
 						</div>
-					</div>
+					{:else}
+						<div class="w-full flex justify-center">
+							<div style={`width: ${mobileContainerSize}px; height: ${mobileContainerSize}px;`} class="relative">
+								<div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+									<TextCircle
+										text={selectedText}
+										fontSize={mobileContainerSize * 0.16}
+										radius={(mobileContainerSize / 2) - (mobileContainerSize * 0.16 * 1.2)}
+										rotationSpeed={0.2}
+										spacingAmplitudePercent={0}
+										spacingSpeed={0}
+										rotationStart={0}
+										animationType={'sin'}
+										containerSize={mobileContainerSize}
+										paused={false}
+										textColor={'#171717'}
+										fadeInTime={fadeInTimeSec}
+										fadeOutTime={fadeOutTimeSec}
+										manualMode={true}
+										triggerFadeIn={triggerFadeIn}
+										triggerFadeOut={triggerFadeOut}
+										autoTextSize={true}
+									/>
+								</div>
+							</div>
+						</div>
+					{/if}
 				{/if}
 			{:else if mounted}
 				<BigWheel
@@ -197,7 +235,7 @@
 							fontSizePercent: 9,
 							distancePercent: 0,
 							paused: false,
-							textColor: '#000000',
+							textColor: '#171717',
 							transparentBackground: true,
 							manualMode: true,
 							fadeInTime: fadeInTimeSec,
@@ -210,7 +248,7 @@
 			{:else}
 				<!-- Fallback during SSR - show simple text -->
 				<div class="text-center px-4">
-					<div class="text-base md:text-2xl font-medium text-black ">
+					<div class="text-base md:text-2xl font-medium text-primary ">
 						{selectedText}
 					</div>
 				</div>

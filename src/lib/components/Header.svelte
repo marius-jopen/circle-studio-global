@@ -3,7 +3,7 @@
 	import BigWheel from './BigWheel.svelte';
 	import MobileWheel from './MobileWheel.svelte';
 	import { onMount } from 'svelte';
-	import { viewMode, setViewMode, initializeViewMode } from '$lib/stores';
+	import { viewMode, setViewMode, initializeViewMode, mobileSearchOpen } from '$lib/stores';
 	
 	let { settings, faded = false, videoIsDark = false, mainMediaVisible = true } = $props();
 	let isHovering = $state(false);
@@ -51,6 +51,10 @@
 
 	// Determine if header should be in dark mode
 	const isDarkMode = $derived(videoIsDark && mainMediaVisible);
+
+	// Determine current route for conditional mobile wheel visibility
+	const isProject = $derived(currentPath.startsWith('/work/'));
+	const isAbout = $derived(currentPath === '/about' || currentPath.startsWith('/about/'));
 	
 	// Debug logging with $effect
 	$effect(() => {
@@ -83,8 +87,10 @@
 		class:dark-mode={isDarkMode}>
 		<nav class="px-3 py-4">
 			<div class="flex justify-between w-full relative">
-				<!-- Mobile: Centered wheel -->
-				<MobileWheel isDarkMode={isDarkMode} />
+				<!-- Mobile: Centered wheel (hidden on project/about pages and when mobile search open) -->
+				{#if !isProject && !isAbout && !$mobileSearchOpen}
+					<MobileWheel isDarkMode={isDarkMode} />
+				{/if}
 				
 				<!-- Desktop: Left-aligned wheel -->
 				<a 
@@ -113,7 +119,7 @@
 									fontSizePercent: 18.1,
 									distancePercent: 0,
 									paused: false,
-									textColor: '#000000',
+									textColor: '#171717',
 									transparentBackground: true,
 									manualMode: true,
 									fadeInTime: 0,

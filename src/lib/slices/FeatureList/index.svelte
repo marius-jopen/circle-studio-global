@@ -46,10 +46,10 @@
 		{#if collaborators.length}
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
 				<div class="text-center md:text-left font-normal">{isFilled.keyText(slice.primary.title) ? slice.primary.title : ''}</div>
-				<div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-x-8 text-black hover:text-neutral-400">
+				<div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-x-8 text-primary hover:text-neutral-400">
 					<ul>
 						{#each collabLeft as person}
-							<li class="hover:text-black transition-colors duration-200">
+							<li class="hover:text-primary transition-colors duration-200">
 								{#if person.url}
 									<a href={person.url} target="_blank" rel="noreferrer">{person.name}</a>
 								{:else}
@@ -60,7 +60,7 @@
 					</ul>
 					<ul>
 						{#each collabRight as person}
-							<li class="hover:text-black transition-colors duration-200">
+							<li class="hover:text-primary transition-colors duration-200">
 								{#if person.url}
 									<a href={person.url} target="_blank" rel="noreferrer">{person.name}</a>
 								{:else}
@@ -76,17 +76,17 @@
 		{#if manualLinks.length}
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
 				<div class="text-center md:text-left font-normal">{isFilled.keyText(slice.primary.title) ? slice.primary.title : ''}</div>
-				<div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-x-8 text-black hover:text-neutral-400">
+				<div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-x-8 text-primary hover:text-neutral-400">
 					<ul>
 						{#each manualLeft as link}
-							<li class="hover:text-black transition-colors duration-200">
+							<li class="hover:text-primary transition-colors duration-200">
 								<PrismicLink field={link} />
 							</li>
 						{/each}
 					</ul>
 					<ul>
 						{#each manualRight as link}
-							<li class="hover:text-black transition-colors duration-200">
+							<li class="hover:text-primary transition-colors duration-200">
 								<PrismicLink field={link} />
 							</li>
 						{/each}

@@ -3,6 +3,7 @@
 	import type { SliceComponentProps } from '@prismicio/svelte';
 	import BigWheel from '../../components/BigWheel.svelte';
 	import { onMount } from 'svelte';
+    import { mobileSearchOpen } from '$lib/stores';
 
 	type Props = SliceComponentProps<Content.InputSlice>;
 
@@ -69,7 +70,7 @@
 			fontSizePercent: 20,
 			distancePercent: 0,
 			paused: false,
-			textColor: '#000000',
+			textColor: '#171717',
 			transparentBackground: true,
 			manualMode: manualModeState,
 			startInvisible: startInvisibleState,
@@ -89,7 +90,9 @@
 >
 	<!-- Wheel area grows to fill available space; we measure it to size the wheel -->
 	<div class="flex-1 flex justify-center items-center w-full" bind:this={wheelAreaEl}>
-		<BigWheel config={wheelConfig} />
+		{#if !$mobileSearchOpen}
+			<BigWheel config={wheelConfig} />
+		{/if}
 	</div>
 
 	<!-- Input is always visible at the bottom -->
@@ -99,7 +102,7 @@
 			type="text"
 			placeholder="Type text for the circle..."
 			bind:value={wheelText}
-			class="px-6 pt-3.5 text-neutral-500 hover:text-black transition-colors duration-300 pb-4 bg-neutral-100 rounded-full w-full max-w-xl text-3xl outline-none focus:outline-none focus:ring-0 focus:border-black"
+			class="px-6 pt-3.5 text-neutral-500 hover:text-primary transition-colors duration-300 pb-4 bg-neutral-100 rounded-full w-full max-w-xl text-3xl outline-none focus:outline-none focus:ring-0 focus:border-black"
 		/>
 	</div>
 </section>

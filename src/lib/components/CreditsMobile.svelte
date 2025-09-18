@@ -20,7 +20,7 @@
   {#if validCredits.length > 0}
     <section class="mb-4 mt-8 text-sm">
       <div class=" font-normal text-center w-full mb-4">Credits</div>
-      <div class="text-black">
+      <div class="text-primary">
         {#each validCredits as credit}
           {@const persons = (credit.person ?? []) as Array<{ data?: PersonData } | any>}
           <div class="flex flex-col pb-2 text-center">

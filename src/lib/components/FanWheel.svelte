@@ -95,7 +95,7 @@
 			on:mouseleave={() => (hovering = false)}
 		>
 			<!-- Rotor spinning the entire circle (smooth rAF-driven) -->
-			<div class="absolute inset-0 text-black wheel" style={`transform: rotate(${angle}deg); will-change: transform;`}>
+			<div class="absolute inset-0 text-primary wheel" style={`transform: rotate(${angle}deg); will-change: transform;`}>
 			{#each renderItems as label, i}
 				<div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" role="group">
 					{#if renderUrls && renderUrls[i]}
@@ -103,12 +103,12 @@
 							href={renderUrls[i] as string}
 							target="_blank"
 							rel="noopener noreferrer"
-							class="block whitespace-nowrap select-none transition-colors duration-200 hover:text-black"
+							class="block whitespace-nowrap select-none transition-colors duration-200 hover:text-primary"
 							style={`transform: rotate(${angleFor(i)}deg) translateY(-${getAdjustedRadius(label)}px) rotate(90deg); transform-origin:50% 50%; font-size:${fontSize}px;`}
 						>{label}</a>
 					{:else}
 						<span
-							class="block whitespace-nowrap select-none transition-colors duration-200 hover:text-black"
+							class="block whitespace-nowrap select-none transition-colors duration-200 hover:text-primary"
 							style={`transform: rotate(${angleFor(i)}deg) translateY(-${getAdjustedRadius(label)}px) rotate(90deg); transform-origin:50% 50%; font-size:${fontSize}px;`}
 						>{label}</span>
 					{/if}

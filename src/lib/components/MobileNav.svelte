@@ -1,7 +1,7 @@
 <script lang="ts">
 import { page } from '$app/stores';
 import { tick } from 'svelte';
-import { homeSearchQuery } from '$lib/stores';
+import { homeSearchQuery, mobileSearchOpen } from '$lib/stores';
 
 $: pathname = $page.url.pathname;
 $: isHome = pathname === '/';
@@ -12,12 +12,14 @@ let searchOpen = false;
 let searchInput: HTMLInputElement;
 function openSearch() {
     searchOpen = true;
+    mobileSearchOpen.set(true);
     tick().then(() => {
         searchInput?.focus();
     });
 }
 function closeSearch() {
     searchOpen = false;
+    mobileSearchOpen.set(false);
     homeSearchQuery.set('');
 }
 </script>

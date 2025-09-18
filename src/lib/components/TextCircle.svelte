@@ -11,7 +11,7 @@
   export let animationType: string = 'sin';
   export let containerSize: number = 500;
   export let paused: boolean = false;
-  export let textColor: string = "#000000";
+  export let textColor: string = "#171717";
   export let autoTextSize: boolean = false; // When true, scale font to fill circumference
   export let startInvisible: boolean = false; // If true, start with letters invisible
   

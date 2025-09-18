@@ -99,10 +99,10 @@
 	<div class="flex justify-center items-center w-full md:pt-24 md:pb-24">
 		{#if mounted && isMobile}
 			<!-- Mobile: Two-column list -->
-			<div class="w-full content-container px-4 opacity-30">
+			<div class="w-full content-container px-4 text-primary">
 				{#if title}
 					<div class="mb-6">
-						<div class="text-sm md:text-2xl font-medium text-black">{title}</div>
+						<div class="text-sm md:text-2xl font-medium text-primary">{title}</div>
 					</div>
 				{/if}
 
@@ -112,14 +112,14 @@
 							{#if urls[index] && urls[index] !== '#'}
 								<a 
 									href={urls[index]} 
-									class="text-sm md:text-2xl font-medium text-black block"
+									class="text-sm md:text-2xl font-medium text-primary block"
 									target="_blank"
 									rel="noopener noreferrer"
 								>
 									{item}
 								</a>
 							{:else}
-								<span class="text-sm md:text-2xl font-medium text-black block">
+								<span class="text-sm md:text-2xl font-medium text-primary block">
 									{item}
 								</span>
 							{/if}
@@ -135,7 +135,7 @@
 					<!-- Centered title that fades in/out with wheel hover -->
 					<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
 						<div 
-							class="text-sm md:text-2xl font-medium text-black transition-opacity duration-400"
+							class="text-sm md:text-2xl font-medium text-primary transition-opacity duration-400"
 							class:opacity-0={!isHovering}
 							class:opacity-100={isHovering}
 						>
@@ -149,7 +149,7 @@
 			<div class="w-full max-w-4xl px-4">
 				{#if title}
 					<div class="mb-6">
-						<h2 class="text-sm md:text-2xl font-medium text-black">{title}</h2>
+						<h2 class="text-sm md:text-2xl font-medium text-primary">{title}</h2>
 					</div>
 				{/if}
 				<div class="grid grid-cols-1 text-center gap-4 md:gap-6 pb-4">
@@ -158,14 +158,14 @@
 							{#if urls[index] && urls[index] !== '#'}
 								<a 
 									href={urls[index]} 
-									class="text-lg font-medium text-black hover:text-gray-600 transition-colors duration-200 block py-2"
+									class="text-lg font-medium text-primary hover:text-gray-600 transition-colors duration-200 block py-2"
 									target="_blank"
 									rel="noopener noreferrer"
 								>
 									{item}
 								</a>
 							{:else}
-								<span class="text-lg font-medium text-black block py-2">
+								<span class="text-lg font-medium text-primary block py-2">
 									{item}
 								</span>
 							{/if}
