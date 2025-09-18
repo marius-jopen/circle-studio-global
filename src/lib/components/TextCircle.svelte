@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
-  export let text: string = "circle studio";
+  export let text: string = "art camp global";
   export let fontSize: number = 40;
   export let radius: number = 180;
   export let rotationSpeed: number = -0.2;
