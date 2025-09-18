@@ -2,12 +2,14 @@
 	import { onMount } from 'svelte';
 	import type { ProjectsDocument } from '../../prismicio-types';
 	import ProjectItem from './projectItem.svelte';
+    import ProjectItemMobile from './projectItemMobile.svelte';
 
 	export let allProjects: ProjectsDocument[] = [];
 	export let featuredProjectIds: string[] = [];
 
 	// State to control visibility and prevent flash
 	let isReady = false;
+	let isMobile = false;
 
 	// Configuration for layout randomization
 	const LAYOUT_CONFIG = {
@@ -86,6 +88,13 @@
 			isReady = true;
 		}, 10);
 	}
+
+	onMount(() => {
+		const updateMobile = () => { isMobile = typeof window !== 'undefined' && window.innerWidth < 768; };
+		updateMobile();
+		window.addEventListener('resize', updateMobile);
+		return () => window.removeEventListener('resize', updateMobile);
+	});
 
 	interface LayoutRow {
 		type: keyof typeof LAYOUT_CONFIG;
@@ -471,9 +480,13 @@
 		<div class="space-y-2 space-y-2 mb-3 ">
 			{#each normalizedLayout as row}
 				<div class="grid dimension-{row.dimension} {row.gridCols} gap-2 gap-2">
-					{#each row.projects as project}
+				{#each row.projects as project}
+					{#if isMobile}
+						<ProjectItemMobile dimension={row.dimension} itemsPerRow={row.configuredItemsPerRow} {project} />
+					{:else}
 						<ProjectItem dimension={row.dimension} itemsPerRow={row.configuredItemsPerRow} {project} />
-					{/each}
+					{/if}
+				{/each}
 				</div>
 			{/each}
 		</div>
