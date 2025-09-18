@@ -117,7 +117,7 @@
 						animationType: 'sin'
 					}],
 					globalSettings: {
-						containerSizePercent: 70, // 2x larger for high-res rendering
+						containerSizePercent: 100, // 2x larger for high-res rendering
 						fontSizePercent: 18, // Larger text for mobile
 						distancePercent: 0,
 						paused: true, // Pause internal animation since we're controlling rotation externally
