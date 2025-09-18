@@ -8,7 +8,7 @@
 	import { onMount } from 'svelte';
 	import { afterNavigate } from '$app/navigation';
 	import "../app.css";
-
+	import MobileNav from '$lib/components/MobileNav.svelte';
 	let { children, data } = $props();
 	
 	// Global navigation click detection for video autoplay permissions
@@ -183,7 +183,7 @@
 
 <div class="min-h-screen flex flex-col">
 	<Welcome />
-
+	<MobileNav />
 	<Header settings={data.settings} faded={headerFaded} videoIsDark={videoIsDark} mainMediaVisible={mainMediaVisible} />
 
 	<main class="flex-1">

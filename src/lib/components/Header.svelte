@@ -66,7 +66,7 @@
 <!-- Navigation Header -->
 {#if settings?.data?.navigation_header}
 	<!-- Always-visible Mobile Navigation (independent of header fading and dark mode) -->
-	<div class="md:hidden fixed inset-x-0 top-2 z-[10001] p-1 pointer-events-auto mobile-nav">
+	<!-- <div class="md:hidden fixed inset-x-0 top-2 z-[10001] p-1 pointer-events-auto mobile-nav">
 		<nav class="flex items-center justify-center gap-x-4">
 			<a href="/" class="text-center font-medium transition-colors duration-600">
 				Work
@@ -75,7 +75,7 @@
 				About
 			</a>
 		</nav>
-	</div>
+	</div> -->
 
 	<header class="fixed top-0 z-50 w-full pointer-events-none transition-all duration-600" 
 		class:opacity-0={effectiveFaded} 

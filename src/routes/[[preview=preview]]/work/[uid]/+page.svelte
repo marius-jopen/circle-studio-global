@@ -80,7 +80,7 @@
 	<!-- Main Media -->
 	 {#key projectData.main}
 		{#if projectData.main && projectData.main.length > 0}
-			<div class="mb-3 mt-12 md:mt-0" id="main-media">
+			<div class="mb-3 md:mt-12 md:mt-0" id="main-media">
 				<!-- Single item: full width -->
 				{#if projectData.main.length === 1}
 					{@const item = projectData.main[0]}
