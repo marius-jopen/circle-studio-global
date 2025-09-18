@@ -101,25 +101,25 @@
 			<!-- Mobile: Two-column list -->
 			<div class="w-full content-container px-4 opacity-30">
 				{#if title}
-					<div class="mb-6 text-center">
-						<div class="text-xl md:text-2xl font-medium text-black">{title}</div>
+					<div class="mb-6">
+						<div class="text-sm md:text-2xl font-medium text-black">{title}</div>
 					</div>
 				{/if}
 
-				<div class="grid grid-cols-1 text-center gap-0 md:gap-2 pb-4">
+				<div class="grid grid-cols-2 gap-0 md:gap-2 pb-4">
 					{#each items as item, index}
 						<div class="">
 							{#if urls[index] && urls[index] !== '#'}
 								<a 
 									href={urls[index]} 
-									class="text-xl md:text-2xl font-medium text-black block"
+									class="text-sm md:text-2xl font-medium text-black block"
 									target="_blank"
 									rel="noopener noreferrer"
 								>
 									{item}
 								</a>
 							{:else}
-								<span class="text-xl md:text-2xl font-medium text-black block">
+								<span class="text-sm md:text-2xl font-medium text-black block">
 									{item}
 								</span>
 							{/if}
@@ -135,7 +135,7 @@
 					<!-- Centered title that fades in/out with wheel hover -->
 					<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
 						<div 
-							class="text-xl md:text-2xl font-medium text-black transition-opacity duration-400"
+							class="text-sm md:text-2xl font-medium text-black transition-opacity duration-400"
 							class:opacity-0={!isHovering}
 							class:opacity-100={isHovering}
 						>
@@ -149,7 +149,7 @@
 			<div class="w-full max-w-4xl px-4">
 				{#if title}
 					<div class="mb-6">
-						<h2 class="text-xl md:text-2xl font-medium text-black">{title}</h2>
+						<h2 class="text-sm md:text-2xl font-medium text-black">{title}</h2>
 					</div>
 				{/if}
 				<div class="grid grid-cols-1 text-center gap-4 md:gap-6 pb-4">

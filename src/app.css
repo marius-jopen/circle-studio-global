@@ -25,19 +25,19 @@ html, body {
 }
 
 p {
-    @apply text-lg md:text-xl leading-[25px] md:leading-[26px];
+    @apply text-sm md:text-xl leading-[25px] md:leading-[26px];
 }
 
 h1, .h1 {
-    @apply text-xl md:text-4xl font-normal leading-[25px] md:leading-normal;
+    @apply text-base md:text-4xl font-normal leading-[23px] md:leading-[46px];
 }
 
 h2, .h2 {
-    @apply text-base md:text-3xl font-normal leading-[25x] md:leading-normal;
+    @apply text-sm md:text-3xl font-normal leading-[25x] md:leading-normal;
 }
 
 .paragraph-1 {
-    @apply text-lg md:text-xl leading-[25px] md:leading-[26px];
+    @apply text-sm md:text-xl leading-[25px] md:leading-[26px];
 }
 
 /* Custom search input styling */
