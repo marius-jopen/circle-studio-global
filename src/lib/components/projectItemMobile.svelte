@@ -5,8 +5,8 @@
 	import VideoPlayerMobile from './VideoPlayerMobile.svelte';
 
 	export let project: ProjectsDocument | any;
-export const dimension: 'landscape' | 'square' | 'portrait' = 'portrait';
-export const itemsPerRow: number = 1;
+export let dimension: 'landscape' | 'square' | 'portrait' = 'portrait';
+export let itemsPerRow: number = 1;
 	export let clickable: boolean = true;
 
 	let projectElement: HTMLElement;
