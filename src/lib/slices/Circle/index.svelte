@@ -24,7 +24,7 @@
 	let selectedText = $state<string | null>(null);
 	let isMobile = $state(false);
 	let mounted = $state(false);
-	let mobileContainerSize = $state(320);
+	let mobileContainerSize = $state(450);
 
 	let fadeInTimeSec = $state(1.7);
 	let fadeOutTimeSec = $state(1.7);
