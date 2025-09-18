@@ -2,7 +2,7 @@
 	import BigWheel from './BigWheel.svelte';
 	import { onMount } from 'svelte';
 	
-	let { isDarkMode = false, scrollSpeedMultiplier = 20 } = $props();
+	let { isDarkMode = false, scrollSpeedMultiplier = 12 } = $props();
 	
 	let scrollRotation = $state(0);
 	let targetRotation = $state(0);
