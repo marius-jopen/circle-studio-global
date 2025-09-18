@@ -101,7 +101,7 @@
 							config={{
 								uiVisible: false,
 								items: [{
-									text: 'CIRCLE STUDIO GLOBAL',
+									text: 'ART CAMP GLOBAL',
 									rotationSpeed: isHovering ? 1 : 0.2,
 									spacingAmplitudePercent: 0,
 									spacingSpeed: 0,
@@ -110,7 +110,7 @@
 								}],
 								globalSettings: {
 									containerSizePercent: 30,
-									fontSizePercent: 16.1,
+									fontSizePercent: 18.1,
 									distancePercent: 0,
 									paused: false,
 									textColor: '#000000',
@@ -129,7 +129,7 @@
 							config={{
 								uiVisible: false,
 								items: [{
-									text: 'CIRCLE STUDIO GLOBAL',
+									text: 'ART CAMP GLOBAL',
 									rotationSpeed: isHovering ? 1 : 0.2,
 									spacingAmplitudePercent: 0,
 									spacingSpeed: 0,
@@ -138,7 +138,7 @@
 								}],
 								globalSettings: {
 									containerSizePercent: 30,
-									fontSizePercent: 16.1,
+									fontSizePercent: 18.1,
 									distancePercent: 0,
 									paused: false,
 									textColor: '#ffffff',

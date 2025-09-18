@@ -109,7 +109,7 @@
 				config={{
 					uiVisible: false,
 					items: [{
-						text: 'CIRCLE STUDIO GLOBAL',
+						text: 'ART CAMP GLOBAL',
 						rotationSpeed: 0, // No internal rotation - controlled by scroll
 						spacingAmplitudePercent: 0,
 						spacingSpeed: 0,
@@ -118,7 +118,7 @@
 					}],
 					globalSettings: {
 						containerSizePercent: 70, // 2x larger for high-res rendering
-						fontSizePercent: 15.7, // Larger text for mobile
+						fontSizePercent: 18, // Larger text for mobile
 						distancePercent: 0,
 						paused: true, // Pause internal animation since we're controlling rotation externally
 						textColor: '#000000',

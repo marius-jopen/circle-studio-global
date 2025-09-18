@@ -11,7 +11,7 @@ export async function load({ fetch, cookies }) {
 	return {
 		page,
 		allProjects,
-		title: page.data.meta_title || 'Circle Studio Global',
+		title: page.data.meta_title || 'ART CAMP GLOBAL',
 		meta_description: page.data.meta_description,
 		meta_title: page.data.meta_title,
 		meta_image: page.data.meta_image.url
