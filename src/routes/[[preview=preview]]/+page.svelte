@@ -1,15 +1,27 @@
 <script lang="ts">
 	import { SliceZone } from '@prismicio/svelte';
-	import { isFilled } from '@prismicio/client';
+	import { isFilled, asText } from '@prismicio/client';
 	import { components } from '$lib/slices';
 	import ProjectIndex from '$lib/components/ProjectIndex.svelte';
 	import ProjectItem from '$lib/components/projectItem.svelte';
     import ProjectIndexList from '$lib/components/ProjectIndexList.svelte';
     import GlobalPreviewPlayer from '$lib/components/GlobalPreviewPlayer.svelte';
     import { onMount } from 'svelte';
-	import { viewMode, initializeViewMode } from '$lib/stores';
+	import { viewMode, initializeViewMode, homeSearchQuery } from '$lib/stores';
 
 	export let data;
+    // Shared search filtering (used on mobile when search input in MobileNav is open)
+    $: filteredAllProjects = (() => {
+        const query = $homeSearchQuery.trim().toLowerCase();
+        if (!query) return data.allProjects;
+        return (data?.allProjects ?? []).filter((project) => {
+            const client = (project?.data?.client || '').toLowerCase();
+            const title = (project?.data?.title || '').toLowerCase();
+            const tags = (project?.tags || []).join(' ').toLowerCase();
+            const description = (asText(((project?.data as any)?.description) || []) || '').toLowerCase();
+            return client.includes(query) || title.includes(query) || tags.includes(query) || description.includes(query);
+        });
+    })();
 
 	// Extract featured project IDs to exclude them from ProjectIndex
 	$: featuredProjectIds = (() => {
@@ -106,9 +118,9 @@
 	{/if}
 
 	{#if $viewMode === 'grid'}
-		<ProjectIndex allProjects={data.allProjects} {featuredProjectIds} />
+		<ProjectIndex allProjects={filteredAllProjects} {featuredProjectIds} />
 	{:else}
-		<ProjectIndexList allProjects={data.allProjects} {featuredProjectIds} />
+		<ProjectIndexList allProjects={filteredAllProjects} {featuredProjectIds} />
 		<!-- Fixed bottom-right hover preview video - only for list view -->
 		<GlobalPreviewPlayer />
 	{/if}

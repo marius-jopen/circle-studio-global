@@ -3,6 +3,7 @@
     import { hoverPreview } from '$lib/stores/preview';
     import { get } from 'svelte/store';
     import { onMount } from 'svelte';
+    import { homeSearchQuery } from '$lib/stores';
 
 	export let allProjects: ProjectsDocument[] = [];
 	export let featuredProjectIds: string[] = [];
@@ -13,8 +14,9 @@
 	// Remove featured projects to avoid duplicates on the home page
 	$: remainingProjects = allProjects.filter(p => !featuredProjectIds.includes(p.id));
 
-	// Search functionality
+	// Search functionality (shared with MobileNav via store)
 	let searchQuery = '';
+	$: searchQuery = $homeSearchQuery;
 	
 	$: filteredProjects = searchQuery.trim() === '' 
 		? remainingProjects 
@@ -108,13 +110,13 @@
 </script>
 
 <div class="flex justify-center md:justify-end items-center w-full pt-[180px] md:pt-[90px]">
-	<input
-		id="search-input"
-		type="text"
-		bind:value={searchQuery}
-		placeholder="Search projects, clients, tags..."
-		class="px-4 pt-[9px] text-neutral-500 hover:text-black placeholder:text-neutral-400 transition-colors duration-400 pb-[9px] bg-neutral-100 rounded-3xl w-full max-w-xs outline-none focus:outline-none focus:ring-0 focus:border-black text-xs md:text-base"
-	/>
+    <input
+        id="search-input"
+        type="text"
+        bind:value={searchQuery}
+        placeholder="Search projects, clients, tags..."
+        class="px-4 pt-[9px] text-neutral-500 hover:text-black placeholder:text-neutral-400 transition-colors duration-400 pb-[9px] bg-neutral-100 rounded-3xl w-full max-w-xs outline-none focus:outline-none focus:ring-0 focus:border-black text-xs md:text-base hidden md:block"
+    />
 </div>
 
 <div class="divide-y divide-black/10 border-t border-black/10 text-black md:hover:text-black/25 mt-4">
