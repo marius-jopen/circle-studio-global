@@ -258,7 +258,10 @@
     const effectiveUnmuteOnUserPlay = $derived(
         unmuteOnUserPlay || (isMobile && context === 'main' && hasSoundMode)
     );
-    const shouldAutoplay = $derived(autoplayOnMount && !isMobile);
+    // Allow autoplay on mobile for main videos when muted
+    const shouldAutoplay = $derived(
+        autoplayOnMount && (!isMobile || (isMobile && context === 'main' && defaultMuted))
+    );
     const controlsVisible = $derived(
         // Visible when hovering with controls, when explicitly requested on mount,
         // or on mobile when we programmatically show controls at start
@@ -278,12 +281,19 @@
         coarsePointerQuery.addEventListener('change', updateIsMobile);
         window.addEventListener('resize', onResize);
 
-        // Configure initial mute/autoplay based on props (with mobile override)
+        // Configure initial mute/autoplay based on props (allow mobile autoplay for main when muted)
         if (videoElement) {
             videoElement.muted = defaultMuted;
             isMuted = defaultMuted;
-            const initialShouldAutoplay = autoplayOnMount && !isMobile;
+            const initialShouldAutoplay = autoplayOnMount && (!isMobile || (isMobile && context === 'main' && defaultMuted));
             videoElement.autoplay = initialShouldAutoplay;
+            // Ensure iOS Safari inline playback & autoplay recognition
+            try {
+                videoElement.setAttribute('playsinline', '');
+                videoElement.setAttribute('webkit-playsinline', '');
+                if (defaultMuted) videoElement.setAttribute('muted', '');
+                if (initialShouldAutoplay) videoElement.setAttribute('autoplay', '');
+            } catch (_) {}
             if (initialShouldAutoplay) {
                 const tryPlay = () => {
                     const p = videoElement.play();
@@ -335,16 +345,20 @@
         videoElement.addEventListener('webkitbeginfullscreen', () => { isFullscreen = true; });
         videoElement.addEventListener('webkitendfullscreen', () => { isFullscreen = false; });
 
-		if (useHls && videoElement && !isMobile) {
-			import('hls.js').then(({ default: Hls }) => {
-				if (Hls.isSupported()) {
-					const hls = new Hls({ autoStartLoad: true });
-					hls.loadSource(hlsUrl);
-					hls.attachMedia(videoElement);
-				} else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-					videoElement.src = hlsUrl;
-				}
-			});
+		if (videoElement) {
+			if (useHls) {
+				import('hls.js').then(({ default: Hls }) => {
+					if (Hls.isSupported()) {
+						const hls = new Hls({ autoStartLoad: true });
+						hls.loadSource(hlsUrl);
+						hls.attachMedia(videoElement);
+					} else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+						videoElement.src = hlsUrl;
+					}
+				});
+			} else {
+				videoElement.src = videoUrl;
+			}
 		}
 
         return () => {
@@ -367,40 +381,44 @@
 		duration = 0;
         hasUserPlayed = false;
 		
-		if (!isMobile) {
-			if (useHls) {
-				import('hls.js').then(({ default: Hls }) => {
-					if (Hls.isSupported()) {
-						// Destroy existing HLS instance if any
-						if ((videoElement as any).hls) {
-							(videoElement as any).hls.destroy();
-						}
-						
-						const hls = new Hls({ autoStartLoad: true });
-						hls.loadSource(hlsUrl);
-						hls.attachMedia(videoElement);
-						
-						// Store HLS instance for cleanup
-						(videoElement as any).hls = hls;
-					} else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-						videoElement.src = hlsUrl;
+		if (useHls) {
+			import('hls.js').then(({ default: Hls }) => {
+				if (Hls.isSupported()) {
+					// Destroy existing HLS instance if any
+					if ((videoElement as any).hls) {
+						(videoElement as any).hls.destroy();
 					}
-				});
-			} else {
-				videoElement.src = videoUrl;
-			}
+					
+					const hls = new Hls({ autoStartLoad: true });
+					hls.loadSource(hlsUrl);
+					hls.attachMedia(videoElement);
+					
+					// Store HLS instance for cleanup
+					(videoElement as any).hls = hls;
+				} else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+					videoElement.src = hlsUrl;
+				}
+			});
+		} else {
+			videoElement.src = videoUrl;
 		}
 		
         // Reset mute state and autoplay (with mobile override)
         videoElement.muted = defaultMuted;
         isMuted = defaultMuted;
         videoElement.autoplay = shouldAutoplay;
+        try {
+            videoElement.setAttribute('playsinline', '');
+            videoElement.setAttribute('webkit-playsinline', '');
+            if (defaultMuted) videoElement.setAttribute('muted', '');
+            if (shouldAutoplay) videoElement.setAttribute('autoplay', '');
+        } catch (_) {}
         // Ensure controls are visible initially on mobile
         if (isMobile) {
             showControls = true;
         }
 
-        if (shouldAutoplay) {
+		if (shouldAutoplay) {
 			const tryPlay = () => {
 				const p = videoElement.play();
 				if (p && typeof p.then === 'function') {
@@ -439,10 +457,10 @@
 		bind:this={videoElement}
 		class={videoClass}
 		poster={posterImage?.url || ''}
-		preload={isMobile ? 'none' : 'auto'}
+		preload={shouldAutoplay ? 'auto' : (isMobile ? 'none' : 'auto')}
 		loop
 		muted={isMuted}
-		autoplay={false}
+		autoplay={shouldAutoplay}
 		playsinline
 		ontimeupdate={() => { currentTime = videoElement.currentTime; }}
 		onloadedmetadata={() => { duration = videoElement.duration; }}
