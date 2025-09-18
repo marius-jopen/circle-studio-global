@@ -15,16 +15,14 @@
   let isVideoReady = $state(false); // first frame ready, safe to reveal
   let videoEl: HTMLVideoElement | null = $state(null);
   let hls: any = null;
+  let rootEl: HTMLElement | null = $state(null);
+  let isInView = $state(false);
+  let io: IntersectionObserver | null = null;
 
   const onPlay = () => { isPlaying = true; };
   const onPause = () => { isPlaying = false; };
 
-  function handleKey(event: KeyboardEvent) {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      handleToggle();
-    }
-  }
+  function handleKey(event: KeyboardEvent) {}
 
   function deactivateVideo() {
     if (videoEl) {
@@ -59,71 +57,47 @@
     }
   };
 
-  async function handleToggle() {
+  async function activateVideo() {
     if (!item?.video_url || !item?.image?.url) return;
+    if (isActive) return;
+    isActive = true;
+    isVideoReady = false;
+    queueMicrotask(async () => {
+      if (!videoEl) return;
+      try {
+        videoEl.addEventListener('play', onPlay);
+        videoEl.addEventListener('pause', onPause);
+        videoEl.addEventListener('loadedmetadata', onLoadedMetadata, { once: true } as any);
+        videoEl.addEventListener('loadeddata', onFirstFrameReady, { once: true } as any);
+        videoEl.addEventListener('canplay', onFirstFrameReady, { once: true } as any);
 
-    if (!isActive) {
-      // First click: swap to video and start playback
-      isActive = true;
-      isVideoReady = false;
-      // Wait next microtask to ensure <video> exists, then play
-      queueMicrotask(async () => {
-        if (!videoEl) return;
-        try {
-          // Listen for play/pause to update icon
-          videoEl.addEventListener('play', onPlay);
-          videoEl.addEventListener('pause', onPause);
-          // Prepare to detect first frame and ensure start at 0
-          videoEl.addEventListener('loadedmetadata', onLoadedMetadata, { once: true } as any);
-          videoEl.addEventListener('loadeddata', onFirstFrameReady, { once: true } as any);
-          videoEl.addEventListener('canplay', onFirstFrameReady, { once: true } as any);
+        const url: string = item.video_url;
+        const isNativeHls = !!videoEl.canPlayType && videoEl.canPlayType('application/vnd.apple.mpegurl');
 
-          const url: string = item.video_url;
-          const isNativeHls = !!videoEl.canPlayType && videoEl.canPlayType('application/vnd.apple.mpegurl');
-
-          if (isNativeHls) {
-            // Safari / iOS
-            videoEl.src = url;
-            await videoEl.play().catch(() => {});
-          } else {
-            // Try HLS.js lazily
-            try {
-              const HlsMod = await import('hls.js');
-              const Hls = HlsMod.default ?? HlsMod;
-              if (Hls && Hls.isSupported()) {
-                if (hls) hls.destroy();
-                hls = new Hls();
-                hls.loadSource(url);
-                hls.attachMedia(videoEl);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                  videoEl?.play().catch(() => {});
-                });
-              } else {
-                // Fallback to direct src (mp4 or browsers with partial support)
-                videoEl.src = url;
-                await videoEl.play().catch(() => {});
-              }
-            } catch (e) {
-              // hls.js not available, fallback to direct
+        if (isNativeHls) {
+          videoEl.src = url;
+          await videoEl.play().catch(() => {});
+        } else {
+          try {
+            const HlsMod = await import('hls.js');
+            const Hls = HlsMod.default ?? HlsMod;
+            if (Hls && Hls.isSupported()) {
+              if (hls) hls.destroy();
+              hls = new Hls();
+              hls.loadSource(url);
+              hls.attachMedia(videoEl);
+              hls.on(Hls.Events.MANIFEST_PARSED, () => { videoEl?.play().catch(() => {}); });
+            } else {
               videoEl.src = url;
               await videoEl.play().catch(() => {});
             }
+          } catch (e) {
+            videoEl.src = url;
+            await videoEl.play().catch(() => {});
           }
-        } catch (e) {
-          // If autoplay fails, leave paused; user can tap once more
         }
-      });
-      return;
-    }
-
-    // Already active: toggle play/pause (keep video visible when paused)
-    if (videoEl) {
-      if (videoEl.paused) {
-        videoEl.play().catch(() => {});
-      } else {
-        videoEl.pause();
-      }
-    }
+      } catch (e) {}
+    });
   }
 
   onDestroy(() => {
@@ -134,6 +108,29 @@
     if (hls) {
       try { hls.destroy(); } catch {}
       hls = null;
+    }
+    if (io) { try { io.disconnect(); } catch {} io = null; }
+  });
+
+  // IntersectionObserver to auto-activate when in view
+  $effect(() => {
+    if (!rootEl) return;
+    if (io) return;
+    io = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        isInView = entry.isIntersecting || entry.intersectionRatio > 0.1;
+      }
+    }, { root: null, rootMargin: '0px 0px', threshold: 0.1 });
+    io.observe(rootEl);
+  });
+
+  // Drive activation/deactivation based on visibility
+  $effect(() => {
+    if (!item?.video_url || !item?.image?.url) return;
+    if (isInView) {
+      activateVideo();
+    } else {
+      if (isActive) deactivateVideo();
     }
   });
 </script>
@@ -146,12 +143,9 @@
     {@const imgW = imageField?.dimensions?.width}
     {@const imgH = imageField?.dimensions?.height}
     {@const isLandscape = !!imgW && !!imgH ? imgW > imgH : false}
-    <div
+  <div
+      bind:this={rootEl}
       class={`relative select-none ${isLandscape ? 'aspect-square' : ''}`}
-      role="button"
-      tabindex="0"
-      onclick={handleToggle}
-      onkeydown={handleKey}
     >
       <!-- Keep the image in the document flow to preserve height -->
       <PrismicImage field={imageField} class={isLandscape ? 'absolute inset-0 z-0 w-full h-full rounded object-cover no-callout brightness-[95%]' : 'w-full h-auto rounded object-cover no-callout brightness-[95%]'} />
@@ -169,16 +163,7 @@
         ></video>
       {/if}
 
-      <!-- Play/Pause button, subtle rounded corners, bottom-right -->
-      <div class="absolute z-20 bottom-1 right-1 rounded-lg p-2">
-        {#if isActive && isPlaying}
-          <!-- Pause icon -->
-          <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/></svg>
-        {:else}
-          <!-- Play icon -->
-          <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-        {/if}
-      </div>
+      <!-- No manual controls on mobile: auto-play while in view -->
     </div>
   {/if}
 {/if}
