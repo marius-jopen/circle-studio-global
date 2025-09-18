@@ -36,7 +36,7 @@ function closeSearch() {
                     </div>
                 {/if}
             {:else if isProject}
-                <a href="/" class="text-center font-medium whitespace-nowrap">Art Camp Global</a>
+                <a href="/" class="text-center font-medium whitespace-nowrap">Back</a>
                 <a href="/about" class="text-center font-medium">About</a>
             {:else if isAbout}
                 <a href="/" class="text-center font-medium whitespace-nowrap">Art Camp Global</a>
