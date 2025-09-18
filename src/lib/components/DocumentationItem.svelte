@@ -39,12 +39,32 @@
 			<DocumentationVideoMobile {item} {itemsPerRow} />
 		</div>
 	{:else if imageField?.url}
-		<!-- Regular images (no video) - show on all devices -->
-		<div class="block">
+		<!-- Regular images (no video) -->
+		{@const imgW = imageField?.dimensions?.width}
+		{@const imgH = imageField?.dimensions?.height}
+		{@const isLandscape = !!imgW && !!imgH ? imgW > imgH : false}
+		<!-- Desktop: keep natural aspect ratio -->
+		<div class="hidden md:block">
 			<PrismicImage 
 				field={imageField} 
 				class="w-full h-auto rounded object-cover"
 			/>
+		</div>
+		<!-- Mobile: force square crop with object-cover -->
+		<div class="block md:hidden">
+			{#if isLandscape}
+				<div class="relative aspect-square">
+					<PrismicImage 
+						field={imageField} 
+						class="absolute inset-0 w-full h-full rounded object-cover"
+					/>
+				</div>
+			{:else}
+				<PrismicImage 
+					field={imageField} 
+					class="w-full h-auto rounded object-cover"
+				/>
+			{/if}
 		</div>
 	{/if}
 {/if} 

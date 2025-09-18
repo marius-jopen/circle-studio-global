@@ -18,12 +18,12 @@
 {#if credits && credits.length > 0}
   {@const validCredits = (credits as CreditItem[]).filter((credit: CreditItem) => credit.label && credit.person && credit.person.length > 0)}
   {#if validCredits.length > 0}
-    <section class="mb-12 mt-8">
-      <div class="text-left font-normal mb-4">Credits</div>
+    <section class="mb-4 mt-8 text-sm">
+      <div class=" font-normal text-center w-full mb-4">Credits</div>
       <div class="text-black">
         {#each validCredits as credit}
           {@const persons = (credit.person ?? []) as Array<{ data?: PersonData } | any>}
-          <div class="flex flex-col pb-4">
+          <div class="flex flex-col pb-2 text-center">
             <span class="w-full text-neutral-400">{credit.label}</span>
             <span class="w-full">
               {#each persons as person, index}

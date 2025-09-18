@@ -143,21 +143,24 @@
   {@const videoUrl = item.video_url}
 
   {#if videoUrl && imageField?.url}
+    {@const imgW = imageField?.dimensions?.width}
+    {@const imgH = imageField?.dimensions?.height}
+    {@const isLandscape = !!imgW && !!imgH ? imgW > imgH : false}
     <div
-      class="relative select-none"
+      class={`relative select-none ${isLandscape ? 'aspect-square' : ''}`}
       role="button"
       tabindex="0"
       onclick={handleToggle}
       onkeydown={handleKey}
     >
       <!-- Keep the image in the document flow to preserve height -->
-      <PrismicImage field={imageField} class="w-full h-auto rounded object-cover no-callout brightness-[95%]" />
+      <PrismicImage field={imageField} class={isLandscape ? 'absolute inset-0 z-0 w-full h-full rounded object-cover no-callout brightness-[95%]' : 'w-full h-auto rounded object-cover no-callout brightness-[95%]'} />
 
       <!-- Overlay the video absolutely to avoid layout jump -->
       {#if isActive}
         <video
           bind:this={videoEl}
-          class="absolute inset-0 z-10 w-full h-full rounded object-cover no-callout ios-video-fix transition-opacity duration-200 {isVideoReady ? 'opacity-100' : 'opacity-0'}"
+          class={`absolute inset-0 z-10 w-full h-full rounded object-cover no-callout ios-video-fix transition-opacity duration-200 ${isVideoReady ? 'opacity-100' : 'opacity-0'}`}
           poster={imageField.url}
           playsinline
           muted

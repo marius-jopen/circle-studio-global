@@ -559,7 +559,13 @@
                         aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
                         onclick={toggleFullscreen}
 						>
+                        <span class="hidden md:block">
 							{isFullscreen ? 'Back' : 'Fullscreen'}
+                        </span>
+
+                        <span class="block md:hidden">
+							{isFullscreen ? 'Back' : 'Full'}
+                        </span>
 						</button>
 					</div>
 				</div>
