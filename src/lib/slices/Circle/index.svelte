@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Content } from '@prismicio/client';
 	import type { SliceComponentProps } from '@prismicio/svelte';
-	import { onMount, onDestroy } from 'svelte';
+	    import { onMount, onDestroy } from 'svelte';
 	import BigWheel from '$lib/components/BigWheel.svelte';
 
 
@@ -172,7 +172,7 @@
 					</div>
 				{:else}
 					<div class="text-center px-4 opacity-30">
-						<div class="text-xl md:text-2xl font-medium text-black ">
+						<div class="text-base md:text-2xl font-medium text-black ">
 							{selectedText}
 						</div>
 					</div>
@@ -210,7 +210,7 @@
 			{:else}
 				<!-- Fallback during SSR - show simple text -->
 				<div class="text-center px-4">
-					<div class="text-xl md:text-2xl font-medium text-black ">
+					<div class="text-base md:text-2xl font-medium text-black ">
 						{selectedText}
 					</div>
 				</div>
