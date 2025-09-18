@@ -15,6 +15,9 @@ function openSearch() {
         searchInput?.focus();
     });
 }
+function closeSearch() {
+    searchOpen = false;
+}
 </script>
 
 <div class="fixed bottom-5 left-0 right-0 z-50 flex justify-center items-center">
@@ -25,7 +28,10 @@ function openSearch() {
                     <button type="button" class="text-center font-medium" on:click={openSearch}>Search</button>
                     <a href="/about" class="text-center font-medium">About</a>
                 {:else}
-                    <input type="text" placeholder="Search" class="w-full bg-transparent outline-none text-xl" bind:this={searchInput} />
+                    <div class="flex items-center gap-x-3 w-full">
+                        <input type="text" placeholder="Search" class="flex-1 bg-transparent outline-none text-xl" bind:this={searchInput} />
+                        <button type="button" class="text-xl leading-none px-1 mt-[-2px]" aria-label="Close search" on:click={closeSearch}>×</button>
+                    </div>
                 {/if}
             {:else if isProject}
                 <a href="/" class="text-center font-medium whitespace-nowrap">Art Camp Global</a>
