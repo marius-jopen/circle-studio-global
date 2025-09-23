@@ -37,6 +37,7 @@
       triggerFadeIn?: boolean;
       triggerFadeOut?: boolean;
       startInvisible?: boolean;
+      fontFamily?: string;
     };
   } = {
     uiVisible: false,
@@ -177,6 +178,10 @@
   $: activeStartInvisible = (showControls || (!items && !globalSettings))
     ? false
     : (globalSettings?.startInvisible ?? false);
+
+  $: activePrimaryFontFamily = (showControls || (!items && !globalSettings))
+    ? 'CircularXXWeb'
+    : (globalSettings?.fontFamily ?? 'CircularXXWeb');
 
   // Initialize from props if uiVisible is true from the start
   onMount(() => {
@@ -840,6 +845,7 @@
             containerSize={containerSize}
             paused={animationPaused}
             textColor={activeTextColor}
+            primaryFontFamily={activePrimaryFontFamily}
             fadeInTime={activeFadeInTime}
             fadeOutTime={activeFadeOutTime}
             pauseTime={activePauseTime}

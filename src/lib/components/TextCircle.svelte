@@ -14,6 +14,7 @@
   export let textColor: string = "#171717";
   export let autoTextSize: boolean = false; // When true, scale font to fill circumference
   export let startInvisible: boolean = false; // If true, start with letters invisible
+  export let primaryFontFamily: string = 'CircularXXWeb';
   
   // Fade animation props
   export let fadeInTime: number = 3; // seconds to fade in all letters
@@ -163,7 +164,7 @@
     if (!measureCanvas) measureCanvas = document.createElement('canvas');
     const ctx = measureCanvas.getContext('2d');
     if (!ctx) return baseFontSize;
-    ctx.font = `${baseFontSize}px "CircularXXWeb", Arial, Helvetica, sans-serif`;
+    ctx.font = `${baseFontSize}px "${primaryFontFamily}", Arial, Helvetica, sans-serif`;
     const letters = textStr.split('');
     const totalWidth = letters.reduce((sum, l) => sum + ctx.measureText(l).width, 0);
     const circumference = 2 * Math.PI * r;
@@ -206,7 +207,7 @@
     // Use elapsedTime instead of performance.now() to allow freezing animations
     const time = elapsedTime;
     const letters = text.split('');
-    ctx.font = `${effectiveFontSize}px "CircularXXWeb", Arial, Helvetica, sans-serif`;
+    ctx.font = `${effectiveFontSize}px "${primaryFontFamily}", Arial, Helvetica, sans-serif`;
     const letterWidths = letters.map(l => ctx.measureText(l).width);
     const totalWidth = letterWidths.reduce((a, b) => a + b, 0);
     const circumference = 2 * Math.PI * radius;
@@ -249,7 +250,7 @@
       ctx.save();
       ctx.rotate(angle);
       ctx.translate(0, -radius);
-      ctx.font = `${effectiveFontSize}px "CircularXXWeb", Arial, Helvetica, sans-serif`;
+      ctx.font = `${effectiveFontSize}px "${primaryFontFamily}", Arial, Helvetica, sans-serif`;
       
       // Apply opacity from fade animation
       const opacity = letterOpacities[i] || 0;
@@ -402,7 +403,7 @@
     ctx.rotate(rotation + (rotationStart * Math.PI / 180));
     
     // Use a proper font with better scaling properties
-    const fontFamily = '"CircularXXWeb", Arial, Helvetica, sans-serif';
+    const fontFamily = `"${primaryFontFamily}", Arial, Helvetica, sans-serif`;
     
     // Enable better text rendering
     ctx.textRendering = 'geometricPrecision';
@@ -506,7 +507,7 @@
     if (browser && (document as any).fonts?.load) {
       try {
         // Load a typical size; metrics will be correct for others
-        (document as any).fonts.load('16px "CircularXXWeb"').then(() => {
+        (document as any).fonts.load(`16px "${primaryFontFamily}"`).then(() => {
           draw();
         }).catch(() => {});
       } catch {}

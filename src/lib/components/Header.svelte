@@ -121,6 +121,7 @@
 									paused: false,
 									textColor: '#171717',
 									transparentBackground: true,
+                        fontFamily: 'CircularXXSub',
 									manualMode: true,
 									fadeInTime: 0,
 									fadeOutTime: 0
@@ -149,6 +150,7 @@
 									paused: false,
 									textColor: '#ffffff',
 									transparentBackground: true,
+                        fontFamily: 'CircularXXSub',
 									manualMode: true,
 									fadeInTime: 0,
 									fadeOutTime: 0

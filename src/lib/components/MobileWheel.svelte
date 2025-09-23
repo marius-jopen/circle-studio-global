@@ -123,6 +123,7 @@
 						paused: true, // Pause internal animation since we're controlling rotation externally
 						textColor: '#171717',
 						transparentBackground: true,
+                fontFamily: 'CircularXXSub',
 						manualMode: true,
 						fadeInTime: 0,
 						fadeOutTime: 0
