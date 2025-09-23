@@ -3,22 +3,17 @@
 	import BigWheel from './BigWheel.svelte';
 	import MobileWheel from './MobileWheel.svelte';
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 	import { viewMode, setViewMode, initializeViewMode, mobileSearchOpen } from '$lib/stores';
 	
 	let { settings, faded = false, videoIsDark = false, mainMediaVisible = true } = $props();
 	let isHovering = $state(false);
 	let isViewModeHovering = $state(false);
-	let currentPath = $state('');
+	let currentPath = $derived($page.url.pathname);
 	
 	// Override faded state when hovering over the wheel to prevent unwanted fading
 	let effectiveFaded = $derived(isHovering ? false : faded);
 	
-	// Get current path only on client side
-	$effect(() => {
-		if (typeof window !== 'undefined') {
-			currentPath = window.location.pathname;
-		}
-	});
 	
 	// Function to handle Grid/List click - navigate to front page with view mode (desktop only)
 	function handleViewModeClick() {
