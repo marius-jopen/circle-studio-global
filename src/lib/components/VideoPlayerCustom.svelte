@@ -354,7 +354,15 @@
                 } else {
                     import('hls.js').then(({ default: Hls }) => {
                         if (Hls.isSupported()) {
-                            const hls = new Hls({ autoStartLoad: true });
+                            const hls = new Hls({
+                                autoStartLoad: true,
+                                capLevelToPlayerSize: true,
+                                maxBufferLength: 15,
+                                maxMaxBufferLength: 30,
+                                lowLatencyMode: false,
+                                maxBufferSize: 30 * 1000 * 1000,
+                                startLevel: -1
+                            });
                             hls.on(Hls.Events.ERROR, (event: any, data: any) => {
                                 if (data.fatal) {
                                     switch (data.type) {
@@ -381,28 +389,28 @@
                 videoElement.src = videoUrl;
             }
 
-            // Recovery handlers for mobile stalls/black frame
-            const nudge = () => {
-                try {
-                    if (videoElement && !videoElement.paused) {
-                        const t = videoElement.currentTime;
-                        videoElement.currentTime = Math.max(0, t + 0.01);
-                    }
-                } catch (_) {}
-            };
-            const reloadOnError = () => {
-                try {
-                    videoElement.load();
-                    if (initialShouldAutoplay || shouldAutoplay) {
+            // Recovery handlers only for Hls.js path (avoid interfering with native iOS pipeline)
+            if (useHls && !preferNativeHls) {
+                const nudge = () => {
+                    try {
+                        if (videoElement && !videoElement.paused) {
+                            const t = videoElement.currentTime;
+                            videoElement.currentTime = Math.max(0, t + 0.01);
+                        }
+                    } catch (_) {}
+                };
+                const reloadOnError = () => {
+                    try {
+                        videoElement.load();
                         videoElement.play().catch(() => {});
-                    }
-                } catch (_) {}
-            };
-            videoElement.addEventListener('stalled', nudge);
-            videoElement.addEventListener('waiting', nudge);
-            videoElement.addEventListener('suspend', nudge);
-            videoElement.addEventListener('emptied', nudge);
-            videoElement.addEventListener('error', reloadOnError);
+                    } catch (_) {}
+                };
+                videoElement.addEventListener('stalled', nudge);
+                videoElement.addEventListener('waiting', nudge);
+                videoElement.addEventListener('suspend', nudge);
+                videoElement.addEventListener('emptied', nudge);
+                videoElement.addEventListener('error', reloadOnError);
+            }
         }
 
         return () => {
@@ -524,7 +532,7 @@
 		bind:this={videoElement}
 		class={videoClass}
 		poster={posterImage?.url || ''}
-		preload={shouldAutoplay ? 'auto' : (isMobile ? 'none' : 'auto')}
+		preload={isMobile ? 'metadata' : (shouldAutoplay ? 'auto' : 'auto')}
 		loop
 		muted={isMuted}
 		autoplay={shouldAutoplay}
