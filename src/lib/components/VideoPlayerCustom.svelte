@@ -380,15 +380,20 @@
 		currentTime = 0;
 		duration = 0;
         hasUserPlayed = false;
+
+		// Proactively pause and reset before swapping sources
+		try { videoElement.pause(); } catch (_) {}
+		try {
+			// Destroy existing HLS instance if any before changing src
+			if ((videoElement as any).hls) {
+				(videoElement as any).hls.destroy();
+				(videoElement as any).hls = undefined;
+			}
+		} catch (_) {}
 		
 		if (useHls) {
 			import('hls.js').then(({ default: Hls }) => {
 				if (Hls.isSupported()) {
-					// Destroy existing HLS instance if any
-					if ((videoElement as any).hls) {
-						(videoElement as any).hls.destroy();
-					}
-					
 					const hls = new Hls({ autoStartLoad: true });
 					hls.loadSource(hlsUrl);
 					hls.attachMedia(videoElement);
@@ -402,7 +407,10 @@
 		} else {
 			videoElement.src = videoUrl;
 		}
-		
+
+		// Force a load to reset pipeline (helps Safari)
+		try { videoElement.load(); } catch (_) {}
+
         // Reset mute state and autoplay (with mobile override)
         videoElement.muted = defaultMuted;
         isMuted = defaultMuted;
@@ -419,7 +427,7 @@
         }
 
 		if (shouldAutoplay) {
-			const tryPlay = () => {
+			const immediateTryPlay = () => {
 				const p = videoElement.play();
 				if (p && typeof p.then === 'function') {
 					p.catch(() => {
@@ -429,12 +437,23 @@
 					});
 				}
 			};
-			
-			if (videoElement.readyState >= 2) {
-				tryPlay();
-			} else {
-				videoElement.addEventListener('loadeddata', tryPlay, { once: true });
+
+			// Try immediately, then on readiness events, and also next frame
+			try { immediateTryPlay(); } catch (_) {}
+			if (videoElement.readyState < 2) {
+				videoElement.addEventListener('loadeddata', immediateTryPlay, { once: true });
+				videoElement.addEventListener('canplay', immediateTryPlay, { once: true });
 			}
+			requestAnimationFrame(() => { try { immediateTryPlay(); } catch (_) {} });
+
+			// Fallback: unlock on first user interaction if blocked
+			const unlock = () => {
+				try { immediateTryPlay(); } catch (_) {}
+				document.removeEventListener('touchend', unlock);
+				document.removeEventListener('click', unlock);
+			};
+			document.addEventListener('touchend', unlock, { once: true, passive: true });
+			document.addEventListener('click', unlock, { once: true });
 		}
 	});
 </script>

@@ -307,7 +307,7 @@
 </script>
 
 		{#if clickable}
-	<a href="/work/{projectUid}" class="block " bind:this={projectElement}
+    <a href="/work/{projectUid}" class="block " bind:this={projectElement} data-sveltekit-preload-code data-sveltekit-preload-data
 	   on:mouseenter={() => {
 		   isHovering = true;
 		   hasEverHovered = true;

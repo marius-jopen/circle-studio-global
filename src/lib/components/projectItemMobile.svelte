@@ -54,7 +54,7 @@ $: projectClient = projectData?.client || 'Untitled Client';
 
 
 {#if clickable}
-	<a href="/work/{projectUid}" class="block" bind:this={projectElement}>
+    <a href="/work/{projectUid}" class="block" bind:this={projectElement} data-sveltekit-preload-code data-sveltekit-preload-data>
 		{#if selectedPreview}
 			{@const preview = selectedPreview.item}
 			{@const videoUrl = preview?.preview_video_url_portrait}

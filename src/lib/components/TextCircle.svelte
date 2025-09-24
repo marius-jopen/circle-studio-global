@@ -503,14 +503,22 @@
 
   // Initialize fade animation on mount
   onMount(() => {
-    // Ensure custom font is loaded for accurate measurements
-    if (browser && (document as any).fonts?.load) {
+    // Ensure custom fonts are loaded BEFORE first draw to prevent weight flash
+    if (browser && (document as any).fonts?.ready) {
       try {
-        // Load a typical size; metrics will be correct for others
+        // Wait until all document fonts are ready
+        (document as any).fonts.ready.then(() => {
+          draw();
+        }).catch(() => { try { draw(); } catch {} });
+      } catch {
+        try { draw(); } catch {}
+      }
+    } else if (browser && (document as any).fonts?.load) {
+      try {
         (document as any).fonts.load(`16px "${primaryFontFamily}"`).then(() => {
           draw();
-        }).catch(() => {});
-      } catch {}
+        }).catch(() => { try { draw(); } catch {} });
+      } catch { try { draw(); } catch {} }
     }
     
     const letters = text.split('');
@@ -528,7 +536,9 @@
       phaseStartTime = 0;
     }
     
-    startAnimation();
+    // Start animation only after at least one draw queued post fonts readiness
+    // Small delay ensures fonts-applied canvas paint
+    setTimeout(() => startAnimation(), 0);
     return () => stopAnimation();
   });
 </script>
