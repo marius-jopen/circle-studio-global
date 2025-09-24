@@ -345,21 +345,65 @@
         videoElement.addEventListener('webkitbeginfullscreen', () => { isFullscreen = true; });
         videoElement.addEventListener('webkitendfullscreen', () => { isFullscreen = false; });
 
-		if (videoElement) {
-			if (useHls) {
-				import('hls.js').then(({ default: Hls }) => {
-					if (Hls.isSupported()) {
-						const hls = new Hls({ autoStartLoad: true });
-						hls.loadSource(hlsUrl);
-						hls.attachMedia(videoElement);
-					} else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-						videoElement.src = hlsUrl;
-					}
-				});
-			} else {
-				videoElement.src = videoUrl;
-			}
-		}
+        if (videoElement) {
+            const canPlayNativeHls = typeof videoElement.canPlayType === 'function' && videoElement.canPlayType('application/vnd.apple.mpegurl');
+            const preferNativeHls = canPlayNativeHls && isMobile;
+            if (useHls) {
+                if (preferNativeHls) {
+                    videoElement.src = hlsUrl;
+                } else {
+                    import('hls.js').then(({ default: Hls }) => {
+                        if (Hls.isSupported()) {
+                            const hls = new Hls({ autoStartLoad: true });
+                            hls.on(Hls.Events.ERROR, (event: any, data: any) => {
+                                if (data.fatal) {
+                                    switch (data.type) {
+                                        case Hls.ErrorTypes.NETWORK_ERROR:
+                                            hls.startLoad();
+                                            break;
+                                        case Hls.ErrorTypes.MEDIA_ERROR:
+                                            hls.recoverMediaError();
+                                            break;
+                                        default:
+                                            hls.destroy();
+                                    }
+                                }
+                            });
+                            hls.loadSource(hlsUrl);
+                            hls.attachMedia(videoElement);
+                            (videoElement as any).hls = hls;
+                        } else if (canPlayNativeHls) {
+                            videoElement.src = hlsUrl;
+                        }
+                    });
+                }
+            } else {
+                videoElement.src = videoUrl;
+            }
+
+            // Recovery handlers for mobile stalls/black frame
+            const nudge = () => {
+                try {
+                    if (videoElement && !videoElement.paused) {
+                        const t = videoElement.currentTime;
+                        videoElement.currentTime = Math.max(0, t + 0.01);
+                    }
+                } catch (_) {}
+            };
+            const reloadOnError = () => {
+                try {
+                    videoElement.load();
+                    if (initialShouldAutoplay || shouldAutoplay) {
+                        videoElement.play().catch(() => {});
+                    }
+                } catch (_) {}
+            };
+            videoElement.addEventListener('stalled', nudge);
+            videoElement.addEventListener('waiting', nudge);
+            videoElement.addEventListener('suspend', nudge);
+            videoElement.addEventListener('emptied', nudge);
+            videoElement.addEventListener('error', reloadOnError);
+        }
 
         return () => {
 			window.removeEventListener('video-playing-with-sound', handleOtherVideoPlaying);
