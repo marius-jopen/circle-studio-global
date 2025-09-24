@@ -372,8 +372,12 @@
 	});
 
 	// Handle URL changes when navigating between projects
-	$effect(() => {
-		if (!videoElement || !hlsUrl) return;
+    let lastHandledHlsUrl: string | null = hlsUrl || null;
+    $effect(() => {
+        if (!videoElement || !hlsUrl) return;
+        // Avoid double re-initialization on first mount which can cause a brief black frame on mobile
+        if (lastHandledHlsUrl === hlsUrl) return;
+        lastHandledHlsUrl = hlsUrl;
 		
 		// Reset video state
 		isPlaying = false;
@@ -486,12 +490,6 @@
 		onplay={() => { isPlaying = true; }}
 		onpause={() => { isPlaying = false; }}
 	>
-		{#if useHls}
-			<source src={hlsUrl} type="application/x-mpegURL" />
-			<source src={videoUrl} type="video/mp4" />
-		{:else}
-			<source src={videoUrl} type="video/mp4" />
-		{/if}
 		<track kind="captions" src="" label="Captions" />
 	</video>
 
