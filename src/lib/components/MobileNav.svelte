@@ -25,7 +25,7 @@ function closeSearch() {
 </script>
 
 <div class="md:hidden fixed bottom-5 left-0 right-0 z-50 flex justify-center items-center">
-    <div class={`${isAbout ? 'bg-gray-100' : 'bg-white'} rounded-full py-2 px-5 ${isHome && searchOpen ? 'w-full mx-4' : ''}`}>
+    <div class={`${isAbout ? 'bg-gray-100' : 'bg-gray-100'} rounded-full py-2 px-5 ${isHome && searchOpen ? 'w-full mx-4' : ''}`}>
         <nav class="flex items-center justify-center gap-x-5 text-xl ${isHome && searchOpen ? 'w-full' : ''}">
             {#if isHome}
                 {#if !searchOpen}

@@ -194,7 +194,7 @@
 									<TextCircle
 										text={selectedText}
 										fontSize={mobileContainerSize * 0.16}
-										radius={(mobileContainerSize / 2) - (mobileContainerSize * 0.16 * 1.2)}
+										radius={(mobileContainerSize / 2) - (mobileContainerSize * 0.16 * 0.8)}
 										rotationSpeed={0.2}
 										spacingAmplitudePercent={0}
 										spacingSpeed={0}

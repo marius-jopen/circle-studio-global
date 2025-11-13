@@ -37,6 +37,10 @@ p {
     @apply text-base md:text-xl leading-[20px] md:leading-[26px];
 }
 
+.h0 {
+    @apply text-sm md:text-4xl font-normal leading-[22px] md:leading-[46px];
+}
+
 h1, .h1 {
     @apply text-xl md:text-4xl font-normal leading-[28px] md:leading-[46px];
 }
