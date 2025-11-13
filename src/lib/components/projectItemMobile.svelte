@@ -6,8 +6,9 @@
 
 	export let project: ProjectsDocument | any;
 export let dimension: 'landscape' | 'square' | 'portrait' = 'portrait';
-export let itemsPerRow: number = 1;
+export const itemsPerRow: number = 1;
 	export let clickable: boolean = true;
+	export let square: boolean = false;
 
 	let projectElement: HTMLElement;
 	let isInView = false;
@@ -17,6 +18,9 @@ export let itemsPerRow: number = 1;
 	$: projectUid = project.uid || project.id;
 	$: projectTitle = projectData?.title || 'Untitled Project';
 $: projectClient = projectData?.client || 'Untitled Client';
+	
+	// Corner style class based on square prop
+	$: cornerClass = square ? '' : 'rounded';
 
 	function filterItemsForDimension(items: any[], dim: 'landscape' | 'square' | 'portrait') {
 		if (dim === 'portrait') {
@@ -40,12 +44,29 @@ $: projectClient = projectData?.client || 'Untitled Client';
 			if (!projectElement) return;
 			if (io) { try { io.disconnect(); } catch {}
 				io = null; }
+			
+			// Check if element is already in viewport immediately
+			const checkInitialView = () => {
+				if (!projectElement) return;
+				const rect = projectElement.getBoundingClientRect();
+				const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+				if (isVisible) {
+					isInView = true;
+				}
+			};
+			
+			// Check immediately
+			checkInitialView();
+			
 			io = new IntersectionObserver((entries) => {
 				for (const entry of entries) {
 					isInView = entry.isIntersecting || entry.intersectionRatio > 0;
 				}
 			}, { root: null, rootMargin: '0px 0px', threshold: 0.1 });
 			io.observe(projectElement);
+			
+			// Also check after a short delay to catch any timing issues
+			setTimeout(checkInitialView, 100);
 		};
 		setupIO();
 		return () => { if (io) { try { io.disconnect(); } catch {} io = null; } };
@@ -62,17 +83,17 @@ $: projectClient = projectData?.client || 'Untitled Client';
 
 			{#if videoUrl}
 				{#if isInView}
-					<div class="relative brightness-[95%] rounded overflow-hidden bg-black" role="group">
-					<VideoPlayerMobile hlsUrl={videoUrl} posterImage={imageField} classes="w-full h-auto rounded object-cover transition-all duration-300 aspect-[3/4]" inView={isInView} />
+					<div class="relative brightness-[95%] {cornerClass} overflow-hidden bg-black" role="group">
+					<VideoPlayerMobile hlsUrl={videoUrl} posterImage={imageField} classes="w-full h-auto object-cover transition-all duration-300 aspect-[3/4]" inView={isInView} square={square} />
 						<div class="absolute bottom-0 left-0 right-0 p-3 text-white">
 							<div class="text-xl">{projectTitle}</div>
 							<div class="text-xl  opacity-60">{projectClient}</div>
 						</div>
 					</div>
 				{:else}
-					<div class="relative brightness-[95%] rounded overflow-hidden bg-white" role="group">
+					<div class="relative brightness-[95%] {cornerClass} overflow-hidden bg-white" role="group">
 						{#if imageField?.url}
-							<PrismicImage field={imageField} class="w-full h-auto rounded overflow-hidden transition-all duration-300 aspect-[3/4] object-cover" />
+							<PrismicImage field={imageField} class="w-full h-auto {cornerClass} overflow-hidden transition-all duration-300 aspect-[3/4] object-cover" />
 						{:else}
 							<div class="aspect-[3/4] bg-black"></div>
 						{/if}
@@ -83,9 +104,9 @@ $: projectClient = projectData?.client || 'Untitled Client';
 					</div>
 				{/if}
 			{:else}
-					<div class="relative brightness-[95%] rounded overflow-hidden bg-white" role="group">
+					<div class="relative brightness-[95%] {cornerClass} overflow-hidden bg-white" role="group">
 					{#if imageField?.url}
-						<PrismicImage field={imageField} class="w-full h-auto rounded overflow-hidden transition-all duration-300 aspect-[3/4] object-cover" />
+						<PrismicImage field={imageField} class="w-full h-auto {cornerClass} overflow-hidden transition-all duration-300 aspect-[3/4] object-cover" />
 					{:else}
 						<div class="aspect-[3/4] bg-black"></div>
 					{/if}
@@ -96,7 +117,7 @@ $: projectClient = projectData?.client || 'Untitled Client';
 				</div>
 			{/if}
 		{:else}
-			<div class="relative brightness-[95%] rounded overflow-hidden bg-black aspect-[3/4]" role="group">
+			<div class="relative brightness-[95%] {cornerClass} overflow-hidden bg-black aspect-[3/4]" role="group">
 				<div class="absolute bottom-0 left-0 right-0 p-3 text-white">
 					<div class="text-xl font-medium">{projectTitle}</div>
 					<div class="text-xl opacity-60">{projectClient}</div>
@@ -113,17 +134,17 @@ $: projectClient = projectData?.client || 'Untitled Client';
 
 			{#if videoUrl}
 				{#if isInView}
-					<div class="relative rounded overflow-hidden bg-black" role="group">
-					<VideoPlayerMobile hlsUrl={videoUrl} posterImage={imageField} classes="w-full h-auto rounded object-cover aspect-[3/4]" inView={isInView} />
+					<div class="relative {cornerClass} overflow-hidden bg-black" role="group">
+					<VideoPlayerMobile hlsUrl={videoUrl} posterImage={imageField} classes="w-full h-auto object-cover aspect-[3/4]" inView={isInView} square={square} />
 						<div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white">
 							<div class="text-xl font-medium">{projectTitle}</div>
 							<div class="text-xl opacity-80">{projectClient}</div>
 						</div>
 					</div>
 				{:else}
-					<div class="relative rounded overflow-hidden bg-white" role="group">
+					<div class="relative {cornerClass} overflow-hidden bg-white" role="group">
 						{#if imageField?.url}
-							<PrismicImage field={imageField} class="w-full h-auto rounded object-cover aspect-[3/4]" />
+							<PrismicImage field={imageField} class="w-full h-auto {cornerClass} object-cover aspect-[3/4]" />
 						{:else}
 							<div class="aspect-[3/4] bg-black"></div>
 						{/if}
@@ -134,9 +155,9 @@ $: projectClient = projectData?.client || 'Untitled Client';
 					</div>
 				{/if}
 			{:else}
-					<div class="relative rounded overflow-hidden bg-white" role="group">
+					<div class="relative {cornerClass} overflow-hidden bg-white" role="group">
 					{#if imageField?.url}
-						<PrismicImage field={imageField} class="w-full h-auto rounded object-cover aspect-[3/4]" />
+						<PrismicImage field={imageField} class="w-full h-auto {cornerClass} object-cover aspect-[3/4]" />
 					{:else}
 						<div class="aspect-[3/4] bg-black"></div>
 					{/if}
@@ -147,7 +168,7 @@ $: projectClient = projectData?.client || 'Untitled Client';
 				</div>
 			{/if}
 		{:else}
-			<div class="relative rounded overflow-hidden bg-black aspect-[3/4]" role="group">
+			<div class="relative {cornerClass} overflow-hidden bg-black aspect-[3/4]" role="group">
 				<div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white">
 					<div class="text-xl font-medium">{projectTitle}</div>
 					<div class="text-xl opacity-80">{projectClient}</div>

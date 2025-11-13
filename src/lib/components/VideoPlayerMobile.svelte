@@ -7,14 +7,23 @@
 		posterImage?: any;
 		classes?: string;
 		inView?: boolean;
+		square?: boolean;
 	}
 
 	const {
 		hlsUrl,
 		posterImage = null,
 		classes = 'w-full h-auto rounded object-cover',
-		inView = false
+		inView = false,
+		square = false
 	}: Props = $props();
+	
+	// Remove rounded from classes if square is true, and clean up extra spaces
+	const processedClasses = $derived(
+		square 
+			? classes.replace(/\brounded\b/g, '').replace(/\s+/g, ' ').trim()
+			: classes
+	);
 
 	let videoElement = $state<HTMLVideoElement | null>(null);
 	let hlsInstance = $state<any>(null);
@@ -27,18 +36,86 @@
 	const tryPlay = async () => {
 		const el = videoElement;
 		if (!el) return;
-		try {
-			el.muted = true;
-			(el as any).playsInline = true;
-			const p = el.play();
-			if (p) await p;
-		} catch (e) {
-			// Fallback: wait for metadata then retry
+		
+		// Ensure all autoplay-friendly attributes are set
+		el.muted = true;
+		el.autoplay = true;
+		(el as any).playsInline = true;
+		el.setAttribute('playsinline', '');
+		el.setAttribute('webkit-playsinline', '');
+		el.setAttribute('muted', '');
+		el.setAttribute('autoplay', '');
+		
+		// Wait for video to have enough data before playing
+		const attemptPlay = async () => {
 			try {
-				await new Promise((resolve) => el.addEventListener('loadedmetadata', resolve, { once: true }));
-				el.muted = true;
-				await el.play();
-			} catch {}
+				// If video already has enough data, play immediately
+				if (el.readyState >= 2) {
+					const playPromise = el.play();
+					if (playPromise !== undefined) {
+						await playPromise;
+					}
+					return;
+				}
+				
+				// Otherwise wait for loadeddata event
+				await new Promise<void>((resolve, reject) => {
+					const timeout = setTimeout(() => {
+						reject(new Error('Timeout waiting for video data'));
+					}, 5000);
+					
+					const onLoadedData = () => {
+						clearTimeout(timeout);
+						el.removeEventListener('loadeddata', onLoadedData);
+						el.removeEventListener('canplay', onCanPlay);
+						resolve();
+					};
+					
+					const onCanPlay = () => {
+						clearTimeout(timeout);
+						el.removeEventListener('loadeddata', onLoadedData);
+						el.removeEventListener('canplay', onCanPlay);
+						resolve();
+					};
+					
+					el.addEventListener('loadeddata', onLoadedData, { once: true });
+					el.addEventListener('canplay', onCanPlay, { once: true });
+					
+					// If already ready, resolve immediately
+					if (el.readyState >= 2) {
+						clearTimeout(timeout);
+						el.removeEventListener('loadeddata', onLoadedData);
+						el.removeEventListener('canplay', onCanPlay);
+						resolve();
+					}
+				});
+				
+				// Now try to play
+				const playPromise = el.play();
+				if (playPromise !== undefined) {
+					await playPromise;
+				}
+			} catch (error) {
+				console.log('Autoplay attempt failed, will retry on user interaction:', error);
+				// Set up user interaction handler as fallback
+				const enableAutoplay = () => {
+					if (el && el.paused) {
+						el.play().catch(() => {});
+					}
+					document.removeEventListener('touchstart', enableAutoplay);
+					document.removeEventListener('click', enableAutoplay);
+				};
+				document.addEventListener('touchstart', enableAutoplay, { once: true });
+				document.addEventListener('click', enableAutoplay, { once: true });
+			}
+		};
+		
+		// Try playing immediately, or wait for data
+		if (el.readyState >= 2) {
+			await attemptPlay();
+		} else {
+			// Wait a bit for the source to start loading, then try
+			setTimeout(() => attemptPlay(), 100);
 		}
 	};
 
@@ -95,7 +172,8 @@
 		if (!browser || !videoElement) return;
 		if (inView) {
 			loadSources();
-			queueMicrotask(() => tryPlay());
+			// Wait a bit longer for sources to start loading before attempting play
+			setTimeout(() => tryPlay(), 200);
 		} else {
 			unloadSources();
 		}
@@ -104,21 +182,23 @@
 	onMount(() => {
 		if (inView) {
 			loadSources();
-			tryPlay();
+			// Wait for sources to load before attempting play
+			setTimeout(() => tryPlay(), 200);
 		}
 	});
 </script>
 
-<div class="relative {classes} bg-white">
+<div class="relative {processedClasses} bg-white">
 	{#if inView}
 		<video
 			bind:this={videoElement}
 			class="w-full h-full object-cover bg-white"
-			preload="none"
+			preload="auto"
 			autoplay
 			loop
 			muted
 			playsinline
+			webkit-playsinline
 			controlslist="nodownload nofullscreen noremoteplayback"
 			aria-label="Project preview video"
             onplaying={() => {
@@ -128,6 +208,12 @@
 			}}
 			onpause={() => { isPlaying = false; }}
 			onemptied={() => { isPlaying = false; }}
+			onloadeddata={() => {
+				// Ensure autoplay when data is loaded
+				if (videoElement && videoElement.paused && inView) {
+					videoElement.play().catch(() => {});
+				}
+			}}
 		></video>
         {#if posterImage?.url}
             <img

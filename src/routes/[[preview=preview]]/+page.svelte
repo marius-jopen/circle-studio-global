@@ -4,6 +4,7 @@
 	import { components } from '$lib/slices';
 	import ProjectIndex from '$lib/components/ProjectIndex.svelte';
 	import ProjectItem from '$lib/components/projectItem.svelte';
+	import ProjectItemMobile from '$lib/components/projectItemMobile.svelte';
     import ProjectIndexList from '$lib/components/ProjectIndexList.svelte';
     import GlobalPreviewPlayer from '$lib/components/GlobalPreviewPlayer.svelte';
     import { onMount, tick } from 'svelte';
@@ -54,6 +55,9 @@
 
 	// Track previous view mode to detect changes
 	let previousViewMode = $viewMode;
+	
+	// Mobile detection for featured projects
+	let isMobile = false;
 
 	// Map Prismic "size" select values to ProjectItem dimensions
 	function mapSizeToDimension(size?: string | null): 'landscape' | 'square' | 'portrait' {
@@ -90,21 +94,32 @@
 		window.scrollTo({ top: 0 });
 	}
 
-	onMount(async () => {
+	onMount(() => {
+		// Mobile detection
+		const updateMobile = () => { isMobile = typeof window !== 'undefined' && window.innerWidth < 768; };
+		updateMobile();
+		window.addEventListener('resize', updateMobile);
+		
 		// Sync the live store to the intended initial mode first to avoid any flicker,
 		// then clear the temporary initialViewMode so the store drives UI afterwards.
-		try {
-			if (initialViewMode === 'grid' || initialViewMode === 'list') {
-				const { setViewMode } = await import('$lib/stores');
-				setViewMode(initialViewMode);
-				await tick();
-			} else {
-				initializeViewMode();
-				await tick();
+		(async () => {
+			try {
+				if (initialViewMode === 'grid' || initialViewMode === 'list') {
+					const { setViewMode } = await import('$lib/stores');
+					setViewMode(initialViewMode);
+					await tick();
+				} else {
+					initializeViewMode();
+					await tick();
+				}
+			} finally {
+				initialViewMode = null;
 			}
-		} finally {
-			initialViewMode = null;
-		}
+		})();
+		
+		return () => {
+			window.removeEventListener('resize', updateMobile);
+		};
 	});
 
 	// Safely derive text content from Prismic field (supports StructuredText or Text)
@@ -143,7 +158,11 @@
 {#if currentView === 'grid' && !isSearchActive}
 	{#if isFilled.contentRelationship(data.page.data.feature_project)}
 		<div class="">
-			<ProjectItem dimension="landscape" square={true} project={data.page.data.feature_project} />
+			{#if isMobile}
+				<ProjectItemMobile square={true} dimension="portrait" project={data.page.data.feature_project} />
+			{:else}
+				<ProjectItem dimension="landscape" square={true} project={data.page.data.feature_project} />
+			{/if}
 		</div>
 	{/if}
 
@@ -163,14 +182,17 @@
 				{#each data.page.data.feature_projects as projectGroup}
 					{#if isFilled.contentRelationship(projectGroup.items)}
 						<div class={mapSizeToColSpanClasses(projectGroup?.size)}>
-							<ProjectItem dimension={mapSizeToDimension(projectGroup?.size)} project={projectGroup.items} />
+							{#if isMobile}
+								<ProjectItemMobile dimension="portrait" project={projectGroup.items} />
+							{:else}
+								<ProjectItem dimension={mapSizeToDimension(projectGroup?.size)} project={projectGroup.items} />
+							{/if}
 						</div>
 					{/if}
 				{/each}
 			</div>
 		{/if}
 	{/if}
-
 	{#if currentView === 'grid' && !isSearchActive}
 		{#if homeTextSub && homeTextSub.trim().length > 0}
 			<div class="content-container mb-12 mt-10 text-center text-primary">
