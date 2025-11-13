@@ -12,6 +12,8 @@
 	export let dimension: 'landscape' | 'square' | 'portrait' = 'landscape';
 	export let clickable: boolean = true;
 	export let itemsPerRow: number = 1;
+	// If true, do not apply rounded corners to media
+	export let square: boolean = false;
 	
 	// ========================================
 	// 🎛️ MOBILE VIDEO CONTROL - TOGGLE HERE
@@ -38,6 +40,9 @@
 		square: 'aspect-square',
 		portrait: 'aspect-[3/4]'
 	}[effectiveDimension];
+
+	// Corner style class based on square prop
+	$: cornerClass = square ? '' : 'rounded';
 
 	// Calculate container size based on dimension and items per row
 	function getContainerSizePercent(dimension: string, itemsPerRow: number, isMobile: boolean): number {
@@ -343,7 +348,7 @@
 					<VideoPlayerSimple 
 						hlsUrl={videoUrl}
 						posterImage={imageField} 
-						classes="w-full h-auto rounded object-cover hover:brightness-60 transition-all duration-300 {aspectClass}"
+						classes="w-full h-auto {cornerClass} object-cover hover:brightness-60 transition-all duration-300 {aspectClass}"
 						playbackRate={isHovering ? 1 : 1} 
 						dimension={effectiveDimension}
 						{itemsPerRow}
@@ -369,10 +374,10 @@
 					{/if}
 				</div>
 			{:else if imageField?.url}
-				<div class="relative brightness-[95%] rounded overflow-hidden " role="group">
+				<div class="relative brightness-[95%] overflow-hidden {cornerClass}" role="group">
 					<PrismicImage 
 						field={imageField} 
-						class="w-full brightness-90 md:brightness-0 h-auto rounded overflow-hidden hover:brightness-60 transition-all duration-300 {aspectClass} object-cover"
+						class="w-full brightness-90 md:brightness-0 h-auto {cornerClass} overflow-hidden hover:brightness-60 transition-all duration-300 {aspectClass} object-cover"
 					/>
 					<!-- BigWheel positioned directly over the image (desktop only) -->
 					{#if !isMobile}
@@ -432,7 +437,7 @@
 					<VideoPlayerSimple 
 						hlsUrl={videoUrl}
 						posterImage={imageField} 
-						classes="w-full h-auto rounded object-cover {aspectClass}"
+						classes="w-full h-auto {cornerClass} object-cover {aspectClass}"
 						playbackRate={isHovering ? 0.5 : 1}
 						dimension={effectiveDimension}
 						{itemsPerRow}
@@ -461,7 +466,7 @@
 				<div class="relative" role="group">
 					<PrismicImage 
 						field={imageField} 
-						class="w-full h-auto rounded {aspectClass} object-cover"
+						class="w-full h-auto {cornerClass} {aspectClass} object-cover"
 					/>
 					<!-- BigWheel positioned directly over the image (desktop only) -->
 					{#if !isMobile}

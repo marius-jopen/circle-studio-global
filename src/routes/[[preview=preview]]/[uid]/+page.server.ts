@@ -12,9 +12,9 @@ export async function load({ params, fetch, cookies }) {
 		return {
 			page,
 			title: asText(page.data.title),
-			meta_description: page.data.meta_description,
-			meta_title: page.data.meta_title,
-			meta_image: page.data.meta_image.url
+		meta_description: page?.data?.meta_description ?? null,
+		meta_title: page?.data?.meta_title ?? null,
+		meta_image: page?.data?.meta_image?.url ?? null
 		};
 	} catch (err) {
 		console.error(`Failed to fetch page with UID: ${params.uid}`, err);

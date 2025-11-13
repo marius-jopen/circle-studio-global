@@ -101,6 +101,10 @@
 			initializeViewMode();
 		}
 	});
+
+	// Safely derive text content from Prismic field (supports StructuredText or Text)
+	$: homeTextRaw = data?.page?.data?.text;
+	$: homeText = Array.isArray(homeTextRaw) ? asText(homeTextRaw) : (typeof homeTextRaw === 'string' ? homeTextRaw : '');
 </script>
 
 <!-- Remove the view switch selector from the top-center -->
@@ -126,13 +130,21 @@
     </div>
 </div> -->
 
-<div class="px-3 mt-3 md:mt-12 md:mt-14 ">
-	{#if isFilled.contentRelationship(data.page.data.feature_project)}
-		<div class="pb-2">
-			<ProjectItem dimension="landscape" project={data.page.data.feature_project} />
-		</div>
-	{/if}
+{#if isFilled.contentRelationship(data.page.data.feature_project)}
+	<div class="">
+		<ProjectItem dimension="landscape" square={true} project={data.page.data.feature_project} />
+	</div>
+{/if}
 
+{#if homeText && homeText.trim().length > 0}
+	<div class="content-container mb-12 mt-10 text-left md:text-center text-sm md:text-base text-primary">
+		<div class="h1 py-2 md:py-0">
+			{homeText}
+		</div>
+	</div>
+{/if}
+
+<div class="px-3 {isFilled.contentRelationship(data.page.data.feature_project) ? 'mt-2' : 'mt-3 md:mt-12 md:mt-14'}">
 	{#if data.page.data.feature_projects && data.page.data.feature_projects.length > 0}
 		<div class="grid grid-cols-1 md:grid-cols-12 gap-2 pb-2">
 			{#each data.page.data.feature_projects as projectGroup}

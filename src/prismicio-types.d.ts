@@ -141,6 +141,17 @@ interface HomeDocumentData {
 	>;
 
 	/**
+	 * Text field in *Home*
+	 *
+	 * - **Field Type**: Rich Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: home.text
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/rich-text
+	 */
+	text: prismic.RichTextField;
+
+	/**
 	 * Feature Projects field in *Home*
 	 *
 	 * - **Field Type**: Group
