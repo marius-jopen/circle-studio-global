@@ -84,7 +84,7 @@
   
   let circles: CircleConfig[] = [
     {
-      text: 'art camp global',
+      text: 'ART CAMP EST.2016',
       rotationSpeed: 0.2,
       spacingAmplitudePercent: 2,
       spacingSpeed: 0.28,
@@ -227,7 +227,7 @@
     circles = [
       ...circles,
       {
-        text: 'art camp global',
+        text: 'art camp est.2016',
         rotationSpeed: -0.2,
         spacingAmplitudePercent: 2,
         spacingSpeed: 0.28,

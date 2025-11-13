@@ -113,7 +113,7 @@
 							config={{
 								uiVisible: false,
 								items: [{
-									text: 'ART CAMP GLOBAL',
+									text: 'ART CAMP EST.2016',
 									rotationSpeed: isHovering ? 1 : 0.2,
 									spacingAmplitudePercent: 0,
 									spacingSpeed: 0,
@@ -122,7 +122,7 @@
 								}],
 								globalSettings: {
 									containerSizePercent: 30,
-									fontSizePercent: 18.1,
+									fontSizePercent: 17.9,
 									distancePercent: 0,
 									paused: false,
 									textColor: '#171717',
@@ -142,7 +142,7 @@
 							config={{
 								uiVisible: false,
 								items: [{
-									text: 'ART CAMP GLOBAL',
+									text: 'ART CAMP EST.2016',
 									rotationSpeed: isHovering ? 1 : 0.2,
 									spacingAmplitudePercent: 0,
 									spacingSpeed: 0,
@@ -151,7 +151,7 @@
 								}],
 								globalSettings: {
 									containerSizePercent: 30,
-									fontSizePercent: 18.1,
+									fontSizePercent: 17.9,
 									distancePercent: 0,
 									paused: false,
 									textColor: '#ffffff',

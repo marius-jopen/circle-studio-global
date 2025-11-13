@@ -109,7 +109,7 @@
 				config={{
 					uiVisible: false,
 					items: [{
-						text: 'ART CAMP GLOBAL',
+						text: 'ART CAMP EST.2016',
 						rotationSpeed: 0, // No internal rotation - controlled by scroll
 						spacingAmplitudePercent: 0,
 						spacingSpeed: 0,
@@ -118,7 +118,7 @@
 					}],
 					globalSettings: {
 						containerSizePercent: 100, // 2x larger for high-res rendering
-						fontSizePercent: 18, // Larger text for mobile
+						fontSizePercent: 17.8, // Larger text for mobile
 						distancePercent: 0,
 						paused: true, // Pause internal animation since we're controlling rotation externally
 						textColor: '#171717',

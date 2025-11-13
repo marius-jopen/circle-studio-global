@@ -48,7 +48,7 @@
     uiVisible: false,
     items: [
       {
-        text: 'ART CAMP GLOBAL',
+        text: 'ART CAMP EST.2016',
         rotationSpeed: 0.3,
         spacingAmplitudePercent: 0,
         spacingSpeed: 0,
@@ -79,7 +79,7 @@
     uiVisible: false,
     items: [
       {
-        text: 'ART CAMP GLOBAL',
+        text: 'ART CAMP EST.2016',
         rotationSpeed: 0.5,
         spacingAmplitudePercent: 2,
         spacingSpeed: 0.09,

@@ -11,7 +11,7 @@ export async function load({ fetch, cookies }) {
 	return {
 		page,
 		allProjects,
-		title: page?.data?.meta_title || 'ART CAMP GLOBAL',
+		title: page?.data?.meta_title || 'ART CAMP EST.2016',
 		meta_description: page?.data?.meta_description ?? null,
 		meta_title: page?.data?.meta_title ?? null,
 		meta_image: page?.data?.meta_image?.url ?? null

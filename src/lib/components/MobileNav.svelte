@@ -41,9 +41,9 @@ function closeSearch() {
                 <a href="/" class="text-center font-medium whitespace-nowrap">Back</a>
                 <a href="/about" class="text-center font-medium">About</a>
             {:else if isAbout}
-                <a href="/" class="text-center font-medium whitespace-nowrap">Art Camp Global</a>
+                <a href="/" class="text-center font-medium whitespace-nowrap">ART CAMP EST.2016</a>
             {:else}
-                <a href="/" class="text-center font-medium whitespace-nowrap">Art Camp Global</a>
+                <a href="/" class="text-center font-medium whitespace-nowrap">ART CAMP EST.2016</a>
                 <a href="/about" class="text-center font-medium">About</a>
             {/if}
         </nav>
