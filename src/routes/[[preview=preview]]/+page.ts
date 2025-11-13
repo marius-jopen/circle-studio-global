@@ -1,16 +1,20 @@
 import type { PageLoad } from './$types';
 import { browser } from '$app/environment';
 
-export const load: PageLoad = async ({ data, url }) => {
+export const load: PageLoad = async ({ data }) => {
 	let initialViewMode: 'grid' | 'list' | null = null;
 
-	// Prefer explicit query param when present
-	const fromQuery = url.searchParams.get('view');
-	if (fromQuery === 'grid' || fromQuery === 'list') {
-		initialViewMode = fromQuery;
+	// On client: prefer explicit query param; fallback to localStorage
+	if (browser) {
+		try {
+			const fromQuery = new URLSearchParams(window.location.search).get('view');
+			if (fromQuery === 'grid' || fromQuery === 'list') {
+				initialViewMode = fromQuery;
+			}
+		} catch {
+			// ignore
+		}
 	}
-
-	// Fallback to localStorage on client
 	if (initialViewMode === null && browser) {
 		try {
 			const stored = localStorage.getItem('indexViewMode');
