@@ -27,6 +27,9 @@
             return client.includes(query) || title.includes(query) || tags.includes(query) || description.includes(query);
         });
     })();
+    
+    // Check if search is active (has non-empty query)
+    $: isSearchActive = $homeSearchQuery.trim().length > 0;
 
 	// Extract featured project IDs to exclude them from ProjectIndex
 	$: featuredProjectIds = (() => {
@@ -137,7 +140,7 @@
     </div>
 </div> -->
 
-{#if currentView === 'grid'}
+{#if currentView === 'grid' && !isSearchActive}
 	{#if isFilled.contentRelationship(data.page.data.feature_project)}
 		<div class="">
 			<ProjectItem dimension="landscape" square={true} project={data.page.data.feature_project} />
@@ -153,8 +156,8 @@
 	{/if}
 {/if}
 
-<div class="px-3 {isFilled.contentRelationship(data.page.data.feature_project) ? 'mt-2' : 'mt-3 md:mt-12 md:mt-14'}">
-	{#if currentView === 'grid'}
+<div class="px-3 {isFilled.contentRelationship(data.page.data.feature_project) && !isSearchActive ? 'mt-2' : 'mt-3 md:mt-12 md:mt-14'}">
+	{#if currentView === 'grid' && !isSearchActive}
 		{#if data.page.data.feature_projects && data.page.data.feature_projects.length > 0}
 			<div class="grid grid-cols-1 md:grid-cols-12 gap-2 pb-2">
 				{#each data.page.data.feature_projects as projectGroup}
@@ -168,7 +171,7 @@
 		{/if}
 	{/if}
 
-	{#if currentView === 'grid'}
+	{#if currentView === 'grid' && !isSearchActive}
 		{#if homeTextSub && homeTextSub.trim().length > 0}
 			<div class="content-container mb-12 mt-10 text-center text-primary">
 				<div class="h1 py-2 md:py-0">
