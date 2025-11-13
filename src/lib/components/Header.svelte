@@ -39,7 +39,7 @@
 				sessionStorage.setItem('circle-studio-navigating', 'true');
 			} catch {}
 			console.log('🚀 Navigating to front page (SPA)...');
-			goto('/');
+			goto(`/?view=${targetViewMode}`);
 		}
 	}
 	
@@ -54,7 +54,7 @@
 		try {
 			sessionStorage.setItem('circle-studio-navigating', 'true');
 		} catch {}
-		goto('/');
+		goto('/?view=grid');
 	}
 	
 	
@@ -108,8 +108,8 @@
 				
 				<!-- Desktop: Left-aligned wheel -->
 				<a 
-					href="/" 
-					class="hidden md:block -mt-6 transition-all duration-600"
+					href="/?view=grid" 
+					class="hidden md:block -mt-6 transition-all duration-600 logo-link"
 					class:pointer-events-auto={!effectiveFaded}
 					class:pointer-events-none={effectiveFaded}
 					onclick={handleLogoClick}
@@ -232,30 +232,30 @@
 	}
 
 	/* Make the logo link properly handle pointer events */
-	header a[href="/"] {
+	header a.logo-link {
 		pointer-events: auto;
 		z-index: 10000;
 		position: relative;
 	}
 
 	/* Ensure wheels are above everything and handle pointer events correctly */
-	header a[href="/"] > div {
+	header a.logo-link > div {
 		pointer-events: auto;
 		z-index: 10001;
 		cursor: pointer;
 	}
 
 	/* Prevent any cursor conflicts on wheel hover */
-	header a[href="/"]:hover {
+	header a.logo-link:hover {
 		cursor: pointer !important;
 	}
 
-	header a[href="/"]:hover > div {
+	header a.logo-link:hover > div {
 		cursor: pointer !important;
 	}
 
 	/* Ensure BigWheel components don't interfere with cursor */
-	:global(header a[href="/"] canvas) {
+	:global(header a.logo-link canvas) {
 		pointer-events: none;
 		cursor: pointer;
 	}

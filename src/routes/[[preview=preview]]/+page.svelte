@@ -6,10 +6,13 @@
 	import ProjectItem from '$lib/components/projectItem.svelte';
     import ProjectIndexList from '$lib/components/ProjectIndexList.svelte';
     import GlobalPreviewPlayer from '$lib/components/GlobalPreviewPlayer.svelte';
-    import { onMount } from 'svelte';
+    import { onMount, tick } from 'svelte';
 	import { viewMode, initializeViewMode, homeSearchQuery } from '$lib/stores';
 
 	export let data;
+	// Use client-provided initial view mode (from +page.ts) to avoid grid flash on SPA nav
+	let initialViewMode = (data?.initialViewMode ?? null) as ('grid' | 'list' | null);
+	$: currentView = (initialViewMode ?? $viewMode) as 'grid' | 'list';
 	// Toggle: show GlobalPreviewPlayer in grid mode as well
 	const SHOW_PREVIEW_IN_GRID = false;
     // Shared search filtering (used on mobile when search input in MobileNav is open)
@@ -84,23 +87,20 @@
 		window.scrollTo({ top: 0 });
 	}
 
-	onMount(() => {
-		// Always check localStorage and set the correct view mode
-		const stored = localStorage.getItem('indexViewMode');
-		console.log('🏠 Home page - onMount, stored view mode:', stored);
-		console.log('🏠 Home page - current viewMode store value:', $viewMode);
-		
-		if (stored === 'grid' || stored === 'list') {
-			console.log('🏠 Home page - setting view mode from localStorage:', stored);
-			// Use setViewMode to ensure proper store updates and localStorage sync
-			import('$lib/stores').then(({ setViewMode }) => {
-				console.log('🏠 Home page - calling setViewMode with:', stored);
-				setViewMode(stored as 'grid' | 'list');
-				console.log('🏠 Home page - setViewMode completed, new store value:', $viewMode);
-			});
-		} else {
-			console.log('🏠 Home page - no stored view mode, initializing...');
-			initializeViewMode();
+	onMount(async () => {
+		// Sync the live store to the intended initial mode first to avoid any flicker,
+		// then clear the temporary initialViewMode so the store drives UI afterwards.
+		try {
+			if (initialViewMode === 'grid' || initialViewMode === 'list') {
+				const { setViewMode } = await import('$lib/stores');
+				setViewMode(initialViewMode);
+				await tick();
+			} else {
+				initializeViewMode();
+				await tick();
+			}
+		} finally {
+			initialViewMode = null;
 		}
 	});
 
@@ -137,7 +137,7 @@
     </div>
 </div> -->
 
-{#if $viewMode === 'grid'}
+{#if currentView === 'grid'}
 	{#if isFilled.contentRelationship(data.page.data.feature_project)}
 		<div class="">
 			<ProjectItem dimension="landscape" square={true} project={data.page.data.feature_project} />
@@ -154,7 +154,7 @@
 {/if}
 
 <div class="px-3 {isFilled.contentRelationship(data.page.data.feature_project) ? 'mt-2' : 'mt-3 md:mt-12 md:mt-14'}">
-	{#if $viewMode === 'grid'}
+	{#if currentView === 'grid'}
 		{#if data.page.data.feature_projects && data.page.data.feature_projects.length > 0}
 			<div class="grid grid-cols-1 md:grid-cols-12 gap-2 pb-2">
 				{#each data.page.data.feature_projects as projectGroup}
@@ -168,7 +168,7 @@
 		{/if}
 	{/if}
 
-	{#if $viewMode === 'grid'}
+	{#if currentView === 'grid'}
 		{#if homeTextSub && homeTextSub.trim().length > 0}
 			<div class="content-container mb-12 mt-10 text-left md:text-center text-sm md:text-base text-primary">
 				<div class="h1 py-2 md:py-0">
@@ -178,14 +178,14 @@
 		{/if}
 	{/if}
 
-	{#if $viewMode === 'grid'}
+	{#if currentView === 'grid'}
 		<ProjectIndex allProjects={filteredAllProjects} {featuredProjectIds} />
 	{:else}
 		<ProjectIndexList allProjects={filteredAllProjects} {featuredProjectIds} />
 		<!-- Fixed bottom-right hover preview video - only for list view -->
 		<GlobalPreviewPlayer />
 	{/if}
-	{#if $viewMode === 'grid' && SHOW_PREVIEW_IN_GRID}
+	{#if currentView === 'grid' && SHOW_PREVIEW_IN_GRID}
 		<!-- Optional: show hover preview in grid mode too -->
 		<GlobalPreviewPlayer />
 	{/if}
