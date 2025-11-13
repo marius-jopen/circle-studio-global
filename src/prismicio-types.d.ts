@@ -232,6 +232,7 @@ export type HomeDocument<Lang extends string = string> = prismic.PrismicDocument
 >;
 
 type PageDocumentDataSlicesSlice =
+	| TextListSlice
 	| VideoSlice
 	| SpacerSlice
 	| DocumentationSlice
@@ -1135,6 +1136,63 @@ type SpacerSliceVariation = SpacerSliceDefault;
 export type SpacerSlice = prismic.SharedSlice<'spacer', SpacerSliceVariation>;
 
 /**
+ * Item in *TextList → Default → Primary → Items*
+ */
+export interface TextListSliceDefaultPrimaryItemsItem {
+	/**
+	 * Text field in *TextList → Default → Primary → Items*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: text_list.default.primary.items[].text
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	text: prismic.KeyTextField;
+}
+
+/**
+ * Primary content in *TextList → Default → Primary*
+ */
+export interface TextListSliceDefaultPrimary {
+	/**
+	 * Items field in *TextList → Default → Primary*
+	 *
+	 * - **Field Type**: Group
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: text_list.default.primary.items[]
+	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+	 */
+	items: prismic.GroupField<Simplify<TextListSliceDefaultPrimaryItemsItem>>;
+}
+
+/**
+ * Default variation for TextList Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type TextListSliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Simplify<TextListSliceDefaultPrimary>,
+	never
+>;
+
+/**
+ * Slice variation for *TextList*
+ */
+type TextListSliceVariation = TextListSliceDefault;
+
+/**
+ * TextList Shared Slice
+ *
+ * - **API ID**: `text_list`
+ * - **Description**: TextList
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type TextListSlice = prismic.SharedSlice<'text_list', TextListSliceVariation>;
+
+/**
  * Primary content in *Video → Default → Primary*
  */
 export interface VideoSliceDefaultPrimary {
@@ -1324,6 +1382,11 @@ declare module '@prismicio/client' {
 			SpacerSliceDefaultPrimary,
 			SpacerSliceVariation,
 			SpacerSliceDefault,
+			TextListSlice,
+			TextListSliceDefaultPrimaryItemsItem,
+			TextListSliceDefaultPrimary,
+			TextListSliceVariation,
+			TextListSliceDefault,
 			VideoSlice,
 			VideoSliceDefaultPrimary,
 			VideoSliceVariation,
