@@ -46,7 +46,7 @@ h2, .h2 {
 }
 
 h3, .h3, .h3 p {
-    @apply text-sm md:text-2xl font-normal leading-[25x] md:leading-[32px] mb-2;
+    @apply text-sm md:text-2xl font-normal leading-[25x] md:leading-[33px] mb-2;
 }
 
 .paragraph-1 {
@@ -55,6 +55,10 @@ h3, .h3, .h3 p {
 
 .text-primary {
     @apply text-neutral-900;
+}
+
+.text-secondary {
+    @apply text-neutral-400;
 }
 
 /* Custom search input styling */

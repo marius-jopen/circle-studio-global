@@ -115,14 +115,14 @@
         type="text"
         bind:value={searchQuery}
         placeholder="Search projects, clients, tags..."
-        class="px-4 pt-[9px] text-neutral-500 hover:text-black placeholder:text-neutral-400 transition-colors duration-400 pb-[9px] bg-neutral-100 rounded-3xl w-full max-w-xs outline-none focus:outline-none focus:ring-0 focus:border-black text-xs md:text-base hidden md:block"
+        class="px-4 pt-[9px] text-neutral-500 hover:text-black placeholder:text-neutral-400 transition-colors duration-400 pb-[9px] bg-neutral-100 rounded-3xl w-full max-w-xs outline-none focus:outline-none focus:ring-0 focus:border-black text-xs md:text-xl hidden md:block"
     />
 </div>
 
 <div class="divide-y divide-black/10 border-t border-black/10 text-black md:hover:text-black/25 mt-4">
 	{#each sortedProjects as project, index}
 		<a href="/work/{project.uid}"
-		   class="block py-2 transition-all duration-500 ease-out {visibleItems.has(index) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'} {isMobile ? '' : 'hover:text-black'}"
+		   class="block py-2.5 transition-all duration-500 ease-out {visibleItems.has(index) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'} {isMobile ? '' : 'hover:text-black'}"
 		   onmouseenter={() => {
 			   // Only show hover preview on desktop
 			   if (!isMobile) {
@@ -138,18 +138,18 @@
 			   }
 		   }}
 		>
-					<div class="grid grid-cols-12 items-center gap-2 paragraph-1">
-			<div class="col-span-6 md:col-span-4 text-left tracking-wide text-xs md:text-base">{project.data.client}</div>
-			<div class="col-span-6 md:col-span-4 text-left text-xs md:text-base">{project.data.title}</div>
-			<!-- Tags column - hidden on mobile -->
-			<div class="col-span-3 text-left text-xs md:text-base whitespace-nowrap overflow-hidden text-ellipsis hidden md:block">
-				{#if project.tags && project.tags.length > 0}
-					{project.tags.join(', ')}
-				{/if}
+			<div class="grid grid-cols-12 items-center gap-2 paragraph-1">
+				<div class="col-span-6 md:col-span-4 text-left tracking-wide text-xs md:text-xl">{project.data.client}</div>
+				<div class="col-span-6 md:col-span-4 text-left text-xs md:text-xl">{project.data.title}</div>
+				<!-- Tags column - hidden on mobile -->
+				<div class="col-span-3 text-left text-xs md:text-xl whitespace-nowrap overflow-hidden text-ellipsis hidden md:block">
+					{#if project.tags && project.tags.length > 0}
+						{project.tags.join(', ')}
+					{/if}
+				</div>
+				<!-- Year column - hidden on mobile -->
+				<div class="col-span-1 text-right hidden md:block text-xs md:text-xl">{formatYear(project.data.year as string)}</div>
 			</div>
-			<!-- Year column - hidden on mobile -->
-			<div class="col-span-1 text-right hidden md:block text-xs md:text-base">{formatYear(project.data.year as string)}</div>
-		</div>
 		</a>
 	{/each}
 </div>

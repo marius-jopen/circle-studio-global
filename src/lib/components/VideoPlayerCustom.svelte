@@ -42,18 +42,19 @@
 	);
 	
 	// Create responsive text class for mobile controls
+	// IMPORTANT: return explicit class strings so Tailwind doesn't purge them in production
 	const mobileControlsTextClass = $derived(() => {
-		// Map controlsTextClass to proper responsive classes
-		let desktopClass = controlsTextClass;
-		if (controlsTextClass === 'h2') {
-			desktopClass = 'text-3xl'; // h2 maps to text-3xl in CSS
+		let result = 'text-lg md:text-base';
+		if (controlsTextClass === 'text-4xl') {
+			result = 'text-xl md:text-4xl';
+		} else if (controlsTextClass === 'text-base') {
+			result = 'text-lg md:text-base';
+		} else if (controlsTextClass === 'text-sm') {
+			result = 'text-lg md:text-sm';
+		} else if (controlsTextClass === 'h2') {
+			// map semantic h2 to utility sizes
+			result = 'text-lg md:text-3xl';
 		}
-		
-		// Create mobile-appropriate sizes that scale with desktop
-		// Use very small text for mobile - try text-xs first, if still too big we can go smaller
-		let mobileClass = 'text-xs';
-		
-		const result = `${mobileClass} md:${desktopClass}`;
 		console.log('Video controls text class:', result, 'controlsTextClass:', controlsTextClass);
 		return result;
 	});
