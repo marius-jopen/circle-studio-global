@@ -232,7 +232,7 @@
 						],
 						globalSettings: {
 							containerSizePercent: 100,
-							fontSizePercent: 9,
+							fontSizePercent: 20,
 							distancePercent: 0,
 							paused: false,
 							textColor: '#171717',

@@ -164,25 +164,42 @@
     if (!measureCanvas) measureCanvas = document.createElement('canvas');
     const ctx = measureCanvas.getContext('2d');
     if (!ctx) return baseFontSize;
-    ctx.font = `${baseFontSize}px "${primaryFontFamily}", Arial, Helvetica, sans-serif`;
+    
     const letters = textStr.split('');
-    const totalWidth = letters.reduce((sum, l) => sum + ctx.measureText(l).width, 0);
+    if (letters.length === 0) return baseFontSize;
+    
     const circumference = 2 * Math.PI * r;
-    if (totalWidth <= 0 || circumference <= 0) return baseFontSize;
-    // Scale proportionally so total width matches circumference; leave a tiny margin
-    const scale = circumference / totalWidth;
-    const sized = baseFontSize * scale * 0.995; // small safety margin to avoid overflow
+    if (circumference <= 0) return baseFontSize;
+    
+    // Use a large reference font size based on radius for accurate measurement
+    // This ensures we get accurate text width measurements regardless of base font size
+    const referenceFontSize = Math.max(200, r * 0.5);
+    ctx.font = `${referenceFontSize}px "${primaryFontFamily}", Arial, Helvetica, sans-serif`;
+    
+    // Measure text width at reference size
+    const totalWidthAtReference = letters.reduce((sum, l) => sum + ctx.measureText(l).width, 0);
+    if (totalWidthAtReference <= 0) return baseFontSize;
+    
+    // Calculate the scale factor needed to make text fill the circumference
+    // Use 97.5% of circumference to leave a small gap between start and end for readability
+    const targetWidth = circumference * 0.977;
+    const scale = targetWidth / totalWidthAtReference;
+    const sized = referenceFontSize * scale;
+    
     // Prevent absurd values
     const minSize = 2;
+    
     // Edge-guard: ensure glyphs don't get cut off beyond canvas bounds
     // Available outward space from the text baseline to the canvas edge
     const edgeMargin = 2; // small inner margin in px
     const availableOutward = Math.max(0, (containerSize / 2) - r - edgeMargin);
     // Approximate ascent proportion of the font (portion above baseline)
-    const ascentFactor = 0.9; // conservative
+    const ascentFactor = 0.85; // slightly less conservative to allow larger fonts
     const maxByEdge = availableOutward / ascentFactor;
-    const genericCap = Math.max(4, (containerSize / 2));
+    // Allow font size up to a reasonable fraction of container size
+    const genericCap = Math.max(4, (containerSize / 2) * 1.2);
     const maxSize = Math.max(4, Math.min(genericCap, maxByEdge));
+    
     return Math.min(Math.max(sized, minSize), maxSize);
   }
 
