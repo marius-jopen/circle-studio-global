@@ -164,11 +164,11 @@
 <div class="mx-auto px-3 paragraph-1">
 	<!-- Project Info -->
 	<div class="mb-14 md:mb-32 flex flex-col md:grid md:grid-cols-2 gap-2 w-full text-primary">
-		<div class="md:col-span-1 pb-12 md:pb-0">
+		<div class="md:col-span-1 pb-12 md:pb-0 h1">
 			{projectData.title}{projectData.client ? `, ${projectData.client}` : ''}
 		</div>
 		{#if projectData.description}
-			<div class="prose prose-lg max-w-none content-text">
+			<div class="prose prose-lg max-w-none content-text h3 pt-1">
 				<PrismicRichText field={projectData.description} />
 			</div>
 		{/if}
