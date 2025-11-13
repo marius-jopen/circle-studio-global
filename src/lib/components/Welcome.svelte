@@ -34,14 +34,8 @@
   }
   $: projectDate = isProjectPage ? formatDateToMonthDotDayDotYear(page?.data?.project?.data?.date || '') : '';
   
-  // Only show welcome screen on project pages
-  $: {
-    if (isProjectPage) {
-      showWelcome = true; // Show welcome on project pages
-    } else {
-      showWelcome = false; // Hide welcome on all other pages
-    }
-  }
+  // Show welcome screen on initial page loads (home and project pages).
+  // Subsequent internal navigations will skip it (handled in onMount below).
   
   // Normal pages configuration
   $: normalPageConfig = {
@@ -149,17 +143,19 @@
     
     console.log('🔍 Navigation check - isNavigating:', isNavigating, 'entry type:', navigationEntry?.type);
     
-    // Hide welcome screen if this is navigation between pages OR if not on a project page
-    if ((isNavigating && navigationEntry?.type !== 'reload') || !isProjectPage) {
-      console.log('✅ This is navigation or not a project page, hiding welcome screen');
+    // Hide welcome screen only if this is navigation between pages
+    if (isNavigating && navigationEntry?.type !== 'reload') {
+      console.log('✅ This is navigation between pages, hiding welcome screen');
       showWelcome = false;
       wheelVisible = false;
       fadePhase = 'hidden';
     } else {
-      console.log('🆕 This is a fresh load on a project page, showing welcome screen');
-      // This is a fresh load/reload on a project page - clear the navigation flag
+      console.log('🆕 This is a fresh load, showing welcome screen');
+      // This is a fresh load/reload - clear the navigation flag
       sessionStorage.removeItem('circle-studio-navigating');
       showWelcome = true;
+      wheelVisible = true;
+      fadePhase = 'lettersVisible';
     }
 
     // Set navigation flag when user navigates away

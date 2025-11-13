@@ -127,7 +127,7 @@
 									paused: false,
 									textColor: '#171717',
 									transparentBackground: true,
-                        fontFamily: 'CircularXXSub',
+                        fontFamily: 'CircularXXWeb',
 									manualMode: true,
 									fadeInTime: 0,
 									fadeOutTime: 0
