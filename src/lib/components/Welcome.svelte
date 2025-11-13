@@ -210,7 +210,7 @@
        tabindex="0"
        aria-label="Click to continue to website">
     <div class="welcome-content cursor-pointer z-30">
-      <div class="wheel-container cursor-pointer">
+      <div class="wheel-container cursor-pointer scale-50 md:scale-100">
         {#if wheelVisible}
           <BigWheel config={welcomeConfig} />
         {/if}
