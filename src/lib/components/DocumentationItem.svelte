@@ -15,7 +15,8 @@
 
 {#if item}
 	{@const imageField = item.image}
-	{@const videoUrl = item.video_url}
+	{@const rawVideoUrl = item.video_url}
+	{@const videoUrl = (typeof rawVideoUrl === 'string' ? rawVideoUrl.trim() : '')}
 	{@const playMode = item.play}
 	{@const displayPlayMode = (playMode === 'autoplay-muted' || playMode === 'auto-muted') ? 'no-sound' : playMode}
 	

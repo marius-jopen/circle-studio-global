@@ -21,20 +21,20 @@
 	const itemsPerRow = $derived(slice.primary.items_per_row || '3');
 	const gridClass = $derived(getGridCols(itemsPerRow));
 	
-	// Only render items that actually have a video
-	const itemsWithVideo = $derived((slice.primary.items ?? []).filter((it) => !!it.video_url));
-	// Check if any items have videos
-	const hasVideos = $derived(itemsWithVideo.length > 0);
+	// Render all items; individual items decide whether to show video or image
+	const items = $derived(slice.primary.items ?? []);
+	// Show the section if there are any items at all
+	const hasItems = $derived(items.length > 0);
 </script>
 
-{#if hasVideos}
+{#if hasItems}
 	<section 
 		data-slice-type={slice.slice_type} 
 		data-slice-variation={slice.variation}
 		class="mx-auto pb-2"
 	>
 		<div class="grid gap-2 {gridClass}">
-			{#each itemsWithVideo as item}
+			{#each items as item}
 				<DocumentationItem {item} itemsPerRow={itemsPerRow} showVideoOnMobile={false} />
 			{/each}
 		</div>
