@@ -60,24 +60,24 @@
 		switch (dimension) {
 			case 'landscape':
 				switch (itemsPerRow) {
-					case 1: return 80; // Single landscape - biggest
+					case 1: return 110; // Single landscape - biggest
 					case 2: return 40; // Two landscapes side by side
 					default: return 50; // Fallback for more items
 				}
 			case 'square':
 				switch (itemsPerRow) {
-					case 1: return 70; // Single square
-					case 2: return 60; // Two squares side by side
-					case 3: return 55; // Three squares
+					case 1: return 80; // Single square
+					case 2: return 80; // Two squares side by side
+					case 3: return 65; // Three squares
 					default: return 35; // Fallback for more items
 				}
 			case 'portrait':
 				switch (itemsPerRow) {
 					case 1: return 65; // Single portrait
 					case 2: return 60; // Two portraits
-					case 3: return 50; // Three portraits
-					case 4: return 40; // Four portraits - increased from 45%
-					default: return 55; // Fallback for more items
+					case 3: return 70; // Three portraits
+					case 4: return 50; // Four portraits - increased from 45%
+					default: return 50; // Fallback for more items
 				}
 			default:
 				return 60; // Default fallback
@@ -108,8 +108,8 @@
 		uiVisible: false,
 		globalSettings: {
 			containerSizePercent: containerSizePercent,
-			fontSizePercent: 8,
-			distancePercent: 1,
+			fontSizePercent: 10,
+			distancePercent: 1.3,
 			paused: false,
 			textColor: "#ffffff",
 			backgroundColor: "#ffffff", 
@@ -132,7 +132,7 @@
 			{
 				text: projectTitle,
 				rotationSpeed: 0.5,
-				spacingAmplitudePercent: 2,
+				spacingAmplitudePercent: 1.3,
 				spacingSpeed: 0.09,
 				rotationStart: 0,
 				animationType: 'sin'
@@ -140,15 +140,15 @@
 			{
 				text: projectClient,
 				rotationSpeed: 0.3,
-				spacingAmplitudePercent: 2,
-				spacingSpeed: 0.09,
-				rotationStart: 180,
+				spacingAmplitudePercent: 1.3,
+				spacingSpeed: 0.03,
+				rotationStart: 90,
 				animationType: 'sin'
 			},
 			{
 				text: projectDate,
 				rotationSpeed: 0.4,
-				spacingAmplitudePercent: 2,
+				spacingAmplitudePercent: 1.3,
 				spacingSpeed: 0.11,
 				rotationStart: 250,
 				animationType: 'sin'
