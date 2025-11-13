@@ -18,69 +18,130 @@
 	let isHovering = $state(false);
 	const rotationSpeed = 200;
 
+	let isMounted = $state(true);
+
 	function checkMobile() {
 		if (typeof window !== 'undefined') {
 			isMobile = window.innerWidth < 768;
 		}
 	}
 
-	onMount(async () => {
-		mounted = true;
-		checkMobile();
+	async function fetchDataWithRetry(retries = 3): Promise<void> {
+		if (!isMounted) return;
+
+		// Reset state on each attempt
+		items = [];
+		urls = [];
 
 		const primary: any = (slice as any).primary;
 		title = primary?.title || null;
-		if (primary?.take_collaborators_automatically) {
-			const client = createClient();
-			const docs = await client.getAllByType('people', {
-				orderings: [{ field: 'my.people.title', direction: 'asc' }],
-				pageSize: 200
-			});
-			items = docs.map((d) => (d.data.title as string) || d.uid);
-			urls = docs.map((d) => asLink(d.data.link) || '#');
-		} else {
-			const manualLinks: any[] = primary?.items || [];
-			const client = createClient();
-			
-			// Process each manual link
-			const processedItems = await Promise.all(
-				manualLinks.map(async (link) => {
-					// If there's custom text, use it
-					if (link?.text) {
-						return {
-							text: link.text,
-							url: asLink(link) || '#'
-						};
-					}
-					
-					// If it's a content relationship (person), fetch the person's name
-					if (link?.link_type === 'Document' && link?.uid) {
-						try {
-							const doc = await client.getByUID('people', link.uid);
+
+		try {
+			if (primary?.take_collaborators_automatically) {
+				const client = createClient();
+				
+				// Fetch all people - getAllByType handles pagination automatically
+				const docs = await client.getAllByType('people', {
+					orderings: [{ field: 'my.people.title', direction: 'asc' }],
+					pageSize: 100 // Use reasonable page size for reliability
+				});
+
+				if (!isMounted) return; // Check after async operation
+
+				items = docs.map((d) => (d.data.title as string) || d.uid);
+				urls = docs.map((d) => asLink(d.data.link) || '#');
+			} else {
+				const manualLinks: any[] = primary?.items || [];
+				const client = createClient();
+				
+				// Process each manual link with error handling
+				const processedItems = await Promise.all(
+					manualLinks.map(async (link) => {
+						if (!isMounted) {
+							return { text: '', url: '#' };
+						}
+
+						// If there's custom text, use it
+						if (link?.text) {
 							return {
-								text: doc.data.title || doc.uid,
-								url: asLink(doc.data.link) || '#'
-							};
-						} catch (error) {
-							console.warn(`Could not fetch person with UID: ${link.uid}`, error);
-							return {
-								text: link.uid || 'Unknown',
+								text: link.text,
 								url: asLink(link) || '#'
 							};
 						}
-					}
-					
-					// Fallback for other link types
-					return {
-						text: link?.text || asLink(link) || 'Unknown',
-						url: asLink(link) || '#'
-					};
-				})
-			);
+						
+						// If it's a content relationship (person), fetch the person's name
+						if (link?.link_type === 'Document' && link?.uid) {
+							try {
+								if (!isMounted) {
+									return { text: '', url: '#' };
+								}
+								const doc = await client.getByUID('people', link.uid);
+								
+								if (!isMounted) {
+									return { text: '', url: '#' };
+								}
+								
+								return {
+									text: doc.data.title || doc.uid,
+									url: asLink(doc.data.link) || '#'
+								};
+							} catch (error: any) {
+								if (!isMounted) {
+									return { text: '', url: '#' };
+								}
+								console.warn(`Could not fetch person with UID: ${link.uid}`, error);
+								return {
+									text: link.uid || 'Unknown',
+									url: asLink(link) || '#'
+								};
+							}
+						}
+						
+						// Fallback for other link types
+						return {
+							text: link?.text || asLink(link) || 'Unknown',
+							url: asLink(link) || '#'
+						};
+					})
+				);
+
+				if (!isMounted) return;
+
+				items = processedItems.map(item => item.text).filter(text => text);
+				urls = processedItems.map(item => item.url);
+			}
+		} catch (error: any) {
+			if (!isMounted) {
+				return; // Component unmounted, exit silently
+			}
+
+			console.error('Wheel slice: Error fetching data', error);
 			
-			items = processedItems.map(item => item.text);
-			urls = processedItems.map(item => item.url);
+			// Retry logic
+			if (retries > 0 && isMounted) {
+				console.log(`Wheel slice: Retrying... (${retries} attempts remaining)`);
+				await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1s before retry
+				if (isMounted) {
+					return fetchDataWithRetry(retries - 1);
+				}
+			} else if (isMounted) {
+				console.error('Wheel slice: Failed to fetch data after all retries');
+				// Keep empty arrays - component will show empty state
+			}
 		}
+	}
+
+	onMount(async () => {
+		isMounted = true;
+		mounted = true;
+		checkMobile();
+
+		// Reset state
+		items = [];
+		urls = [];
+
+		// Fetch data
+		await fetchDataWithRetry();
 
 		// Listen for resize events to handle mobile/desktop switching
 		if (typeof window !== 'undefined') {
@@ -89,6 +150,8 @@
 	});
 
 	onDestroy(() => {
+		isMounted = false;
+
 		if (typeof window !== 'undefined') {
 			window.removeEventListener('resize', checkMobile);
 		}
