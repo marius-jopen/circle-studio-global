@@ -1,33 +1,66 @@
 <script lang="ts">
 	import type { Content } from '@prismicio/client';
 	import type { SliceComponentProps } from '@prismicio/svelte';
-	import { PrismicLink } from '@prismicio/svelte';
-	import { isFilled } from '@prismicio/client';
+	import { isFilled, asLink } from '@prismicio/client';
 
 	type Props = SliceComponentProps<Content.ContactSlice>;
 
 	const { slice }: Props = $props();
+
+	let copied = $state(false);
+	let linkUrl = $derived(asLink(slice.primary.link) || '');
+	let linkText = $derived(slice.primary.link?.text || linkUrl || '');
+
+	async function handleClick(e: MouseEvent) {
+		e.preventDefault();
+		
+		if (!linkUrl) return;
+
+		try {
+			await navigator.clipboard.writeText(linkUrl);
+			copied = true;
+			
+			// Reset after 2 seconds
+			setTimeout(() => {
+				copied = false;
+			}, 4000);
+		} catch (err) {
+			console.error('Failed to copy link:', err);
+		}
+	}
 </script>
 
 <section class="content-container mb-10 mt-10 text-center" data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
 	{#if isFilled.link(slice.primary.link)}
-		<div class="h1 text-primary transition-colors duration-200 contact-link-wrapper">
-			<PrismicLink field={slice.primary.link} />
-		</div>
+		<button
+			onclick={handleClick}
+			class="h1 text-center w-full contact-link-wrapper cursor-pointer h-[100px] flex items-center flex-row justify-center"
+		>
+			{#if copied}
+				{linkUrl} copied to clipboard. <br />
+				Paste it into your e-mail tool.
+			{:else}
+				<span class=" hover:text-neutral-400 transition-colors duration-200">
+					{linkText}
+				</span>
+			{/if}
+		</button>
 	{/if}
 </section>
 
 <style>
 	.contact-link-wrapper {
-		transition: color 200ms;
+		background: none;
+		border: none;
+		padding: 0;
+		font-weight: inherit;
+		line-height: inherit;
+		font-family: inherit;
+		/* Let h1 class handle font-size */
 	}
 	
+	/* Ensure button itself doesn't have hover color changes */
 	.contact-link-wrapper:hover {
-		color: rgb(163 163 163); /* neutral-400 */
-	}
-	
-	:global(.contact-link-wrapper a) {
 		color: inherit;
-		text-decoration: inherit;
 	}
 </style>
