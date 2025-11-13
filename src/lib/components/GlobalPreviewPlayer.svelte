@@ -8,8 +8,8 @@
   const offset = 16;
   const margin = 8;
 
-  let playerWidth = 300; // square dimensions for circle
-  let playerHeight = 300; // square dimensions for circle
+  let playerWidth = 400; // square dimensions for circle
+  let playerHeight = 400; // square dimensions for circle
 
   function handleMouseMove(e: MouseEvent) {
     mouseX = e.clientX;
@@ -36,13 +36,13 @@
 
 {#if $hoverPreview?.url}
   <div
-    class="fixed z-[120] pointer-events-none w-[300px] h-[300px] rounded-full overflow-hidden"
+    class="fixed z-[120] pointer-events-none w-[400px] h-[400px] rounded-full overflow-hidden"
     style="left:0; top:0; transform: translate3d({targetX}px, {targetY}px, 0);"
   >
     <VideoPlayerSimple
       hlsUrl={$hoverPreview.url}
       posterImage={$hoverPreview.poster}
-      classes="w-[300px] h-[300px] rounded-full overflow-hidden"
+      classes="w-[400px] h-[400px] rounded-full overflow-hidden"
     />
   </div>
 {/if}

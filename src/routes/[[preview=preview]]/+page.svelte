@@ -10,6 +10,8 @@
 	import { viewMode, initializeViewMode, homeSearchQuery } from '$lib/stores';
 
 	export let data;
+	// Toggle: show GlobalPreviewPlayer in grid mode as well
+	const SHOW_PREVIEW_IN_GRID = false;
     // Shared search filtering (used on mobile when search input in MobileNav is open)
     $: filteredAllProjects = (() => {
         const query = $homeSearchQuery.trim().toLowerCase();
@@ -181,6 +183,10 @@
 	{:else}
 		<ProjectIndexList allProjects={filteredAllProjects} {featuredProjectIds} />
 		<!-- Fixed bottom-right hover preview video - only for list view -->
+		<GlobalPreviewPlayer />
+	{/if}
+	{#if $viewMode === 'grid' && SHOW_PREVIEW_IN_GRID}
+		<!-- Optional: show hover preview in grid mode too -->
 		<GlobalPreviewPlayer />
 	{/if}
 
