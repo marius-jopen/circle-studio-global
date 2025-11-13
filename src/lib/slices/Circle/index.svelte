@@ -149,7 +149,7 @@
 </script>
 
 <section data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
-	<div class="flex justify-center items-center w-full pt-24 pb-24 content-container aspect-square md:aspect-auto">
+	<div class="flex justify-center items-center w-full pt-0 pb-0 content-container aspect-square md:aspect-auto">
 		{#if selectedText}
 			{#if mounted && isMobile}
 				{#if hideOnMobile}
@@ -231,7 +231,7 @@
 							}
 						],
 						globalSettings: {
-							containerSizePercent: 100,
+							containerSizePercent: 150,
 							fontSizePercent: 20,
 							distancePercent: 0,
 							paused: false,

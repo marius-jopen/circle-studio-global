@@ -103,7 +103,7 @@ export interface HomeDocumentDataFeatureProjectsItem {
 	size: prismic.SelectField<'one' | 'two' | 'three', 'filled'>;
 }
 
-type HomeDocumentDataSlicesSlice = never;
+type HomeDocumentDataSlicesSlice = ContactSlice;
 
 /**
  * Content for Home documents
@@ -232,6 +232,7 @@ export type HomeDocument<Lang extends string = string> = prismic.PrismicDocument
 >;
 
 type PageDocumentDataSlicesSlice =
+	| ContactSlice
 	| TextListSlice
 	| VideoSlice
 	| SpacerSlice
@@ -842,6 +843,48 @@ type CircleSliceVariation = CircleSliceDefault;
 export type CircleSlice = prismic.SharedSlice<'circle', CircleSliceVariation>;
 
 /**
+ * Primary content in *Contact → Default → Primary*
+ */
+export interface ContactSliceDefaultPrimary {
+	/**
+	 * Link field in *Contact → Default → Primary*
+	 *
+	 * - **Field Type**: Link
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: contact.default.primary.link
+	 * - **Documentation**: https://prismic.io/docs/fields/link
+	 */
+	link: prismic.LinkField<string, string, unknown, prismic.FieldState, never>;
+}
+
+/**
+ * Default variation for Contact Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ContactSliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Simplify<ContactSliceDefaultPrimary>,
+	never
+>;
+
+/**
+ * Slice variation for *Contact*
+ */
+type ContactSliceVariation = ContactSliceDefault;
+
+/**
+ * Contact Shared Slice
+ *
+ * - **API ID**: `contact`
+ * - **Description**: Contact
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ContactSlice = prismic.SharedSlice<'contact', ContactSliceVariation>;
+
+/**
  * Item in *Documentation → Default → Primary → items*
  */
 export interface DocumentationSliceDefaultPrimaryItemsItem {
@@ -1362,6 +1405,10 @@ declare module '@prismicio/client' {
 			CircleSliceDefaultPrimary,
 			CircleSliceVariation,
 			CircleSliceDefault,
+			ContactSlice,
+			ContactSliceDefaultPrimary,
+			ContactSliceVariation,
+			ContactSliceDefault,
 			DocumentationSlice,
 			DocumentationSliceDefaultPrimaryItemsItem,
 			DocumentationSliceDefaultPrimary,
