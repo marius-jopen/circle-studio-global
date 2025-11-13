@@ -58,7 +58,7 @@
       backgroundColor: '#ffffff',
       transparentBackground: true,
       fadeInTime: 0,
-      fadeOutTime: 1.2,
+      fadeOutTime: 2.3,
       pauseTime: 0,
       visibleTime: 0,
       manualMode: true,
@@ -183,8 +183,8 @@
       setTimeout(() => {
         showWelcome = false;
         fadePhase = 'hidden';
-      }, 800); // Match the CSS transition duration for background
-    }, 1500); // Wait for letters to fade out (fadeOutTime)
+      }, 1200); // Match the CSS transition duration for background
+    }, 3000); // Wait for letters to fade out (fadeOutTime)
   }
 
   function handleClick() {
