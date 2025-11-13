@@ -163,6 +163,17 @@ interface HomeDocumentData {
 	feature_projects: prismic.GroupField<Simplify<HomeDocumentDataFeatureProjectsItem>>;
 
 	/**
+	 * Text Sub field in *Home*
+	 *
+	 * - **Field Type**: Rich Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: home.text_sub
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/rich-text
+	 */
+	text_sub: prismic.RichTextField;
+
+	/**
 	 * Slice Zone field in *Home*
 	 *
 	 * - **Field Type**: Slice Zone

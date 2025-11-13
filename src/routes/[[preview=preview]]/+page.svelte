@@ -105,6 +105,11 @@
 	// Safely derive text content from Prismic field (supports StructuredText or Text)
 	$: homeTextRaw = data?.page?.data?.text;
 	$: homeText = Array.isArray(homeTextRaw) ? asText(homeTextRaw) : (typeof homeTextRaw === 'string' ? homeTextRaw : '');
+
+	$: homeTextRawSub = data?.page?.data?.text_sub;
+	$: homeTextSub = Array.isArray(homeTextRawSub) ? asText(homeTextRawSub) : (typeof homeTextRawSub === 'string' ? homeTextRawSub : '');
+
+	
 </script>
 
 <!-- Remove the view switch selector from the top-center -->
@@ -157,6 +162,16 @@
 						</div>
 					{/if}
 				{/each}
+			</div>
+		{/if}
+	{/if}
+
+	{#if $viewMode === 'grid'}
+		{#if homeTextSub && homeTextSub.trim().length > 0}
+			<div class="content-container mb-12 mt-10 text-left md:text-center text-sm md:text-base text-primary">
+				<div class="h1 py-2 md:py-0">
+					{homeTextSub}
+				</div>
 			</div>
 		{/if}
 	{/if}
