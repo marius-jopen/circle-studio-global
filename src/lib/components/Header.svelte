@@ -38,6 +38,16 @@
 		}
 	}
 	
+	// When clicking the logo/wheel, always go home and set Grid view
+	function handleLogoClick(event: MouseEvent) {
+		event.preventDefault();
+		try {
+			localStorage.setItem('indexViewMode', 'grid');
+		} catch {}
+		setViewMode('grid');
+		window.location.href = '/';
+	}
+	
 	
 	// Initialize view mode from localStorage or URL
 	onMount(() => {
@@ -93,6 +103,7 @@
 					class="hidden md:block -mt-6 transition-all duration-600"
 					class:pointer-events-auto={!effectiveFaded}
 					class:pointer-events-none={effectiveFaded}
+					onclick={handleLogoClick}
 					onmouseenter={() => { isHovering = true; }}
 					onmouseleave={() => { isHovering = false; }}
 				>
