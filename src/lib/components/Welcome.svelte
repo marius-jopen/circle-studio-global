@@ -4,20 +4,18 @@
   import { page } from '$app/state';
   import BigWheel from './BigWheel.svelte';
 
-  let showWelcome = false; // Start with welcome screen hidden by default
-  let isVisible = true;
-  let backgroundVisible = true;
-  let wheelVisible = true; // Start with wheel visible
+  let showWelcome = $state(true); // Show immediately on first load; hide on internal navigations
+  let isVisible = $state(true);
+  let backgroundVisible = $state(true);
+  let wheelVisible = $state(true); // Start with wheel visible
   let welcomeElement: HTMLDivElement;
-  let fadePhase: 'initial' | 'lettersVisible' | 'lettersFadingOut' | 'backgroundFadingOut' | 'hidden' = 'lettersVisible';
+  let fadePhase = $state<'initial' | 'lettersVisible' | 'lettersFadingOut' | 'backgroundFadingOut' | 'hidden'>('lettersVisible');
 
-  // Check if we're on the home page
-  $: isHomePage = page?.route?.id === '/[[preview=preview]]';
+  // Check if we're on the home page (runes)
+  const isHomePage = $derived(page?.route?.id === '/[[preview=preview]]');
 
-  // Check if we're on a project page and get project title
-  $: isProjectPage = page?.route?.id?.includes('/work/[uid]');
-  $: projectTitle = isProjectPage ? (page?.data?.project?.data?.title || page?.data?.title || 'Project') : '';
-  $: projectClient = isProjectPage ? (page?.data?.project?.data?.client || 'Client') : '';
+  // Check if we're on a project page (runes)
+  const isProjectPage = $derived(page?.route?.id?.includes('/work/[uid]'));
   function formatDateToMonthDotDayDotYear(value: string): string {
     if (!value) return '';
     const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
@@ -32,13 +30,14 @@
     const y = String(d.getFullYear());
     return `${mm}.${dd}.${y}`;
   }
-  $: projectDate = isProjectPage ? formatDateToMonthDotDayDotYear(page?.data?.project?.data?.date || '') : '';
+  // Keep for potential future use
+  // const projectDate = $derived(isProjectPage ? formatDateToMonthDotDayDotYear(page?.data?.project?.data?.date || '') : '');
   
   // Show welcome screen on initial page loads (home and project pages).
   // Subsequent internal navigations will skip it (handled in onMount below).
   
-  // Normal pages configuration
-  $: normalPageConfig = {
+  // Normal pages configuration (runes)
+  const normalPageConfig = $derived({
     uiVisible: false,
     items: [
       {
@@ -52,10 +51,10 @@
     ],
     globalSettings: {
       containerSizePercent: 120,
-      fontSizePercent: 15.7,
+      fontSizePercent: 18,
       distancePercent: 0,
       paused: false,
-      textColor: isHomePage ? '#ffffff' : '#b8b8b8',
+      textColor: '#171717',
       backgroundColor: '#ffffff',
       transparentBackground: true,
       fadeInTime: 0,
@@ -66,71 +65,12 @@
       triggerFadeIn: false,
       triggerFadeOut: false
     }
-  };
+  });
   
-  // Project pages configuration
-  $: projectPageConfig = {
-    uiVisible: false,
-    items: [
-      {
-        text: 'ART CAMP EST.2016',
-        rotationSpeed: 0.5,
-        spacingAmplitudePercent: 2,
-        spacingSpeed: 0.09,
-        rotationStart: 0,
-        animationType: 'sin'
-      },
-      {
-        text: projectTitle,
-        rotationSpeed: 0.3,
-        spacingAmplitudePercent: 2,
-        spacingSpeed: 0.09,
-        rotationStart: 180,
-        animationType: 'sin'
-      },
-      {
-        text: projectClient,
-        rotationSpeed: 0.6,
-        spacingAmplitudePercent: 2,
-        spacingSpeed: 0.05,
-        rotationStart: 80,
-        animationType: 'sin'
-      },
-      {
-        text: projectDate,
-        rotationSpeed: 0.4,
-        spacingAmplitudePercent: 2,
-        spacingSpeed: 0.11,
-        rotationStart: 250,
-        animationType: 'sin'
-      }
-    ],
-    globalSettings: {
-      containerSizePercent: 100,
-      fontSizePercent: 7,
-      distancePercent: 0.8,
-      paused: false,
-      textColor: '#fff',
-      backgroundColor: '#ffffff',
-      transparentBackground: true,
-      fadeInTime: 0.5,
-      fadeOutTime: 1.2,
-      pauseTime: 1.5,
-      visibleTime: 5,
-      manualMode: true,
-      triggerFadeIn: false,
-      triggerFadeOut: false
-    }
-  };
+  // Removed project-specific welcome config; we always use the normal config
   
-  // Choose which configuration to use
-  $: welcomeConfig = isProjectPage ? projectPageConfig : normalPageConfig;
-  
-  // Debug logging for project page detection
-  $: if (isProjectPage) {
-    console.log('🎬 Welcome on project page - Using project configuration');
-    console.log('🎬 Project data:', { projectTitle, projectClient, projectDate });
-  }
+  // Always use normal page configuration for the welcome screen
+  let welcomeConfig = $state(normalPageConfig);
 
   onMount(() => {
     if (!browser) return;
@@ -156,6 +96,12 @@
       showWelcome = true;
       wheelVisible = true;
       fadePhase = 'lettersVisible';
+      // Auto-dismiss after a short delay if no interaction
+      setTimeout(() => {
+        if (fadePhase === 'lettersVisible') {
+          fadeOut();
+        }
+      }, 3000);
     }
 
     // Set navigation flag when user navigates away
@@ -175,13 +121,11 @@
       }
     }
 
-    // Handle scroll dismissal (only on non-project pages)
+    // Handle scroll dismissal
     function handleScroll() {
-      // Only allow scroll dismissal if:
-      // 1. We're not on a project page
-      // 2. Welcome screen is visible and ready to be dismissed
-      if (!isProjectPage && fadePhase === 'lettersVisible') {
-        console.log('📜 Scroll detected on non-project page, dismissing welcome screen');
+      // Allow scroll to dismiss when visible
+      if (fadePhase === 'lettersVisible') {
+        console.log('📜 Scroll detected, dismissing welcome screen');
         fadeOut();
       }
     }
@@ -189,12 +133,10 @@
     window.addEventListener('beforeunload', handleBeforeUnload);
     document.addEventListener('click', handleClick);
     
-    // Add scroll listener for non-project pages
-    if (!isProjectPage) {
-      window.addEventListener('scroll', handleScroll, { passive: true });
-      // Also listen for wheel events to catch scroll attempts even when page can't scroll
-      window.addEventListener('wheel', handleScroll, { passive: true });
-    }
+    // Add scroll listeners for all pages
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    // Also listen for wheel events to catch scroll attempts even when page can't scroll
+    window.addEventListener('wheel', handleScroll, { passive: true });
 
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
@@ -259,30 +201,20 @@
 </script>
 
 {#if showWelcome}
-  <div 
-    class="welcome-overlay cursor-pointer z-30"
-    class:background-visible={backgroundVisible}
-    class:home-page={isHomePage}
-    bind:this={welcomeElement}
-    on:click={handleClick}
-    on:keydown={handleKeydown}
-    role="button"
-    tabindex="0"
-    aria-label="Click to continue to website"
-  >
+  <div class="welcome-overlay cursor-pointer z-30"
+       class:background-visible={backgroundVisible}
+       bind:this={welcomeElement}
+       onclick={handleClick}
+       onkeydown={handleKeydown}
+       role="button"
+       tabindex="0"
+       aria-label="Click to continue to website">
     <div class="welcome-content cursor-pointer z-30">
       <div class="wheel-container cursor-pointer">
         {#if wheelVisible}
           <BigWheel config={welcomeConfig} />
         {/if}
       </div>
-      
-      <!-- Fixed positioned click hint to prevent layout jumps - only show on project pages -->
-      {#if isProjectPage}
-        <div class="click-hint cursor-pointer z-30" class:visible={fadePhase === 'lettersVisible'}>
-          Click anywhere to continue
-        </div>
-      {/if}
     </div>
   </div>
 {/if}
@@ -294,11 +226,11 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: #ffffff; /* White background for other pages */
+    background-color: #ffffff; /* Always white background */
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 9999;
+    z-index: 20000; /* Above header and logo */
     cursor: pointer;
     opacity: 1; /* Always start visible */
     transition: opacity 0.8s ease-in-out;
@@ -306,11 +238,6 @@
 
   .welcome-overlay:not(.background-visible) {
     opacity: 0;
-  }
-
-  /* Transparent background for home page */
-  .welcome-overlay.home-page {
-    background-color: transparent;
   }
 
   .welcome-content {
@@ -323,35 +250,11 @@
     height: 100%;
   }
 
-  
-
-  .click-hint {
-    position: absolute;
-    bottom: 4rem;
-    left: 50%;
-    transform: translateX(-50%);
-    color: #666; /* Gray text for other pages */
-    font-size: 0.875rem;
-    text-align: center;
-    opacity: 0;
-    font-family: system-ui, -apple-system, sans-serif;
-    transition: opacity 0.5s ease-in-out;
-    white-space: nowrap;
+  .wheel-container {
+    position: relative;
+    z-index: 1;
   }
+ 
 
-  /* White click hint text for home page */
-  .welcome-overlay.home-page .click-hint {
-    color: #ffffff;
-  }
-
-  .click-hint.visible {
-    opacity: 0.7;
-  }
-
-  /* Hide welcome screen on mobile */
-  @media (max-width: 768px) {
-    .welcome-overlay {
-      display: none !important;
-    }
-  }
+  /* Show on all viewports */
 </style> 

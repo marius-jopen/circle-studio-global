@@ -182,7 +182,7 @@
 </svelte:head>
 
 <div class="min-h-screen flex flex-col">
-	<!-- <Welcome /> -->
+	<Welcome />
 	<MobileNav />
 	<Header settings={data.settings} faded={headerFaded} videoIsDark={videoIsDark} mainMediaVisible={mainMediaVisible} />
 

@@ -3,6 +3,7 @@
 	import BigWheel from './BigWheel.svelte';
 	import MobileWheel from './MobileWheel.svelte';
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { viewMode, setViewMode, initializeViewMode, mobileSearchOpen } from '$lib/stores';
 	
@@ -33,8 +34,12 @@
 			// Save the target view mode to localStorage before navigation
 			localStorage.setItem('indexViewMode', targetViewMode);
 			console.log('💾 localStorage after direct save:', localStorage.getItem('indexViewMode'));
-			console.log('🚀 Navigating to front page...');
-			window.location.href = '/';
+			// Mark as internal navigation to suppress welcome on SPA route change
+			try {
+				sessionStorage.setItem('circle-studio-navigating', 'true');
+			} catch {}
+			console.log('🚀 Navigating to front page (SPA)...');
+			goto('/');
 		}
 	}
 	
@@ -45,7 +50,11 @@
 			localStorage.setItem('indexViewMode', 'grid');
 		} catch {}
 		setViewMode('grid');
-		window.location.href = '/';
+		// Mark as internal navigation to suppress welcome on SPA route change
+		try {
+			sessionStorage.setItem('circle-studio-navigating', 'true');
+		} catch {}
+		goto('/');
 	}
 	
 	
@@ -122,7 +131,7 @@
 								}],
 								globalSettings: {
 									containerSizePercent: 30,
-									fontSizePercent: 17.9,
+									fontSizePercent: 18,
 									distancePercent: 0,
 									paused: false,
 									textColor: '#171717',
@@ -151,7 +160,7 @@
 								}],
 								globalSettings: {
 									containerSizePercent: 30,
-									fontSizePercent: 17.9,
+									fontSizePercent: 18,
 									distancePercent: 0,
 									paused: false,
 									textColor: '#ffffff',
