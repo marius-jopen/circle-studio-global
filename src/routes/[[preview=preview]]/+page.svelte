@@ -47,6 +47,34 @@
 	// Track previous view mode to detect changes
 	let previousViewMode = $viewMode;
 
+	// Map Prismic "size" select values to ProjectItem dimensions
+	function mapSizeToDimension(size?: string | null): 'landscape' | 'square' | 'portrait' {
+		switch (size) {
+			case 'one':
+				return 'landscape'; // Full width
+			case 'two':
+				return 'square';
+			case 'three':
+				return 'portrait';
+			default:
+				return 'square';
+		}
+	}
+	
+	// Map "size" to Tailwind grid col-span classes (desktop uses 12-col grid)
+	function mapSizeToColSpanClasses(size?: string | null): string {
+		switch (size) {
+			case 'one':
+				return 'col-span-1 md:col-span-12';
+			case 'two':
+				return 'col-span-1 md:col-span-6';
+			case 'three':
+				return 'col-span-1 md:col-span-4';
+			default:
+				return 'col-span-1 md:col-span-6';
+		}
+	}
+
 	// Watch for view mode changes and scroll to top
 	$: if (previousViewMode !== $viewMode) {
 		previousViewMode = $viewMode;
@@ -100,17 +128,17 @@
 
 <div class="px-3 mt-3 md:mt-12 md:mt-14 ">
 	{#if isFilled.contentRelationship(data.page.data.feature_project)}
-		<div class="pb-4">
+		<div class="pb-2">
 			<ProjectItem dimension="landscape" project={data.page.data.feature_project} />
 		</div>
 	{/if}
 
 	{#if data.page.data.feature_projects && data.page.data.feature_projects.length > 0}
-		<div class="grid grid-cols-2 gap-4">
+		<div class="grid grid-cols-1 md:grid-cols-12 gap-2 pb-2">
 			{#each data.page.data.feature_projects as projectGroup}
 				{#if isFilled.contentRelationship(projectGroup.items)}
-					<div class="pb-4">
-						<ProjectItem dimension="square" project={projectGroup.items} />
+					<div class={mapSizeToColSpanClasses(projectGroup?.size)}>
+						<ProjectItem dimension={mapSizeToDimension(projectGroup?.size)} project={projectGroup.items} />
 					</div>
 				{/if}
 			{/each}

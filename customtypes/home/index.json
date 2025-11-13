@@ -65,6 +65,15 @@
 									}
 								]
 							}
+						},
+						"size": {
+							"type": "Select",
+							"config": {
+								"label": "Size",
+								"placeholder": "",
+								"options": ["one", "two", "three"],
+								"default_value": "one"
+							}
 						}
 					}
 				}

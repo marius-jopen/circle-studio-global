@@ -90,6 +90,17 @@ export interface HomeDocumentDataFeatureProjectsItem {
 			}
 		]
 	>;
+
+	/**
+	 * Size field in *Home → Feature Projects*
+	 *
+	 * - **Field Type**: Select
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: one
+	 * - **API ID Path**: home.feature_projects[].size
+	 * - **Documentation**: https://prismic.io/docs/fields/select
+	 */
+	size: prismic.SelectField<'one' | 'two' | 'three', 'filled'>;
 }
 
 type HomeDocumentDataSlicesSlice = never;
@@ -516,7 +527,26 @@ interface ProjectsDocumentData {
 	 * - **Tab**: Main
 	 * - **Documentation**: https://prismic.io/docs/fields/select
 	 */
-	year: prismic.SelectField<'2010' | '2022' | '2023' | '2024' | '2025' | '2026' | '2027'>;
+	year: prismic.SelectField<
+		| '2010'
+		| '2011'
+		| '2012'
+		| '2013'
+		| '2014'
+		| '2015'
+		| '2016'
+		| '2017'
+		| '2018'
+		| '2019'
+		| '2020'
+		| '2021'
+		| '2022'
+		| '2023'
+		| '2024'
+		| '2025'
+		| '2026'
+		| '2027'
+	>;
 
 	/**
 	 * Month field in *Projects*
