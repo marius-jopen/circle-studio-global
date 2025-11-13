@@ -16,7 +16,7 @@
 	let wheelAreaEl: HTMLDivElement;
 
 	// BigWheel uses a base container size of 600px internally; mirror it here
-	const BASE_CONTAINER_SIZE = 600;
+	const BASE_CONTAINER_SIZE = 450;
 
 	// Will be computed responsively based on available viewport space
 	let containerSizePercent = $state<number>(100);
@@ -89,7 +89,7 @@
 	bind:this={sectionEl}
 >
 	<!-- Wheel area grows to fill available space; we measure it to size the wheel -->
-	<div class="flex-1 flex justify-center items-center w-full" bind:this={wheelAreaEl}>
+	<div class="flex-1 flex justify-center items-center w-full translate-y-4" bind:this={wheelAreaEl}>
 		{#if !$mobileSearchOpen}
 			<BigWheel config={wheelConfig} />
 		{/if}
