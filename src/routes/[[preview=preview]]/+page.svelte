@@ -167,8 +167,8 @@
 	{/if}
 
 	{#if homeText && homeText.trim().length > 0}
-		<div class="content-container mb-12 mt-10 text-center text-primary">
-			<div class="h1 py-2 md:py-0">
+		<div class="content-container mb-12 mt-9 text-center text-primary">
+			<div class="h1 pb-2 md:py-0">
 				{homeText}
 			</div>
 		</div>
@@ -195,7 +195,7 @@
 	{/if}
 	{#if currentView === 'grid' && !isSearchActive}
 		{#if homeTextSub && homeTextSub.trim().length > 0}
-			<div class="content-container mb-12 mt-10 text-center text-primary">
+			<div class="content-container mb-12 mt-8.5 text-center text-primary">
 				<div class="h1 py-2 md:py-0">
 					{homeTextSub}
 				</div>

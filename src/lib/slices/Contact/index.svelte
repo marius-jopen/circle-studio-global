@@ -38,7 +38,7 @@
 		>
 			{#if copied}
 				{linkUrl} copied to clipboard. <br />
-				Paste it into your e-mail tool.
+				Paste it into your e-mail.
 			{:else}
 				<span class=" hover:text-neutral-400 transition-colors duration-200">
 					{linkText}
