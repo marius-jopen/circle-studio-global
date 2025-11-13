@@ -354,6 +354,7 @@
 						{itemsPerRow}
 						containerSizePercent={containerSizePercent}
 						enableOnMobile={ENABLE_VIDEOS_ON_MOBILE}
+						{square}
 					/>
 					<!-- BigWheel positioned directly over the video (desktop only) -->
 					{#if !isMobile}
@@ -443,6 +444,7 @@
 						{itemsPerRow}
 						containerSizePercent={containerSizePercent}
 						enableOnMobile={ENABLE_VIDEOS_ON_MOBILE}
+						{square}
 					/>
 					<!-- BigWheel positioned directly over the video (desktop only) -->
 					{#if !isMobile}

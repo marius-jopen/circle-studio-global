@@ -10,6 +10,7 @@
 		itemsPerRow?: number;
 		containerSizePercent?: number;
 		enableOnMobile?: boolean;
+		square?: boolean;
 	}
 
 	// Mobile detection
@@ -23,7 +24,8 @@
 		dimension = 'landscape',
 		itemsPerRow = 1,
 		containerSizePercent = 80,
-		enableOnMobile = false
+		enableOnMobile = false,
+		square = false
 	}: Props = $props();
 
 	let videoElement: HTMLVideoElement;
@@ -260,7 +262,7 @@
 	});
 </script>
 
-<div class="relative {classes} overflow-hidden bg-white rounded-lg">
+<div class="relative {classes} overflow-hidden bg-white {square ? '' : 'rounded-lg'}">
 	{#if isMobile && !enableOnMobile}
 		<!-- On mobile with videos disabled, show only the poster image -->
 		<img
