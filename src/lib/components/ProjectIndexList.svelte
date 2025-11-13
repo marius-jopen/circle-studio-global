@@ -109,7 +109,7 @@
 	});
 </script>
 
-<div class="flex justify-center md:justify-end items-center w-full pt-[180px] md:pt-[90px]">
+<div class="flex justify-center md:justify-end items-center w-full pt-[180px] md:pt-[128px]">
     <input
         id="search-input"
         type="text"

@@ -15,14 +15,8 @@
 	const projectData = $derived(project.data);
 	const relatedProjects = $derived(data.relatedProjects);
 
-	// Calculate controls text class based on number of main items
-	let controlsTextClass = $state('h2');
-	$effect(() => {
-		const mainItemsCount = projectData.main?.length || 0;
-		if (mainItemsCount === 1) controlsTextClass = 'text-4xl';
-		else if (mainItemsCount === 2) controlsTextClass = 'text-base';
-		else controlsTextClass = 'text-sm';
-	});
+	// Use a consistently large controls text size across environments
+	let controlsTextClass = $state('text-4xl');
 
 	// Dispatch video_is_dark state to layout when component mounts
 	onMount(() => {
