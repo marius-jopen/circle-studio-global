@@ -130,31 +130,35 @@
     </div>
 </div> -->
 
-{#if isFilled.contentRelationship(data.page.data.feature_project)}
-	<div class="">
-		<ProjectItem dimension="landscape" square={true} project={data.page.data.feature_project} />
-	</div>
-{/if}
-
-{#if homeText && homeText.trim().length > 0}
-	<div class="content-container mb-12 mt-10 text-left md:text-center text-sm md:text-base text-primary">
-		<div class="h1 py-2 md:py-0">
-			{homeText}
+{#if $viewMode === 'grid'}
+	{#if isFilled.contentRelationship(data.page.data.feature_project)}
+		<div class="">
+			<ProjectItem dimension="landscape" square={true} project={data.page.data.feature_project} />
 		</div>
-	</div>
+	{/if}
+
+	{#if homeText && homeText.trim().length > 0}
+		<div class="content-container mb-12 mt-10 text-left md:text-center text-sm md:text-base text-primary">
+			<div class="h1 py-2 md:py-0">
+				{homeText}
+			</div>
+		</div>
+	{/if}
 {/if}
 
 <div class="px-3 {isFilled.contentRelationship(data.page.data.feature_project) ? 'mt-2' : 'mt-3 md:mt-12 md:mt-14'}">
-	{#if data.page.data.feature_projects && data.page.data.feature_projects.length > 0}
-		<div class="grid grid-cols-1 md:grid-cols-12 gap-2 pb-2">
-			{#each data.page.data.feature_projects as projectGroup}
-				{#if isFilled.contentRelationship(projectGroup.items)}
-					<div class={mapSizeToColSpanClasses(projectGroup?.size)}>
-						<ProjectItem dimension={mapSizeToDimension(projectGroup?.size)} project={projectGroup.items} />
-					</div>
-				{/if}
-			{/each}
-		</div>
+	{#if $viewMode === 'grid'}
+		{#if data.page.data.feature_projects && data.page.data.feature_projects.length > 0}
+			<div class="grid grid-cols-1 md:grid-cols-12 gap-2 pb-2">
+				{#each data.page.data.feature_projects as projectGroup}
+					{#if isFilled.contentRelationship(projectGroup.items)}
+						<div class={mapSizeToColSpanClasses(projectGroup?.size)}>
+							<ProjectItem dimension={mapSizeToDimension(projectGroup?.size)} project={projectGroup.items} />
+						</div>
+					{/if}
+				{/each}
+			</div>
+		{/if}
 	{/if}
 
 	{#if $viewMode === 'grid'}
