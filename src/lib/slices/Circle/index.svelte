@@ -87,12 +87,14 @@
 			pulseFade('out');
 
 			// After fade-out completes + gap, switch text and fade in again, then loop
+			// TextCircle can take up to fadeOutTime * 1.5 to ensure all letters fade out,
+			// so we wait for that plus gap time to ensure the circle fully closes
 			if (cycleTimeoutB) clearTimeout(cycleTimeoutB);
 			cycleTimeoutB = setTimeout(() => {
 				pickNext();
 				pulseFade('in');
 				startCycle(false);
-			}, (fadeOutTimeSec + gapTimeSec) * 1000);
+			}, (fadeOutTimeSec * 1.5 + gapTimeSec) * 1000);
 		}, (fadeInTimeSec + visibleTimeSec) * 1000);
 	}
 
@@ -193,8 +195,8 @@
 								<div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
 									<TextCircle
 										text={selectedText}
-										fontSize={mobileContainerSize * 0.16}
-										radius={(mobileContainerSize / 2) - (mobileContainerSize * 0.16 * 0.8)}
+										fontSize={mobileContainerSize * 0.2}
+										radius={(mobileContainerSize / 2) - (mobileContainerSize * 0.2 * 0.6)}
 										rotationSpeed={0.2}
 										spacingAmplitudePercent={0}
 										spacingSpeed={0}
