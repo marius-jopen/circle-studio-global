@@ -193,7 +193,7 @@
 		<GlobalPreviewPlayer />
 	{/if}
 
-	{#if data.page.data.slices && data.page.data.slices.length > 0}
+	{#if data.page.data.slices && data.page.data.slices.length > 0 && !isSearchActive}
 		<SliceZone slices={data.page.data.slices} {components} />
 	{/if}
 </div>
