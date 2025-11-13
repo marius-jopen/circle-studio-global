@@ -145,7 +145,7 @@
 	{/if}
 
 	{#if homeText && homeText.trim().length > 0}
-		<div class="content-container mb-12 mt-10 text-left md:text-center text-sm md:text-base text-primary">
+		<div class="content-container mb-12 mt-10 text-center text-primary">
 			<div class="h1 py-2 md:py-0">
 				{homeText}
 			</div>
@@ -170,7 +170,7 @@
 
 	{#if currentView === 'grid'}
 		{#if homeTextSub && homeTextSub.trim().length > 0}
-			<div class="content-container mb-12 mt-10 text-left md:text-center text-sm md:text-base text-primary">
+			<div class="content-container mb-12 mt-10 text-center text-primary">
 				<div class="h1 py-2 md:py-0">
 					{homeTextSub}
 				</div>

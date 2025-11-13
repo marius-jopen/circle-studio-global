@@ -369,8 +369,8 @@
 					<!-- Mobile static text overlay (always visible on mobile) -->
 					{#if isMobile}
 						<div class="absolute bottom-0 left-0 right-0 p-3 text-white">
-							<div class="text-sm">{projectTitle}</div>
-							<div class="text-sm">{projectClient}</div>
+							<div class="text-xl">{projectTitle}</div>
+							<div class="text-xl">{projectClient}</div>
 						</div>
 					{/if}
 				</div>
@@ -393,8 +393,8 @@
 					<!-- Mobile static text overlay (always visible on mobile) -->
 					{#if isMobile}
 						<div class="absolute bottom-0 left-0 right-0 p-3 text-white">
-							<div class="text-sm font-medium">{projectTitle}</div>
-							<div class="text-sm opacity-60">{projectClient}</div>
+							<div class="text-xl font-medium">{projectTitle}</div>
+							<div class="text-xl  opacity-60">{projectClient}</div>
 						</div>
 					{/if}
 				</div>
@@ -459,8 +459,8 @@
 					<!-- Mobile static text overlay (always visible on mobile) -->
 					{#if isMobile}
 						<div class="absolute bottom-0 left-0 right-0 p-3 text-white">
-							<div class="text-sm font-medium">{projectTitle}</div>
-							<div class="text-xs opacity-80">{projectClient}</div>
+							<div class="text-xl font-medium">{projectTitle}</div>
+							<div class="text-xl  opacity-80">{projectClient}</div>
 						</div>
 					{/if}
 				</div>
@@ -483,8 +483,8 @@
 					<!-- Mobile static text overlay (always visible on mobile) -->
 					{#if isMobile}
 						<div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white">
-							<div class="text-sm font-medium">{projectTitle}</div>
-							<div class="text-xs opacity-80">{projectClient}</div>
+							<div class="text-xl font-medium">{projectTitle}</div>
+							<div class="text-xl  opacity-80">{projectClient}</div>
 						</div>
 					{/if}
 				</div>

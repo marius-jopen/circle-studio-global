@@ -65,8 +65,8 @@ $: projectClient = projectData?.client || 'Untitled Client';
 					<div class="relative brightness-[95%] rounded overflow-hidden bg-black" role="group">
 					<VideoPlayerMobile hlsUrl={videoUrl} posterImage={imageField} classes="w-full h-auto rounded object-cover transition-all duration-300 aspect-[3/4]" inView={isInView} />
 						<div class="absolute bottom-0 left-0 right-0 p-3 text-white">
-							<div class="text-sm">{projectTitle}</div>
-							<div class="text-sm">{projectClient}</div>
+							<div class="text-xl">{projectTitle}</div>
+							<div class="text-xl  opacity-60">{projectClient}</div>
 						</div>
 					</div>
 				{:else}
@@ -77,8 +77,8 @@ $: projectClient = projectData?.client || 'Untitled Client';
 							<div class="aspect-[3/4] bg-black"></div>
 						{/if}
 						<div class="absolute bottom-0 left-0 right-0 p-3 text-white">
-							<div class="text-sm font-medium">{projectTitle}</div>
-							<div class="text-sm opacity-60">{projectClient}</div>
+							<div class="text-xl font-medium">{projectTitle}</div>
+							<div class="text-xl opacity-60">{projectClient}</div>
 						</div>
 					</div>
 				{/if}
@@ -90,16 +90,16 @@ $: projectClient = projectData?.client || 'Untitled Client';
 						<div class="aspect-[3/4] bg-black"></div>
 					{/if}
 					<div class="absolute bottom-0 left-0 right-0 p-3 text-white">
-						<div class="text-sm font-medium">{projectTitle}</div>
-						<div class="text-sm opacity-60">{projectClient}</div>
+						<div class="text-xl font-medium">{projectTitle}</div>
+						<div class="text-xl opacity-60">{projectClient}</div>
 					</div>
 				</div>
 			{/if}
 		{:else}
 			<div class="relative brightness-[95%] rounded overflow-hidden bg-black aspect-[3/4]" role="group">
 				<div class="absolute bottom-0 left-0 right-0 p-3 text-white">
-					<div class="text-sm font-medium">{projectTitle}</div>
-					<div class="text-sm opacity-60">{projectClient}</div>
+					<div class="text-xl font-medium">{projectTitle}</div>
+					<div class="text-xl opacity-60">{projectClient}</div>
 				</div>
 			</div>
 		{/if}
@@ -116,8 +116,8 @@ $: projectClient = projectData?.client || 'Untitled Client';
 					<div class="relative rounded overflow-hidden bg-black" role="group">
 					<VideoPlayerMobile hlsUrl={videoUrl} posterImage={imageField} classes="w-full h-auto rounded object-cover aspect-[3/4]" inView={isInView} />
 						<div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white">
-							<div class="text-sm font-medium">{projectTitle}</div>
-							<div class="text-xs opacity-80">{projectClient}</div>
+							<div class="text-xl font-medium">{projectTitle}</div>
+							<div class="text-xl opacity-80">{projectClient}</div>
 						</div>
 					</div>
 				{:else}
@@ -128,8 +128,8 @@ $: projectClient = projectData?.client || 'Untitled Client';
 							<div class="aspect-[3/4] bg-black"></div>
 						{/if}
 						<div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white">
-							<div class="text-sm font-medium">{projectTitle}</div>
-							<div class="text-xs opacity-80">{projectClient}</div>
+							<div class="text-xl font-medium">{projectTitle}</div>
+							<div class="text-xl opacity-80">{projectClient}</div>
 						</div>
 					</div>
 				{/if}
@@ -141,16 +141,16 @@ $: projectClient = projectData?.client || 'Untitled Client';
 						<div class="aspect-[3/4] bg-black"></div>
 					{/if}
 					<div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white">
-						<div class="text-sm font-medium">{projectTitle}</div>
-						<div class="text-xs opacity-80">{projectClient}</div>
+						<div class="text-xl font-medium">{projectTitle}</div>
+						<div class="text-xl opacity-80">{projectClient}</div>
 					</div>
 				</div>
 			{/if}
 		{:else}
 			<div class="relative rounded overflow-hidden bg-black aspect-[3/4]" role="group">
 				<div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white">
-					<div class="text-sm font-medium">{projectTitle}</div>
-					<div class="text-xs opacity-80">{projectClient}</div>
+					<div class="text-xl font-medium">{projectTitle}</div>
+					<div class="text-xl opacity-80">{projectClient}</div>
 				</div>
 			</div>
 		{/if}
