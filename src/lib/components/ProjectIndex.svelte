@@ -480,11 +480,11 @@
 		<div class="space-y-2 space-y-2 mb-3 ">
 			{#each normalizedLayout as row}
 				<div class="grid dimension-{row.dimension} {row.gridCols} gap-2 gap-2">
-				{#each row.projects as project}
+				{#each row.projects as project, index}
 					{#if isMobile}
-						<ProjectItemMobile dimension={row.dimension} itemsPerRow={row.configuredItemsPerRow} {project} />
+						<ProjectItemMobile dimension={row.dimension} itemsPerRow={row.configuredItemsPerRow} positionInRow={index} {project} />
 					{:else}
-						<ProjectItem dimension={row.dimension} itemsPerRow={row.configuredItemsPerRow} {project} />
+						<ProjectItem dimension={row.dimension} itemsPerRow={row.configuredItemsPerRow} positionInRow={index} {project} />
 					{/if}
 				{/each}
 				</div>

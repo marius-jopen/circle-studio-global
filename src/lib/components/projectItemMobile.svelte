@@ -7,6 +7,7 @@
 	export let project: ProjectsDocument | any;
 export let dimension: 'landscape' | 'square' | 'portrait' = 'portrait';
 export const itemsPerRow: number = 1;
+	export let positionInRow: number = 0; // Position in the row (for consistency with ProjectItem)
 	export let clickable: boolean = true;
 	export let square: boolean = false;
 

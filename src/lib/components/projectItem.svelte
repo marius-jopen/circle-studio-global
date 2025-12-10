@@ -12,6 +12,7 @@
 	export let dimension: 'landscape' | 'square' | 'portrait' = 'landscape';
 	export let clickable: boolean = true;
 	export let itemsPerRow: number = 1;
+	export let positionInRow: number = 0; // Position in the row (0 = first, 1 = second, etc.)
 	// If true, do not apply rounded corners to media
 	export let square: boolean = false;
 	
@@ -23,14 +24,38 @@
 	const ENABLE_VIDEOS_ON_MOBILE = false;
 	// ========================================
 	
+	// ========================================
+	// 🎛️ CIRCLE TEXT TRUNCATION - TOGGLE HERE
+	// ========================================
+	// Truncation lengths based on circle type (outer vs inner)
+	const TRUNCATION_LENGTHS = {
+		outerCircle: 40,  // Outer circle (first item in config - projectTitle)
+		innerCircle: 27   // Inner circle (second item in config - projectClient)
+	};
+	// Default fallback length for any additional circles
+	const DEFAULT_TRUNCATION_LENGTH = 27;
+	// ========================================
+	
 	// Mobile detection
 	let isMobile = false;
 	
+	// Function to truncate text with ellipsis
+	function truncateText(text: string, maxLength: number): string {
+		if (!text || text.length <= maxLength) return text;
+		return text.substring(0, maxLength) + '...';
+	}
+	
 	// Get project data - handle both full documents and content relationships
 	$: projectData = project.data || project;
-	$: projectTitle = projectData?.title || 'Untitled Project';
-	$: projectClient = projectData?.client || 'Untitled Client';
-	$: projectDate = projectData?.date || '';
+	$: projectTitleRaw = projectData?.title || 'Untitled Project';
+	$: projectClientRaw = projectData?.client || 'Untitled Client';
+	$: projectDateRaw = projectData?.date || '';
+	
+	// Truncate text for circle display based on circle type
+	// Outer circle (projectTitle) gets 40 chars, inner circle (projectClient) gets 10 chars
+	$: projectTitle = truncateText(projectTitleRaw, TRUNCATION_LENGTHS.outerCircle);
+	$: projectClient = truncateText(projectClientRaw, TRUNCATION_LENGTHS.innerCircle);
+	$: projectDate = truncateText(projectDateRaw, DEFAULT_TRUNCATION_LENGTH);
 	
 	// Get aspect ratio class based on dimension
 	// On mobile, always use portrait aspect ratio
@@ -386,8 +411,8 @@
 					<!-- Mobile static text overlay (always visible on mobile) -->
 					{#if isMobile}
 						<div class="absolute bottom-0 left-0 right-0 p-3 text-white">
-							<div class="text-xl">{projectTitle}</div>
-							<div class="text-xl">{projectClient}</div>
+							<div class="text-xl">{projectTitleRaw}</div>
+							<div class="text-xl">{projectClientRaw}</div>
 						</div>
 					{/if}
 				</div>
@@ -410,8 +435,8 @@
 					<!-- Mobile static text overlay (always visible on mobile) -->
 					{#if isMobile}
 						<div class="absolute bottom-0 left-0 right-0 p-3 text-white">
-							<div class="text-xl font-medium">{projectTitle}</div>
-							<div class="text-xl  opacity-60">{projectClient}</div>
+							<div class="text-xl font-medium">{projectTitleRaw}</div>
+							<div class="text-xl  opacity-60">{projectClientRaw}</div>
 						</div>
 					{/if}
 				</div>
@@ -476,8 +501,8 @@
 					<!-- Mobile static text overlay (always visible on mobile) -->
 					{#if isMobile}
 						<div class="absolute bottom-0 left-0 right-0 p-3 text-white">
-							<div class="text-xl font-medium">{projectTitle}</div>
-							<div class="text-xl  opacity-80">{projectClient}</div>
+							<div class="text-xl font-medium">{projectTitleRaw}</div>
+							<div class="text-xl  opacity-80">{projectClientRaw}</div>
 						</div>
 					{/if}
 				</div>
@@ -500,8 +525,8 @@
 					<!-- Mobile static text overlay (always visible on mobile) -->
 					{#if isMobile}
 						<div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white">
-							<div class="text-xl font-medium">{projectTitle}</div>
-							<div class="text-xl  opacity-80">{projectClient}</div>
+							<div class="text-xl font-medium">{projectTitleRaw}</div>
+							<div class="text-xl  opacity-80">{projectClientRaw}</div>
 						</div>
 					{/if}
 				</div>

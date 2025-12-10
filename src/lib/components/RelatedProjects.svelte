@@ -20,12 +20,12 @@
 <div class="mt-24 pb-3">
     <div class="mb-4 paragraph-1 text-center">More work</div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
-        {#each projects as project (project.uid)}
+        {#each projects as project, index (project.uid)}
             {#key project.uid}
                 {#if isMobile}
-                    <ProjectItemMobile dimension="portrait" itemsPerRow={3} {project} />
+                    <ProjectItemMobile dimension="portrait" itemsPerRow={3} positionInRow={index} {project} />
                 {:else}
-                    <ProjectItem dimension="portrait" itemsPerRow={3} {project} />
+                    <ProjectItem dimension="portrait" itemsPerRow={3} positionInRow={index} {project} />
                 {/if}
             {/key}
         {/each}
