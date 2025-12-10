@@ -57,6 +57,15 @@
                   ],
                   "default_value": "no-sound"
                 }
+              },
+              "hide_on_mobile": {
+                "type": "Boolean",
+                "config": {
+                  "label": "Hide on Mobile",
+                  "placeholder_false": "false",
+                  "placeholder_true": "true",
+                  "default_value": false
+                }
               }
             }
           }

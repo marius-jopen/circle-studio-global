@@ -35,7 +35,9 @@
 	>
 		<div class="grid gap-2 {gridClass}">
 			{#each items as item}
-				<DocumentationItem {item} itemsPerRow={itemsPerRow} showVideoOnMobile={false} />
+				<div class={item.hide_on_mobile ? 'hidden md:block' : ''}>
+					<DocumentationItem {item} itemsPerRow={itemsPerRow} showVideoOnMobile={false} />
+				</div>
 			{/each}
 		</div>
 	</section>

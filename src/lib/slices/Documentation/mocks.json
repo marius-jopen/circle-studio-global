@@ -55,6 +55,13 @@
 									"value": "has-sound",
 									"type": "Select"
 								}
+							],
+							[
+								"hide_on_mobile",
+								{
+									"__TYPE__": "BooleanContent",
+									"value": false
+								}
 							]
 						]
 					}
