@@ -5,6 +5,7 @@ import Contact from './Contact/index.svelte';
 import Documentation from './Documentation/index.svelte';
 import FeatureList from './FeatureList/index.svelte';
 import Input from './Input/index.svelte';
+import List from './List/index.svelte';
 import Logo from './Logo/index.svelte';
 import RichText from './RichText/index.svelte';
 import Spacer from './Spacer/index.svelte';
@@ -18,6 +19,7 @@ export const components = {
 	documentation: Documentation,
 	feature_list: FeatureList,
 	input: Input,
+	list: List,
 	logo: Logo,
 	rich_text: RichText,
 	spacer: Spacer,

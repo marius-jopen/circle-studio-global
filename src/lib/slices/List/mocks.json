@@ -1,0 +1,47 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"items": {
+				"__TYPE__": "GroupContentType",
+				"value": [
+					{
+						"__TYPE__": "GroupItemContent",
+						"value": [
+							[
+								"link",
+								{
+									"key": "da5de6d1-2ca9-4fcc-8b32-ef8da99f336d",
+									"__TYPE__": "LinkContent",
+									"value": {
+										"__TYPE__": "ExternalLink",
+										"url": "https://prismic.io",
+										"text": "fierce"
+									}
+								}
+							],
+							[
+								"text",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "previous",
+									"type": "Text"
+								}
+							],
+							[
+								"year",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "nervous",
+									"type": "Text"
+								}
+							]
+						]
+					}
+				]
+			}
+		},
+		"items": []
+	}
+]

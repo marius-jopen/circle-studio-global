@@ -244,6 +244,7 @@ export type HomeDocument<Lang extends string = string> = prismic.PrismicDocument
 >;
 
 type PageDocumentDataSlicesSlice =
+	| ListSlice
 	| LogoSlice
 	| ContactSlice
 	| TextListSlice
@@ -930,7 +931,7 @@ export interface DocumentationSliceDefaultPrimaryItemsItem {
 	 * - **API ID Path**: documentation.default.primary.items[].play
 	 * - **Documentation**: https://prismic.io/docs/fields/select
 	 */
-	play: prismic.SelectField<'no-sound' | 'has-sound', 'filled'>;
+	play: prismic.SelectField<'no-sound' | 'has-sound' | 'click-to-play-with-sound', 'filled'>;
 
 	/**
 	 * Hide on Mobile field in *Documentation → Default → Primary → items*
@@ -1096,6 +1097,83 @@ type InputSliceVariation = InputSliceDefault;
  * - **Documentation**: https://prismic.io/docs/slices
  */
 export type InputSlice = prismic.SharedSlice<'input', InputSliceVariation>;
+
+/**
+ * Item in *List → Default → Primary → Items*
+ */
+export interface ListSliceDefaultPrimaryItemsItem {
+	/**
+	 * Link field in *List → Default → Primary → Items*
+	 *
+	 * - **Field Type**: Link
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: list.default.primary.items[].link
+	 * - **Documentation**: https://prismic.io/docs/fields/link
+	 */
+	link: prismic.LinkField<string, string, unknown, prismic.FieldState, never>;
+
+	/**
+	 * Text field in *List → Default → Primary → Items*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: list.default.primary.items[].text
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	text: prismic.KeyTextField;
+
+	/**
+	 * Year field in *List → Default → Primary → Items*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: list.default.primary.items[].year
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	year: prismic.KeyTextField;
+}
+
+/**
+ * Primary content in *List → Default → Primary*
+ */
+export interface ListSliceDefaultPrimary {
+	/**
+	 * Items field in *List → Default → Primary*
+	 *
+	 * - **Field Type**: Group
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: list.default.primary.items[]
+	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+	 */
+	items: prismic.GroupField<Simplify<ListSliceDefaultPrimaryItemsItem>>;
+}
+
+/**
+ * Default variation for List Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ListSliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Simplify<ListSliceDefaultPrimary>,
+	never
+>;
+
+/**
+ * Slice variation for *List*
+ */
+type ListSliceVariation = ListSliceDefault;
+
+/**
+ * List Shared Slice
+ *
+ * - **API ID**: `list`
+ * - **Description**: List
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ListSlice = prismic.SharedSlice<'list', ListSliceVariation>;
 
 /**
  * Primary content in *Logo → Default → Primary*
@@ -1498,6 +1576,11 @@ declare module '@prismicio/client' {
 			InputSlice,
 			InputSliceVariation,
 			InputSliceDefault,
+			ListSlice,
+			ListSliceDefaultPrimaryItemsItem,
+			ListSliceDefaultPrimary,
+			ListSliceVariation,
+			ListSliceDefault,
 			LogoSlice,
 			LogoSliceDefaultPrimary,
 			LogoSliceVariation,
