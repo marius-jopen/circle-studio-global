@@ -174,6 +174,18 @@ interface HomeDocumentData {
 	text_sub: prismic.RichTextField;
 
 	/**
+	 * Randomize Features field in *Home*
+	 *
+	 * - **Field Type**: Boolean
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: false
+	 * - **API ID Path**: home.randomize_features
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
+	 */
+	randomize_features: prismic.BooleanField;
+
+	/**
 	 * Slice Zone field in *Home*
 	 *
 	 * - **Field Type**: Slice Zone

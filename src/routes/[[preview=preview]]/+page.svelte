@@ -129,6 +129,74 @@
 	$: homeTextRawSub = data?.page?.data?.text_sub;
 	$: homeTextSub = Array.isArray(homeTextRawSub) ? asText(homeTextRawSub) : (typeof homeTextRawSub === 'string' ? homeTextRawSub : '');
 
+	// Fisher-Yates shuffle algorithm
+	function shuffleArray<T>(array: T[]): T[] {
+		const shuffled = [...array];
+		for (let i = shuffled.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+		}
+		return shuffled;
+	}
+
+	// Collect all projects and create a single shuffled array (shared between single and grid)
+	// Use data.page as dependency to ensure it re-runs on every data change
+	$: allShuffledProjects = (() => {
+		const allProjects: any[] = [];
+		const hasOriginalSingleFeature = isFilled.contentRelationship(data?.page?.data?.feature_project);
+		
+		// Add single featured project if it exists
+		if (hasOriginalSingleFeature) {
+			allProjects.push(data.page.data.feature_project);
+		}
+		
+		// Add featured projects from the group
+		if (data?.page?.data?.feature_projects) {
+			data.page.data.feature_projects.forEach(projectGroup => {
+				if (isFilled.contentRelationship(projectGroup.items)) {
+					allProjects.push(projectGroup.items);
+				}
+			});
+		}
+		
+		if (allProjects.length === 0) return [];
+		
+		// Shuffle if toggle is active (only when randomize_features is true)
+		const shouldRandomize = Boolean(data?.page?.data?.randomize_features);
+		if (shouldRandomize) {
+			// Always shuffle when toggle is true - this ensures new random order on each reactive run
+			return shuffleArray(allProjects);
+		}
+		return allProjects;
+	})();
+
+	// Extract single feature project (only if it originally existed in CMS)
+	$: shuffledFeatureProject = (() => {
+		const hasOriginalSingleFeature = isFilled.contentRelationship(data?.page?.data?.feature_project);
+		if (!hasOriginalSingleFeature || allShuffledProjects.length === 0) return null;
+		return allShuffledProjects[0] || null;
+	})();
+
+	// Extract grid projects with preserved size structure
+	$: shuffledFeatureProjects = (() => {
+		const hasOriginalSingleFeature = isFilled.contentRelationship(data?.page?.data?.feature_project);
+		
+		if (allShuffledProjects.length === 0) return [];
+		
+		// Get original size structure from CMS
+		const originalSizes = data?.page?.data?.feature_projects?.map(pg => pg.size) || [];
+		
+		// If there was a single feature, skip first project (it goes in single feature position)
+		// Otherwise, use all projects for grid
+		const gridProjects = hasOriginalSingleFeature ? allShuffledProjects.slice(1) : allShuffledProjects;
+		
+		// Map shuffled projects to grid positions with their original sizes
+		return gridProjects.map((project, index) => ({
+			items: project,
+			size: originalSizes[index] || 'two' // Default to 'two' if no size available
+		}));
+	})();
+
 	
 </script>
 
@@ -156,12 +224,12 @@
 </div> -->
 
 {#if currentView === 'grid' && !isSearchActive}
-	{#if isFilled.contentRelationship(data.page.data.feature_project)}
+	{#if shuffledFeatureProject}
 		<div class="">
 			{#if isMobile}
-				<ProjectItemMobile square={true} dimension="portrait" project={data.page.data.feature_project} />
+				<ProjectItemMobile square={true} dimension="portrait" project={shuffledFeatureProject} />
 			{:else}
-				<ProjectItem dimension="landscape" square={true} project={data.page.data.feature_project} />
+				<ProjectItem dimension="landscape" square={true} project={shuffledFeatureProject} />
 			{/if}
 		</div>
 	{/if}
@@ -175,11 +243,11 @@
 	{/if}
 {/if}
 
-<div class="px-3 {isFilled.contentRelationship(data.page.data.feature_project) && !isSearchActive ? 'mt-2' : 'mt-3 md:mt-12 md:mt-14'}">
+<div class="px-3 {shuffledFeatureProject && !isSearchActive ? 'mt-2' : 'mt-3 md:mt-12 md:mt-14'}">
 	{#if currentView === 'grid' && !isSearchActive}
-		{#if data.page.data.feature_projects && data.page.data.feature_projects.length > 0}
+		{#if shuffledFeatureProjects && shuffledFeatureProjects.length > 0}
 			<div class="grid grid-cols-1 md:grid-cols-12 gap-2 pb-2">
-				{#each data.page.data.feature_projects as projectGroup}
+				{#each shuffledFeatureProjects as projectGroup}
 					{#if isFilled.contentRelationship(projectGroup.items)}
 						<div class={mapSizeToColSpanClasses(projectGroup?.size)}>
 							{#if isMobile}
@@ -193,6 +261,7 @@
 			</div>
 		{/if}
 	{/if}
+	
 	{#if currentView === 'grid' && !isSearchActive}
 		{#if homeTextSub && homeTextSub.trim().length > 0}
 			<div class="content-container mb-12 mt-8.5 text-center text-primary">
