@@ -53,7 +53,8 @@
                   "placeholder": "",
                   "options": [
                     "no-sound",
-                    "has-sound"
+                    "has-sound",
+                    "click-to-play-with-sound"
                   ],
                   "default_value": "no-sound"
                 }

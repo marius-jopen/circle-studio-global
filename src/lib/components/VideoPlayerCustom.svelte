@@ -73,6 +73,7 @@
     let hideUiTimeout: ReturnType<typeof setTimeout> | undefined;
     let suppressUI = $state(false);
     let isScrubbing = $state(false);
+    let wasPlayingBeforeScrub = $state(false);
     let scrubLeft = 0;
     let scrubWidth = 1;
     let lastShowControls = $state(false);
@@ -102,10 +103,22 @@
         }
     }
 
-    function togglePlayPause() {
+    function togglePlayPause(e?: Event) {
         if (!videoElement) return;
+        // Don't toggle if clicking on a video control element
+        if (e && e.target) {
+            const target = e.target as HTMLElement;
+            if (target.closest('[data-video-control="true"]') || target.closest('button')) {
+                return;
+            }
+        }
         if (videoElement.paused) {
-            if (effectiveUnmuteOnUserPlay && !hasUserPlayed && videoElement.muted) {
+            // For click-to-play-with-sound, always unmute on first play
+            if (isClickToPlayWithSound && !hasUserPlayed) {
+                videoElement.muted = false;
+                isMuted = false;
+                notifyVideoPlayingWithSound();
+            } else if (effectiveUnmuteOnUserPlay && !hasUserPlayed && videoElement.muted) {
                 videoElement.muted = false;
                 isMuted = false;
                 notifyVideoPlayingWithSound();
@@ -179,6 +192,10 @@
 
     function onMouseUp() {
         isScrubbing = false;
+        // Resume playing if video was playing before scrubbing started
+        if (wasPlayingBeforeScrub && videoElement && videoElement.paused) {
+            videoElement.play().catch(() => {});
+        }
         window.removeEventListener('mousemove', onMouseMove);
         window.removeEventListener('mouseup', onMouseUp);
         scheduleAutoHide();
@@ -192,6 +209,10 @@
 
     function onTouchEnd() {
         isScrubbing = false;
+        // Resume playing if video was playing before scrubbing started
+        if (wasPlayingBeforeScrub && videoElement && videoElement.paused) {
+            videoElement.play().catch(() => {});
+        }
         window.removeEventListener('touchmove', onTouchMove);
         window.removeEventListener('touchend', onTouchEnd);
         scheduleAutoHide();
@@ -200,6 +221,7 @@
     function startScrubMouse(e: MouseEvent) {
         if (!duration) return;
         isScrubbing = true;
+        wasPlayingBeforeScrub = !videoElement.paused;
         showControls = true;
         const rect = (e.currentTarget as HTMLButtonElement).getBoundingClientRect();
         scrubLeft = rect.left;
@@ -212,6 +234,7 @@
     function startScrubTouch(e: TouchEvent) {
         if (!duration) return;
         isScrubbing = true;
+        wasPlayingBeforeScrub = !videoElement.paused;
         showControls = true;
         const target = e.currentTarget as HTMLButtonElement;
         if (target) {
@@ -254,7 +277,8 @@
 
 	const useHls = $derived(hlsUrl && hlsUrl.includes('.m3u8'));
 	const videoUrl = $derived(hlsUrl.replace('.m3u8', '.mp4'));
-    const hasSoundMode = $derived(playMode === 'has-sound' || playMode === 'has sound');
+    const hasSoundMode = $derived(playMode === 'has-sound' || playMode === 'has sound' || playMode === 'click-to-play-with-sound');
+    const isClickToPlayWithSound = $derived(playMode === 'click-to-play-with-sound');
     let isMobile = $state(false);
     const effectiveUnmuteOnUserPlay = $derived(
         unmuteOnUserPlay || (isMobile && context === 'main' && hasSoundMode)
@@ -313,8 +337,10 @@
                     videoElement.addEventListener('loadeddata', tryPlay, { once: true });
                 }
             } else {
-                // On mobile, start with visible controls so the user can choose to play
-                showControls = true;
+                // On mobile or when autoplay is disabled, start with visible controls so the user can choose to play
+                if (isClickToPlayWithSound || isMobile) {
+                    showControls = true;
+                }
             }
         }
 
@@ -326,7 +352,12 @@
 			const { context: requestContext } = (event as CustomEvent).detail || {};
 			if (!videoElement) return;
 			if (requestContext && context && requestContext === context) {
-                if (effectiveUnmuteOnUserPlay && !hasUserPlayed) {
+                // For click-to-play-with-sound, always unmute on first play
+                if (isClickToPlayWithSound && !hasUserPlayed) {
+					videoElement.muted = false;
+					isMuted = false;
+					notifyVideoPlayingWithSound();
+				} else if (effectiveUnmuteOnUserPlay && !hasUserPlayed) {
 					videoElement.muted = false;
 					isMuted = false;
 				}
@@ -523,7 +554,7 @@
 	bind:this={containerElement}
 	style={containerStyle}
 	tabindex="0"
-	onclick={togglePlayPause}
+	onclick={(e) => togglePlayPause(e)}
 	onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); togglePlayPause(); } }}
 	onmouseenter={() => { if (suppressUI) return; isHovering = true; showSoundIcon = true; if (controls) { showControls = true; notifyControlsShown(); } scheduleAutoHide(); }}
 	onmouseleave={() => { isHovering = false; clearAutoHide(); showControls = false; notifyControlsHidden(); }}
@@ -575,6 +606,7 @@
                 aria-label="Seek"
                 onmousedown={(e) => { e.stopPropagation(); startScrubMouse(e as MouseEvent); }}
                 ontouchstart={(e) => { e.stopPropagation(); startScrubTouch(e as TouchEvent); }}
+                onclick={(e) => { e.stopPropagation(); }}
             >
                 <!-- Centered thin visible track -->
                 <div class="absolute left-0  right-3 top-1/2 -translate-y-1/2 h-0.5 bg-white/40 rounded w-[calc(100%-1.5rem)]">

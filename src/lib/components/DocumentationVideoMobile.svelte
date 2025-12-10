@@ -11,6 +11,8 @@
 
   const controlsTextClass = $derived((itemsPerRow ?? '1') === '1' ? 'h2' : ((itemsPerRow === '2') ? 'text-base' : 'text-sm'));
   const roundedClass = $derived(noRoundedCorners ? '' : 'rounded');
+  const playMode = item?.play;
+  const isClickToPlayWithSound = playMode === 'click-to-play-with-sound';
 
   let isActive = $state(false); // whether we swapped image->video
   let isPlaying = $state(false);
@@ -76,6 +78,13 @@
         const url: string = item.video_url;
         const isNativeHls = !!videoEl.canPlayType && videoEl.canPlayType('application/vnd.apple.mpegurl');
 
+        // For click-to-play-with-sound, unmute the video
+        if (isClickToPlayWithSound) {
+          videoEl.muted = false;
+        } else {
+          videoEl.muted = true;
+        }
+
         if (isNativeHls) {
           videoEl.src = url;
           await videoEl.play().catch(() => {});
@@ -127,14 +136,24 @@
   });
 
   // Drive activation/deactivation based on visibility
+  // Skip auto-activation for click-to-play-with-sound mode
   $effect(() => {
     if (!item?.video_url || !item?.image?.url) return;
+    // Don't auto-activate for click-to-play-with-sound mode
+    if (isClickToPlayWithSound) return;
     if (isInView) {
       activateVideo();
     } else {
       if (isActive) deactivateVideo();
     }
   });
+
+  // Handle click for click-to-play-with-sound mode
+  function handleClick() {
+    if (isClickToPlayWithSound && !isActive) {
+      activateVideo();
+    }
+  }
 </script>
 
 {#if item}
@@ -145,10 +164,20 @@
     {@const imgW = imageField?.dimensions?.width}
     {@const imgH = imageField?.dimensions?.height}
     {@const isLandscape = !!imgW && !!imgH ? imgW > imgH : false}
-  <div
-      bind:this={rootEl}
-      class={`relative select-none ${isLandscape ? 'aspect-square' : ''}`}
-    >
+  {#if isClickToPlayWithSound && !isActive}
+    <div
+        bind:this={rootEl}
+        class={`relative select-none ${isLandscape ? 'aspect-square' : ''} cursor-pointer`}
+        onclick={handleClick}
+        role="button"
+        tabindex="0"
+        onkeydown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleClick();
+          }
+        }}
+      >
       <!-- Keep the image in the document flow to preserve height -->
       <PrismicImage field={imageField} class={isLandscape ? `absolute inset-0 z-0 w-full h-full ${roundedClass} object-cover no-callout brightness-[95%]` : `w-full h-auto ${roundedClass} object-cover no-callout brightness-[95%]`} />
 
@@ -159,7 +188,7 @@
           class={`absolute inset-0 z-10 w-full h-full ${roundedClass} object-cover no-callout ios-video-fix transition-opacity duration-200 ${isVideoReady ? 'opacity-100' : 'opacity-0'}`}
           poster={imageField.url}
           playsinline
-          muted
+          muted={!isClickToPlayWithSound}
           loop
           preload="none"
         ></video>
@@ -167,6 +196,30 @@
 
       <!-- No manual controls on mobile: auto-play while in view -->
     </div>
+  {:else}
+    <div
+        bind:this={rootEl}
+        class={`relative select-none ${isLandscape ? 'aspect-square' : ''}`}
+      >
+      <!-- Keep the image in the document flow to preserve height -->
+      <PrismicImage field={imageField} class={isLandscape ? `absolute inset-0 z-0 w-full h-full ${roundedClass} object-cover no-callout brightness-[95%]` : `w-full h-auto ${roundedClass} object-cover no-callout brightness-[95%]`} />
+
+      <!-- Overlay the video absolutely to avoid layout jump -->
+      {#if isActive}
+        <video
+          bind:this={videoEl}
+          class={`absolute inset-0 z-10 w-full h-full ${roundedClass} object-cover no-callout ios-video-fix transition-opacity duration-200 ${isVideoReady ? 'opacity-100' : 'opacity-0'}`}
+          poster={imageField.url}
+          playsinline
+          muted={!isClickToPlayWithSound}
+          loop
+          preload="none"
+        ></video>
+      {/if}
+
+      <!-- No manual controls on mobile: auto-play while in view -->
+    </div>
+  {/if}
   {/if}
 {/if}
 

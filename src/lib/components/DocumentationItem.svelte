@@ -21,6 +21,7 @@
 	{@const videoUrl = (typeof rawVideoUrl === 'string' ? rawVideoUrl.trim() : '')}
 	{@const playMode = item.play}
 	{@const displayPlayMode = (playMode === 'autoplay-muted' || playMode === 'auto-muted') ? 'no-sound' : playMode}
+	{@const isClickToPlayWithSound = playMode === 'click-to-play-with-sound'}
 	
 	{#if videoUrl}
 		<!-- Desktop: Show video with autoplay -->
@@ -34,6 +35,10 @@
 				controls={true}
 				width="auto"
 				height="auto"
+				autoplayOnMount={!isClickToPlayWithSound}
+				defaultMuted={!isClickToPlayWithSound && displayPlayMode !== 'has-sound'}
+				unmuteOnUserPlay={isClickToPlayWithSound}
+				showControlsOnMount={isClickToPlayWithSound}
 			/>
 		</div>
 		
