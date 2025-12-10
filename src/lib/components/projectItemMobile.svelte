@@ -29,15 +29,34 @@ $: projectClient = projectData?.client || 'Untitled Client';
 		return items.filter((i) => i?.preview_video_url_landscape || i?.preview_image_landscape?.url);
 	}
 
-	$: selectedPreview = (() => {
+	// Store the randomly selected preview per project
+	let selectedPreviewItem: any = null;
+	let lastProjectId: string | null = null;
+
+	// Randomly select a preview video when project data is available
+	$: if (projectData && projectUid) {
 		const allItems = Array.isArray(projectData?.preview) ? projectData.preview : [];
-		if (allItems.length === 0) return null;
-		const preferred = filterItemsForDimension(allItems, 'portrait');
-		const candidates = preferred.length > 0 ? preferred : allItems;
-		const hash = (projectData?.id || '').split('').reduce((a: number, b: string) => ((a << 5) - a + b.charCodeAt(0)) & a, 0);
-		const index = Math.abs(hash) % candidates.length;
-		return { item: candidates[index], index };
-	})();
+		const currentProjectId = projectData?.id || projectUid || '';
+		const projectChanged = currentProjectId !== lastProjectId;
+		
+		if (allItems.length === 0) {
+			selectedPreviewItem = null;
+			lastProjectId = currentProjectId;
+		} else {
+			const preferred = filterItemsForDimension(allItems, 'portrait');
+			const candidates = preferred.length > 0 ? preferred : allItems;
+			
+			// Re-select if project changed or we don't have a selection yet
+			if (projectChanged || selectedPreviewItem === null) {
+				// Use Math.random() for truly random selection on each page load
+				const randomIndex = Math.floor(Math.random() * candidates.length);
+				selectedPreviewItem = candidates[randomIndex];
+				lastProjectId = currentProjectId;
+			}
+		}
+	}
+
+	$: selectedPreview = selectedPreviewItem ? { item: selectedPreviewItem, index: 0 } : null;
 
 	onMount(() => {
 		const setupIO = () => {

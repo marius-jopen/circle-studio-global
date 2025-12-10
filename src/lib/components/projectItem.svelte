@@ -288,27 +288,44 @@
 		return items.filter((i) => i?.preview_video_url_landscape || i?.preview_image_landscape?.url);
 	}
 
-	$: selectedPreview = (() => {
+	// Store the randomly selected preview per project
+	let selectedPreviewItem: any = null;
+	let lastProjectId: string | null = null;
+	let lastEffectiveDimension: 'landscape' | 'square' | 'portrait' | null = null;
+
+	// Randomly select a preview video when project data is available
+	$: if (projectData && projectUid) {
 		const allItems = Array.isArray(projectData?.preview) ? projectData.preview : [];
-		if (allItems.length === 0) return null;
-
-		// On mobile, always prefer portrait assets
-		const preferred = filterItemsForDimension(allItems, effectiveDimension);
-		const candidates = preferred.length > 0 ? preferred : allItems;
+		const currentProjectId = projectData?.id || projectUid || '';
 		
-		// Use project ID as seed for consistent "random" selection
-		const hash = (projectData?.id || '').split('').reduce((a: number, b: string) => {
-			a = ((a << 5) - a) + b.charCodeAt(0);
-			return a & a;
-		}, 0);
-		const selectedIndex = Math.abs(hash) % candidates.length;
-		const selectedItem = candidates[selectedIndex];
+		// Reset selection if project changed or dimension changed
+		const projectChanged = currentProjectId !== lastProjectId;
+		const dimensionChanged = effectiveDimension !== lastEffectiveDimension;
+		
+		if (allItems.length === 0) {
+			selectedPreviewItem = null;
+			lastProjectId = currentProjectId;
+			lastEffectiveDimension = effectiveDimension;
+		} else {
+			// On mobile, always prefer portrait assets
+			const preferred = filterItemsForDimension(allItems, effectiveDimension);
+			const candidates = preferred.length > 0 ? preferred : allItems;
+			
+			// Re-select if project changed, dimension changed, or we don't have a selection yet
+			if (projectChanged || dimensionChanged || selectedPreviewItem === null) {
+				// Use Math.random() for truly random selection on each page load
+				const randomIndex = Math.floor(Math.random() * candidates.length);
+				selectedPreviewItem = candidates[randomIndex];
+				lastProjectId = currentProjectId;
+				lastEffectiveDimension = effectiveDimension;
 
-		console.log(`🎲 Project "${projectTitle}": Selected preview with dimension ${effectiveDimension} (original: ${dimension}). ` +
-			(preferred.length > 0 ? `From ${preferred.length} supported items.` : `No direct match; fell back to any of ${allItems.length}.`));
+				console.log(`🎲 Project "${projectTitle}": Randomly selected preview ${randomIndex + 1} of ${candidates.length} with dimension ${effectiveDimension} (original: ${dimension}). ` +
+					(preferred.length > 0 ? `From ${preferred.length} supported items.` : `No direct match; fell back to any of ${allItems.length}.`));
+			}
+		}
+	}
 
-		return { item: selectedItem, index: selectedIndex };
-	})();
+	$: selectedPreview = selectedPreviewItem ? { item: selectedPreviewItem, index: 0 } : null;
 </script>
 
 		{#if clickable}
