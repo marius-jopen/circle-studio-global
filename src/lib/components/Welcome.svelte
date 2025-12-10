@@ -10,6 +10,7 @@
   let wheelVisible = $state(true); // Start with wheel visible
   let welcomeElement: HTMLDivElement;
   let fadePhase = $state<'initial' | 'lettersVisible' | 'lettersFadingOut' | 'backgroundFadingOut' | 'hidden'>('lettersVisible');
+  let darkMode = $state(true); // When true: black background, white text
 
   // Check if we're on the home page (runes)
   const isHomePage = $derived(page?.route?.id === '/[[preview=preview]]');
@@ -54,7 +55,7 @@
       fontSizePercent: 18,
       distancePercent: 0,
       paused: false,
-      textColor: '#171717',
+      textColor: darkMode ? '#ffffff' : '#171717',
       backgroundColor: '#ffffff',
       transparentBackground: true,
       fadeInTime: 0,
@@ -101,7 +102,7 @@
         if (fadePhase === 'lettersVisible') {
           fadeOut();
         }
-      }, 1000);
+      }, 2000);
     }
 
     // Set navigation flag when user navigates away
@@ -203,6 +204,7 @@
 {#if showWelcome}
   <div class="welcome-overlay cursor-pointer z-30"
        class:background-visible={backgroundVisible}
+       class:dark-mode={darkMode}
        bind:this={welcomeElement}
        onclick={handleClick}
        onkeydown={handleKeydown}
@@ -226,7 +228,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: #ffffff; /* Always white background */
+    background-color: #ffffff; /* Default white background */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -234,6 +236,10 @@
     cursor: pointer;
     opacity: 1; /* Always start visible */
     transition: opacity 0.8s ease-in-out;
+  }
+
+  .welcome-overlay.dark-mode {
+    background-color: #000000; /* Black background when darkMode is true */
   }
 
   .welcome-overlay:not(.background-visible) {
