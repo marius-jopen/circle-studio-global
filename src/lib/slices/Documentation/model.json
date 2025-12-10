@@ -66,6 +66,15 @@
                   "placeholder_true": "true",
                   "default_value": false
                 }
+              },
+              "no_rounded_corners": {
+                "type": "Boolean",
+                "config": {
+                  "label": "No Rounded Corners",
+                  "placeholder_false": "false",
+                  "placeholder_true": "true",
+                  "default_value": false
+                }
               }
             }
           }

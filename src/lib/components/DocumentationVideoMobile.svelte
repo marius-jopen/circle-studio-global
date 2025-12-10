@@ -5,10 +5,12 @@
   interface Props {
     item: any;
     itemsPerRow?: string;
+    noRoundedCorners?: boolean;
   }
-  const { item, itemsPerRow }: Props = $props();
+  const { item, itemsPerRow, noRoundedCorners = false }: Props = $props();
 
   const controlsTextClass = $derived((itemsPerRow ?? '1') === '1' ? 'h2' : ((itemsPerRow === '2') ? 'text-base' : 'text-sm'));
+  const roundedClass = $derived(noRoundedCorners ? '' : 'rounded');
 
   let isActive = $state(false); // whether we swapped image->video
   let isPlaying = $state(false);
@@ -148,13 +150,13 @@
       class={`relative select-none ${isLandscape ? 'aspect-square' : ''}`}
     >
       <!-- Keep the image in the document flow to preserve height -->
-      <PrismicImage field={imageField} class={isLandscape ? 'absolute inset-0 z-0 w-full h-full rounded object-cover no-callout brightness-[95%]' : 'w-full h-auto rounded object-cover no-callout brightness-[95%]'} />
+      <PrismicImage field={imageField} class={isLandscape ? `absolute inset-0 z-0 w-full h-full ${roundedClass} object-cover no-callout brightness-[95%]` : `w-full h-auto ${roundedClass} object-cover no-callout brightness-[95%]`} />
 
       <!-- Overlay the video absolutely to avoid layout jump -->
       {#if isActive}
         <video
           bind:this={videoEl}
-          class={`absolute inset-0 z-10 w-full h-full rounded object-cover no-callout ios-video-fix transition-opacity duration-200 ${isVideoReady ? 'opacity-100' : 'opacity-0'}`}
+          class={`absolute inset-0 z-10 w-full h-full ${roundedClass} object-cover no-callout ios-video-fix transition-opacity duration-200 ${isVideoReady ? 'opacity-100' : 'opacity-0'}`}
           poster={imageField.url}
           playsinline
           muted

@@ -7,10 +7,12 @@
 		item: any;
 		itemsPerRow?: string;
 		showVideoOnMobile?: boolean;
+		noRoundedCorners?: boolean;
 	}
-	const { item, itemsPerRow, showVideoOnMobile = false }: Props = $props();
+	const { item, itemsPerRow, showVideoOnMobile = false, noRoundedCorners = false }: Props = $props();
 
 	const controlsTextClass = $derived((itemsPerRow ?? '1') === '1' ? 'h2' : ((itemsPerRow === '2') ? 'text-base' : 'text-sm'));
+	const roundedClass = $derived(noRoundedCorners ? '' : 'rounded');
 </script>
 
 {#if item}
@@ -27,7 +29,7 @@
 				playMode={displayPlayMode}
 				hlsUrl={videoUrl}
 				posterImage={imageField} 
-				classes="w-full h-auto rounded object-cover"
+				classes="w-full h-auto {roundedClass} object-cover"
 				controlsTextClass={controlsTextClass}
 				controls={true}
 				width="auto"
@@ -37,7 +39,7 @@
 		
 		<!-- Mobile: Show still image for videos -->
 		<div class="block md:hidden">
-			<DocumentationVideoMobile {item} {itemsPerRow} />
+			<DocumentationVideoMobile {item} {itemsPerRow} {noRoundedCorners} />
 		</div>
 	{:else if imageField?.url}
 		<!-- Regular images (no video) -->
@@ -48,7 +50,7 @@
 		<div class="hidden md:block">
 			<PrismicImage 
 				field={imageField} 
-				class="w-full h-auto rounded object-cover"
+				class="w-full h-auto {roundedClass} object-cover"
 			/>
 		</div>
 		<!-- Mobile: force square crop with object-cover -->
@@ -57,13 +59,13 @@
 				<div class="relative aspect-square">
 					<PrismicImage 
 						field={imageField} 
-						class="absolute inset-0 w-full h-full rounded object-cover"
+						class="absolute inset-0 w-full h-full {roundedClass} object-cover"
 					/>
 				</div>
 			{:else}
 				<PrismicImage 
 					field={imageField} 
-					class="w-full h-auto rounded object-cover"
+					class="w-full h-auto {roundedClass} object-cover"
 				/>
 			{/if}
 		</div>

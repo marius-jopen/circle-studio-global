@@ -62,6 +62,13 @@
 									"__TYPE__": "BooleanContent",
 									"value": false
 								}
+							],
+							[
+								"no_rounded_corners",
+								{
+									"__TYPE__": "BooleanContent",
+									"value": true
+								}
 							]
 						]
 					}

@@ -942,6 +942,17 @@ export interface DocumentationSliceDefaultPrimaryItemsItem {
 	 * - **Documentation**: https://prismic.io/docs/fields/boolean
 	 */
 	hide_on_mobile: prismic.BooleanField;
+
+	/**
+	 * No Rounded Corners field in *Documentation → Default → Primary → items*
+	 *
+	 * - **Field Type**: Boolean
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: false
+	 * - **API ID Path**: documentation.default.primary.items[].no_rounded_corners
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
+	 */
+	no_rounded_corners: prismic.BooleanField;
 }
 
 /**
