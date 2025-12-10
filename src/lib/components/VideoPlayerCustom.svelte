@@ -114,11 +114,12 @@
         }
         if (videoElement.paused) {
             // For click-to-play-with-sound, always unmute on first play
+            // For has-sound mode, do NOT auto-unmute - user must click "Sound On" button
             if (isClickToPlayWithSound && !hasUserPlayed) {
                 videoElement.muted = false;
                 isMuted = false;
                 notifyVideoPlayingWithSound();
-            } else if (effectiveUnmuteOnUserPlay && !hasUserPlayed && videoElement.muted) {
+            } else if (effectiveUnmuteOnUserPlay && !hasUserPlayed && videoElement.muted && !isHasSoundMode) {
                 videoElement.muted = false;
                 isMuted = false;
                 notifyVideoPlayingWithSound();
@@ -279,9 +280,10 @@
 	const videoUrl = $derived(hlsUrl.replace('.m3u8', '.mp4'));
     const hasSoundMode = $derived(playMode === 'has-sound' || playMode === 'has sound' || playMode === 'click-to-play-with-sound');
     const isClickToPlayWithSound = $derived(playMode === 'click-to-play-with-sound');
+    const isHasSoundMode = $derived(playMode === 'has-sound' || playMode === 'has sound');
     let isMobile = $state(false);
     const effectiveUnmuteOnUserPlay = $derived(
-        unmuteOnUserPlay || (isMobile && context === 'main' && hasSoundMode)
+        unmuteOnUserPlay || (isMobile && context === 'main' && isClickToPlayWithSound)
     );
     // Allow autoplay on mobile for main videos when muted
     const shouldAutoplay = $derived(
@@ -353,11 +355,12 @@
 			if (!videoElement) return;
 			if (requestContext && context && requestContext === context) {
                 // For click-to-play-with-sound, always unmute on first play
+                // For has-sound mode, do NOT auto-unmute - user must click "Sound On" button
                 if (isClickToPlayWithSound && !hasUserPlayed) {
 					videoElement.muted = false;
 					isMuted = false;
 					notifyVideoPlayingWithSound();
-				} else if (effectiveUnmuteOnUserPlay && !hasUserPlayed) {
+				} else if (effectiveUnmuteOnUserPlay && !hasUserPlayed && !isHasSoundMode) {
 					videoElement.muted = false;
 					isMuted = false;
 				}

@@ -36,7 +36,7 @@
 				width="auto"
 				height="auto"
 				autoplayOnMount={!isClickToPlayWithSound}
-				defaultMuted={!isClickToPlayWithSound && displayPlayMode !== 'has-sound'}
+				defaultMuted={!isClickToPlayWithSound}
 				unmuteOnUserPlay={isClickToPlayWithSound}
 				showControlsOnMount={isClickToPlayWithSound}
 			/>
