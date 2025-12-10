@@ -38,10 +38,10 @@ function closeSearch() {
                     </div>
                 {/if}
             {:else if isProject}
-                <a href="/" class="text-center font-medium whitespace-nowrap py-2 pr-2 pl-5">Back</a>
+                <a href="/" class="text-center font-medium whitespace-nowrap py-2 pr-2 pl-5">Work</a>
                 <a href="/about" class="text-center font-medium py-2 pl-2 pr-5">About</a>
             {:else if isAbout}
-                <a href="/" class="text-center font-medium whitespace-nowrap py-2 pr-5 pl-5">ART CAMP</a>
+                <a href="/" class="text-center font-medium whitespace-nowrap py-2 pr-5 pl-5">Work</a>
             {:else}
                 <a href="/" class="text-center font-medium whitespace-nowrap py-2 pr-5 pl-5">ART CAMP</a>
                 <a href="/about" class="text-center font-medium py-2 pl-2 pr-5">About</a>
