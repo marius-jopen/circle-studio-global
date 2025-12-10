@@ -75,7 +75,7 @@
 
 <section data-slice-type={slice.slice_type} data-slice-variation={slice.variation} class="list-none">
 	{#if sortedItems.length > 0}
-		<div class="divide-y divide-black/10 border-t border-black/10 text-black md:hover:text-black/25 mt-4 mx-6 list-none">
+		<div class="divide-y divide-black/10 border-t border-b border-black/10 text-black md:hover:text-black/25 mt-4 mx-6 list-none">
 			{#each sortedItems as item, index}
 				{@const linkUrl = getLinkUrl(item)}
 				{@const linkText = getLinkText(item)}
@@ -87,17 +87,17 @@
 						class="list-item block py-2.5 transition-all duration-500 ease-out {visibleItems.has(index) ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'} {isMobile ? '' : 'hover:text-black'}"
 					>
 						<div class="grid grid-cols-12 items-center gap-2 paragraph-1">
-							<div class="col-span-4 md:col-span-4 text-left tracking-wide text-xs md:text-xl">{linkText || 'Magazine'}</div>
-							<div class="col-span-6 md:col-span-7 text-left text-xs md:text-xl">{item.text || ''}</div>
-							<div class="col-span-2 md:col-span-1 text-right text-xs md:text-xl">{formatYear(item.year)}</div>
+							<div class="col-span-4 md:col-span-3 text-left tracking-wide text-xs md:text-2xl">{linkText || 'Magazine'}</div>
+							<div class="col-span-6 md:col-span-6 text-center text-xs md:text-2xl">{item.text || ''}</div>
+							<div class="col-span-2 md:col-span-3 text-right text-xs md:text-2xl">{formatYear(item.year)}</div>
 						</div>
 					</PrismicLink>
 				{:else}
 					<div class="list-item block py-2.5 transition-all duration-500 ease-out {visibleItems.has(index) ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'} {isMobile ? '' : 'hover:text-black'}">
 						<div class="grid grid-cols-12 items-center gap-2 paragraph-1">
-							<div class="col-span-4 md:col-span-4 text-left tracking-wide text-xs md:text-xl">{linkText || 'Magazine'}</div>
-							<div class="col-span-6 md:col-span-7 text-left text-xs md:text-xl">{item.text || ''}</div>
-							<div class="col-span-2 md:col-span-1 text-right text-xs md:text-xl">{formatYear(item.year)}</div>
+							<div class="col-span-4 md:col-span-3 text-left tracking-wide text-xs md:text-2xl">{linkText || 'Magazine'}</div>
+							<div class="col-span-6 md:col-span-6 text-center text-xs md:text-2xl">{item.text || ''}</div>
+							<div class="col-span-2 md:col-span-3 text-right text-xs md:text-2xl">{formatYear(item.year)}</div>
 						</div>
 					</div>
 				{/if}
