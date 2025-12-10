@@ -297,14 +297,17 @@
     /* Keep wheel visible and animating even when overlay fades */
     opacity: 1;
     transition: opacity 0.3s ease-in-out;
+    /* Center the container */
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   
   /* Mobile-specific: ensure perfect centering with scale transform */
   @media (max-width: 768px) {
     .wheel-container {
       transform-origin: center center !important;
-      left: 50%;
-      transform: translateX(-50%) scale(0.4);
+      transform: scale(0.4);
     }
   }
   
@@ -312,7 +315,6 @@
   @media (min-width: 768px) {
     .wheel-container {
       transform: none;
-      left: auto;
     }
   }
   
