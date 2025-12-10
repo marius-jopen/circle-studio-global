@@ -58,7 +58,7 @@
       backgroundColor: '#ffffff',
       transparentBackground: true,
       fadeInTime: 0,
-      fadeOutTime: 2.3,
+      fadeOutTime: 1,
       pauseTime: 0,
       visibleTime: 0,
       manualMode: true,
@@ -101,7 +101,7 @@
         if (fadePhase === 'lettersVisible') {
           fadeOut();
         }
-      }, 3000);
+      }, 1000);
     }
 
     // Set navigation flag when user navigates away
@@ -184,7 +184,7 @@
         showWelcome = false;
         fadePhase = 'hidden';
       }, 1200); // Match the CSS transition duration for background
-    }, 3000); // Wait for letters to fade out (fadeOutTime)
+    }, 1200); // Wait for letters to fade out (fadeOutTime)
   }
 
   function handleClick() {
