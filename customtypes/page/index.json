@@ -36,6 +36,9 @@
 				"fieldset": "Slice Zone",
 				"config": {
 					"choices": {
+						"logo": {
+							"type": "SharedSlice"
+						},
 						"contact": {
 							"type": "SharedSlice"
 						},

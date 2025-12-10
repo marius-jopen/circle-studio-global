@@ -1,0 +1,31 @@
+{
+  "id": "logo",
+  "type": "SharedSlice",
+  "name": "Logo",
+  "description": "Logo",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "display": {
+          "type": "Select",
+          "config": {
+            "label": "Display",
+            "placeholder": "",
+            "options": [
+              "both",
+              "desktop",
+              "mobile"
+            ]
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

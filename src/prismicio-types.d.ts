@@ -244,6 +244,7 @@ export type HomeDocument<Lang extends string = string> = prismic.PrismicDocument
 >;
 
 type PageDocumentDataSlicesSlice =
+	| LogoSlice
 	| ContactSlice
 	| TextListSlice
 	| VideoSlice
@@ -1086,6 +1087,48 @@ type InputSliceVariation = InputSliceDefault;
 export type InputSlice = prismic.SharedSlice<'input', InputSliceVariation>;
 
 /**
+ * Primary content in *Logo → Default → Primary*
+ */
+export interface LogoSliceDefaultPrimary {
+	/**
+	 * Display field in *Logo → Default → Primary*
+	 *
+	 * - **Field Type**: Select
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: logo.default.primary.display
+	 * - **Documentation**: https://prismic.io/docs/fields/select
+	 */
+	display: prismic.SelectField<'both' | 'desktop' | 'mobile'>;
+}
+
+/**
+ * Default variation for Logo Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type LogoSliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Simplify<LogoSliceDefaultPrimary>,
+	never
+>;
+
+/**
+ * Slice variation for *Logo*
+ */
+type LogoSliceVariation = LogoSliceDefault;
+
+/**
+ * Logo Shared Slice
+ *
+ * - **API ID**: `logo`
+ * - **Description**: Logo
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type LogoSlice = prismic.SharedSlice<'logo', LogoSliceVariation>;
+
+/**
  * Primary content in *RichText → Default → Primary*
  */
 export interface RichTextSliceDefaultPrimary {
@@ -1444,6 +1487,10 @@ declare module '@prismicio/client' {
 			InputSlice,
 			InputSliceVariation,
 			InputSliceDefault,
+			LogoSlice,
+			LogoSliceDefaultPrimary,
+			LogoSliceVariation,
+			LogoSliceDefault,
 			RichTextSlice,
 			RichTextSliceDefaultPrimary,
 			RichTextSliceVariation,
