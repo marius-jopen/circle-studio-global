@@ -223,6 +223,8 @@
     </div>
 </div> -->
 
+
+
 {#if currentView === 'grid' && !isSearchActive}
 	{#if shuffledFeatureProject}
 		<div class="">

@@ -6,13 +6,13 @@
     import { homeSearchQuery } from '$lib/stores';
 
 	export let allProjects: ProjectsDocument[] = [];
-	export let featuredProjectIds: string[] = [];
+	export let featuredProjectIds: string[] = []; // Keep prop for compatibility, but don't filter
 
 	// Mobile detection
 	let isMobile = false;
 
-	// Remove featured projects to avoid duplicates on the home page
-	$: remainingProjects = allProjects.filter(p => !featuredProjectIds.includes(p.id));
+	// Show all projects in list view (no filtering by featured status)
+	$: remainingProjects = allProjects;
 
 	// Search functionality (shared with MobileNav via store)
 	let searchQuery = '';
