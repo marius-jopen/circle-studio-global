@@ -90,6 +90,10 @@
   let contentVisible = $state(false);
   let introElement: HTMLDivElement;
   let fadePhase = $state<'hidden' | 'visible' | 'fadingOut'>('hidden');
+  let isMobile = $state(false);
+  
+  // Logo size based on screen size
+  const logoSize = $derived(isMobile ? 250 : 550);
 
   // Lock/unlock body scroll
   function lockScroll() {
@@ -110,6 +114,13 @@
 
   onMount(() => {
     if (!browser) return;
+
+    // Mobile detection
+    const checkMobile = () => {
+      isMobile = window.innerWidth < 768;
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
 
     // Detect if this is a hard reload using performance API
     const navigationEntries = performance.getEntriesByType('navigation');
@@ -156,6 +167,7 @@
     }
 
     return () => {
+      window.removeEventListener('resize', checkMobile);
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('wheel', handleScroll);
       unlockScroll();
@@ -223,7 +235,7 @@
       {:else}
         <!-- Other pages: Show Logo -->
         <div class="logo-container" class:content-visible={contentVisible}>
-          <Logo variant="white" rotationSpeed={10} size={250} />
+          <Logo variant="white" rotationSpeed={10} size={logoSize} />
         </div>
       {/if}
     </div>
