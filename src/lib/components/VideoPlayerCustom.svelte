@@ -15,6 +15,7 @@
 		defaultMuted?: boolean;
 		unmuteOnUserPlay?: boolean;
 		showControlsOnMount?: boolean;
+		basicVideo?: boolean; // When true: always show controls on mobile, use natural aspect ratio
 	}
 
 	const {
@@ -30,32 +31,39 @@
 		autoplayOnMount = true,
 		defaultMuted = true,
 		unmuteOnUserPlay = false,
-		showControlsOnMount = false
+		showControlsOnMount = false,
+		basicVideo = false
 	}: Props = $props();
 
 	const useFixedAspect = $derived(typeof width === 'number' && typeof height === 'number');
+	// For basicVideo on mobile, don't force aspect ratio - let video use natural dimensions
 	const containerStyle = $derived(useFixedAspect ? `aspect-ratio: ${width}/${height};` : '');
 	const videoClass = $derived(
 		useFixedAspect
 			? 'w-full h-full object-cover md:scale-[100.5%] cursor-pointer bg-black'
 			: 'w-full h-auto object-contain cursor-pointer bg-black'
 	);
+	// For basicVideo, use simpler responsive class on mobile
+	const basicVideoClass = $derived(
+		basicVideo 
+			? 'w-full h-auto object-contain cursor-pointer bg-black'
+			: videoClass
+	);
 	
 	// Create responsive text class for mobile controls
 	// IMPORTANT: return explicit class strings so Tailwind doesn't purge them in production
-	const mobileControlsTextClass = $derived(() => {
-		let result = 'text-lg md:text-base';
+	const mobileControlsTextClass = $derived.by(() => {
 		if (controlsTextClass === 'text-4xl') {
-			result = 'text-xl md:text-4xl';
+			return 'text-xl md:text-4xl';
 		} else if (controlsTextClass === 'text-base') {
-			result = 'text-lg md:text-base';
+			return 'text-lg md:text-base';
 		} else if (controlsTextClass === 'text-sm') {
-			result = 'text-lg md:text-sm';
+			return 'text-lg md:text-sm';
 		} else if (controlsTextClass === 'h2') {
 			// map semantic h2 to utility sizes
-			result = 'text-lg md:text-3xl';
+			return 'text-lg md:text-3xl';
 		}
-		return result;
+		return 'text-lg md:text-base';
 	});
 
 	let videoElement: HTMLVideoElement;
@@ -66,7 +74,8 @@
 	let isPlaying = $state(false);
 	let currentTime = $state(0);
 	let duration = $state(0);
-    let showControls = $state(showControlsOnMount);
+    // For basicVideo, always start with controls visible
+    let showControls = $state(showControlsOnMount || basicVideo);
     let isFullscreen = $state(false);
     let containerElement: HTMLDivElement;
     let hideUiTimeout: ReturnType<typeof setTimeout> | undefined;
@@ -87,6 +96,9 @@
     }
 
     function scheduleAutoHide() {
+        // On mobile with basicVideo, don't auto-hide controls
+        if (isMobile && basicVideo) return;
+        
         if (hideUiTimeout) clearTimeout(hideUiTimeout);
         hideUiTimeout = setTimeout(() => {
             showControls = false;
@@ -114,16 +126,61 @@
         if (videoElement.paused) {
             // For click-to-play-with-sound, always unmute on first play
             // For has-sound mode, do NOT auto-unmute - user must click "Sound On" button
-            if (isClickToPlayWithSound && !hasUserPlayed) {
-                videoElement.muted = false;
-                isMuted = false;
-                notifyVideoPlayingWithSound();
-            } else if (effectiveUnmuteOnUserPlay && !hasUserPlayed && videoElement.muted && !isHasSoundMode) {
-                videoElement.muted = false;
-                isMuted = false;
-                notifyVideoPlayingWithSound();
+            const shouldUnmute = (isClickToPlayWithSound && !hasUserPlayed) || 
+                (effectiveUnmuteOnUserPlay && !hasUserPlayed && videoElement.muted && !isHasSoundMode);
+            
+            // Try to play, with retry on failure (helps on mobile)
+            const tryPlay = () => {
+                // First try to play (unmuted if needed)
+                if (shouldUnmute) {
+                    videoElement.muted = false;
+                    isMuted = false;
+                }
+                
+                const playPromise = videoElement.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        // Successfully playing
+                        if (shouldUnmute) {
+                            notifyVideoPlayingWithSound();
+                        }
+                    }).catch(() => {
+                        // If play fails with sound, try muted first then unmute
+                        if (shouldUnmute) {
+                            videoElement.muted = true;
+                            isMuted = true;
+                            videoElement.play().then(() => {
+                                // Successfully playing muted, now try to unmute
+                                setTimeout(() => {
+                                    videoElement.muted = false;
+                                    isMuted = false;
+                                    notifyVideoPlayingWithSound();
+                                }, 100);
+                            }).catch(() => {
+                                // Still failed, try loading and playing again
+                                videoElement.load();
+                                setTimeout(() => {
+                                    videoElement.play().catch(() => {});
+                                }, 100);
+                            });
+                        } else {
+                            // If play fails (e.g., video not loaded yet), try loading and playing again
+                            videoElement.load();
+                            setTimeout(() => {
+                                videoElement.play().catch(() => {});
+                            }, 100);
+                        }
+                    });
+                }
+            };
+            
+            // If video hasn't loaded yet, load it first
+            if (videoElement.readyState < 2) {
+                videoElement.load();
+                videoElement.addEventListener('canplay', () => tryPlay(), { once: true });
+            } else {
+                tryPlay();
             }
-            videoElement.play();
             hasUserPlayed = true;
         } else {
             videoElement.pause();
@@ -284,14 +341,15 @@
     const effectiveUnmuteOnUserPlay = $derived(
         unmuteOnUserPlay || (isMobile && context === 'main' && isClickToPlayWithSound)
     );
-    // Allow autoplay on mobile for main videos when muted
+    // Allow autoplay on mobile for main videos when muted, or for basicVideo
     const shouldAutoplay = $derived(
-        autoplayOnMount && (!isMobile || (isMobile && context === 'main' && defaultMuted))
+        autoplayOnMount && (!isMobile || (isMobile && context === 'main' && defaultMuted) || (isMobile && basicVideo && defaultMuted))
     );
     const controlsVisible = $derived(
         // Visible when hovering with controls, when explicitly requested on mount,
         // or on mobile when we programmatically show controls at start
-        ((isHovering && showControls) || (showControlsOnMount && showControls) || (isMobile && showControls))
+        // On mobile with basicVideo or showControlsOnMount, always keep controls visible
+        ((isHovering && showControls) || (showControlsOnMount && showControls) || (isMobile && showControls) || (isMobile && basicVideo))
     );
 
     onMount(() => {
@@ -307,11 +365,11 @@
         coarsePointerQuery.addEventListener('change', updateIsMobile);
         window.addEventListener('resize', onResize);
 
-        // Configure initial mute/autoplay based on props (allow mobile autoplay for main when muted)
+        // Configure initial mute/autoplay based on props (allow mobile autoplay for main when muted, or for basicVideo)
         if (videoElement) {
             videoElement.muted = defaultMuted;
             isMuted = defaultMuted;
-            const initialShouldAutoplay = autoplayOnMount && (!isMobile || (isMobile && context === 'main' && defaultMuted));
+            const initialShouldAutoplay = autoplayOnMount && (!isMobile || (isMobile && context === 'main' && defaultMuted) || (isMobile && basicVideo && defaultMuted));
             videoElement.autoplay = initialShouldAutoplay;
             // Ensure iOS Safari inline playback & autoplay recognition
             try {
@@ -339,8 +397,12 @@
                 }
             } else {
                 // On mobile or when autoplay is disabled, start with visible controls so the user can choose to play
-                if (isClickToPlayWithSound || isMobile) {
+                if (isClickToPlayWithSound || isMobile || basicVideo) {
                     showControls = true;
+                }
+                // For basicVideo on mobile, preload the video so it's ready to play
+                if (basicVideo && isMobile) {
+                    videoElement.load();
                 }
             }
         }
@@ -385,6 +447,10 @@
             if (useHls) {
                 if (preferNativeHls) {
                     videoElement.src = hlsUrl;
+                    // Ensure video loads on mobile
+                    if (basicVideo) {
+                        videoElement.load();
+                    }
                 } else {
                     import('hls.js').then(({ default: Hls }) => {
                         if (Hls.isSupported()) {
@@ -554,7 +620,7 @@
 	role="button"
 	data-video-interactive="true"
 	bind:this={containerElement}
-	style={containerStyle}
+	style={basicVideo ? '' : containerStyle}
 	tabindex="0"
 	onclick={(e) => togglePlayPause(e)}
 	onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); togglePlayPause(); } }}
@@ -562,11 +628,12 @@
 	onmouseleave={() => { isHovering = false; clearAutoHide(); showControls = false; notifyControlsHidden(); }}
 	onmousemove={() => { if (suppressUI) return; showSoundIcon = true; if (controls) { showControls = true; notifyControlsShown(); } scheduleAutoHide(); }}
 >
+	<!-- svelte-ignore a11y_media_has_caption -->
 	<video
 		bind:this={videoElement}
-		class={videoClass}
+		class={basicVideo ? basicVideoClass : videoClass}
 		poster={posterImage?.url || ''}
-		preload={isMobile ? 'metadata' : (shouldAutoplay ? 'auto' : 'auto')}
+		preload={isMobile && !basicVideo ? 'metadata' : 'auto'}
 		loop
 		muted={isMuted}
 		autoplay={shouldAutoplay}
@@ -575,9 +642,7 @@
 		onloadedmetadata={() => { duration = videoElement.duration; }}
 		onplay={() => { isPlaying = true; }}
 		onpause={() => { isPlaying = false; }}
-	>
-		<track kind="captions" src="" label="Captions" />
-	</video>
+	></video>
 
 	<!-- Semi-transparent overlay for better control readability -->
 	{#if controls && hasSoundMode}
@@ -654,7 +719,46 @@
 						<button
 							class="{mobileControlsTextClass} w-1/3 md:w-1/4 cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200 text-left"
 							aria-label={isPlaying ? 'Pause video' : 'Play video'}
-							onclick={(e) => { e.stopPropagation(); togglePlayPause(); }}
+							onclick={async (e) => { 
+								e.stopPropagation(); 
+								e.preventDefault();
+								if (!videoElement) return;
+								
+								if (videoElement.paused) {
+									// Unmute for click-to-play-with-sound mode
+									if (isClickToPlayWithSound && !hasUserPlayed) {
+										videoElement.muted = false;
+										isMuted = false;
+									}
+									
+									try {
+										await videoElement.play();
+										hasUserPlayed = true;
+										if (isClickToPlayWithSound) {
+											notifyVideoPlayingWithSound();
+										}
+									} catch {
+										// If play fails (likely blocked), try muted
+										videoElement.muted = true;
+										isMuted = true;
+										try {
+											await videoElement.play();
+											hasUserPlayed = true;
+											// Try to unmute after starting
+											videoElement.muted = false;
+											isMuted = false;
+											if (isClickToPlayWithSound) {
+												notifyVideoPlayingWithSound();
+											}
+										} catch {
+											// Still failed, nothing we can do
+										}
+									}
+								} else {
+									videoElement.pause();
+								}
+								scheduleAutoHide();
+							}}
 						>
 							{isPlaying ? 'Pause' : 'Play'}
 						</button>

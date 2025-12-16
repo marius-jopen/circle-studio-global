@@ -8,8 +8,9 @@
 		itemsPerRow?: string;
 		showVideoOnMobile?: boolean;
 		noRoundedCorners?: boolean;
+		basicVideo?: boolean; // When true: use VideoPlayerCustom on mobile with controls
 	}
-	const { item, itemsPerRow, showVideoOnMobile = false, noRoundedCorners = false }: Props = $props();
+	const { item, itemsPerRow, showVideoOnMobile = false, noRoundedCorners = false, basicVideo = false }: Props = $props();
 
 	const controlsTextClass = $derived((itemsPerRow ?? '1') === '1' ? 'h2' : ((itemsPerRow === '2') ? 'text-base' : 'text-sm'));
 	const roundedClass = $derived(noRoundedCorners ? '' : 'rounded');
@@ -24,8 +25,8 @@
 	{@const isClickToPlayWithSound = playMode === 'click-to-play-with-sound'}
 	
 	{#if videoUrl}
-		<!-- Desktop: Show video with autoplay -->
-		<div class="hidden md:block">
+		{#if basicVideo}
+			<!-- basicVideo: Use VideoPlayerCustom on all screen sizes with controls -->
 			<VideoPlayerCustom 
 				playMode={displayPlayMode}
 				hlsUrl={videoUrl}
@@ -39,13 +40,32 @@
 				defaultMuted={!isClickToPlayWithSound}
 				unmuteOnUserPlay={isClickToPlayWithSound}
 				showControlsOnMount={isClickToPlayWithSound}
+				basicVideo={true}
 			/>
-		</div>
-		
-		<!-- Mobile: Show still image for videos -->
-		<div class="block md:hidden">
-			<DocumentationVideoMobile {item} {itemsPerRow} {noRoundedCorners} />
-		</div>
+		{:else}
+			<!-- Desktop: Show video with autoplay -->
+			<div class="hidden md:block">
+				<VideoPlayerCustom 
+					playMode={displayPlayMode}
+					hlsUrl={videoUrl}
+					posterImage={imageField} 
+					classes="w-full h-auto {roundedClass} object-cover"
+					controlsTextClass={controlsTextClass}
+					controls={true}
+					width="auto"
+					height="auto"
+					autoplayOnMount={!isClickToPlayWithSound}
+					defaultMuted={!isClickToPlayWithSound}
+					unmuteOnUserPlay={isClickToPlayWithSound}
+					showControlsOnMount={isClickToPlayWithSound}
+				/>
+			</div>
+			
+			<!-- Mobile: Show still image for videos -->
+			<div class="block md:hidden">
+				<DocumentationVideoMobile {item} {itemsPerRow} {noRoundedCorners} />
+			</div>
+		{/if}
 	{:else if imageField?.url}
 		<!-- Regular images (no video) -->
 		{@const imgW = imageField?.dimensions?.width}

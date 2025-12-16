@@ -35,8 +35,9 @@
 	>
 		<div class="grid gap-2 {gridClass}">
 			{#each items as item}
+				{@const isClickToPlay = item.play === 'click-to-play-with-sound'}
 				<div class={item.hide_on_mobile ? 'hidden md:block' : ''}>
-					<DocumentationItem {item} itemsPerRow={itemsPerRow} showVideoOnMobile={false} noRoundedCorners={item.no_rounded_corners} />
+					<DocumentationItem {item} itemsPerRow={itemsPerRow} showVideoOnMobile={false} noRoundedCorners={item.no_rounded_corners} basicVideo={isClickToPlay} />
 				</div>
 			{/each}
 		</div>

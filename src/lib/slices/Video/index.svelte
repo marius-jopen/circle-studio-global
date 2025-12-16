@@ -38,6 +38,7 @@
 					width="auto"
 					height="auto"
 					showControlsOnMount={isNoAutoplay}
+					basicVideo={true}
 				/>
 
 				{#if isNoAutoplay && showOverlay}
