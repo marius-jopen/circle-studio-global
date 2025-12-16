@@ -23,6 +23,8 @@
 	{@const playMode = item.play}
 	{@const displayPlayMode = (playMode === 'autoplay-muted' || playMode === 'auto-muted') ? 'no-sound' : playMode}
 	{@const isClickToPlayWithSound = playMode === 'click-to-play-with-sound'}
+	{@const isHasSound = playMode === 'has-sound'}
+	{@const needsControlsVisible = isClickToPlayWithSound || isHasSound}
 	
 	{#if videoUrl}
 		{#if basicVideo}
@@ -39,7 +41,7 @@
 				autoplayOnMount={!isClickToPlayWithSound}
 				defaultMuted={!isClickToPlayWithSound}
 				unmuteOnUserPlay={isClickToPlayWithSound}
-				showControlsOnMount={isClickToPlayWithSound}
+				showControlsOnMount={needsControlsVisible}
 				basicVideo={true}
 			/>
 		{:else}

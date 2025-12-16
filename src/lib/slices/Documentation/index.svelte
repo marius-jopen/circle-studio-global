@@ -34,12 +34,12 @@
 		class="mx-auto pb-2"
 	>
 		<div class="grid gap-2 {gridClass}">
-			{#each items as item}
-				{@const isClickToPlay = item.play === 'click-to-play-with-sound'}
-				<div class={item.hide_on_mobile ? 'hidden md:block' : ''}>
-					<DocumentationItem {item} itemsPerRow={itemsPerRow} showVideoOnMobile={false} noRoundedCorners={item.no_rounded_corners} basicVideo={isClickToPlay} />
-				</div>
-			{/each}
+		{#each items as item}
+			{@const needsControlsOnMobile = item.play === 'click-to-play-with-sound' || item.play === 'has-sound'}
+			<div class={item.hide_on_mobile ? 'hidden md:block' : ''}>
+				<DocumentationItem {item} itemsPerRow={itemsPerRow} showVideoOnMobile={false} noRoundedCorners={item.no_rounded_corners} basicVideo={needsControlsOnMobile} />
+			</div>
+		{/each}
 		</div>
 	</section>
 {/if}
