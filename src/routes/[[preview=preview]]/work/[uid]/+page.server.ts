@@ -12,7 +12,9 @@ export async function load({ params, fetch, cookies }) {
 		});
 
 		// Get 3 random related projects excluding current
-		const allProjects = await client.getAllByType('projects');
+		const allProjects = await client.getAllByType('projects', {
+			pageSize: 100 // Ensure all projects are fetched
+		});
 		const supportsPortrait = (p: any) =>
 			Array.isArray(p?.data?.preview) && p.data.preview.some((i: any) => i?.preview_video_url_portrait || i?.preview_image_portrait?.url);
 		const otherProjects = allProjects.filter((p) => p.id !== project.id).filter(supportsPortrait);
@@ -39,7 +41,9 @@ export async function entries() {
 	const client = createClient();
 
 	try {
-		const projects = await client.getAllByType('projects');
+		const projects = await client.getAllByType('projects', {
+			pageSize: 100 // Ensure all projects are fetched
+		});
 
 		// Filter out any projects that might be invalid
 		return projects

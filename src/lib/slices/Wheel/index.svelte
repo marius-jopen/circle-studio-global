@@ -115,17 +115,13 @@
 				return; // Component unmounted, exit silently
 			}
 
-			console.error('Wheel slice: Error fetching data', error);
-			
 			// Retry logic
 			if (retries > 0 && isMounted) {
-				console.log(`Wheel slice: Retrying... (${retries} attempts remaining)`);
 				await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1s before retry
 				if (isMounted) {
 					return fetchDataWithRetry(retries - 1);
 				}
 			} else if (isMounted) {
-				console.error('Wheel slice: Failed to fetch data after all retries');
 				// Keep empty arrays - component will show empty state
 			}
 		}

@@ -20,25 +20,19 @@
 	function handleViewModeClick() {
 		// Get current path directly in the click handler for reliability
 		const currentPath = window.location.pathname;
-		console.log('🔍 Click handler - currentPath:', currentPath, 'current viewMode:', $viewMode);
-		console.log('💾 localStorage before click:', localStorage.getItem('indexViewMode'));
 		
 		if (currentPath === '/' || currentPath === '/preview') {
 			// On front page: toggle view mode and stay on front page
-			console.log('🏠 On front page - toggling view mode');
 			setViewMode($viewMode === 'grid' ? 'list' : 'grid');
 		} else {
 			// On other pages: navigate to front page with the view mode indicated by button text
 			const targetViewMode = $viewMode === 'grid' ? 'list' : 'grid';
-			console.log('🌐 On other page - navigating to front page with target view mode:', targetViewMode);
 			// Save the target view mode to localStorage before navigation
 			localStorage.setItem('indexViewMode', targetViewMode);
-			console.log('💾 localStorage after direct save:', localStorage.getItem('indexViewMode'));
 			// Mark as internal navigation to suppress welcome on SPA route change
 			try {
 				sessionStorage.setItem('circle-studio-navigating', 'true');
 			} catch {}
-			console.log('🚀 Navigating to front page (SPA)...');
 			goto(`/?view=${targetViewMode}`);
 		}
 	}
@@ -69,16 +63,6 @@
 	// Determine current route for conditional mobile wheel visibility
 	const isProject = $derived(currentPath.startsWith('/work/'));
 	const isAbout = $derived(currentPath === '/about' || currentPath.startsWith('/about/'));
-	
-	// Debug logging with $effect
-	$effect(() => {
-		console.log('🎨 Header state changed - videoIsDark:', videoIsDark, 'mainMediaVisible:', mainMediaVisible, 'isDarkMode:', isDarkMode);
-	});
-	
-	// Debug view mode changes
-	$effect(() => {
-		console.log('🔄 Header - viewMode changed to:', $viewMode);
-	});
 </script>
 
 <!-- Navigation Header -->
@@ -120,8 +104,8 @@
 					<div class="absolute top-4 left-0 transition-opacity duration-600 z-10" class:opacity-0={isDarkMode} class:opacity-100={!isDarkMode}>
 						<Logo 
 							variant="black"
-							rotationSpeed={isHovering ? 50 : 0}
-							size={120}
+							rotationSpeed={isHovering ? 50 : 10}
+							size={160}
 						/>
 					</div>
 					
@@ -129,8 +113,8 @@
 					<div class="absolute top-4 left-0 transition-opacity duration-600 z-10" class:opacity-100={isDarkMode} class:opacity-0={!isDarkMode}>
 						<Logo 
 							variant="white"
-							rotationSpeed={isHovering ? 50 : 0}
-							size={120}
+							rotationSpeed={isHovering ? 50 : 10}
+							size={160}
 						/>
 					</div>
 				</a>

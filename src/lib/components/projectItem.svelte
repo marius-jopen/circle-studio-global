@@ -110,22 +110,6 @@
 	}
 
 	$: containerSizePercent = getContainerSizePercent(dimension, itemsPerRow, isMobile);
-	
-	// Debug logging to understand sizing issues
-	$: {
-		if (projectTitle && containerSizePercent) {
-			console.log(`🎛️ BIGWHEEL SIZE: "${projectTitle}" | Original: ${dimension} | Effective: ${effectiveDimension} | ${itemsPerRow} items | ${containerSizePercent}% container | Mobile: ${isMobile}`);
-			
-			// Special debug for portrait 3 cases
-			if (effectiveDimension === 'portrait' && itemsPerRow === 3) {
-				if (containerSizePercent !== 55) {
-					console.error(`❌ PORTRAIT 3 SIZE ERROR: "${projectTitle}" should be 55% but got ${containerSizePercent}%`);
-				} else {
-					console.log(`✅ PORTRAIT 3 CORRECT: "${projectTitle}" correctly sized at 55%`);
-				}
-			}
-		}
-	}
 
 	// Make config reactive so it updates when projectTitle changes
 	// Make config reactive so it updates when projectTitle changes
@@ -198,13 +182,10 @@
 		welcomeDismissed = hasUserInteracted;
 		isNavigating = navigationState;
 		
-		console.log(`🚀 ${projectTitle || 'Project'} script init - hasUserInteracted: ${hasUserInteracted}, isNavigating: ${navigationState}`);
-		
 		// Clear navigation state immediately if it's set, as we're now on a new page
 		if (isNavigating) {
 			sessionStorage.removeItem('circle-studio-navigating');
 			isNavigating = false;
-			console.log(`🧹 ${projectTitle}: Navigation flag cleared immediately on init`);
 		}
 	}
 	
@@ -219,7 +200,6 @@
 			if (!hasChecked && !isHovering) {
 				isHovering = true;
 				hasChecked = true;
-				console.log(`🎯 ${projectTitle}: Detected pre-existing hover state`);
 			}
 			projectElement.removeEventListener('mouseover', handleMouseOver);
 		};
@@ -235,7 +215,6 @@
 					const isHovered = projectElement.matches(':hover');
 					if (isHovered && !isHovering) {
 						isHovering = true;
-						console.log(`🎯 ${projectTitle}: CSS :hover detected - triggering fade in`);
 					}
 				} catch (e) {
 					// CSS :hover check failed, that's ok
@@ -248,11 +227,6 @@
 	// Only show text after component is mounted, user hovers, render complete, AND not navigating
 	// On mobile, always show static text instead of BigWheel
 	$: showText = isMobile ? false : (isMounted && isHovering && initialRenderComplete && !isNavigating);
-	
-	// Debug logging for showText state
-	$: if (projectTitle) {
-		console.log(`🔍 ${projectTitle} - isMounted: ${isMounted}, isHovering: ${isHovering}, welcomeDismissed: ${welcomeDismissed}, initialRenderComplete: ${initialRenderComplete}, isNavigating: ${isNavigating}, showText: ${showText}`);
-	}
 	
 	onMount(() => {
 		// Check if we're on mobile
@@ -269,7 +243,6 @@
 		// Listen for welcome dismissal
 		const handleWelcomeDismissed = () => {
 			welcomeDismissed = true;
-			console.log(`📝 ${projectTitle}: Welcome dismissed, checking for pre-existing hover`);
 			// Check if mouse is already over this project when welcome is dismissed
 			setTimeout(() => checkInitialHoverState(), 0);
 		};
@@ -279,13 +252,11 @@
 		// First, mark as mounted quickly
 		setTimeout(() => {
 			isMounted = true;
-			console.log(`✅ ${projectTitle}: Component mounted`);
 		}, 10);
 		
 		// Then allow initial render to complete (longer delay to prevent any flash)
 		setTimeout(() => {
 			initialRenderComplete = true;
-			console.log(`🎨 ${projectTitle}: Initial render complete`);
 		}, 100);
 		
 		// Check for pre-existing hover state after everything is ready
@@ -318,7 +289,20 @@
 	let lastProjectId: string | null = null;
 	let lastEffectiveDimension: 'landscape' | 'square' | 'portrait' | null = null;
 
-	// Randomly select a preview video when project data is available
+	// Seeded random function - produces consistent results for same seed
+	function seededRandom(seed: string): number {
+		let hash = 0;
+		for (let i = 0; i < seed.length; i++) {
+			const char = seed.charCodeAt(i);
+			hash = ((hash << 5) - hash) + char;
+			hash = hash & hash; // Convert to 32bit integer
+		}
+		// Convert to a number between 0 and 1
+		const x = Math.sin(hash) * 10000;
+		return x - Math.floor(x);
+	}
+
+	// Select a preview video when project data is available (deterministic based on project ID)
 	$: if (projectData && projectUid) {
 		const allItems = Array.isArray(projectData?.preview) ? projectData.preview : [];
 		const currentProjectId = projectData?.id || projectUid || '';
@@ -338,14 +322,12 @@
 			
 			// Re-select if project changed, dimension changed, or we don't have a selection yet
 			if (projectChanged || dimensionChanged || selectedPreviewItem === null) {
-				// Use Math.random() for truly random selection on each page load
-				const randomIndex = Math.floor(Math.random() * candidates.length);
+				// Use seeded random based on project ID + dimension for consistent server/client selection
+				const seed = `${currentProjectId}-${effectiveDimension}`;
+				const randomIndex = Math.floor(seededRandom(seed) * candidates.length);
 				selectedPreviewItem = candidates[randomIndex];
 				lastProjectId = currentProjectId;
 				lastEffectiveDimension = effectiveDimension;
-
-				console.log(`🎲 Project "${projectTitle}": Randomly selected preview ${randomIndex + 1} of ${candidates.length} with dimension ${effectiveDimension} (original: ${dimension}). ` +
-					(preferred.length > 0 ? `From ${preferred.length} supported items.` : `No direct match; fell back to any of ${allItems.length}.`));
 			}
 		}
 	}

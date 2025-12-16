@@ -70,16 +70,6 @@
 		})
 		.filter((row) => row.projects.length > 0);
 	
-	// Debug layout rows for portrait 3 cases
-	$: {
-		if (randomizedLayout.length > 0) {
-			randomizedLayout.forEach((row, index) => {
-				if (row.dimension === 'portrait' && row.projects.length === 3) {
-					console.log(`🏗️ LAYOUT ROW ${index}: 3 portrait projects | Layout: ${row.type} | Configured: ${row.configuredItemsPerRow} items | Grid: ${row.gridCols}`);
-				}
-			});
-		}
-	}
 
 	// Watch for when data is stable and ready to display
 	$: if (allProjects.length > 0 && !isReady) {
@@ -309,13 +299,8 @@
 			
 			// Check if we should plan the final rows to avoid lonely items
 			if (remainingProjects.length <= 7) {
-				console.log(`🔥 SWITCHING TO FINAL LAYOUT PLANNING: ${remainingProjects.length} projects remaining`);
 				// Plan the final layout to avoid lonely items
 				const finalRows = planFinalLayout(remainingProjects, previousLayoutType);
-				console.log(`🔥 FINAL LAYOUT PLANNED: ${finalRows.length} rows created`);
-				finalRows.forEach((row, index) => {
-					console.log(`🔥 FINAL ROW ${index}: ${row.projects.length} ${row.dimension} projects | Layout: ${row.type} | Configured: ${row.configuredItemsPerRow} items`);
-				});
 				rows.push(...finalRows);
 				break;
 			}

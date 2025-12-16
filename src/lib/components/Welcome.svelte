@@ -76,22 +76,16 @@
   onMount(() => {
     if (!browser) return;
 
-    console.log('🎭 Welcome component mounted on:', page?.route?.id, 'isHomePage:', isHomePage);
-
     // Check if this is navigation between pages (not a fresh load)
     const navigationEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
     const isNavigating = sessionStorage.getItem('circle-studio-navigating');
     
-    console.log('🔍 Navigation check - isNavigating:', isNavigating, 'entry type:', navigationEntry?.type);
-    
     // Hide welcome screen only if this is navigation between pages
     if (isNavigating && navigationEntry?.type !== 'reload') {
-      console.log('✅ This is navigation between pages, hiding welcome screen');
       showWelcome = false;
       wheelVisible = false;
       fadePhase = 'hidden';
     } else {
-      console.log('🆕 This is a fresh load, showing welcome screen');
       // This is a fresh load/reload - clear the navigation flag
       sessionStorage.removeItem('circle-studio-navigating');
       showWelcome = true;
@@ -108,17 +102,14 @@
     // Set navigation flag when user navigates away
     function handleBeforeUnload() {
       sessionStorage.setItem('circle-studio-navigating', 'true');
-      console.log('🚪 Setting navigation flag on beforeunload');
     }
 
     function handleClick(event: Event) {
       const target = event.target as HTMLElement;
       if (target.tagName === 'A' || target.closest('a')) {
         sessionStorage.setItem('circle-studio-navigating', 'true');
-        console.log('🔗 Setting navigation flag on link click');
         // Also set user interaction permission for video autoplay with sound
         sessionStorage.setItem('user-has-interacted', 'true');
-        console.log('🖱️ Navigation click detected in Welcome, stored user interaction permission');
       }
     }
 
@@ -126,7 +117,6 @@
     function handleScroll() {
       // Allow scroll to dismiss when visible
       if (fadePhase === 'lettersVisible') {
-        console.log('📜 Scroll detected, dismissing welcome screen');
         fadeOut();
       }
     }
@@ -155,12 +145,10 @@
     // Store user interaction permission immediately
     if (browser) {
       sessionStorage.setItem('user-has-interacted', 'true');
-      console.log('💾 Welcome dismissed - stored user interaction permission');
     }
     
     // Dispatch event to notify that user has interacted and welcome is being dismissed
     if (browser) {
-      console.log('🎭 Welcome screen dismissed, dispatching event...');
       window.dispatchEvent(new CustomEvent('welcome-dismissed'));
     }
     

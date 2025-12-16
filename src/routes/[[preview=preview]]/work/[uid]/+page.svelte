@@ -20,23 +20,12 @@
 
 	// Dispatch video_is_dark state to layout when component mounts
 	onMount(() => {
-		console.log('🔍 Project page mounted');
-		console.log('🔍 Full projectData:', projectData);
-		console.log('🔍 video_is_dark field:', projectData.video_is_dark);
-		console.log('🔍 video_is_dark type:', typeof projectData.video_is_dark);
-		console.log('🔍 video_is_dark === true:', projectData.video_is_dark === true);
-		console.log('🔍 video_is_dark === false:', projectData.video_is_dark === false);
-		
 		// Listen for welcome screen dismissal to ensure proper timing
 		const handleWelcomeDismissed = () => {
-			console.log('🎭 Welcome dismissed, now dispatching dark mode event');
 			if (projectData.video_is_dark !== undefined) {
-				console.log('🌙 Dispatching dark mode event:', projectData.video_is_dark);
 				window.dispatchEvent(new CustomEvent('project-video-dark-mode', {
 					detail: { isDark: projectData.video_is_dark }
 				}));
-			} else {
-				console.log('⚠️ video_is_dark field is undefined');
 			}
 		};
 		
@@ -45,7 +34,6 @@
 		// Also try immediate dispatch in case welcome is already dismissed
 		setTimeout(() => {
 			if (projectData.video_is_dark !== undefined) {
-				console.log('🌙 Immediate dispatch attempt:', projectData.video_is_dark);
 				window.dispatchEvent(new CustomEvent('project-video-dark-mode', {
 					detail: { isDark: projectData.video_is_dark }
 				}));
@@ -126,8 +114,6 @@
 								return `${baseClasses} !rounded-none`;
 							})()}
 							
-							<!-- Debug: Log the rounded classes -->
-							{console.log(`Item ${index}: roundedClasses = "${roundedClasses}", isFirst=${isFirst}, isLast=${isLast}, isMiddle=${isMiddle}, totalItems=${projectData.main.length}`)}
 							
 							{#if item.main_video_url}
 								<!-- {item.playmode} -->

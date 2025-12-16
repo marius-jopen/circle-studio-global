@@ -27,27 +27,17 @@
 
 	function attachObserver() {
 		const mainEl = document.getElementById('main-media');
-		console.log('🔍 attachObserver called, main-media element:', mainEl);
 		if (observedEl === mainEl) return;
 		if (io && observedEl) io.unobserve(observedEl);
 		observedEl = mainEl;
 		if (mainEl && 'IntersectionObserver' in window) {
-			console.log('🔍 Setting up intersection observer for main-media');
 			io = new IntersectionObserver((entries) => {
 				const entry = entries[0];
-				const wasVisible = mainMediaVisible;
 				mainMediaVisible = entry.isIntersecting && entry.intersectionRatio > 0;
-				console.log('👁️ Intersection observer:', { 
-					isIntersecting: entry.isIntersecting, 
-					intersectionRatio: entry.intersectionRatio, 
-					mainMediaVisible, 
-					wasVisible 
-				});
 				// Defer calling updateHeaderState until it's defined in onMount
 			}, { threshold: [0, 0.01, 0.1] });
 			io.observe(mainEl);
 		} else {
-			console.log('⚠️ No main-media element found or IntersectionObserver not supported');
 			mainMediaVisible = false;
 			// Defer calling updateHeaderState until it's defined in onMount
 		}
@@ -63,7 +53,6 @@
 			if (target.closest('a') || target.closest('button')) {
 				sessionStorage.setItem('circle-studio-navigating', 'true');
 				sessionStorage.setItem('user-has-interacted', 'true');
-				console.log('🌐 Global navigation click detected, stored both flags');
 			}
 		};
 
@@ -105,9 +94,7 @@
 
 		const handleProjectVideoDarkMode = (e: Event) => {
 			const { isDark } = (e as CustomEvent).detail || {};
-			console.log('🌙 Layout received dark mode event:', isDark);
 			videoIsDark = isDark;
-			console.log('🌙 Project video dark mode updated:', videoIsDark);
 		};
 
 		function updateHeaderState() {
@@ -135,7 +122,6 @@
 		attachObserver();
 		// Also try again after a delay to ensure DOM is ready
 		setTimeout(() => {
-			console.log('⏰ Delayed attachObserver attempt');
 			attachObserver();
 		}, 500);
 		// Now that updateHeaderState exists, trigger initial compute
@@ -151,7 +137,6 @@
 			attachObserver();
 			// Also try again after a delay to ensure DOM is ready
 			setTimeout(() => {
-				console.log('⏰ afterNavigate delayed attachObserver attempt');
 				attachObserver();
 			}, 500);
 			updateHeaderState();

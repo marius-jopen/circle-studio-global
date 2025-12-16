@@ -96,7 +96,6 @@
 					await playPromise;
 				}
 			} catch (error) {
-				console.log('Autoplay attempt failed, will retry on user interaction:', error);
 				// Set up user interaction handler as fallback
 				const enableAutoplay = () => {
 					if (el && el.paused) {

@@ -74,8 +74,6 @@
 			minBitrate = 200000;
 		}
 		
-		console.log(`Video quality settings: ${dimension} ${itemsPerRow} items (${containerSizePercent}%) = ${actualWidth}x${actualHeight} pixels, min bitrate: ${minBitrate}`);
-		
 		return {
 			width: actualWidth,
 			height: actualHeight,
@@ -127,7 +125,6 @@
 				videoElement.muted = true;
 				await videoElement.play();
 			} catch (retryError) {
-				console.log('Autoplay blocked, will require user interaction');
 				// Set up user interaction handler
 				const enableAutoplay = () => {
 					if (videoElement) {
@@ -203,37 +200,17 @@
 						requestMediaKeySystemAccessFunc: undefined
 					});
 
-					// Quality monitoring and optimization
-					hls.on(Hls.Events.LEVEL_SWITCHED, (event, data) => {
-						console.log(`Video quality switched to level ${data.level} for ${dimension} ${itemsPerRow} items (${containerSizePercent}%)`);
-					});
-
-					// Monitor buffer health for quality decisions
-					hls.on('bufferstalled' as any, () => {
-						console.log('Buffer stalled - may need quality adjustment');
-					});
-
-					hls.on(Hls.Events.BUFFER_APPENDED, (event, data) => {
-						// Log buffer health for debugging
-						if (data.frag && (data.frag as any).sn % 10 === 0) {
-							console.log(`Buffer appended: frag ${(data.frag as any).sn}, level ${(data.frag as any).level}`);
-						}
-					});
-
 					// Error recovery
 					hls.on(Hls.Events.ERROR, (event, data) => {
 						if (data.fatal) {
 							switch (data.type) {
 								case Hls.ErrorTypes.NETWORK_ERROR:
-									console.log('Fatal network error, trying to recover...');
 									hls.startLoad();
 									break;
 								case Hls.ErrorTypes.MEDIA_ERROR:
-									console.log('Fatal media error, trying to recover...');
 									hls.recoverMediaError();
 									break;
 								default:
-									console.log('Fatal error, destroying HLS instance');
 									hls.destroy();
 									break;
 							}

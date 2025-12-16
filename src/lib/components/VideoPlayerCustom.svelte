@@ -55,7 +55,6 @@
 			// map semantic h2 to utility sizes
 			result = 'text-lg md:text-3xl';
 		}
-		console.log('Video controls text class:', result, 'controlsTextClass:', controlsTextClass);
 		return result;
 	});
 
