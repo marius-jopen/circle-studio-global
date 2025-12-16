@@ -105,7 +105,7 @@
 						<Logo 
 							variant="black"
 							rotationSpeed={isHovering ? 50 : 10}
-							size={160}
+							size={185}
 						/>
 					</div>
 					
@@ -114,7 +114,7 @@
 						<Logo 
 							variant="white"
 							rotationSpeed={isHovering ? 50 : 10}
-							size={160}
+							size={185}
 						/>
 					</div>
 				</a>

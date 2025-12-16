@@ -46,7 +46,7 @@ h1, .h1 {
 }
 
 h2, .h2 {
-    @apply text-base md:text-3xl font-normal leading-[25x] md:leading-normal;
+    @apply text-base md:text-[40px] font-normal leading-[25x] md:leading-[125%];
 }
 
 h3, .h3, .h3 p {

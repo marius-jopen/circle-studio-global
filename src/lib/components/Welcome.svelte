@@ -3,11 +3,21 @@
   import { browser } from '$app/environment';
   import Logo from './Logo.svelte';
 
-  let showWelcome = $state(true); // Show immediately on first load; hide on internal navigations
-  let backgroundVisible = $state(true);
-  let logoVisible = $state(true);
+  // Check intro state BEFORE first render to prevent flash
+  const initialShowState = (() => {
+    if (!browser) return false; // SSR: don't show
+    const navigationEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+    const isHardReload = navigationEntry?.type === 'reload';
+    const introSeen = sessionStorage.getItem('circle-studio-intro-seen');
+    // Show intro only on hard reload or if intro hasn't been seen yet
+    return isHardReload || !introSeen;
+  })();
+
+  let showWelcome = $state(initialShowState);
+  let backgroundVisible = $state(initialShowState);
+  let logoVisible = $state(initialShowState);
   let welcomeElement: HTMLDivElement;
-  let fadePhase = $state<'initial' | 'visible' | 'fadingOut' | 'hidden'>('visible');
+  let fadePhase = $state<'initial' | 'visible' | 'fadingOut' | 'hidden'>(initialShowState ? 'visible' : 'hidden');
   let darkMode = $state(true); // When true: black background, white logo
 
   // Lock body scroll when welcome is visible
@@ -30,22 +40,16 @@
   onMount(() => {
     if (!browser) return;
 
-    // Check if this is navigation between pages (not a fresh load)
+    // Check if this is a hard reload and clear flag if so
     const navigationEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-    const isNavigating = sessionStorage.getItem('circle-studio-navigating');
+    const isHardReload = navigationEntry?.type === 'reload';
     
-    // Hide welcome screen only if this is navigation between pages
-    if (isNavigating && navigationEntry?.type !== 'reload') {
-      showWelcome = false;
-      logoVisible = false;
-      fadePhase = 'hidden';
-    } else {
-      // This is a fresh load/reload - clear the navigation flag
-      sessionStorage.removeItem('circle-studio-navigating');
-      showWelcome = true;
-      logoVisible = true;
-      fadePhase = 'visible';
-      // Lock scrolling while welcome is visible
+    if (isHardReload) {
+      sessionStorage.removeItem('circle-studio-intro-seen');
+    }
+    
+    // If we should show the intro, set up auto-dismiss and scroll lock
+    if (showWelcome) {
       lockScroll();
       // Auto-dismiss after a short delay if no interaction
       setTimeout(() => {
@@ -53,20 +57,6 @@
           fadeOut();
         }
       }, 2000);
-    }
-
-    // Set navigation flag when user navigates away
-    function handleBeforeUnload() {
-      sessionStorage.setItem('circle-studio-navigating', 'true');
-    }
-
-    function handleClick(event: Event) {
-      const target = event.target as HTMLElement;
-      if (target.tagName === 'A' || target.closest('a')) {
-        sessionStorage.setItem('circle-studio-navigating', 'true');
-        // Also set user interaction permission for video autoplay with sound
-        sessionStorage.setItem('user-has-interacted', 'true');
-      }
     }
 
     // Handle scroll dismissal
@@ -77,17 +67,12 @@
       }
     }
 
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    document.addEventListener('click', handleClick);
-    
     // Add scroll listeners for all pages
     window.addEventListener('scroll', handleScroll, { passive: true });
     // Also listen for wheel events to catch scroll attempts even when page can't scroll
     window.addEventListener('wheel', handleScroll, { passive: true });
 
     return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-      document.removeEventListener('click', handleClick);
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('wheel', handleScroll);
       unlockScroll();
@@ -102,8 +87,9 @@
     // Unlock scrolling when fading out
     unlockScroll();
     
-    // Store user interaction permission immediately
+    // Mark intro as seen for this session (shared between Welcome and WelcomeProject)
     if (browser) {
+      sessionStorage.setItem('circle-studio-intro-seen', 'true');
       sessionStorage.setItem('user-has-interacted', 'true');
     }
     

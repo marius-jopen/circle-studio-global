@@ -4,16 +4,12 @@
 	import { repositoryName } from '$lib/prismicio';
 	import Header from '$lib/components/Header.svelte';
 	import Footer from '$lib/components/Footer.svelte';
-	import Welcome from '$lib/components/Welcome.svelte';
-	import WelcomeProject from '$lib/components/WelcomeProject.svelte';
+	import Intro from '$lib/components/Intro.svelte';
 	import { onMount } from 'svelte';
 	import { afterNavigate } from '$app/navigation';
 	import "../app.css";
 	import MobileNav from '$lib/components/MobileNav.svelte';
 	let { children, data } = $props();
-	
-	// Check if we're on a project page (runes)
-	const isProjectPage = $derived(page?.route?.id?.includes('/work/[uid]'));
 	
 	// Global navigation click detection for video autoplay permissions
 	let headerFaded = $state(false);
@@ -171,11 +167,7 @@
 </svelte:head>
 
 <div class="min-h-screen flex flex-col">
-	{#if isProjectPage}
-		<WelcomeProject />
-	{:else}
-		<Welcome />
-	{/if}
+	<Intro />
 	<MobileNav />
 	<Header settings={data.settings} faded={headerFaded} videoIsDark={videoIsDark} mainMediaVisible={mainMediaVisible} />
 
