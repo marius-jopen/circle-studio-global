@@ -1,15 +1,40 @@
 <script lang="ts">
 	import type { Content } from '@prismicio/client';
-	import { type SliceComponentProps } from '@prismicio/svelte';
-	import { asText } from '@prismicio/client';
+	import { PrismicRichText, type SliceComponentProps } from '@prismicio/svelte';
 
 	type Props = SliceComponentProps<Content.RichTextSlice>;
 
 	const { slice }: Props = $props();
+
+	const centered = $derived(slice.primary.centered ?? false);
+	const xDistance = $derived(slice.primary.x_distance ?? 'none');
+	const bottomDistance = $derived(slice.primary.bottom_distance ?? 'none');
+
+	// Map x_distance to max-width classes (fraction of container)
+	const maxWidthClass = $derived.by(() => {
+		switch (xDistance) {
+			case 'sm': return 'max-w-11/12';      // 6/12
+			case 'md': return 'max-w-10/12';   // 8/12
+			case 'lg': return 'max-w-9/12';   // 10/12
+			case 'xl': return 'max-w-8/12';   // 11/12
+			default: return 'max-w-full';          // 12/12
+		}
+	});
+
+	// Map bottom_distance to padding-bottom classes
+	const bottomPaddingClass = $derived.by(() => {
+		switch (bottomDistance) {
+			case 'sm': return 'pb-4';
+			case 'md': return 'pb-8';
+			case 'lg': return 'pb-16';
+			case 'xl': return 'pb-24';
+			default: return '';
+		}
+	});
+
+	const centerClass = $derived(centered ? 'text-center mx-auto' : '');
 </script>
 
-<section class="content-container mb-8 mt-6 text-left md:text-center  text-primary">
-	<div class="h0 py-2 md:py-0">
-		{asText(slice.primary.content)}
-	</div>
+<section class="px-6 text-primary {maxWidthClass} {centerClass} {bottomPaddingClass}">
+	<PrismicRichText field={slice.primary.content} />
 </section>

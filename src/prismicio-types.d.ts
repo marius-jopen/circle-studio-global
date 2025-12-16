@@ -1230,6 +1230,39 @@ export interface RichTextSliceDefaultPrimary {
 	 * - **Documentation**: https://prismic.io/docs/fields/rich-text
 	 */
 	content: prismic.RichTextField;
+
+	/**
+	 * Centered field in *RichText → Default → Primary*
+	 *
+	 * - **Field Type**: Boolean
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: false
+	 * - **API ID Path**: rich_text.default.primary.centered
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
+	 */
+	centered: prismic.BooleanField;
+
+	/**
+	 * X Distance field in *RichText → Default → Primary*
+	 *
+	 * - **Field Type**: Select
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: none
+	 * - **API ID Path**: rich_text.default.primary.x_distance
+	 * - **Documentation**: https://prismic.io/docs/fields/select
+	 */
+	x_distance: prismic.SelectField<'none' | 'sm' | 'md' | 'lg' | 'xl', 'filled'>;
+
+	/**
+	 * Bottom Distance field in *RichText → Default → Primary*
+	 *
+	 * - **Field Type**: Select
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: none
+	 * - **API ID Path**: rich_text.default.primary.bottom_distance
+	 * - **Documentation**: https://prismic.io/docs/fields/select
+	 */
+	bottom_distance: prismic.SelectField<'none' | 'sm' | 'md' | 'lg' | 'xl', 'filled'>;
 }
 
 /**

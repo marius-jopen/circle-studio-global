@@ -1,29 +1,70 @@
 {
-	"id": "rich_text",
-	"type": "SharedSlice",
-	"name": "RichText",
-	"description": "RichText",
-	"variations": [
-		{
-			"id": "default",
-			"name": "Default",
-			"docURL": "...",
-			"version": "sktwi1xtmkfgx8626",
-			"description": "RichText",
-			"primary": {
-				"content": {
-					"type": "StructuredText",
-					"config": {
-						"label": "Content",
-						"placeholder": "Lorem ipsum...",
-						"allowTargetBlank": true,
-						"multi": "paragraph,preformatted,heading1,heading2,heading3,strong,em,hyperlink,embed,list-item",
-						"labels": ["codespan"]
-					}
-				}
-			},
-			"items": {},
-			"imageUrl": "https://images.prismic.io/slice-machine/621a5ec4-0387-4bc5-9860-2dd46cbc07cd_default_ss.png?auto=compress,format"
-		}
-	]
+  "id": "rich_text",
+  "type": "SharedSlice",
+  "name": "RichText",
+  "description": "RichText",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "sktwi1xtmkfgx8626",
+      "description": "RichText",
+      "primary": {
+        "content": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Content",
+            "placeholder": "Lorem ipsum...",
+            "allowTargetBlank": true,
+            "multi": "paragraph,preformatted,heading1,heading2,heading3,strong,em,hyperlink,embed,list-item",
+            "labels": [
+              "codespan"
+            ]
+          }
+        },
+        "centered": {
+          "type": "Boolean",
+          "config": {
+            "label": "Centered",
+            "placeholder_false": "false",
+            "placeholder_true": "true",
+            "default_value": false
+          }
+        },
+        "x_distance": {
+          "type": "Select",
+          "config": {
+            "label": "X Distance",
+            "placeholder": "",
+            "options": [
+              "none",
+              "sm",
+              "md",
+              "lg",
+              "xl"
+            ],
+            "default_value": "none"
+          }
+        },
+        "bottom_distance": {
+          "type": "Select",
+          "config": {
+            "label": "Bottom Distance",
+            "placeholder": "",
+            "options": [
+              "none",
+              "sm",
+              "md",
+              "lg",
+              "xl"
+            ],
+            "default_value": "none"
+          }
+        }
+      },
+      "items": {},
+      "imageUrl": "https://images.prismic.io/slice-machine/621a5ec4-0387-4bc5-9860-2dd46cbc07cd_default_ss.png?auto=compress,format"
+    }
+  ]
 }

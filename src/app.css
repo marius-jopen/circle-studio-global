@@ -42,7 +42,7 @@ p {
 }
 
 h1, .h1 {
-    @apply text-xl md:text-4xl font-normal leading-[28px] md:leading-[46px];
+    @apply text-2xl md:text-[50px] font-normal leading-[130%] md:leading-[120%];
 }
 
 h2, .h2 {

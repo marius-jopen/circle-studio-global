@@ -13,6 +13,20 @@
 						}
 					}
 				]
+			},
+			"centered": {
+				"__TYPE__": "BooleanContent",
+				"value": false
+			},
+			"x_distance": {
+				"__TYPE__": "FieldContent",
+				"value": "none",
+				"type": "Select"
+			},
+			"bottom_distance": {
+				"__TYPE__": "FieldContent",
+				"value": "none",
+				"type": "Select"
 			}
 		},
 		"items": [
