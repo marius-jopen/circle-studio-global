@@ -214,8 +214,15 @@
     position: fixed;
     top: 0;
     left: 0;
+    right: 0;
+    bottom: 0;
     width: 100vw;
-    height: 100vh;
+    height: 100vh; /* Fallback for older browsers */
+    height: 100dvh; /* Dynamic viewport height - accounts for Safari mobile URL bar */
+    height: -webkit-fill-available; /* iOS Safari fallback */
+    min-height: 100vh;
+    min-height: 100dvh;
+    min-height: -webkit-fill-available;
     background-color: #ffffff; /* Default white background */
     display: flex;
     align-items: center;
