@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { PrismicLink } from '@prismicio/svelte';
-	import BigWheel from './BigWheel.svelte';
+	import Logo from './Logo.svelte';
 	import MobileWheel from './MobileWheel.svelte';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
@@ -116,61 +116,21 @@
 					onmouseenter={() => { isHovering = true; }}
 					onmouseleave={() => { isHovering = false; }}
 				>
-					<!-- Black Wheel (default) -->
-					<div class="absolute top-0 left-0 transition-opacity duration-600 z-10" class:opacity-0={isDarkMode} class:opacity-100={!isDarkMode}>
-						<BigWheel 
-							config={{
-								uiVisible: false,
-								items: [{
-									text: 'ART CAMP EST.2016',
-									rotationSpeed: isHovering ? 1 : 0.2,
-									spacingAmplitudePercent: 0,
-									spacingSpeed: 0,
-									rotationStart: 0,
-									animationType: 'sin'
-								}],
-								globalSettings: {
-									containerSizePercent: 30,
-									fontSizePercent: 18,
-									distancePercent: 0,
-									paused: false,
-									textColor: '#171717',
-									transparentBackground: true,
-                        fontFamily: 'CircularXXWeb',
-									manualMode: true,
-									fadeInTime: 0,
-									fadeOutTime: 0
-								}
-							}}
+					<!-- Black Logo (default) -->
+					<div class="absolute top-4 left-0 transition-opacity duration-600 z-10" class:opacity-0={isDarkMode} class:opacity-100={!isDarkMode}>
+						<Logo 
+							variant="black"
+							rotationSpeed={isHovering ? 50 : 0}
+							size={120}
 						/>
 					</div>
 					
-					<!-- White Wheel (dark mode) -->
-					<div class="absolute top-0 left-0 transition-opacity duration-600 z-10" class:opacity-100={isDarkMode} class:opacity-0={!isDarkMode}>
-						<BigWheel 
-							config={{
-								uiVisible: false,
-								items: [{
-									text: 'ART CAMP EST.2016',
-									rotationSpeed: isHovering ? 1 : 0.2,
-									spacingAmplitudePercent: 0,
-									spacingSpeed: 0,
-									rotationStart: 0,
-									animationType: 'sin'
-								}],
-								globalSettings: {
-									containerSizePercent: 30,
-									fontSizePercent: 18,
-									distancePercent: 0,
-									paused: false,
-									textColor: '#ffffff',
-									transparentBackground: true,
-                        fontFamily: 'CircularXXWeb',
-									manualMode: true,
-									fadeInTime: 0,
-									fadeOutTime: 0
-								}
-							}}
+					<!-- White Logo (dark mode) -->
+					<div class="absolute top-4 left-0 transition-opacity duration-600 z-10" class:opacity-100={isDarkMode} class:opacity-0={!isDarkMode}>
+						<Logo 
+							variant="white"
+							rotationSpeed={isHovering ? 50 : 0}
+							size={120}
 						/>
 					</div>
 				</a>
@@ -254,8 +214,8 @@
 		cursor: pointer !important;
 	}
 
-	/* Ensure BigWheel components don't interfere with cursor */
-	:global(header a.logo-link canvas) {
+	/* Ensure Logo components don't interfere with cursor */
+	:global(header a.logo-link img) {
 		pointer-events: none;
 		cursor: pointer;
 	}
