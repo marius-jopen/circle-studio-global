@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Content } from '@prismicio/client';
 	import type { SliceComponentProps } from '@prismicio/svelte';
-	import BigWheel from '../../components/BigWheel.svelte';
+	import Logo from '../../components/Logo.svelte';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
 
@@ -14,19 +14,15 @@
 	const showOnDesktop = display === 'both' || display === 'desktop';
 	const showOnMobile = display === 'both' || display === 'mobile';
 
-	// Calculate container size based on viewport width
-	// Base container size in BigWheel is 600px
-	// We want 50vw on desktop (>= 768px) and 70vw on mobile
-	const baseContainerSize = 600;
-	let containerSizePercent = $state(100);
+	// Calculate logo size based on viewport width
+	let logoSize = $state(200);
 
 	function calculateSize() {
 		if (!browser) return;
 		const viewportWidth = window.innerWidth;
 		const isDesktop = viewportWidth >= 768;
-		const targetWidth = isDesktop ? viewportWidth * 0.5 : viewportWidth * 0.5;
-		// Calculate what percentage of 600px equals the target width
-		containerSizePercent = (targetWidth / baseContainerSize) * 100;
+		// 50vw on desktop, 70vw on mobile
+		logoSize = isDesktop ? viewportWidth * 0.5 : viewportWidth * 0.5;
 	}
 
 	onMount(() => {
@@ -46,32 +42,11 @@
 	class="logo-slice"
 >
 	<div class="logo-container" class:show-desktop={showOnDesktop} class:show-mobile={showOnMobile}>
-		<div class="logo-wrapper">
-			<BigWheel 
-				config={{
-					uiVisible: false,
-					items: [{
-						text: 'ART CAMP EST.2016',
-						rotationSpeed: 0.2,
-						spacingAmplitudePercent: 0,
-						spacingSpeed: 0,
-						rotationStart: 0,
-						animationType: 'sin'
-					}],
-				globalSettings: {
-					containerSizePercent: containerSizePercent,
-					fontSizePercent: 18,
-					distancePercent: 0,
-					paused: false,
-					textColor: '#171717',
-					backgroundColor: '#ffffff',
-					transparentBackground: false,
-					fontFamily: 'CircularXXWeb',
-					manualMode: true,
-					fadeInTime: 0,
-					fadeOutTime: 0
-				}
-			}}
+		<div class="logo-wrapper mt-6 mb-2">
+			<Logo 
+				variant="black"
+				rotationSpeed={10}
+				size={logoSize}
 			/>
 		</div>
 	</div>
@@ -94,8 +69,6 @@
 	}
 
 	.logo-wrapper {
-		width: 70vw;
-		max-width: 100%;
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -108,10 +81,6 @@
 
 	/* Show on desktop when show-desktop class is present */
 	@media (min-width: 768px) {
-		.logo-wrapper {
-			width: 50vw;
-		}
-
 		.show-desktop {
 			display: flex;
 		}
