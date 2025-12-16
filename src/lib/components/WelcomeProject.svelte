@@ -10,6 +10,24 @@
   let wheelVisible = $state(true); // Start with wheel visible
   let welcomeElement: HTMLDivElement;
   let fadePhase = $state<'initial' | 'lettersVisible' | 'lettersFadingOut' | 'backgroundFadingOut' | 'hidden'>('lettersVisible');
+  let darkMode = $state(true); // When true: black background, white text
+
+  // Lock body scroll when welcome is visible
+  function lockScroll() {
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+    document.body.style.height = '100%';
+    document.documentElement.style.overflow = 'hidden';
+  }
+
+  function unlockScroll() {
+    document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.width = '';
+    document.body.style.height = '';
+    document.documentElement.style.overflow = '';
+  }
 
   // Check if we're on the home page (runes)
   const isHomePage = $derived(page?.route?.id === '/[[preview=preview]]');
@@ -84,8 +102,8 @@
       fontSizePercent: 7,
       distancePercent: 0.8,
       paused: false,
-      textColor: '#000000',
-      backgroundColor: '#ffffff',
+      textColor: '#ffffff',
+      backgroundColor: '#000000',
       transparentBackground: true,
       fadeInTime: 0.5,
       fadeOutTime: 1.2,
@@ -108,8 +126,8 @@
       fontSizePercent: 7,
       distancePercent: 0.8,
       paused: false,
-      textColor: '#000000',
-      backgroundColor: '#ffffff',
+      textColor: '#ffffff',
+      backgroundColor: '#000000',
       transparentBackground: true,
       fadeInTime: 0.5,
       fadeOutTime: 1.2,
@@ -151,6 +169,8 @@
       showWelcome = true;
       wheelVisible = true;
       fadePhase = 'lettersVisible';
+      // Lock scrolling while welcome is visible
+      lockScroll();
       // Auto-dismiss after a longer delay if no interaction (10 seconds)
       setTimeout(() => {
         if (fadePhase === 'lettersVisible') {
@@ -184,6 +204,7 @@
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
       document.removeEventListener('click', handleClick);
+      unlockScroll();
     };
   });
 
@@ -191,6 +212,9 @@
     if (fadePhase !== 'lettersVisible') return;
     
     fadePhase = 'lettersFadingOut';
+    
+    // Unlock scrolling when fading out
+    unlockScroll();
     
     // Store user interaction permission immediately
     if (browser) {
@@ -232,6 +256,7 @@
 {#if showWelcome}
   <div class="welcome-overlay cursor-pointer z-30"
        class:background-visible={backgroundVisible}
+       class:dark-mode={darkMode}
        bind:this={welcomeElement}
        onclick={handleClick}
        onkeydown={handleKeydown}
@@ -251,11 +276,15 @@
 <style>
   .welcome-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: #ffffff; /* Always white background */
+    /* Extend beyond viewport edges to cover Safari mobile dynamic UI */
+    top: -15%;
+    left: -15%;
+    right: -15%;
+    bottom: -15%;
+    width: 130vw;
+    height: 130vh; /* Fallback for older browsers */
+    height: 130dvh; /* Dynamic viewport height - accounts for Safari mobile URL bar */
+    background-color: #ffffff; /* Default white background */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -263,6 +292,14 @@
     cursor: pointer;
     opacity: 1; /* Always start visible */
     transition: opacity 0.8s ease-in-out;
+    /* Prevent any touch scrolling on the overlay */
+    touch-action: none;
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: none;
+  }
+
+  .welcome-overlay.dark-mode {
+    background-color: #000000; /* Black background when darkMode is true */
   }
 
   .welcome-overlay:not(.background-visible) {
