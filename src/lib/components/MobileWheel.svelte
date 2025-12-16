@@ -1,5 +1,5 @@
 <script lang="ts">
-	import BigWheel from './BigWheel.svelte';
+	import Logo from './Logo.svelte';
 	import { onMount } from 'svelte';
 	
 	let { isDarkMode = false, scrollSpeedMultiplier = 12 } = $props();
@@ -100,35 +100,31 @@
 <!-- Mobile-specific wheel - always centered and non-interactive -->
 <div class="md:hidden fixed left-0 top-0 flex justify-center items-center z-40 pointer-events-none" style="width: 100vw; height: calc(var(--app-vh, 1vh) * 100); height: 100dvh;">
 	<div class="flex justify-center items-center w-full h-full">
-		<!-- Black Wheel (only wheel used on mobile) -->
+		<!-- Black Logo (default) -->
 		<div 
 			class="transition-opacity duration-600 z-10 absolute" 
-			style="transform: rotate({scrollRotation}deg) scale(0.5); will-change: transform;"
+			class:opacity-0={isDarkMode}
+			class:opacity-100={!isDarkMode}
+			style="transform: rotate({scrollRotation}deg); will-change: transform;"
 		>
-			<BigWheel 
-				config={{
-					uiVisible: false,
-					items: [{
-						text: 'ART CAMP EST.2016',
-						rotationSpeed: 0, // No internal rotation - controlled by scroll
-						spacingAmplitudePercent: 0,
-						spacingSpeed: 0,
-						rotationStart: 0,
-						animationType: 'sin'
-					}],
-					globalSettings: {
-						containerSizePercent: 100, // 2x larger for high-res rendering
-						fontSizePercent: 17.8, // Larger text for mobile
-						distancePercent: 0,
-						paused: true, // Pause internal animation since we're controlling rotation externally
-						textColor: '#171717',
-						transparentBackground: true,
-                fontFamily: 'CircularXXWeb',
-						manualMode: true,
-						fadeInTime: 0,
-						fadeOutTime: 0
-					}
-				}}
+			<Logo 
+				variant="black"
+				rotationSpeed={0}
+				size={250}
+			/>
+		</div>
+		
+		<!-- White Logo (dark mode) -->
+		<div 
+			class="transition-opacity duration-600 z-10 absolute" 
+			class:opacity-100={isDarkMode}
+			class:opacity-0={!isDarkMode}
+			style="transform: rotate({scrollRotation}deg); will-change: transform;"
+		>
+			<Logo 
+				variant="white"
+				rotationSpeed={0}
+				size={250}
 			/>
 		</div>
 	</div>
