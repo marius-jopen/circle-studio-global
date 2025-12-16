@@ -262,7 +262,7 @@
 	});
 </script>
 
-<div class="relative {classes} overflow-hidden bg-white {square ? '' : 'rounded-lg'}">
+<div class="relative {classes} overflow-hidden bg-white {square ? '' : 'rounded'}">
 	{#if isMobile && !enableOnMobile}
 		<!-- On mobile with videos disabled, show only the poster image -->
 		<img

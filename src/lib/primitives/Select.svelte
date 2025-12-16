@@ -31,7 +31,7 @@
       on:change
       on:focus
       on:blur
-      class="appearance-none w-full pr-8 pl-2 py-2 border border-gray-300 rounded-lg text-base font-inherit bg-white cursor-pointer transition-all duration-200
+      class="appearance-none w-full pr-8 pl-2 py-2 border border-gray-300 rounded text-base font-inherit bg-white cursor-pointer transition-all duration-200
         focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100
         disabled:bg-gray-100 disabled:text-neutral-500 disabled:cursor-not-allowed
         [&::-moz-focus-inner]:border-0

@@ -38,7 +38,7 @@
       on:change
       on:focus
       on:blur
-      class="p-2 border border-gray-300 rounded-lg text-base font-inherit transition-all duration-200 bg-white
+      class="p-2 border border-gray-300 rounded text-base font-inherit transition-all duration-200 bg-white
         focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100
         disabled:bg-gray-100 disabled:text-neutral-500 disabled:cursor-not-allowed
         {error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : ''}"
@@ -58,7 +58,7 @@
       on:change
       on:focus
       on:blur
-      class="p-2 border border-gray-300 rounded-lg text-base font-inherit transition-all duration-200 bg-white
+      class="p-2 border border-gray-300 rounded text-base font-inherit transition-all duration-200 bg-white
         focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100
         disabled:bg-gray-100 disabled:text-neutral-500 disabled:cursor-not-allowed
         [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
@@ -74,7 +74,7 @@
       on:change
       on:focus
       on:blur
-      class="w-12 h-10 p-0.5 border border-gray-300 rounded-lg cursor-pointer transition-all duration-200 bg-white
+      class="w-12 h-10 p-0.5 border border-gray-300 rounded cursor-pointer transition-all duration-200 bg-white
         focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100
         disabled:bg-gray-100 disabled:cursor-not-allowed
         {error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : ''}"
@@ -91,7 +91,7 @@
       on:change
       on:focus
       on:blur
-      class="p-2 border border-gray-300 rounded-lg text-base font-inherit transition-all duration-200 bg-white
+      class="p-2 border border-gray-300 rounded text-base font-inherit transition-all duration-200 bg-white
         focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100
         disabled:bg-gray-100 disabled:text-neutral-500 disabled:cursor-not-allowed
         {error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : ''}"
@@ -108,7 +108,7 @@
       on:change
       on:focus
       on:blur
-      class="p-2 border border-gray-300 rounded-lg text-base font-inherit transition-all duration-200 bg-white
+      class="p-2 border border-gray-300 rounded text-base font-inherit transition-all duration-200 bg-white
         focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100
         disabled:bg-gray-100 disabled:text-neutral-500 disabled:cursor-not-allowed
         {error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : ''}"
