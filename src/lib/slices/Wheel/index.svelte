@@ -161,7 +161,7 @@
 			<div class="w-full content-container px-4 text-primary">
 				{#if title}
 					<div class="mb-6">
-						<div class="text-xl md:text-2xl font-medium text-primary">{title}</div>
+						<div class="text-sm md:text-2xl font-medium text-primary">{title}</div>
 					</div>
 				{/if}
 

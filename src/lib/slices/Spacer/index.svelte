@@ -9,7 +9,7 @@
 
 	const sizeToPx: Record<NonNullable<Content.SpacerSliceDefaultPrimary['spacer_mobile']>, number> = {
 		none: 0,
-		xs: 32,
+		xs: 16,
 		sm: 48,
 		md: 64,
 		xl: 96,

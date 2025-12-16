@@ -8,8 +8,8 @@
 	const { slice }: Props = $props();
 </script>
 
-<section class="content-container mb-8 mt-6 text-left md:text-center text-sm md:text-base text-primary">
-	<div class="h1 py-2 md:py-0">
+<section class="content-container mb-8 mt-6 text-left md:text-center  text-primary">
+	<div class="h0 py-2 md:py-0">
 		{asText(slice.primary.content)}
 	</div>
 </section>
