@@ -23,6 +23,7 @@
         {/each}
       </ul>
     {/if}
+    <div class=" text-sm text-center md:text-left">Website Development: <a href="https://www.mariusjopen.com" target="_blank" class="hover:underline decoration-[1px] underline-offset-3">Marius Jopen</a></div>
   </div>
   
 </footer>
