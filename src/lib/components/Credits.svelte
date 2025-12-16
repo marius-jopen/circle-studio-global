@@ -23,7 +23,7 @@
 							{@const linkUrl = personData?.link?.url || personData?.link}
 							<span class="person-entry">
 								{#if linkUrl}
-									<a href={linkUrl} target="_blank">
+									<a class="hover:underline decoration-[1px] underline-offset-3" href={linkUrl} target="_blank">
 										{personData?.title || `Person ${index + 1}`}
 									</a>
 								{:else}
