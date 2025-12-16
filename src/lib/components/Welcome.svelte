@@ -1,77 +1,31 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
-  import { page } from '$app/state';
-  import BigWheel from './BigWheel.svelte';
+  import Logo from './Logo.svelte';
 
   let showWelcome = $state(true); // Show immediately on first load; hide on internal navigations
-  let isVisible = $state(true);
   let backgroundVisible = $state(true);
-  let wheelVisible = $state(true); // Start with wheel visible
+  let logoVisible = $state(true);
   let welcomeElement: HTMLDivElement;
-  let fadePhase = $state<'initial' | 'lettersVisible' | 'lettersFadingOut' | 'backgroundFadingOut' | 'hidden'>('lettersVisible');
-  let darkMode = $state(true); // When true: black background, white text
+  let fadePhase = $state<'initial' | 'visible' | 'fadingOut' | 'hidden'>('visible');
+  let darkMode = $state(true); // When true: black background, white logo
 
-  // Check if we're on the home page (runes)
-  const isHomePage = $derived(page?.route?.id === '/[[preview=preview]]');
-
-  // Check if we're on a project page (runes)
-  const isProjectPage = $derived(page?.route?.id?.includes('/work/[uid]'));
-  function formatDateToMonthDotDayDotYear(value: string): string {
-    if (!value) return '';
-    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
-    if (m) {
-      const [, y, mm, dd] = m;
-      return `${mm}.${dd}.${y}`;
-    }
-    const d = new Date(value);
-    if (Number.isNaN(d.getTime())) return '';
-    const mm = String(d.getMonth() + 1).padStart(2, '0');
-    const dd = String(d.getDate()).padStart(2, '0');
-    const y = String(d.getFullYear());
-    return `${mm}.${dd}.${y}`;
+  // Lock body scroll when welcome is visible
+  function lockScroll() {
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+    document.body.style.height = '100%';
+    document.documentElement.style.overflow = 'hidden';
   }
-  // Keep for potential future use
-  // const projectDate = $derived(isProjectPage ? formatDateToMonthDotDayDotYear(page?.data?.project?.data?.date || '') : '');
-  
-  // Show welcome screen on initial page loads (home and project pages).
-  // Subsequent internal navigations will skip it (handled in onMount below).
-  
-  // Normal pages configuration (runes)
-  const normalPageConfig = $derived({
-    uiVisible: false,
-    items: [
-      {
-        text: 'ART CAMP EST.2016',
-        rotationSpeed: 0.3,
-        spacingAmplitudePercent: 0,
-        spacingSpeed: 0,
-        rotationStart: 0,
-        animationType: 'linear'
-      }
-    ],
-    globalSettings: {
-      containerSizePercent: 120,
-      fontSizePercent: 18,
-      distancePercent: 0,
-      paused: false,
-      textColor: darkMode ? '#ffffff' : '#171717',
-      backgroundColor: '#ffffff',
-      transparentBackground: true,
-      fadeInTime: 0,
-      fadeOutTime: 1,
-      pauseTime: 0,
-      visibleTime: 0,
-      manualMode: true,
-      triggerFadeIn: false,
-      triggerFadeOut: false
-    }
-  });
-  
-  // Removed project-specific welcome config; we always use the normal config
-  
-  // Always use normal page configuration for the welcome screen
-  let welcomeConfig = $state(normalPageConfig);
+
+  function unlockScroll() {
+    document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.width = '';
+    document.body.style.height = '';
+    document.documentElement.style.overflow = '';
+  }
 
   onMount(() => {
     if (!browser) return;
@@ -83,17 +37,19 @@
     // Hide welcome screen only if this is navigation between pages
     if (isNavigating && navigationEntry?.type !== 'reload') {
       showWelcome = false;
-      wheelVisible = false;
+      logoVisible = false;
       fadePhase = 'hidden';
     } else {
       // This is a fresh load/reload - clear the navigation flag
       sessionStorage.removeItem('circle-studio-navigating');
       showWelcome = true;
-      wheelVisible = true;
-      fadePhase = 'lettersVisible';
+      logoVisible = true;
+      fadePhase = 'visible';
+      // Lock scrolling while welcome is visible
+      lockScroll();
       // Auto-dismiss after a short delay if no interaction
       setTimeout(() => {
-        if (fadePhase === 'lettersVisible') {
+        if (fadePhase === 'visible') {
           fadeOut();
         }
       }, 2000);
@@ -116,7 +72,7 @@
     // Handle scroll dismissal
     function handleScroll() {
       // Allow scroll to dismiss when visible
-      if (fadePhase === 'lettersVisible') {
+      if (fadePhase === 'visible') {
         fadeOut();
       }
     }
@@ -134,13 +90,17 @@
       document.removeEventListener('click', handleClick);
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('wheel', handleScroll);
+      unlockScroll();
     };
   });
 
   function fadeOut() {
-    if (fadePhase !== 'lettersVisible') return;
+    if (fadePhase !== 'visible') return;
     
-    fadePhase = 'lettersFadingOut';
+    fadePhase = 'fadingOut';
+    
+    // Unlock scrolling when fading out
+    unlockScroll();
     
     // Store user interaction permission immediately
     if (browser) {
@@ -152,38 +112,25 @@
       window.dispatchEvent(new CustomEvent('welcome-dismissed'));
     }
     
-    // Trigger letters to fade out
-    welcomeConfig.globalSettings.triggerFadeOut = true;
-    welcomeConfig = { ...welcomeConfig };
+    // Start fading out logo and background together
+    logoVisible = false;
+    backgroundVisible = false;
     
-    // Reset trigger after a moment
+    // Remove the component after fade completes
     setTimeout(() => {
-      welcomeConfig.globalSettings.triggerFadeOut = false;
-      welcomeConfig = { ...welcomeConfig };
-    }, 100);
-    
-    // After letters fade out, start background fade
-    setTimeout(() => {
-      fadePhase = 'backgroundFadingOut';
-      wheelVisible = false; // Hide wheel
-      backgroundVisible = false;
-      
-      // Remove the component after background fade completes
-      setTimeout(() => {
-        showWelcome = false;
-        fadePhase = 'hidden';
-      }, 1200); // Match the CSS transition duration for background
-    }, 1200); // Wait for letters to fade out (fadeOutTime)
+      showWelcome = false;
+      fadePhase = 'hidden';
+    }, 1200); // Match the CSS transition duration
   }
 
   function handleClick() {
-    if (fadePhase === 'lettersVisible') {
+    if (fadePhase === 'visible') {
       fadeOut();
     }
   }
 
   function handleKeydown(event: KeyboardEvent) {
-    if ((event.key === 'Enter' || event.key === ' ') && fadePhase === 'lettersVisible') {
+    if ((event.key === 'Enter' || event.key === ' ') && fadePhase === 'visible') {
       fadeOut();
     }
   }
@@ -200,10 +147,8 @@
        tabindex="0"
        aria-label="Click to continue to website">
     <div class="welcome-content cursor-pointer z-30">
-      <div class="wheel-container cursor-pointer scale-50 md:scale-100">
-        {#if wheelVisible}
-          <BigWheel config={welcomeConfig} />
-        {/if}
+      <div class="logo-container" class:logo-visible={logoVisible}>
+        <Logo variant={darkMode ? 'white' : 'black'} rotationSpeed={10} size={250} />
       </div>
     </div>
   </div>
@@ -212,17 +157,14 @@
 <style>
   .welcome-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100vw;
-    height: 100vh; /* Fallback for older browsers */
-    height: 100dvh; /* Dynamic viewport height - accounts for Safari mobile URL bar */
-    height: -webkit-fill-available; /* iOS Safari fallback */
-    min-height: 100vh;
-    min-height: 100dvh;
-    min-height: -webkit-fill-available;
+    /* Extend beyond viewport edges to cover Safari mobile dynamic UI */
+    top: -15%;
+    left: -15%;
+    right: -15%;
+    bottom: -15%;
+    width: 130vw;
+    height: 130vh; /* Fallback for older browsers */
+    height: 130dvh; /* Dynamic viewport height - accounts for Safari mobile URL bar */
     background-color: #ffffff; /* Default white background */
     display: flex;
     align-items: center;
@@ -231,6 +173,10 @@
     cursor: pointer;
     opacity: 1; /* Always start visible */
     transition: opacity 0.8s ease-in-out;
+    /* Prevent any touch scrolling on the overlay */
+    touch-action: none;
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: none;
   }
 
   .welcome-overlay.dark-mode {
@@ -251,11 +197,14 @@
     height: 100%;
   }
 
-  .wheel-container {
+  .logo-container {
     position: relative;
     z-index: 1;
+    opacity: 0;
+    transition: opacity 0.8s ease-in-out;
   }
- 
 
-  /* Show on all viewports */
+  .logo-container.logo-visible {
+    opacity: 1;
+  }
 </style> 
