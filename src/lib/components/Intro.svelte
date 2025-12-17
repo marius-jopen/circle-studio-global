@@ -90,10 +90,10 @@
   let contentVisible = $state(false);
   let introElement: HTMLDivElement;
   let fadePhase = $state<'hidden' | 'visible' | 'fadingOut'>('hidden');
-  let isMobile = $state(false);
+  let windowWidth = $state(350);
   
-  // Logo size based on screen size
-  const logoSize = $derived(isMobile ? 250 : 550);
+  // Logo size based on screen size (match MobileWheel on mobile)
+  const logoSize = $derived(windowWidth < 768 ? Math.min(windowWidth * 0.9, 500) : 550);
 
   // Lock/unlock body scroll
   function lockScroll() {
@@ -115,12 +115,12 @@
   onMount(() => {
     if (!browser) return;
 
-    // Mobile detection
-    const checkMobile = () => {
-      isMobile = window.innerWidth < 768;
+    // Track width for responsive logo size on mobile
+    const updateWidth = () => {
+      windowWidth = window.innerWidth;
     };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
+    updateWidth();
+    window.addEventListener('resize', updateWidth, { passive: true });
 
     // Detect if this is a hard reload using performance API
     const navigationEntries = performance.getEntriesByType('navigation');
@@ -167,7 +167,7 @@
     }
 
     return () => {
-      window.removeEventListener('resize', checkMobile);
+      window.removeEventListener('resize', updateWidth);
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('wheel', handleScroll);
       unlockScroll();
