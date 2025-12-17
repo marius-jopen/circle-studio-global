@@ -7,6 +7,8 @@
 	let scrollRotation = $state(0);
 	let targetRotation = $state(0);
 	let isScrolling = $state(false);
+	let windowWidth = $state(350);
+	let logoSize = $derived(Math.min(windowWidth * 0.9, 500));
 	let scrollTimeout: ReturnType<typeof setTimeout>;
 	let animationFrame: number;
 	let lastScrollY = 0;
@@ -28,12 +30,16 @@
 	}
 	
 	onMount(() => {
+		// Set initial window width
+		windowWidth = window.innerWidth;
+		
 		// Fallback for older mobile browsers: lock a stable vh unit to innerHeight
-		const setAppVh = () => {
+		const handleResize = () => {
 			document.documentElement.style.setProperty('--app-vh', `${window.innerHeight * 0.01}px`);
+			windowWidth = window.innerWidth;
 		};
-		setAppVh();
-		window.addEventListener('resize', setAppVh, { passive: true });
+		handleResize();
+		window.addEventListener('resize', handleResize, { passive: true });
 
 		// Start the continuous animation loop
 		animate();
@@ -87,7 +93,7 @@
 		// Cleanup
 		return () => {
 			window.removeEventListener('scroll', throttledScroll);
-			window.removeEventListener('resize', setAppVh as any);
+			window.removeEventListener('resize', handleResize);
 			clearTimeout(scrollTimeout);
 			isAnimating = false;
 			if (animationFrame) {
@@ -98,7 +104,7 @@
 </script>
 
 <!-- Mobile-specific wheel - always centered and non-interactive -->
-<div class="md:hidden fixed left-0 top-0 flex justify-center items-center z-40 pointer-events-none" style="width: 100vw; height: calc(var(--app-vh, 1vh) * 100); height: 100dvh;">
+<div class="md:hidden fixed inset-0 flex justify-center items-center z-40 pointer-events-none" style="height: calc(var(--app-vh, 1vh) * 100); height: 100dvh;">
 	<div class="flex justify-center items-center w-full h-full">
 		<!-- Black Logo (default) -->
 		<div 
@@ -110,7 +116,7 @@
 			<Logo 
 				variant="black"
 				rotationSpeed={0}
-				size={250}
+				size={logoSize}
 			/>
 		</div>
 		
@@ -124,7 +130,7 @@
 			<Logo 
 				variant="white"
 				rotationSpeed={0}
-				size={250}
+				size={logoSize}
 			/>
 		</div>
 	</div>
