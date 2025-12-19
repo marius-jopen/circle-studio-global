@@ -87,17 +87,17 @@
 						class="list-item block py-2.5 transition-all duration-500 ease-out {visibleItems.has(index) ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'} {isMobile ? '' : 'hover:text-black'}"
 					>
 						<div class="grid grid-cols-12 items-start gap-2 paragraph-1">
-							<div class="col-span-6  md:col-span-3 text-left tracking-wide text-sm md:text-2xl">{linkText || 'Magazine'}</div>
-							<div class="col-span-6  md:col-span-6  text-sm md:text-2xl">{item.text || ''}</div>
-							<div class="col-span-6  md:col-span-3 text-right text-sm md:text-2xl hidden md:block">{formatYear(item.year)}</div>
+							<div class="col-span-6  md:col-span-3 text-left tracking-wide text-sm md:text-lg">{linkText || 'Magazine'}</div>
+							<div class="col-span-6  md:col-span-6  text-sm md:text-lg">{item.text || ''}</div>
+							<div class="col-span-6  md:col-span-3 text-right text-sm md:text-lg hidden md:block">{formatYear(item.year)}</div>
 						</div>
 					</PrismicLink>
 				{:else}
 					<div class="list-item block py-2.5 transition-all duration-500 ease-out {visibleItems.has(index) ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'} {isMobile ? '' : 'hover:text-black'}">
 						<div class="grid grid-cols-12 items-start gap-2 paragraph-1">
-							<div class="col-span-6  md:col-span-3 text-left tracking-wide text-sm md:text-2xl">{linkText || 'Magazine'}</div>
-							<div class="col-span-6  md:col-span-6  text-sm md:text-2xl">{item.text || ''}</div>
-							<div class="col-span-6  md:col-span-3 text-right text-sm md:text-2xl hidden md:block">{formatYear(item.year)}</div>
+							<div class="col-span-6  md:col-span-3 text-left tracking-wide text-sm md:text-lg">{linkText || 'Magazine'}</div>
+							<div class="col-span-6  md:col-span-6  text-sm md:text-lg">{item.text || ''}</div>
+							<div class="col-span-6  md:col-span-3 text-right text-sm md:text-lg hidden md:block">{formatYear(item.year)}</div>
 						</div>
 					</div>
 				{/if}
