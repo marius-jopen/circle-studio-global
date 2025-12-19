@@ -84,7 +84,7 @@
 				{#if hasLink}
 					<PrismicLink
 						field={item.link}
-						class="list-item block py-2.5 transition-all duration-500 ease-out {visibleItems.has(index) ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'} {isMobile ? '' : 'hover:text-black'}"
+						class="list-item block py-1.5 transition-all duration-500 ease-out {visibleItems.has(index) ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'} {isMobile ? '' : 'hover:text-black'}"
 					>
 						<div class="grid grid-cols-12 items-start gap-2 paragraph-1">
 							<div class="col-span-6  md:col-span-3 text-left tracking-wide text-sm md:text-lg">{linkText || 'Magazine'}</div>
@@ -93,7 +93,7 @@
 						</div>
 					</PrismicLink>
 				{:else}
-					<div class="list-item block py-2.5 transition-all duration-500 ease-out {visibleItems.has(index) ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'} {isMobile ? '' : 'hover:text-black'}">
+					<div class="list-item block py-1.5 transition-all duration-500 ease-out {visibleItems.has(index) ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'} {isMobile ? '' : 'hover:text-black'}">
 						<div class="grid grid-cols-12 items-start gap-2 paragraph-1">
 							<div class="col-span-6  md:col-span-3 text-left tracking-wide text-sm md:text-lg">{linkText || 'Magazine'}</div>
 							<div class="col-span-6  md:col-span-6  text-sm md:text-lg">{item.text || ''}</div>
