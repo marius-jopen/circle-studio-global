@@ -84,32 +84,40 @@
     }
   });
 
-  // State - start hidden, will be set in onMount
-  let showIntro = $state(false);
-  let backgroundVisible = $state(false);
-  let contentVisible = $state(false);
+// State - start visible on the server to avoid a flash of content
+// before the intro mounts; client navigation still starts hidden.
+const initialServerShow = !browser;
+let showIntro = $state(initialServerShow);
+let backgroundVisible = $state(initialServerShow);
+let contentVisible = $state(initialServerShow);
   let introElement: HTMLDivElement;
-  let fadePhase = $state<'hidden' | 'visible' | 'fadingOut'>('hidden');
-  let windowWidth = $state(350);
+  let fadePhase = $state<'hidden' | 'visible' | 'fadingOut'>(initialServerShow ? 'visible' : 'hidden');
+  const initialWindowWidth = browser ? window.innerWidth : 1200;
+  let windowWidth = $state(initialWindowWidth);
   
   // Logo size based on screen size (match MobileWheel on mobile)
   const logoSize = $derived(windowWidth < 768 ? Math.min(windowWidth * 0.9, 500) : 550);
 
   // Lock/unlock body scroll
+  let scrollbarWidth = 0;
+  let scrollY = 0;
+
   function lockScroll() {
-    document.body.style.overflow = 'hidden';
+    scrollY = window.scrollY;
     document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollY}px`;
     document.body.style.width = '100%';
     document.body.style.height = '100%';
-    document.documentElement.style.overflow = 'hidden';
+    document.documentElement.style.overflowY = 'scroll';
   }
 
   function unlockScroll() {
-    document.body.style.overflow = '';
     document.body.style.position = '';
+    document.body.style.top = '';
     document.body.style.width = '';
     document.body.style.height = '';
-    document.documentElement.style.overflow = '';
+    document.documentElement.style.overflowY = '';
+    window.scrollTo(0, scrollY);
   }
 
   onMount(() => {
@@ -121,6 +129,9 @@
     };
     updateWidth();
     window.addEventListener('resize', updateWidth, { passive: true });
+
+    // Pre-compute scrollbar width so locking scroll does not shift layout
+    scrollbarWidth = Math.max(0, window.innerWidth - document.documentElement.clientWidth);
 
     // Detect if this is a hard reload using performance API
     const navigationEntries = performance.getEntriesByType('navigation');
@@ -137,22 +148,31 @@
     
     // Show intro only if: it's a hard reload OR intro hasn't been seen yet
     const shouldShow = isHardReload || !introSeen;
-    
-    if (shouldShow) {
-      showIntro = true;
-      backgroundVisible = true;
-      contentVisible = true;
-      fadePhase = 'visible';
-      lockScroll();
-      
-      // Auto-dismiss after delay
-      const autoDismissDelay = isProjectPage ? 10000 : 2000;
-      setTimeout(() => {
-        if (fadePhase === 'visible') {
-          fadeOut();
-        }
-      }, autoDismissDelay);
+
+    if (!shouldShow) {
+      // Immediately hide if we already know not to show it
+      showIntro = false;
+      backgroundVisible = false;
+      contentVisible = false;
+      fadePhase = 'hidden';
+      unlockScroll();
+      return;
     }
+
+    // Ensure overlay is visible as soon as we hit the client
+    showIntro = true;
+    backgroundVisible = true;
+    contentVisible = true;
+    fadePhase = 'visible';
+    lockScroll();
+    
+    // Auto-dismiss after delay
+    const autoDismissDelay = isProjectPage ? 10000 : 2000;
+    setTimeout(() => {
+      if (fadePhase === 'visible') {
+        fadeOut();
+      }
+    }, autoDismissDelay);
 
     // Handle scroll dismissal (only for non-project pages)
     function handleScroll() {

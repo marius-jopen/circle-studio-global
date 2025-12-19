@@ -103,7 +103,7 @@ export interface HomeDocumentDataFeatureProjectsItem {
 	size: prismic.SelectField<'one' | 'two' | 'three', 'filled'>;
 }
 
-type HomeDocumentDataSlicesSlice = ContactSlice;
+type HomeDocumentDataSlicesSlice = SpacerSlice | ContactSlice;
 
 /**
  * Content for Home documents
