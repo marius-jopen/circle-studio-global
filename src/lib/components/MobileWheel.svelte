@@ -114,7 +114,7 @@
 			style="transform: rotate({scrollRotation}deg); will-change: transform;"
 		>
 			<Logo 
-				variant="black"
+				variant="white"
 				rotationSpeed={0}
 				size={logoSize}
 			/>
