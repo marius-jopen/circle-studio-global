@@ -122,13 +122,13 @@
 				<!-- Mobile Navigation removed here; now rendered above header to stay visible -->
 				
 				<!-- Desktop Navigation - Hidden on mobile -->
-				<div class="hidden md:flex items-center" class:pointer-events-auto={!effectiveFaded} class:pointer-events-none={effectiveFaded}>
+				<div class="hidden md:flex pr-1 items-center bg-gray-100 mr-2 pl-5 py-2 rounded-full" class:pointer-events-auto={!effectiveFaded} class:pointer-events-none={effectiveFaded}>
 					<!-- Add Grid/List selector before the navigation -->
 					<div class="flex items-center" class:pointer-events-auto={!effectiveFaded} class:pointer-events-none={effectiveFaded}>
 						<!-- Grid/List selector -->
 						<div class="relative">
 							<button
-								class="font-medium transition-all duration-600 ease-in-out hover:text-neutral-900 focus:outline-none min-w-[60px] text-left cursor-pointer"
+								class="font-medium transition-all duration-600 ease-in-out hover:text-neutral-900 focus:outline-none min-w-[50px] text-left cursor-pointer"
 								class:dark-mode={isDarkMode}
 								onclick={handleViewModeClick}
 								onmouseenter={() => isViewModeHovering = true}
@@ -148,7 +148,7 @@
 						</div>
 						
 						<!-- Navigation Links -->
-						<ul class="flex items-right space-x-6 pr-3" class:pointer-events-auto={!faded} class:pointer-events-none={faded}>
+						<ul class="flex items-right space-x-5 pr-3" class:pointer-events-auto={!faded} class:pointer-events-none={faded}>
 							{#each settings.data.navigation_header as navItem}
 								<li class:dark-mode={isDarkMode}>
 									<PrismicLink 
