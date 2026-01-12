@@ -10,17 +10,28 @@ export function isAuthenticated(cookies?: any): boolean {
 	return false;
 }
 
-export function setAuthCookie(cookies: any, url?: URL | string): void {
+export function setAuthCookie(cookies: any, url?: URL | string, request?: Request): void {
 	// Determine if we should use secure cookies
-	// Check if URL is HTTPS or if we're in production
+	// Check multiple sources to detect HTTPS (important for Vercel/proxies)
 	let isSecure = false;
 	
-	if (url) {
+	// First, check x-forwarded-proto header (Vercel sets this)
+	if (request) {
+		const forwardedProto = request.headers.get('x-forwarded-proto');
+		if (forwardedProto === 'https') {
+			isSecure = true;
+		}
+	}
+	
+	// If not set yet, check URL protocol
+	if (!isSecure && url) {
 		const urlObj = typeof url === 'string' ? new URL(url) : url;
 		isSecure = urlObj.protocol === 'https:';
-	} else {
-		// Fallback: check if we're in production
-		// In Vercel, this will be true
+	}
+	
+	// Fallback: check if we're in production
+	// In Vercel, this will be true
+	if (!isSecure) {
 		isSecure = import.meta.env.PROD;
 	}
 	

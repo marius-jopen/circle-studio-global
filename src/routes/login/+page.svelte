@@ -45,6 +45,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Admin Login - Art Camp</title>
+</svelte:head>
+
 <div class="min-h-screen flex items-center justify-center bg-gray-50">
 	<div class="max-w-md w-full space-y-8 p-8">
 		<div>

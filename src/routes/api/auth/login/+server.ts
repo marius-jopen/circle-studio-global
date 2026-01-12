@@ -10,7 +10,7 @@ export const POST: RequestHandler = async ({ request, cookies, url }) => {
 			return json({ error: 'Invalid password' }, { status: 401 });
 		}
 
-		setAuthCookie(cookies, url);
+		setAuthCookie(cookies, url, request);
 
 		return json({ success: true });
 	} catch (error) {
