@@ -36,7 +36,7 @@
       {
         text: 'ART CAMP EST.2016',
         rotationSpeed: 0.5,
-        spacingAmplitudePercent: 2,
+        spacingAmplitudePercent: 1.1,
         spacingSpeed: 0.09,
         rotationStart: 0,
         animationType: 'sin'
@@ -44,7 +44,7 @@
       {
         text: projectTitle || 'Project',
         rotationSpeed: 0.3,
-        spacingAmplitudePercent: 2,
+        spacingAmplitudePercent: 1.1,
         spacingSpeed: 0.09,
         rotationStart: 180,
         animationType: 'sin'
@@ -52,7 +52,7 @@
       {
         text: projectClient || 'Client',
         rotationSpeed: 0.6,
-        spacingAmplitudePercent: 2,
+        spacingAmplitudePercent: 1.1,
         spacingSpeed: 0.05,
         rotationStart: 80,
         animationType: 'sin'
@@ -60,7 +60,7 @@
       {
         text: projectDate || '',
         rotationSpeed: 0.4,
-        spacingAmplitudePercent: 2,
+        spacingAmplitudePercent: 1.1,
         spacingSpeed: 0.11,
         rotationStart: 250,
         animationType: 'sin'
