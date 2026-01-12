@@ -1,26 +1,9 @@
 <script lang="ts">
 	import { verifyPassword } from '$lib/utils/auth';
-	import { onMount } from 'svelte';
 
 	let password = $state('');
 	let error = $state('');
 	let isLoading = $state(false);
-
-	// Check if already authenticated on mount
-	onMount(async () => {
-		try {
-			const response = await fetch('/api/auth/check', {
-				method: 'GET',
-				credentials: 'include'
-			});
-			if (response.ok) {
-				// Already authenticated, redirect
-				window.location.href = '/admin';
-			}
-		} catch (err) {
-			// Ignore errors, user needs to log in
-		}
-	});
 
 	async function handleLogin(e: Event) {
 		e.preventDefault();
@@ -45,11 +28,11 @@
 			if (response.ok) {
 				const data = await response.json().catch(() => ({}));
 				console.log('Login successful, redirecting...');
-				// Small delay to ensure cookie is set before redirect
-				// Then use full page reload to ensure cookie is sent with the request
+				// Wait a moment for cookie to be set, then redirect
+				// The /admin route will verify the cookie server-side
 				setTimeout(() => {
 					window.location.href = '/admin';
-				}, 100);
+				}, 200);
 			} else {
 				const data = await response.json().catch(() => ({}));
 				error = data.error || 'Login failed. Please try again.';
