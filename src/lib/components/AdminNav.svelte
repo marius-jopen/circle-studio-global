@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { invalidateAll } from '$app/navigation';
+	import { clearAuth } from '$lib/utils/auth';
 
 	const navItems = [
 		{ label: 'Circle Generator', path: '/admin/circle-batch-generator' },
@@ -9,14 +8,9 @@
 		{ label: 'Settings', path: '/admin/settings' }
 	];
 
-	async function handleLogout() {
-		try {
-			await fetch('/api/auth/logout', { method: 'POST' });
-			await invalidateAll();
-			goto('/login');
-		} catch (error) {
-			console.error('Logout failed:', error);
-		}
+	function handleLogout() {
+		clearAuth();
+		window.location.href = '/login';
 	}
 
 	$: currentPath = $page.url.pathname;

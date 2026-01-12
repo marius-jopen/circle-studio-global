@@ -1,10 +1,6 @@
-import { redirect } from '@sveltejs/kit';
-import { isAuthenticated } from '$lib/utils/auth';
+// No server-side protection needed - client-side only auth
 import type { LayoutServerLoad } from './$types';
 
-export const load: LayoutServerLoad = async ({ cookies, url }) => {
-	if (!isAuthenticated(cookies)) {
-		throw redirect(302, `/login?redirect=${encodeURIComponent(url.pathname)}`);
-	}
+export const load: LayoutServerLoad = async () => {
 	return {};
 };

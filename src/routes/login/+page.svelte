@@ -1,48 +1,26 @@
 <script lang="ts">
-	import { verifyPassword } from '$lib/utils/auth';
+	import { verifyPassword, setAuth } from '$lib/utils/auth';
+	import { onMount } from 'svelte';
 
 	let password = $state('');
 	let error = $state('');
-	let isLoading = $state(false);
 
-	async function handleLogin(e: Event) {
+	// Redirect if already authenticated
+	onMount(() => {
+		if (typeof window !== 'undefined' && sessionStorage.getItem('admin_auth') === 'true') {
+			window.location.href = '/admin';
+		}
+	});
+
+	function handleLogin(e: Event) {
 		e.preventDefault();
-		console.log('Login form submitted, password length:', password.length);
 		error = '';
-		isLoading = true;
 
-		// Always verify on server side, don't check client-side first
-		try {
-			// Set cookie via API
-			const response = await fetch('/api/auth/login', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ password }),
-				credentials: 'include' // Important: include cookies
-			});
-
-			console.log('Login response status:', response.status);
-
-			if (response.ok) {
-				const data = await response.json().catch(() => ({}));
-				console.log('Login successful, redirecting...');
-				// Wait a moment for cookie to be set, then redirect
-				// The /admin route will verify the cookie server-side
-				setTimeout(() => {
-					window.location.href = '/admin';
-				}, 200);
-			} else {
-				const data = await response.json().catch(() => ({}));
-				error = data.error || 'Login failed. Please try again.';
-				console.error('Login failed:', response.status, data);
-			}
-		} catch (err) {
-			console.error('Login error:', err);
-			error = 'An error occurred. Please check your connection and try again.';
-		} finally {
-			isLoading = false;
+		if (verifyPassword(password)) {
+			setAuth();
+			window.location.href = '/admin';
+		} else {
+			error = 'Incorrect password';
 		}
 	}
 </script>
@@ -69,7 +47,6 @@
 					class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
 					placeholder="Password"
 					autocomplete="current-password"
-					disabled={isLoading}
 				/>
 			</div>
 
@@ -80,11 +57,11 @@
 			<div>
 				<button
 					type="submit"
-					disabled={isLoading}
-					class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed"
+					class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
 				>
-					{isLoading ? 'Logging in...' : 'Login'}
+					Login
 				</button>
+			</div>
 			</div>
 		</form>
 	</div>
