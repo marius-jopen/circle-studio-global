@@ -165,20 +165,20 @@
 					</div>
 				{/if}
 
-				<div class="grid grid-cols-2 gap-0 md:gap-2 pb-4">
+				<div class="grid grid-cols-2 [row-gap:0] gap-x-0 md:gap-2 pb-4">
 					{#each items as item, index}
-						<div class="">
+						<div class="leading-none">
 							{#if urls[index] && urls[index] !== '#'}
 								<a 
 									href={urls[index]} 
-									class="text-sm md:text-2xl font-medium text-primary block"
+									class="text-sm md:text-2xl font-medium text-primary block leading-none"
 									target="_blank"
 									rel="noopener noreferrer"
 								>
 									{item}
 								</a>
 							{:else}
-								<span class="text-sm md:text-2xl font-medium text-primary block">
+								<span class="text-sm md:text-2xl font-medium text-primary block leading-none">
 									{item}
 								</span>
 							{/if}
