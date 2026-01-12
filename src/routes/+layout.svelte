@@ -11,6 +11,9 @@
 	import MobileNav from '$lib/components/MobileNav.svelte';
 	let { children, data } = $props();
 	
+	// Check if we're on admin or login routes
+	let isAdminRoute = $derived(page.url.pathname.startsWith('/admin') || page.url.pathname === '/login');
+	
 	// Global navigation click detection for video autoplay permissions
 	let headerFaded = $state(false);
 	let mainMediaVisible = $state(true);
@@ -40,6 +43,11 @@
 	}
 
 	onMount(() => {
+		// Skip all main website logic if we're on admin/login routes
+		if (isAdminRoute) {
+			return;
+		}
+		
 		const handleNavigationClick = (e: Event) => {
 			const target = e.target as HTMLElement;
 			// Ignore clicks coming from video components/controls
@@ -180,18 +188,22 @@
 	{/if}
 </svelte:head>
 
-<div class="min-h-screen flex flex-col">
-	<Intro />
-	<MobileNav />
-	<Header settings={data.settings} faded={headerFaded} videoIsDark={videoIsDark} mainMediaVisible={mainMediaVisible} />
+{#if isAdminRoute}
+	{@render children()}
+{:else}
+	<div class="min-h-screen flex flex-col">
+		<Intro />
+		<MobileNav />
+		<Header settings={data.settings} faded={headerFaded} videoIsDark={videoIsDark} mainMediaVisible={mainMediaVisible} />
 
-	<main class="flex-1">
-		{@render children()}
-	</main>
+		<main class="flex-1">
+			{@render children()}
+		</main>
 
-	{#if !(page?.data?.page?.data?.no_footer ?? false)}
-		<Footer settings={data.settings} />
-	{/if}
-</div>
+		{#if !(page?.data?.page?.data?.no_footer ?? false)}
+			<Footer settings={data.settings} />
+		{/if}
+	</div>
 
-<PrismicPreview {repositoryName} /> 
+	<PrismicPreview {repositoryName} />
+{/if} 
