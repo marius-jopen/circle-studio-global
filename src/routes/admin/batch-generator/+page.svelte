@@ -36,6 +36,7 @@ Invite someone dangerous to tea.`);
 	let paused = $state(false);
 	let dynamicTextSize = $state(true); // Auto-adjust font size to fill circumference
 	let inputFieldVisible = $state(true); // Show input field and use portrait format
+	let recordingWidth = $state(600); // Recording width in pixels (default 600)
 	let inputFieldRef = $state<HTMLDivElement | null>(null);
 	let containerRef = $state<HTMLDivElement | null>(null); // Reference to the container to record
 	let textCircleRef = $state<any>(null); // Reference to TextCircle component
@@ -308,23 +309,20 @@ Invite someone dangerous to tea.`);
 			const RecordRTCModule = await import('recordrtc');
 			const RecordRTC = RecordRTCModule.default;
 
-			// Determine recording dimensions based on inputFieldVisible
-			let recordingWidth: number;
+			// Determine recording dimensions based on inputFieldVisible and recordingWidth setting
 			let recordingHeight: number;
 			let circleAreaHeight: number;
 			let inputFieldAreaHeight: number;
 			
 			if (inputFieldVisible) {
-				// 4:5 portrait format (600x750)
-				recordingWidth = 600;
-				recordingHeight = 750; // 4:5 aspect ratio (600 * 1.25 = 750)
-				circleAreaHeight = 600; // Circle takes up the width
-				inputFieldAreaHeight = 150; // Input field area at bottom (750 - 600 = 150)
+				// 4:5 portrait format
+				recordingHeight = recordingWidth * 1.25; // 4:5 aspect ratio
+				circleAreaHeight = recordingWidth; // Circle takes up the width
+				inputFieldAreaHeight = recordingHeight - recordingWidth; // Input field area at bottom
 			} else {
 				// Square format
-				recordingWidth = 600;
-				recordingHeight = 600;
-				circleAreaHeight = 600;
+				recordingHeight = recordingWidth;
+				circleAreaHeight = recordingWidth;
 				inputFieldAreaHeight = 0;
 			}
 
@@ -408,27 +406,36 @@ Invite someone dangerous to tea.`);
 					// Prefer the live TextCircle canvas to avoid re-render flicker; fallback to captureCanvas
 					const circleCanvas = (textCircleRef.getCanvas && textCircleRef.getCanvas()) || textCircleRef.captureCanvas(false);
 					if (circleCanvas && circleCanvas.width > 0 && circleCanvas.height > 0) {
-						// The container size is always 600px for recording
-						const actualContainerSize = 600;
+						// The container size is based on recordingWidth setting
+						const actualContainerSize = recordingWidth;
 						const scaleFactor = recordingWidth / actualContainerSize; // Should be 1.0
 						
-						// Draw the circle canvas centered in the circle area
-						const circleX = (recordingWidth - actualContainerSize * scaleFactor) / 2;
-						const circleY = (circleAreaHeight - actualContainerSize * scaleFactor) / 2;
+						// Scale down the circle by 7% in video to add more padding from border
+						const circleScale = 0.93;
+						const scaledSize = actualContainerSize * circleScale;
+						
+						// Draw the circle canvas centered in the circle area (scaled down)
+						// Move down by 20px when input field is visible for better vertical centering (scaled proportionally)
+						const circleX = (recordingWidth - scaledSize * scaleFactor) / 2;
+						const circleYOffset = inputFieldVisible ? 20 * (recordingWidth / 600) : 0; // Scale from base 600px
+						const circleY = (circleAreaHeight - scaledSize * scaleFactor) / 2 + circleYOffset;
 						
 						recordingContext.save();
-						recordingContext.translate(circleX + (actualContainerSize * scaleFactor) / 2, circleY + (actualContainerSize * scaleFactor) / 2);
-						recordingContext.scale(scaleFactor, scaleFactor);
+						recordingContext.translate(circleX + (scaledSize * scaleFactor) / 2, circleY + (scaledSize * scaleFactor) / 2);
+						recordingContext.scale(scaleFactor * circleScale, scaleFactor * circleScale);
 						recordingContext.drawImage(circleCanvas, -actualContainerSize / 2, -actualContainerSize / 2, actualContainerSize, actualContainerSize);
 						recordingContext.restore();
 					}
 
 					// Draw input field if visible
 					if (inputFieldVisible && displayText !== undefined) {
-						const inputFieldY = circleAreaHeight + (inputFieldAreaHeight / 2);
+						// Move input field down by 15px in video (scaled proportionally)
+						const inputFieldYOffset = 15 * (recordingWidth / 600); // Scale from base 600px
+						const inputFieldY = circleAreaHeight + (inputFieldAreaHeight / 2) + inputFieldYOffset;
 						const inputFieldWidth = recordingWidth * 0.67; // 8/12 of width
 						const inputFieldX = (recordingWidth - inputFieldWidth) / 2;
-						const inputFieldHeight = 56; // h-14 = 56px (no scaling needed since recording is 600px)
+						// Scale input field height proportionally to recording width
+						const inputFieldHeight = 56 * (recordingWidth / 600); // Scale from base 600px
 						const borderRadius = inputFieldHeight / 2;
 						
 						// Draw input field background (gray-100) with rounded corners
@@ -448,8 +455,9 @@ Invite someone dangerous to tea.`);
 						recordingContext.fill();
 
 						// Draw text in input field (with proper scrolling behavior like browser)
-						const padding = 24; // px-6 = 24px
-						const fontSize = 24; // text-2xl = 24px
+						// Scale padding and font size proportionally to recording width
+						const padding = 24 * (recordingWidth / 600); // Scale from base 600px
+						const fontSize = 24 * (recordingWidth / 600); // Scale from base 600px
 						const maxTextWidth = inputFieldWidth - (padding * 2);
 						
 						recordingContext.fillStyle = '#9ca3af'; // gray-400
@@ -483,22 +491,25 @@ Invite someone dangerous to tea.`);
 								scrollX = fullTextWidth - maxTextWidth;
 							}
 							
-							// Draw text at scrolled position
+							// Draw text at scrolled position (moved down by 2px in video, scaled proportionally)
 							const textX = inputFieldX + padding - scrollX;
-							const textY = inputFieldY;
+							const textYOffset = 2 * (recordingWidth / 600); // Scale from base 600px
+							const textY = inputFieldY + textYOffset;
 							recordingContext.fillText(displayText, textX, textY);
 							
-							// Draw blinking cursor at the end of text
+							// Draw blinking cursor at the end of text (moved down by 2px to match text)
 							const cursorX = textX + fullTextWidth;
 							const cursorOpacity = Math.floor(Date.now() / 500) % 2 === 0 ? 1 : 0;
 							recordingContext.fillStyle = `rgba(75, 85, 99, ${cursorOpacity})`; // gray-600 with opacity
-							recordingContext.fillRect(cursorX, inputFieldY - fontSize / 2, 1, fontSize);
+							recordingContext.fillRect(cursorX, textY - fontSize / 2, 1 * (recordingWidth / 600), fontSize);
 						} else {
-							// Draw blinking cursor even when text is empty
+							// Draw blinking cursor even when text is empty (moved down by 2px, scaled proportionally)
 							const cursorX = inputFieldX + padding;
+							const textYOffset = 2 * (recordingWidth / 600); // Scale from base 600px
+							const cursorY = inputFieldY + textYOffset;
 							const cursorOpacity = Math.floor(Date.now() / 500) % 2 === 0 ? 1 : 0;
 							recordingContext.fillStyle = `rgba(75, 85, 99, ${cursorOpacity})`; // gray-600 with opacity
-							recordingContext.fillRect(cursorX, inputFieldY - fontSize / 2, 1, fontSize);
+							recordingContext.fillRect(cursorX, cursorY - fontSize / 2, 1, fontSize);
 						}
 						
 						recordingContext.restore(); // Restore clipping
@@ -854,6 +865,24 @@ Invite someone dangerous to tea.`);
 							bind:value={rotationSpeed}
 							class="w-full"
 						/>
+					</div>
+					
+					<div>
+						<label for="recording-width" class="block text-sm font-medium text-gray-700 mb-2">
+							Recording Width: {recordingWidth}px
+						</label>
+						<input
+							id="recording-width"
+							type="range"
+							min="400"
+							max="2000"
+							step="50"
+							bind:value={recordingWidth}
+							class="w-full"
+						/>
+						<p class="text-xs text-gray-500 mt-1">
+							Recording dimensions: {recordingWidth}x{inputFieldVisible ? Math.round(recordingWidth * 1.25) : recordingWidth}px
+						</p>
 					</div>
 				</div>
 			</div>
