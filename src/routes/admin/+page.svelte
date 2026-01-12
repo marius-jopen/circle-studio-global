@@ -20,6 +20,14 @@
 		</a>
 		
 		<a
+			href="/admin/batch-generator"
+			class="block p-6 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
+		>
+			<h2 class="text-xl font-semibold text-gray-900 mb-2">Batch Generator</h2>
+			<p class="text-gray-600">Create sequential message animations</p>
+		</a>
+		
+		<a
 			href="/admin/settings"
 			class="block p-6 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
 		>

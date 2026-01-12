@@ -5,6 +5,7 @@
 
 	const navItems = [
 		{ label: 'Circle Generator', path: '/admin/circle-batch-generator' },
+		{ label: 'Batch Generator', path: '/admin/batch-generator' },
 		{ label: 'Settings', path: '/admin/settings' }
 	];
 
