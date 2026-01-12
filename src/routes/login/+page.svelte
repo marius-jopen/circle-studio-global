@@ -32,10 +32,13 @@
 				await invalidateAll();
 				goto('/admin');
 			} else {
-				error = 'Login failed';
+				const data = await response.json().catch(() => ({}));
+				error = data.error || 'Login failed. Please try again.';
+				console.error('Login failed:', response.status, data);
 			}
 		} catch (err) {
-			error = 'An error occurred';
+			console.error('Login error:', err);
+			error = 'An error occurred. Please check your connection and try again.';
 		} finally {
 			isLoading = false;
 		}

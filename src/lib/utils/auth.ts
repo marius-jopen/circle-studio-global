@@ -10,13 +10,25 @@ export function isAuthenticated(cookies?: any): boolean {
 	return false;
 }
 
-export function setAuthCookie(cookies: any): void {
-	const isProduction = process.env.NODE_ENV === 'production';
+export function setAuthCookie(cookies: any, url?: URL | string): void {
+	// Determine if we should use secure cookies
+	// Check if URL is HTTPS or if we're in production
+	let isSecure = false;
+	
+	if (url) {
+		const urlObj = typeof url === 'string' ? new URL(url) : url;
+		isSecure = urlObj.protocol === 'https:';
+	} else {
+		// Fallback: check if we're in production
+		// In Vercel, this will be true
+		isSecure = import.meta.env.PROD;
+	}
+	
 	cookies.set(AUTH_COOKIE_NAME, 'true', {
 		path: '/',
 		httpOnly: true,
-		secure: isProduction,
-		sameSite: 'strict',
+		secure: isSecure, // true in production (HTTPS), false in dev (HTTP)
+		sameSite: 'lax', // Changed from 'strict' to 'lax' for better compatibility
 		maxAge: 60 * 60 * 24 * 30 // 30 days
 	});
 }
