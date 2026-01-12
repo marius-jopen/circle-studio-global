@@ -35,13 +35,19 @@ export function setAuthCookie(cookies: any, url?: URL | string, request?: Reques
 		isSecure = import.meta.env.PROD;
 	}
 	
-	cookies.set(AUTH_COOKIE_NAME, 'true', {
+	// Cookie options for Vercel/production
+	const cookieOptions: any = {
 		path: '/',
 		httpOnly: true,
 		secure: isSecure, // true in production (HTTPS), false in dev (HTTP)
-		sameSite: 'lax', // Changed from 'strict' to 'lax' for better compatibility
+		sameSite: 'lax' as const, // Changed from 'strict' to 'lax' for better compatibility
 		maxAge: 60 * 60 * 24 * 30 // 30 days
-	});
+	};
+	
+	// In production (Vercel), don't set domain to allow subdomain cookies
+	// Setting domain can cause issues with cookies not being set
+	
+	cookies.set(AUTH_COOKIE_NAME, 'true', cookieOptions);
 }
 
 export function clearAuthCookie(cookies: any): void {

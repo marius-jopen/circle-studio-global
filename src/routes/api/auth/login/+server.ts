@@ -11,9 +11,14 @@ export const POST: RequestHandler = async ({ request, cookies, url }) => {
 		}
 
 		setAuthCookie(cookies, url, request);
+		
+		// Verify cookie was set
+		const cookieValue = cookies.get('admin_auth');
+		console.log('Cookie set:', cookieValue);
 
 		return json({ success: true });
 	} catch (error) {
+		console.error('Login error:', error);
 		return json({ error: 'Invalid request' }, { status: 400 });
 	}
 };
