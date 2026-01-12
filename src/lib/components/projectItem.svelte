@@ -141,7 +141,7 @@
 			{
 				text: projectTitle,
 				rotationSpeed: 0.5,
-				spacingAmplitudePercent: 1.3,
+				spacingAmplitudePercent: 1.1,
 				spacingSpeed: 0.09,
 				rotationStart: 0,
 				animationType: 'sin'
@@ -149,7 +149,7 @@
 			{
 				text: projectClient,
 				rotationSpeed: 0.3,
-				spacingAmplitudePercent: 1.3,
+				spacingAmplitudePercent: 1.1,
 				spacingSpeed: 0.03,
 				rotationStart: 90,
 				animationType: 'sin'
@@ -157,7 +157,7 @@
 			{
 				text: projectDate,
 				rotationSpeed: 0.4,
-				spacingAmplitudePercent: 1.3,
+				spacingAmplitudePercent: 1.1,
 				spacingSpeed: 0.11,
 				rotationStart: 250,
 				animationType: 'sin'
