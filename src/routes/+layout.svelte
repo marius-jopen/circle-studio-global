@@ -124,7 +124,21 @@
 		updateHeaderState();
 
 		// Re-attach on route changes and reset per-page context
-		afterNavigate(() => {
+		afterNavigate(({ to }) => {
+			// Scroll to top when navigating to project pages (from related projects or index)
+			if (to?.route?.id?.includes('/work/[uid]')) {
+				// Use multiple methods to ensure it works on all devices, especially mobile
+				window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+				document.documentElement.scrollTop = 0;
+				document.body.scrollTop = 0;
+				// Also try with a small delay to handle async rendering
+				setTimeout(() => {
+					window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+					document.documentElement.scrollTop = 0;
+					document.body.scrollTop = 0;
+				}, 0);
+			}
+			
 			// Clear only 'main' context states on navigation
 			controlsVisibleContexts.delete('main');
 			soundContexts.delete('main');

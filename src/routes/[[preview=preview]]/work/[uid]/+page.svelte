@@ -20,8 +20,29 @@
 
 	// Dispatch video_is_dark state to layout when component mounts
 	onMount(() => {
+		// Scroll to top when project page loads (ensures it works on mobile)
+		window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+		document.documentElement.scrollTop = 0;
+		document.body.scrollTop = 0;
+		// Also try with delays to handle async rendering and welcome screen
+		setTimeout(() => {
+			window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+			document.documentElement.scrollTop = 0;
+			document.body.scrollTop = 0;
+		}, 0);
+		setTimeout(() => {
+			window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+			document.documentElement.scrollTop = 0;
+			document.body.scrollTop = 0;
+		}, 100);
+		
 		// Listen for welcome screen dismissal to ensure proper timing
 		const handleWelcomeDismissed = () => {
+			// Scroll to top again after welcome screen dismisses
+			window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+			document.documentElement.scrollTop = 0;
+			document.body.scrollTop = 0;
+			
 			if (projectData.video_is_dark !== undefined) {
 				window.dispatchEvent(new CustomEvent('project-video-dark-mode', {
 					detail: { isDark: projectData.video_is_dark }
