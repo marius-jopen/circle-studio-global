@@ -1,7 +1,5 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { verifyPassword } from '$lib/utils/auth';
-	import { invalidateAll } from '$app/navigation';
 
 	let password = $state('');
 	let error = $state('');
@@ -30,8 +28,9 @@
 			if (response.ok) {
 				const data = await response.json().catch(() => ({}));
 				console.log('Login successful, redirecting...');
-				await invalidateAll();
-				goto('/admin');
+				// Use full page reload to ensure cookie is sent with the request
+				// This ensures the server-side auth check sees the cookie
+				window.location.href = '/admin';
 			} else {
 				const data = await response.json().catch(() => ({}));
 				error = data.error || 'Login failed. Please try again.';
