@@ -8,9 +8,9 @@
 	let name = $state('Peter');
 	let content = $state(`Learn to watch snails and plant impossible gardens. 
 Invite someone dangerous to tea. 
-Make little signs that say yes! 
-And post them all over your house.`);
+Make little signs that say yes! And post them all over your house.`);
 	let goodbye = $state('Love, Santi');
+	let branding = $state('Artcamp, 2026');
 
 	// Animation state
 	let currentPhase = $state<'greeting' | 'content' | 'goodbye'>('greeting');
@@ -23,7 +23,8 @@ And post them all over your house.`);
 	let deleteSpeed = $state(50); // milliseconds per character (deleting - faster)
 	let chapterPause = $state(1200); // milliseconds to pause between chapters
 	let speedVariation = $state(25); // percentage variation in typing speed (0-100)
-	let visibleDuration = $state(700); // milliseconds to keep chapter visible before deleting
+	let visibleDuration = $state(600); // milliseconds to keep chapter visible before deleting
+	let goodbyePause = $state(100); // milliseconds to pause between goodbye and branding
 
 	// TextCircle props
 	let textColor = $state('#000000');
@@ -33,6 +34,24 @@ And post them all over your house.`);
 	let rotationSpeed = $state(0.2);
 	let paused = $state(false);
 	let dynamicTextSize = $state(true); // Auto-adjust font size to fill circumference
+	let inputFieldVisible = $state(true); // Show input field and use portrait format
+	let inputFieldRef = $state<HTMLDivElement | null>(null);
+
+	// Auto-scroll input field to the right when text changes
+	$effect(() => {
+		if (inputFieldRef && displayText) {
+			// Use setTimeout to ensure DOM has updated before scrolling
+			setTimeout(() => {
+				if (inputFieldRef) {
+					inputFieldRef.scrollLeft = inputFieldRef.scrollWidth;
+				}
+			}, 0);
+		}
+	});
+
+	// Calculate container dimensions based on input field visibility
+	let containerWidth = $derived(inputFieldVisible ? 600 : containerSize);
+	let containerHeight = $derived(inputFieldVisible ? 750 : containerSize); // 4:5 ratio (600 * 1.25 = 750)
 
 	// Get full text for current phase
 	function getFullTextForPhase(phase: 'greeting' | 'content' | 'goodbye'): string {
@@ -41,7 +60,8 @@ And post them all over your house.`);
 		} else if (phase === 'content') {
 			return content || '';
 		} else if (phase === 'goodbye') {
-			return goodbye;
+			// Goodbye phase combines goodbye and branding
+			return `${goodbye} ${branding}`;
 		}
 		return '';
 	}
@@ -65,10 +85,15 @@ And post them all over your house.`);
 	}
 
 	// Calculate visible duration based on word count
-	function getVisibleDurationForText(text: string): number {
+	function getVisibleDurationForText(text: string, phase?: 'greeting' | 'content' | 'goodbye'): number {
 		const wordCount = getWordCount(text);
 		// Base duration per word, so longer texts stay visible longer
-		return visibleDuration * wordCount;
+		let duration = visibleDuration * wordCount;
+		// Goodbye chapter lasts 3 times longer
+		if (phase === 'goodbye') {
+			duration = duration * 3;
+		}
+		return duration;
 	}
 
 	// Backspace effect - deletes text character by character (backwards)
@@ -98,9 +123,9 @@ And post them all over your house.`);
 	}
 
 	// Typewriter effect - types out text character by character
-	function typeText(fullText: string, onComplete: () => void) {
+	function typeText(fullText: string, onComplete: () => void, phase?: 'greeting' | 'content' | 'goodbye', prefixText: string = '') {
 		let currentIndex = 0;
-		displayText = '';
+		displayText = prefixText; // Start with prefix text if provided (for branding after goodbye)
 
 		function typeNextCharacter() {
 			if (!isPlaying) {
@@ -108,13 +133,14 @@ And post them all over your house.`);
 			}
 
 			if (currentIndex < fullText.length) {
-				displayText = fullText.slice(0, currentIndex + 1);
+				const currentText = fullText.slice(0, currentIndex + 1);
+				displayText = prefixText + currentText; // Combine prefix with current text
 				currentIndex++;
 				const variedSpeed = getVariedSpeed(typewriterSpeed, speedVariation);
 				typewriterTimeout = setTimeout(typeNextCharacter, variedSpeed);
 			} else {
 				// Typing complete, wait for visible duration (based on word count) then delete and move to next phase
-				const durationForThisText = getVisibleDurationForText(fullText);
+				const durationForThisText = getVisibleDurationForText(fullText, phase);
 				setTimeout(() => {
 					if (isPlaying) {
 						onComplete();
@@ -140,7 +166,7 @@ And post them all over your house.`);
 				// Process each content line as a separate chapter
 				processContentLines(0);
 			});
-		});
+		}, 'greeting');
 	}
 
 	// Process content lines one by one
@@ -153,12 +179,26 @@ And post them all over your house.`);
 			setTimeout(() => {
 				if (isPlaying) {
 					currentPhase = 'goodbye';
-					typeText(getFullTextForPhase('goodbye'), () => {
-						// All done
-						isPlaying = false;
-						currentPhase = 'greeting';
-						displayText = '';
-					});
+					// Type goodbye first
+					typeText(goodbye, () => {
+						// Pause between goodbye and branding
+						const variedPause = getVariedSpeed(goodbyePause, speedVariation);
+						setTimeout(() => {
+							if (isPlaying) {
+					// Then type branding (append to existing goodbye text with a space)
+					const currentGoodbyeText = displayText + ' ';
+					typeText(branding, () => {
+						// Goodbye complete (both parts), delete it then finish
+						deleteText(displayText, () => {
+							// All done
+							isPlaying = false;
+							currentPhase = 'greeting';
+							displayText = '';
+						});
+					}, 'goodbye', currentGoodbyeText);
+							}
+						}, variedPause);
+					}, 'goodbye');
 				}
 			}, variedPause);
 			return;
@@ -179,7 +219,7 @@ And post them all over your house.`);
 					// Process next line
 					processContentLines(lineIndex + 1);
 				});
-			});
+			}, 'content');
 		}, variedPause);
 	}
 
@@ -254,6 +294,13 @@ And post them all over your house.`);
 						label="Goodbye"
 						bind:value={goodbye}
 						placeholder="Love, Santi"
+					/>
+					
+					<Input
+						type="text"
+						label="Branding"
+						bind:value={branding}
+						placeholder="Artcamp, 2026"
 					/>
 				</div>
 			</div>
@@ -338,6 +385,22 @@ And post them all over your house.`);
 						/>
 						<p class="text-xs text-gray-500 mt-1">How long text stays visible before deletion</p>
 					</div>
+					
+					<div>
+						<label for="goodbye-pause" class="block text-sm font-medium text-gray-700 mb-2">
+							Goodbye Pause: {goodbyePause}ms
+						</label>
+						<input
+							id="goodbye-pause"
+							type="range"
+							min="0"
+							max="1000"
+							step="50"
+							bind:value={goodbyePause}
+							class="w-full"
+						/>
+						<p class="text-xs text-gray-500 mt-1">Pause between goodbye and branding</p>
+					</div>
 				</div>
 			</div>
 
@@ -415,6 +478,18 @@ And post them all over your house.`);
 							class="w-full"
 						/>
 					</div>
+					
+					<div class="flex items-center gap-2">
+						<input
+							id="input-field-visible"
+							type="checkbox"
+							bind:checked={inputFieldVisible}
+							class="w-4 h-4"
+						/>
+						<label for="input-field-visible" class="text-sm font-medium text-gray-700">
+							Input Field Visible
+						</label>
+					</div>
 				</div>
 			</div>
 
@@ -423,30 +498,53 @@ And post them all over your house.`);
 		<!-- Text Circle Display - Sticky on larger screens -->
 		<div class="flex-shrink-0 lg:sticky lg:top-4 lg:self-start">
 			<div 
-				class="relative rounded-3xl overflow-hidden mx-auto"
-				style="width: {containerSize}px; height: {containerSize}px; background-color: {backgroundColor};"
+				class="relative rounded-3xl overflow-hidden mx-auto flex flex-col"
+				style="width: {containerWidth}px; height: {containerHeight}px; background-color: {backgroundColor};"
 			>
-				<TextCircle
-					text={displayText}
-					fontSize={fontSize}
-					radius={containerSize / 2 - fontSize * 2.5}
-					rotationSpeed={rotationSpeed}
-					spacingAmplitudePercent={0}
-					spacingSpeed={0}
-					rotationStart={0}
-					animationType="sin"
-					containerSize={containerSize}
-					paused={paused}
-					textColor={textColor}
-					autoTextSize={dynamicTextSize}
-					fadeInTime={0}
-					fadeOutTime={0}
-					pauseTime={0}
-					visibleTime={999}
-					manualMode={true}
-					triggerFadeIn={false}
-					triggerFadeOut={false}
-				/>
+				<!-- Circle area -->
+				<div class="flex-1 flex items-center justify-center relative">
+					<TextCircle
+						text={displayText}
+						fontSize={fontSize}
+						radius={((inputFieldVisible ? containerWidth : containerSize) / 2 - fontSize * 2.5) * 0.93}
+						rotationSpeed={rotationSpeed}
+						spacingAmplitudePercent={0}
+						spacingSpeed={0}
+						rotationStart={0}
+						animationType="sin"
+						containerSize={inputFieldVisible ? containerWidth : containerSize}
+						paused={paused}
+						textColor={textColor}
+						autoTextSize={dynamicTextSize}
+						fadeInTime={0}
+						fadeOutTime={0}
+						pauseTime={0}
+						visibleTime={999}
+						manualMode={true}
+						triggerFadeIn={false}
+						triggerFadeOut={false}
+					/>
+				</div>
+				
+				<!-- Input field (visual only) -->
+				{#if inputFieldVisible}
+					<div class="px-4 pb-6">
+						<div 
+							bind:this={inputFieldRef}
+							class="w-8/12 mx-auto rounded-full h-14 bg-gray-100 px-6 py-3 text-gray-400 text-2xl overflow-x-auto overflow-y-hidden whitespace-nowrap flex items-center"
+							style="scrollbar-width: none; -ms-overflow-style: none;"
+						>
+							{#if displayText}
+								<span class="inline-block">{displayText}</span>
+							{/if}
+						</div>
+					</div>
+					<style>
+						div[class*="rounded-full"]::-webkit-scrollbar {
+							display: none;
+						}
+					</style>
+				{/if}
 			</div>
 
 		</div>

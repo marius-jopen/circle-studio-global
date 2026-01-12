@@ -78,7 +78,7 @@
   let fadeOutTime = 3; // seconds  
   let pauseTime = 2; // seconds
   let visibleTime = 4; // seconds
-  let manualMode = false;
+  let manualMode = true;
   let triggerFadeIn = false;
   let triggerFadeOut = false;
   
@@ -86,8 +86,8 @@
     {
       text: 'ART CAMP EST.2016',
       rotationSpeed: 0.2,
-      spacingAmplitudePercent: 2,
-      spacingSpeed: 0.28,
+      spacingAmplitudePercent: 0.8,
+      spacingSpeed: 0.14,
       rotationStart: 0,
       animationType: 'sin',
     }
@@ -229,8 +229,8 @@
       {
         text: 'art camp est.2016',
         rotationSpeed: -0.2,
-        spacingAmplitudePercent: 2,
-        spacingSpeed: 0.28,
+        spacingAmplitudePercent: 0.8,
+        spacingSpeed: 0.14,
         rotationStart: 0,
         animationType: 'sin',
       }
