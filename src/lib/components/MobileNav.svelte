@@ -1,6 +1,7 @@
 <script lang="ts">
 import { page } from '$app/stores';
 import { tick } from 'svelte';
+import { goto } from '$app/navigation';
 import { homeSearchQuery, mobileSearchOpen } from '$lib/stores';
 
 $: pathname = $page.url.pathname;
@@ -10,6 +11,17 @@ $: isProject = pathname.startsWith('/work/');
 
 let searchOpen = false;
 let searchInput: HTMLInputElement;
+
+// Sync local searchOpen state with the store
+$: if (isHome && $mobileSearchOpen && !searchOpen) {
+    searchOpen = true;
+    tick().then(() => {
+        searchInput?.focus();
+    });
+}
+$: if (!$mobileSearchOpen && searchOpen) {
+    searchOpen = false;
+}
 function openSearch() {
     searchOpen = true;
     mobileSearchOpen.set(true);
@@ -21,6 +33,16 @@ function closeSearch() {
     searchOpen = false;
     mobileSearchOpen.set(false);
     homeSearchQuery.set('');
+}
+function openSearchAndNavigate() {
+    // Navigate to home and open search
+    mobileSearchOpen.set(true);
+    goto('/').then(() => {
+        tick().then(() => {
+            searchOpen = true;
+            searchInput?.focus();
+        });
+    });
 }
 </script>
 
@@ -40,6 +62,12 @@ function closeSearch() {
                         <button type="button" class="text-xl leading-none mt-[-2px] p-2" aria-label="Close search" on:click={closeSearch}>×</button>
                     </div>
                 {/if}
+            {:else if isAbout}
+                <button type="button" class="text-center font-medium py-2 mt-[-1px] pl-5 pr-2 flex items-center justify-center" on:click={openSearchAndNavigate} aria-label="Search">
+                    <img src="/search-logo.svg" alt="Search" class="w-5 h-5" />
+                </button>
+                <a href="/" class="text-center font-medium whitespace-nowrap py-2 pl-2 pr-2">Work</a>
+                <a href="/about" class="text-center font-medium py-2 pl-2 pr-5">About</a>
             {:else}
                 <a href="/" class="text-center font-medium whitespace-nowrap py-2 pl-5 pr-2">Work</a>
                 <a href="/about" class="text-center font-medium py-2 pl-2 pr-5">About</a>
