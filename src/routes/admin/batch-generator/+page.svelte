@@ -7,7 +7,7 @@
 	// Form fields
 	let hello = $state('Dear');
 	let name = $state('Peter');
-	let content = $state(`Learn to watch snails and plant impossible gardens. 
+	let content = $state(`Learn to observe snails and plant impossible gardens. 
 Invite someone dangerous to tea.`);
 	let goodbye = $state('Love, Santi');
 	let branding = $state('Artcamp, 2026');
@@ -24,7 +24,7 @@ Invite someone dangerous to tea.`);
 	let chapterPause = $state(1200); // milliseconds to pause between chapters
 	let speedVariation = $state(25); // percentage variation in typing speed (0-100)
 	let visibleDuration = $state(600); // milliseconds to keep chapter visible before deleting
-	let goodbyePause = $state(500); // milliseconds to pause between goodbye and branding
+	let goodbyePause = $state(800); // milliseconds to pause between goodbye and branding
 	let delayBeforeAfter = $state(300); // milliseconds to pause before animation starts and after it finishes
 
 	// TextCircle props
@@ -36,7 +36,7 @@ Invite someone dangerous to tea.`);
 	let paused = $state(false);
 	let dynamicTextSize = $state(true); // Auto-adjust font size to fill circumference
 	let inputFieldVisible = $state(true); // Show input field and use portrait format
-	let recordingWidth = $state(600); // Recording width in pixels (default 600)
+	let recordingWidth = $state(1080); // Recording width in pixels (default 600)
 	let inputFieldRef = $state<HTMLDivElement | null>(null);
 	let containerRef = $state<HTMLDivElement | null>(null); // Reference to the container to record
 	let textCircleRef = $state<any>(null); // Reference to TextCircle component
@@ -295,14 +295,22 @@ Invite someone dangerous to tea.`);
 	async function startRecording() {
 		if (isRecording || !textCircleRef || !browser) return;
 
+		// Completely reset animation state FIRST - before any recording setup
+		stopAnimation();
+		displayText = ''; // Clear any leftover text
+		currentPhase = 'greeting'; // Reset to initial phase
+		isPlaying = false;
+		
+		// Wait for reset to complete and ensure state is cleared
+		await new Promise(resolve => setTimeout(resolve, 200));
+		
+		// Double-check everything is reset
+		displayText = '';
+		currentPhase = 'greeting';
+		isPlaying = false;
+		
 		// Ensure animation is not paused
 		paused = false;
-
-		// Restart the animation when starting to record
-		stopAnimation();
-		setTimeout(() => {
-			startAnimation();
-		}, 100);
 
 		try {
 			// Dynamically import RecordRTC
@@ -336,6 +344,9 @@ Invite someone dangerous to tea.`);
 				console.error('Failed to get canvas context for recording');
 				return;
 			}
+
+			// Clear the canvas completely to remove any previous recording artifacts
+			recordingContext.clearRect(0, 0, recordingCanvas.width, recordingCanvas.height);
 
 			// Set high quality rendering
 			recordingContext.imageSmoothingEnabled = true;
@@ -372,7 +383,35 @@ Invite someone dangerous to tea.`);
 				bufferSize: 16384
 			});
 
-			// Start recording
+			// Draw blank frame first to ensure clean start
+			recordingContext.clearRect(0, 0, recordingCanvas.width, recordingCanvas.height);
+			if (backgroundColor !== 'transparent') {
+				recordingContext.fillStyle = backgroundColor;
+				recordingContext.fillRect(0, 0, recordingWidth, recordingHeight);
+			}
+			// Draw empty input field if visible
+			if (inputFieldVisible) {
+				const inputFieldY = circleAreaHeight + (inputFieldAreaHeight / 2) + (15 * (recordingWidth / 600));
+				const inputFieldWidth = recordingWidth * 0.67;
+				const inputFieldX = (recordingWidth - inputFieldWidth) / 2;
+				const inputFieldHeight = 56 * (recordingWidth / 600);
+				const borderRadius = inputFieldHeight / 2;
+				recordingContext.fillStyle = '#f3f4f6';
+				recordingContext.beginPath();
+				recordingContext.moveTo(inputFieldX + borderRadius, inputFieldY - inputFieldHeight / 2);
+				recordingContext.lineTo(inputFieldX + inputFieldWidth - borderRadius, inputFieldY - inputFieldHeight / 2);
+				recordingContext.arc(inputFieldX + inputFieldWidth - borderRadius, inputFieldY - inputFieldHeight / 2 + borderRadius, borderRadius, -Math.PI / 2, 0);
+				recordingContext.lineTo(inputFieldX + inputFieldWidth, inputFieldY + inputFieldHeight / 2 - borderRadius);
+				recordingContext.arc(inputFieldX + inputFieldWidth - borderRadius, inputFieldY + inputFieldHeight / 2 - borderRadius, borderRadius, 0, Math.PI / 2);
+				recordingContext.lineTo(inputFieldX + borderRadius, inputFieldY + inputFieldHeight / 2);
+				recordingContext.arc(inputFieldX + borderRadius, inputFieldY + inputFieldHeight / 2 - borderRadius, borderRadius, Math.PI / 2, Math.PI);
+				recordingContext.lineTo(inputFieldX, inputFieldY - inputFieldHeight / 2 + borderRadius);
+				recordingContext.arc(inputFieldX + borderRadius, inputFieldY - inputFieldHeight / 2 + borderRadius, borderRadius, Math.PI, -Math.PI / 2);
+				recordingContext.closePath();
+				recordingContext.fill();
+			}
+
+			// Start recording AFTER blank frame is drawn
 			recorder.startRecording();
 			isRecording = true;
 			elapsedTime = 0;
@@ -381,6 +420,11 @@ Invite someone dangerous to tea.`);
 			timerInterval = setInterval(() => {
 				elapsedTime++;
 			}, 1000);
+
+			// Wait a moment before starting animation to ensure first frames are blank
+			setTimeout(() => {
+				startAnimation();
+			}, 200);
 
 			// Capture frames at the correct FPS using setTimeout for consistent timing
 			const frameInterval = 1000 / FPS; // milliseconds per frame
@@ -394,37 +438,40 @@ Invite someone dangerous to tea.`);
 					// Ensure animation is not paused
 					paused = false;
 
-					// Draw background first (to avoid white flash)
+					// Always clear the canvas first to remove any previous frame artifacts
+					recordingContext.clearRect(0, 0, recordingCanvas.width, recordingCanvas.height);
+
+					// Draw background (to avoid white flash)
 					if (backgroundColor !== 'transparent') {
 						recordingContext.fillStyle = backgroundColor;
 						recordingContext.fillRect(0, 0, recordingWidth, recordingHeight);
-					} else {
-						// Clear only if transparent background
-						recordingContext.clearRect(0, 0, recordingCanvas.width, recordingCanvas.height);
 					}
 
-					// Prefer the live TextCircle canvas to avoid re-render flicker; fallback to captureCanvas
-					const circleCanvas = (textCircleRef.getCanvas && textCircleRef.getCanvas()) || textCircleRef.captureCanvas(false);
-					if (circleCanvas && circleCanvas.width > 0 && circleCanvas.height > 0) {
-						// The container size is based on recordingWidth setting
-						const actualContainerSize = recordingWidth;
-						const scaleFactor = recordingWidth / actualContainerSize; // Should be 1.0
-						
-						// Scale down the circle by 7% in video to add more padding from border
-						const circleScale = 0.93;
-						const scaledSize = actualContainerSize * circleScale;
-						
-						// Draw the circle canvas centered in the circle area (scaled down)
-						// Move down by 20px when input field is visible for better vertical centering (scaled proportionally)
-						const circleX = (recordingWidth - scaledSize * scaleFactor) / 2;
-						const circleYOffset = inputFieldVisible ? 20 * (recordingWidth / 600) : 0; // Scale from base 600px
-						const circleY = (circleAreaHeight - scaledSize * scaleFactor) / 2 + circleYOffset;
-						
-						recordingContext.save();
-						recordingContext.translate(circleX + (scaledSize * scaleFactor) / 2, circleY + (scaledSize * scaleFactor) / 2);
-						recordingContext.scale(scaleFactor * circleScale, scaleFactor * circleScale);
-						recordingContext.drawImage(circleCanvas, -actualContainerSize / 2, -actualContainerSize / 2, actualContainerSize, actualContainerSize);
-						recordingContext.restore();
+					// Only draw circle if there's text to display (avoid drawing old text)
+					if (displayText && displayText.length > 0) {
+						// Prefer the live TextCircle canvas to avoid re-render flicker; fallback to captureCanvas
+						const circleCanvas = (textCircleRef.getCanvas && textCircleRef.getCanvas()) || textCircleRef.captureCanvas(false);
+						if (circleCanvas && circleCanvas.width > 0 && circleCanvas.height > 0) {
+							// The container size is based on recordingWidth setting
+							const actualContainerSize = recordingWidth;
+							const scaleFactor = recordingWidth / actualContainerSize; // Should be 1.0
+							
+							// Scale down the circle by 7% in video to add more padding from border
+							const circleScale = 0.93;
+							const scaledSize = actualContainerSize * circleScale;
+							
+							// Draw the circle canvas centered in the circle area (scaled down)
+							// Move down by 20px when input field is visible for better vertical centering (scaled proportionally)
+							const circleX = (recordingWidth - scaledSize * scaleFactor) / 2;
+							const circleYOffset = inputFieldVisible ? 20 * (recordingWidth / 600) : 0; // Scale from base 600px
+							const circleY = (circleAreaHeight - scaledSize * scaleFactor) / 2 + circleYOffset;
+							
+							recordingContext.save();
+							recordingContext.translate(circleX + (scaledSize * scaleFactor) / 2, circleY + (scaledSize * scaleFactor) / 2);
+							recordingContext.scale(scaleFactor * circleScale, scaleFactor * circleScale);
+							recordingContext.drawImage(circleCanvas, -actualContainerSize / 2, -actualContainerSize / 2, actualContainerSize, actualContainerSize);
+							recordingContext.restore();
+						}
 					}
 
 					// Draw input field if visible
@@ -589,8 +636,19 @@ Invite someone dangerous to tea.`);
 		}
 		recordingCanvas = null;
 		recordingContext = null;
-		// Restore paused state if needed
-		// paused = false; // Keep animation running after recording
+		
+		// Clear any buffers/caches and reset animation state after recording
+		// This ensures a clean slate for the next recording
+		setTimeout(() => {
+			displayText = '';
+			currentPhase = 'greeting';
+			isPlaying = false;
+			// Clear any pending timeouts
+			if (typewriterTimeout) {
+				clearTimeout(typewriterTimeout);
+				typewriterTimeout = null;
+			}
+		}, 100);
 	}
 
 	function toggleRecording() {
@@ -627,11 +685,11 @@ Invite someone dangerous to tea.`);
 	
 	<div class="flex flex-col lg:flex-row gap-6 h-full w-full max-w-7xl mx-auto p-4">
 		<!-- Form Fields - Scrollable -->
-		<div class="flex-1 min-w-0 space-y-6">
-			<div class="bg-white p-6 rounded-lg">
-				<h2 class="text-xl font-semibold text-gray-900 mb-4">Message Fields</h2>
+		<div class="flex-1 min-w-0 space-y-4">
+			<div class="bg-white p-6 rounded-lg shadow">
+				<h2 class="text-lg font-semibold text-gray-900 mb-3">Message Fields</h2>
 				
-				<div class="space-y-4">
+				<div class="space-y-3">
 					<Input
 						type="text"
 						label="Hello"
@@ -677,14 +735,110 @@ Invite someone dangerous to tea.`);
 				</div>
 			</div>
 
+			<!-- Display Settings -->
+			<div class="bg-white p-6 rounded-lg shadow">
+				<h2 class="text-lg font-semibold text-gray-900 mb-3">Display Settings</h2>
+				
+				<div class="space-y-3">
+					<!-- Colors side by side -->
+					<div class="grid grid-cols-2 gap-3">
+						<div>
+							<label for="text-color" class="block text-xs font-medium text-gray-700 mb-1.5">
+								Text Color
+							</label>
+							<input
+								id="text-color"
+								type="color"
+								bind:value={textColor}
+								class="w-full h-9 rounded"
+							/>
+						</div>
+						
+						<div>
+							<label for="bg-color" class="block text-xs font-medium text-gray-700 mb-1.5">
+								Background Color
+							</label>
+							<input
+								id="bg-color"
+								type="color"
+								bind:value={backgroundColor}
+								class="w-full h-9 rounded"
+							/>
+						</div>
+					</div>
+					
+					<!-- Font Size and Dynamic Text Size -->
+					<div>
+						<div class="flex items-center justify-between mb-1.5">
+							<label for="font-size" class="text-xs font-medium text-gray-700">
+								Font Size: {fontSize}px
+							</label>
+							<div class="flex items-center gap-2">
+								<input
+									id="dynamic-text-size"
+									type="checkbox"
+									bind:checked={dynamicTextSize}
+									class="w-3.5 h-3.5"
+								/>
+								<label for="dynamic-text-size" class="text-xs text-gray-600 cursor-pointer">
+									Auto
+								</label>
+							</div>
+						</div>
+						<input
+							id="font-size"
+							type="range"
+							min="20"
+							max="80"
+							step="2"
+							bind:value={fontSize}
+							disabled={dynamicTextSize}
+							class="w-full {dynamicTextSize ? 'opacity-50 cursor-not-allowed' : ''}"
+						/>
+					</div>
+					
+					<!-- Rotation Speed -->
+					<div>
+						<label for="rotation-speed" class="block text-xs font-medium text-gray-700 mb-1.5">
+							Rotation Speed: {rotationSpeed.toFixed(2)}
+						</label>
+						<input
+							id="rotation-speed"
+							type="range"
+							min="-1"
+							max="1"
+							step="0.01"
+							bind:value={rotationSpeed}
+							class="w-full"
+						/>
+					</div>
+					
+					<!-- Recording Width -->
+					<div>
+						<label for="recording-width" class="block text-xs font-medium text-gray-700 mb-1.5" title="Recording dimensions: {recordingWidth}x{inputFieldVisible ? Math.round(recordingWidth * 1.25) : recordingWidth}px">
+							Recording Width: {recordingWidth}px
+						</label>
+						<input
+							id="recording-width"
+							type="range"
+							min="400"
+							max="2000"
+							step="50"
+							bind:value={recordingWidth}
+							class="w-full"
+						/>
+					</div>
+				</div>
+			</div>
+
 			<!-- Animation Settings -->
 			<div class="bg-white p-6 rounded-lg shadow">
-				<h2 class="text-xl font-semibold text-gray-900 mb-4">Animation Settings</h2>
+				<h2 class="text-lg font-semibold text-gray-900 mb-3">Animation Settings</h2>
 				
-				<div class="space-y-4">
+				<div class="space-y-3">
 					<div>
-						<label for="typewriter-speed" class="block text-sm font-medium text-gray-700 mb-2">
-							Typing Speed: {typewriterSpeed}ms per character
+						<label for="typewriter-speed" class="block text-xs font-medium text-gray-700 mb-1.5" title="Milliseconds per character when typing">
+							Typing Speed: {typewriterSpeed}ms
 						</label>
 						<input
 							id="typewriter-speed"
@@ -698,8 +852,8 @@ Invite someone dangerous to tea.`);
 					</div>
 					
 					<div>
-						<label for="delete-speed" class="block text-sm font-medium text-gray-700 mb-2">
-							Delete Speed: {deleteSpeed}ms per character
+						<label for="delete-speed" class="block text-xs font-medium text-gray-700 mb-1.5" title="Milliseconds per character when deleting">
+							Delete Speed: {deleteSpeed}ms
 						</label>
 						<input
 							id="delete-speed"
@@ -713,7 +867,7 @@ Invite someone dangerous to tea.`);
 					</div>
 					
 					<div>
-						<label for="chapter-pause" class="block text-sm font-medium text-gray-700 mb-2">
+						<label for="chapter-pause" class="block text-xs font-medium text-gray-700 mb-1.5" title="Pause duration between chapters (after deletion, before next typing)">
 							Chapter Pause: {chapterPause}ms
 						</label>
 						<input
@@ -728,7 +882,7 @@ Invite someone dangerous to tea.`);
 					</div>
 					
 					<div>
-						<label for="speed-variation" class="block text-sm font-medium text-gray-700 mb-2">
+						<label for="speed-variation" class="block text-xs font-medium text-gray-700 mb-1.5" title="Random variation in typing/deleting speed (0-100%)">
 							Speed Variation: {speedVariation}%
 						</label>
 						<input
@@ -743,7 +897,7 @@ Invite someone dangerous to tea.`);
 					</div>
 					
 					<div>
-						<label for="visible-duration" class="block text-sm font-medium text-gray-700 mb-2">
+						<label for="visible-duration" class="block text-xs font-medium text-gray-700 mb-1.5" title="How long text stays visible before deletion (scales with word count)">
 							Visible Duration: {visibleDuration}ms
 						</label>
 						<input
@@ -755,11 +909,10 @@ Invite someone dangerous to tea.`);
 							bind:value={visibleDuration}
 							class="w-full"
 						/>
-						<p class="text-xs text-gray-500 mt-1">How long text stays visible before deletion</p>
 					</div>
 					
 					<div>
-						<label for="goodbye-pause" class="block text-sm font-medium text-gray-700 mb-2">
+						<label for="goodbye-pause" class="block text-xs font-medium text-gray-700 mb-1.5" title="Pause between 'Goodbye' and 'Branding' text">
 							Goodbye Pause: {goodbyePause}ms
 						</label>
 						<input
@@ -771,12 +924,11 @@ Invite someone dangerous to tea.`);
 							bind:value={goodbyePause}
 							class="w-full"
 						/>
-						<p class="text-xs text-gray-500 mt-1">Pause between goodbye and branding</p>
 					</div>
 					
 					<div>
-						<label for="delay-before-after" class="block text-sm font-medium text-gray-700 mb-2">
-							Delay Before & After: {delayBeforeAfter}ms
+						<label for="delay-before-after" class="block text-xs font-medium text-gray-700 mb-1.5" title="Delay before animation starts and after it finishes">
+							Delay Before/After: {delayBeforeAfter}ms
 						</label>
 						<input
 							id="delay-before-after"
@@ -787,102 +939,6 @@ Invite someone dangerous to tea.`);
 							bind:value={delayBeforeAfter}
 							class="w-full"
 						/>
-						<p class="text-xs text-gray-500 mt-1">Pause before animation starts and after it finishes</p>
-					</div>
-				</div>
-			</div>
-
-			<!-- Display Settings -->
-			<div class="bg-white p-6 rounded-lg shadow">
-				<h2 class="text-xl font-semibold text-gray-900 mb-4">Display Settings</h2>
-				
-				<div class="space-y-4">
-					<div>
-						<label for="text-color" class="block text-sm font-medium text-gray-700 mb-2">
-							Text Color
-						</label>
-						<input
-							id="text-color"
-							type="color"
-							bind:value={textColor}
-							class="w-full h-10"
-						/>
-					</div>
-					
-					<div>
-						<label for="bg-color" class="block text-sm font-medium text-gray-700 mb-2">
-							Background Color
-						</label>
-						<input
-							id="bg-color"
-							type="color"
-							bind:value={backgroundColor}
-							class="w-full h-10"
-						/>
-					</div>
-					
-					<div>
-						<label for="font-size" class="block text-sm font-medium text-gray-700 mb-2">
-							Font Size: {fontSize}px
-						</label>
-						<input
-							id="font-size"
-							type="range"
-							min="20"
-							max="80"
-							step="2"
-							bind:value={fontSize}
-							disabled={dynamicTextSize}
-							class="w-full {dynamicTextSize ? 'opacity-50 cursor-not-allowed' : ''}"
-						/>
-						{#if dynamicTextSize}
-							<p class="text-xs text-gray-500 mt-1">Font size is automatically adjusted</p>
-						{/if}
-					</div>
-					
-					<div class="flex items-center gap-2">
-						<input
-							id="dynamic-text-size"
-							type="checkbox"
-							bind:checked={dynamicTextSize}
-							class="w-4 h-4"
-						/>
-						<label for="dynamic-text-size" class="text-sm font-medium text-gray-700">
-							Dynamic Text Size
-						</label>
-					</div>
-					
-					<div>
-						<label for="rotation-speed" class="block text-sm font-medium text-gray-700 mb-2">
-							Rotation Speed: {rotationSpeed.toFixed(2)}
-						</label>
-						<input
-							id="rotation-speed"
-							type="range"
-							min="-1"
-							max="1"
-							step="0.01"
-							bind:value={rotationSpeed}
-							class="w-full"
-						/>
-					</div>
-					
-					<div>
-						<label for="recording-width" class="block text-sm font-medium text-gray-700 mb-2">
-							Recording Width: {recordingWidth}px
-						</label>
-						<input
-							id="recording-width"
-							type="range"
-							min="400"
-							max="2000"
-							step="50"
-							bind:value={recordingWidth}
-							class="w-full"
-						/>
-						<p class="text-xs text-gray-500 mt-1">
-							Recording dimensions: {recordingWidth}x{inputFieldVisible ? Math.round(recordingWidth * 1.25) : recordingWidth}px
-						</p>
 					</div>
 				</div>
 			</div>
