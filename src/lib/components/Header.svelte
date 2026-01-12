@@ -63,6 +63,9 @@
 	// Determine current route for conditional mobile wheel visibility
 	const isProject = $derived(currentPath.startsWith('/work/'));
 	const isAbout = $derived(currentPath === '/about' || currentPath.startsWith('/about/'));
+	
+	// Check if we're on home page with grid mode active (show white logo)
+	const isHomePageGrid = $derived((currentPath === '/' || currentPath === '/preview') && $viewMode === 'grid');
 </script>
 
 <!-- Navigation Header -->
@@ -87,7 +90,7 @@
 			<div class="flex justify-between w-full relative">
 				<!-- Mobile: Centered wheel (hidden on project/about pages and when mobile search open) -->
 				{#if !isProject && !isAbout && !$mobileSearchOpen}
-					<MobileWheel isDarkMode={isDarkMode} />
+					<MobileWheel isDarkMode={isDarkMode || isHomePageGrid} />
 				{/if}
 				
 				<!-- Desktop: Left-aligned wheel -->
@@ -101,7 +104,7 @@
 					onmouseleave={() => { isHovering = false; }}
 				>
 					<!-- Black Logo (default) -->
-					<div class="absolute top-4 left-0 transition-opacity duration-600 z-10" class:opacity-0={isDarkMode} class:opacity-100={!isDarkMode}>
+					<div class="absolute top-4 left-0 transition-opacity duration-600 z-10" class:opacity-0={isDarkMode || isHomePageGrid} class:opacity-100={!isDarkMode && !isHomePageGrid}>
 						<Logo 
 							variant="black"
 							rotationSpeed={isHovering ? 50 : 10}
@@ -109,8 +112,8 @@
 						/>
 					</div>
 					
-					<!-- White Logo (dark mode) -->
-					<div class="absolute top-4 left-0 transition-opacity duration-600 z-10" class:opacity-100={isDarkMode} class:opacity-0={!isDarkMode}>
+					<!-- White Logo (dark mode or home page grid mode) -->
+					<div class="absolute top-4 left-0 transition-opacity duration-600 z-10" class:opacity-100={isDarkMode || isHomePageGrid} class:opacity-0={!isDarkMode && !isHomePageGrid}>
 						<Logo 
 							variant="white"
 							rotationSpeed={isHovering ? 50 : 10}
