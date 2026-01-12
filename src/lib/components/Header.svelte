@@ -104,7 +104,7 @@
 					onmouseleave={() => { isHovering = false; }}
 				>
 					<!-- Black Logo (default) -->
-					<div class="absolute top-4 left-0 transition-opacity duration-600 z-10" class:opacity-0={isDarkMode || isHomePageGrid} class:opacity-100={!isDarkMode && !isHomePageGrid}>
+					<div class="absolute top-4 left-0 transition-opacity duration-600 z-10" class:opacity-0={isDarkMode || isHomePageGrid || isProject} class:opacity-100={!isDarkMode && !isHomePageGrid && !isProject}>
 						<Logo 
 							variant="black"
 							rotationSpeed={isHovering ? 50 : 10}
@@ -112,8 +112,13 @@
 						/>
 					</div>
 					
-					<!-- White Logo (dark mode or home page grid mode) -->
-					<div class="absolute top-4 left-0 transition-opacity duration-600 z-10" class:opacity-100={isDarkMode || isHomePageGrid} class:opacity-0={!isDarkMode && !isHomePageGrid}>
+					<!-- White Logo (dark mode, home page grid mode, or project pages) -->
+					<div 
+						class="absolute top-4 left-0 transition-opacity duration-600 z-10 project-page-logo" 
+						class:opacity-100={isDarkMode || isHomePageGrid || isProject} 
+						class:opacity-0={!isDarkMode && !isHomePageGrid && !isProject}
+						class:project-page={isProject && !isDarkMode}
+					>
 						<Logo 
 							variant="white"
 							rotationSpeed={isHovering ? 50 : 10}
@@ -131,8 +136,7 @@
 						<!-- Grid/List selector -->
 						<div class="relative">
 							<button
-								class="font-medium transition-all duration-600 ease-in-out hover:text-neutral-900 focus:outline-none min-w-[50px] text-left cursor-pointer"
-								class:dark-mode={isDarkMode}
+								class="font-medium transition-all duration-600 ease-in-out hover:text-neutral-900 focus:outline-none min-w-[50px] text-left cursor-pointer text-neutral-900"
 								onclick={handleViewModeClick}
 								onmouseenter={() => isViewModeHovering = true}
 								onmouseleave={() => isViewModeHovering = false}
@@ -153,10 +157,10 @@
 						<!-- Navigation Links -->
 						<ul class="flex items-right space-x-5 pr-3" class:pointer-events-auto={!faded} class:pointer-events-none={faded}>
 							{#each settings.data.navigation_header as navItem}
-								<li class:dark-mode={isDarkMode}>
+								<li>
 									<PrismicLink 
 										field={navItem} 
-										class="hover:text-neutral-900 transition-colors duration-600 font-medium"
+										class="hover:text-neutral-900 transition-colors duration-600 font-medium text-neutral-900"
 									>
 										{navItem.text || 'Link'}
 									</PrismicLink>
@@ -207,38 +211,21 @@
 		cursor: pointer;
 	}
 
-	/* Dark mode navigation links - target PrismicLink components */
-	:global(header.dark-mode li.dark-mode *) {
-		color: #ffffff !important;
+	/* Navigation text always stays black, regardless of dark mode */
+	:global(header nav ul li a),
+	:global(header nav button) {
+		color: #171717 !important; /* neutral-900 */
 	}
 
-	:global(header.dark-mode li.dark-mode *:hover) {
-		color: #e5e7eb !important;
-	}
-
-	/* Alternative targeting for PrismicLink */
-	:global(header.dark-mode li.dark-mode a),
-	:global(header.dark-mode li.dark-mode button),
-	:global(header.dark-mode li.dark-mode span) {
-		color: #ffffff !important;
-	}
-
-	:global(header.dark-mode li.dark-mode a:hover),
-	:global(header.dark-mode li.dark-mode button:hover),
-	:global(header.dark-mode li.dark-mode span:hover) {
-		color: #e5e7eb !important;
-	}
-
-	/* Dark mode styling for Grid/List selector button */
-	:global(header.dark-mode button.dark-mode) {
-		color: #ffffff !important;
-		transition: color 0.6s ease-in-out;
-	}
-
-	:global(header.dark-mode button.dark-mode:hover) {
-		color: #e5e7eb !important;
-		transition: color 0.6s ease-in-out;
+	:global(header nav ul li a:hover),
+	:global(header nav button:hover) {
+		color: #171717 !important; /* neutral-900 */
 	}
 
 	/* Mobile nav is always visible and not theme-dependent */
+
+	/* Darken white logo on project pages (when not in dark mode) with 40% brightness */
+	:global(header .project-page-logo.project-page img) {
+		filter: brightness(0.9) !important;
+	}
 </style> 
