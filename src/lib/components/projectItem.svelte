@@ -390,11 +390,19 @@
 						</div>
 					{/if}
 					
+					<!-- Desktop static text overlay (always visible on desktop) -->
+					{#if !isMobile}
+						<div class="absolute bottom-[-3px] left-0 right-0 p-3 text-white pointer-events-none z-[1]">
+							<div class="mb-[-2px] text-lg">{projectTitleRaw}</div>
+							<div class="text-lg opacity-60">{projectClientRaw}</div>
+						</div>
+					{/if}
+					
 					<!-- Mobile static text overlay (always visible on mobile) -->
 					{#if isMobile}
-						<div class="absolute bottom-0 left-0 right-0 p-3 text-white">
-							<div class="text-xl">{projectTitleRaw}</div>
-							<div class="text-xl">{projectClientRaw}</div>
+						<div class="absolute bottom-[-3px] left-0 right-0 p-3 text-white">
+							<div class="mb-[-2px] text-lg">{projectTitleRaw}</div>
+							<div class="text-lg">{projectClientRaw}</div>
 						</div>
 					{/if}
 				</div>
@@ -414,11 +422,19 @@
 						</div>
 					{/if}
 					
+					<!-- Desktop static text overlay (always visible on desktop) -->
+					{#if !isMobile}
+						<div class="absolute bottom-[-3px] left-0 right-0 p-3 text-white pointer-events-none z-[1]">
+							<div class="text-lg font-medium">{projectTitleRaw}</div>
+							<div class="text-lg opacity-60">{projectClientRaw}</div>
+						</div>
+					{/if}
+					
 					<!-- Mobile static text overlay (always visible on mobile) -->
 					{#if isMobile}
-						<div class="absolute bottom-0 left-0 right-0 p-3 text-white">
-							<div class="text-xl font-medium">{projectTitleRaw}</div>
-							<div class="text-xl  opacity-60">{projectClientRaw}</div>
+						<div class="absolute bottom-[-3px] left-0 right-0 p-3 text-white">
+							<div class="text-lg font-medium">{projectTitleRaw}</div>
+							<div class="text-lg  opacity-60">{projectClientRaw}</div>
 						</div>
 					{/if}
 				</div>
@@ -480,11 +496,19 @@
 						</div>
 					{/if}
 					
+					<!-- Desktop static text overlay (always visible on desktop) -->
+					{#if !isMobile}
+						<div class="absolute bottom-[-3px] left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white pointer-events-none z-[1]">
+							<div class="text-lg font-medium">{projectTitleRaw}</div>
+							<div class="text-lg opacity-80">{projectClientRaw}</div>
+						</div>
+					{/if}
+					
 					<!-- Mobile static text overlay (always visible on mobile) -->
 					{#if isMobile}
-						<div class="absolute bottom-0 left-0 right-0 p-3 text-white">
-							<div class="text-xl font-medium">{projectTitleRaw}</div>
-							<div class="text-xl  opacity-80">{projectClientRaw}</div>
+						<div class="absolute bottom-[-3px] left-0 right-0 p-3 text-white">
+							<div class="text-lg font-medium">{projectTitleRaw}</div>
+							<div class="text-lg  opacity-80">{projectClientRaw}</div>
 						</div>
 					{/if}
 				</div>
@@ -504,11 +528,19 @@
 						</div>
 					{/if}
 					
+					<!-- Desktop static text overlay (always visible on desktop) -->
+					{#if !isMobile}
+						<div class="absolute bottom-[-3px] left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white pointer-events-none z-[1]">
+							<div class="text-lg font-medium">{projectTitleRaw}</div>
+							<div class="text-lg opacity-80">{projectClientRaw}</div>
+						</div>
+					{/if}
+					
 					<!-- Mobile static text overlay (always visible on mobile) -->
 					{#if isMobile}
-						<div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white">
-							<div class="text-xl font-medium">{projectTitleRaw}</div>
-							<div class="text-xl  opacity-80">{projectClientRaw}</div>
+						<div class="absolute bottom-[-3px] left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white">
+							<div class="text-lg font-medium">{projectTitleRaw}</div>
+							<div class="text-lg  opacity-80">{projectClientRaw}</div>
 						</div>
 					{/if}
 				</div>
