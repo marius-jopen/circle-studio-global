@@ -9,15 +9,11 @@
 
 	async function handleLogin(e: Event) {
 		e.preventDefault();
+		console.log('Login form submitted, password length:', password.length);
 		error = '';
 		isLoading = true;
 
-		if (!verifyPassword(password)) {
-			error = 'Incorrect password';
-			isLoading = false;
-			return;
-		}
-
+		// Always verify on server side, don't check client-side first
 		try {
 			// Set cookie via API
 			const response = await fetch('/api/auth/login', {
@@ -25,10 +21,15 @@
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify({ password })
+				body: JSON.stringify({ password }),
+				credentials: 'include' // Important: include cookies
 			});
 
+			console.log('Login response status:', response.status);
+
 			if (response.ok) {
+				const data = await response.json().catch(() => ({}));
+				console.log('Login successful, redirecting...');
 				await invalidateAll();
 				goto('/admin');
 			} else {
