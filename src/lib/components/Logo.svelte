@@ -25,7 +25,8 @@
 	let animationFrameId: number | null = null;
 	
 	// Select the correct logo source
-	const logoSrc = $derived(variant === 'white' ? '/logo-white.png' : '/logo-black.png');
+	const logoSrc = $derived(variant === 'white' ? '/logo-white.png' : '/logo-white.png');
+	const logoBrightness = $derived(variant === 'white' ? 'brightness-100' : 'brightness-[95%]');
 	
 	// Animation loop
 	function animate(timestamp: number) {
@@ -76,8 +77,8 @@
 	<img 
 		src={logoSrc} 
 		alt="Art Camp Logo" 
-		class="logo-image"
-		style="transform: rotate({currentRotation}deg);"
+		class="logo-image {logoBrightness}"
+		style="transform: rotate({currentRotation}deg); "
 	/>
 </div>
 
