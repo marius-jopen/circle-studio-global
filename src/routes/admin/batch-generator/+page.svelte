@@ -396,18 +396,18 @@ Invite someone dangerous to tea.`);
 					// Ensure animation is not paused
 					paused = false;
 
-					// Clear the recording canvas
-					recordingContext.clearRect(0, 0, recordingCanvas.width, recordingCanvas.height);
-
-					// Draw background
+					// Draw background first (to avoid white flash)
 					if (backgroundColor !== 'transparent') {
 						recordingContext.fillStyle = backgroundColor;
 						recordingContext.fillRect(0, 0, recordingWidth, recordingHeight);
+					} else {
+						// Clear only if transparent background
+						recordingContext.clearRect(0, 0, recordingCanvas.width, recordingCanvas.height);
 					}
 
-					// Get the TextCircle canvas using captureCanvas method
-					const circleCanvas = textCircleRef.captureCanvas(false); // Use normal res for better performance
-					if (circleCanvas) {
+					// Prefer the live TextCircle canvas to avoid re-render flicker; fallback to captureCanvas
+					const circleCanvas = (textCircleRef.getCanvas && textCircleRef.getCanvas()) || textCircleRef.captureCanvas(false);
+					if (circleCanvas && circleCanvas.width > 0 && circleCanvas.height > 0) {
 						// The container size is always 600px for recording
 						const actualContainerSize = 600;
 						const scaleFactor = recordingWidth / actualContainerSize; // Should be 1.0
@@ -898,7 +898,7 @@ Invite someone dangerous to tea.`);
 					<div class="px-4 pb-6">
 						<div 
 							bind:this={inputFieldRef}
-							class="w-8/12 mx-auto rounded-full h-14 bg-gray-100 px-6 py-3 text-gray-400 text-2xl overflow-x-auto overflow-y-hidden whitespace-nowrap flex items-center"
+							class="w-8/12 mx-auto rounded-full h-14 bg-gray-100 px-6 py-3 text-gray-500 text-2xl overflow-x-auto overflow-y-hidden whitespace-nowrap flex items-center"
 							style="scrollbar-width: none; -ms-overflow-style: none;"
 						>
 							{#if displayText}

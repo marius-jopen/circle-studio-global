@@ -270,8 +270,8 @@
       ctx.translate(0, -radius);
       ctx.font = `${effectiveFontSize}px "${primaryFontFamily}", Arial, Helvetica, sans-serif`;
       
-      // Apply opacity from fade animation
-      const opacity = letterOpacities[i] || 0;
+      // Apply opacity from fade animation (default to 1 for new letters to avoid white flash)
+      const opacity = letterOpacities[i] !== undefined ? letterOpacities[i] : 1;
       const rgb = hexToRgb(textColor);
       ctx.fillStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacity})`;
       
@@ -483,8 +483,8 @@
       // Use a slightly larger font for high-res rendering
       ctx.font = `${highResFontSize}px ${fontFamily}`;
       
-      // Apply opacity from fade animation
-      const opacity = letterOpacities[i] || 0;
+      // Apply opacity from fade animation (default to 1 for new letters to avoid white flash)
+      const opacity = letterOpacities[i] !== undefined ? letterOpacities[i] : 1;
       ctx.fillStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacity})`;
       
       ctx.textAlign = 'center';
@@ -507,6 +507,11 @@
     }
     
     return captureCanvas;
+  }
+
+  // Expose the live canvas element for consumers (e.g., recording without re-render)
+  export function getCanvas(): HTMLCanvasElement | null {
+    return canvas || null;
   }
 
   // Watch for paused state changes
