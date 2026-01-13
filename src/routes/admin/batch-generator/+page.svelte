@@ -237,15 +237,22 @@ Invite someone dangerous to tea.`);
 										// Goodbye complete (both parts), delete it then finish
 										deleteText(displayText, () => {
 											// All done
-											isPlaying = false;
 											currentPhase = 'greeting';
 											displayText = '';
 											
-											// Wait for delay after animation, then stop recording
+											// Wait for delay after animation
 											setTimeout(() => {
-												// Automatically stop recording when animation completes
 												if (isRecording) {
+													// Stop recording and animation when recording
+													isPlaying = false;
 													stopRecording();
+												} else {
+													// Loop the animation for preview
+													if (isPlaying && !paused) {
+														startAnimation();
+													} else {
+														isPlaying = false;
+													}
 												}
 											}, delayBeforeAfter);
 										});
@@ -289,6 +296,60 @@ Invite someone dangerous to tea.`);
 
 	function resetAnimation() {
 		stopAnimation();
+	}
+
+	function restartAnimation() {
+		stopAnimation();
+		// Small delay to ensure clean reset
+		setTimeout(() => {
+			startAnimation();
+		}, 100);
+	}
+
+	function togglePause() {
+		paused = !paused;
+		if (paused) {
+			// Pause the typewriter animation by stopping timeouts
+			if (typewriterTimeout) {
+				clearTimeout(typewriterTimeout);
+				typewriterTimeout = null;
+			}
+		} else {
+			// Resume: restart the current phase from the beginning
+			if (isPlaying) {
+				// Clear current display and restart current phase
+				const phase = currentPhase;
+				displayText = '';
+				if (phase === 'greeting') {
+					typeText(getFullTextForPhase('greeting'), () => {
+						deleteText(displayText, () => {
+							processContentLines(0);
+						});
+					}, 'greeting');
+				} else if (phase === 'content') {
+					processContentLines(0);
+				} else if (phase === 'goodbye') {
+					typeTextImmediate(goodbye, () => {
+						const variedPause = getVariedSpeed(goodbyePause, speedVariation);
+						setTimeout(() => {
+							if (isPlaying && !paused) {
+								const currentGoodbyeText = displayText + ' ';
+								typeText(branding, () => {
+									deleteText(displayText, () => {
+										isPlaying = false;
+										currentPhase = 'greeting';
+										displayText = '';
+									});
+								}, 'goodbye', currentGoodbyeText);
+							}
+						}, variedPause);
+					});
+				}
+			} else {
+				// If not playing, start from beginning
+				startAnimation();
+			}
+		}
 	}
 
 	// Recording functions
@@ -1034,9 +1095,38 @@ Invite someone dangerous to tea.`);
 						</label>
 					</div>
 				</div>
+				
+				<!-- Restart and Pause Buttons -->
+				<div class="flex items-center gap-2 mt-2">
+					<Button 
+						variant="secondary" 
+						on:click={restartAnimation}
+						disabled={isRecording}
+					>
+						🔄 Restart
+					</Button>
+					
+					<Button 
+						variant="secondary" 
+						on:click={togglePause}
+						disabled={isRecording}
+					>
+						{#if paused}
+							▶️ Resume
+						{:else}
+							⏸️ Pause
+						{/if}
+					</Button>
+				</div>
+				
 				{#if isRecording}
 					<RecordingIndicator {isRecording} {elapsedTime} size="md" />
 				{/if}
+				<div class="mt-3 max-w-md text-center">
+					<p class="text-xs text-gray-600 leading-relaxed">
+						<strong>Browser Recording:</strong> This recording happens in your browser. For best performance, close other programs, browser tabs, and applications to free up CPU and memory.
+					</p>
+				</div>
 			</div>
 		</div>
 	</div>
