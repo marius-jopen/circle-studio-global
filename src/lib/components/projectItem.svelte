@@ -140,18 +140,18 @@
 		items: [
 			{
 				text: projectTitle,
-				rotationSpeed: 0.5,
-				spacingAmplitudePercent: 1.1,
-				spacingSpeed: 0.09,
+				rotationSpeed: 0.31,
+				spacingAmplitudePercent: 1.02,
+				spacingSpeed: 0.1,
 				rotationStart: 0,
 				animationType: 'sin'
 			},
 			{
 				text: projectClient,
 				rotationSpeed: 0.3,
-				spacingAmplitudePercent: 1.1,
-				spacingSpeed: 0.03,
-				rotationStart: 90,
+				spacingAmplitudePercent: 0.65,
+				spacingSpeed: 0.004,
+				rotationStart: 274,
 				animationType: 'sin'
 			},
 			{
