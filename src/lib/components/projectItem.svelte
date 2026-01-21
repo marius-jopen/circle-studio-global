@@ -36,6 +36,14 @@
 	const DEFAULT_TRUNCATION_LENGTH = 27;
 	// ========================================
 	
+	// ========================================
+	// 🎛️ ANIMATION RESET ON HOVER - TOGGLE HERE
+	// ========================================
+	// When true: Animation continues from where it was (current behavior)
+	// When false: Animation resets every time you hover over the project
+	const RESET_ANIMATION_ON_HOVER = false;
+	// ========================================
+	
 	// Mobile detection
 	let isMobile = false;
 	
@@ -112,7 +120,7 @@
 	$: containerSizePercent = getContainerSizePercent(dimension, itemsPerRow, isMobile);
 
 	// Make config reactive so it updates when projectTitle changes
-	// Make config reactive so it updates when projectTitle changes
+	// Include hoverCount in config to force reset when RESET_ANIMATION_ON_HOVER is false
 	$: config = {
 		uiVisible: false,
 		globalSettings: {
@@ -135,7 +143,8 @@
 			manualMode: true, // Use manual mode for controlled animations
 			triggerFadeIn: isHovering && !isNavigating, // Only fade in when hovering and not navigating
 			triggerFadeOut: (!isHovering && hasEverHovered) || isNavigating, // Fade out when leaving hover (only after having hovered) or during navigation
-			startInvisible: true // Start invisible, only show on hover
+			startInvisible: true, // Start invisible, only show on hover
+			_resetKey: RESET_ANIMATION_ON_HOVER ? undefined : hoverCount // Internal key to force reset
 		},
 		items: [
 			{
@@ -173,6 +182,8 @@
 	let isNavigating = false;
 	let projectElement: HTMLElement;
 	let hasEverHovered = false; // Track if user has ever hovered over this item
+	let animationKey = 0; // Key for resetting BigWheel animation on hover
+	let hoverCount = 0; // Track hover count to force config update
 	
 	// Check all initial states immediately during script execution (before any rendering)
 	if (browser) {
@@ -340,6 +351,11 @@
 	   on:mouseenter={() => {
 		   isHovering = true;
 		   hasEverHovered = true;
+		   // Reset animation on hover if RESET_ANIMATION_ON_HOVER is false
+		   if (!RESET_ANIMATION_ON_HOVER) {
+			   animationKey++;
+			   hoverCount++;
+		   }
 		   // Use effective dimension for hover preview (portrait on mobile, original on desktop)
 		   const hoverVideoUrl = effectiveDimension === 'portrait' ? 
 			   selectedPreview?.item?.preview_video_url_portrait : 
@@ -386,7 +402,9 @@
 							class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay"
 							class:force-hidden={isNavigating || !initialRenderComplete || !isMounted}
 						>
-							<BigWheel {config} />
+							{#key RESET_ANIMATION_ON_HOVER ? 0 : animationKey}
+								<BigWheel {config} />
+							{/key}
 						</div>
 					{/if}
 					
@@ -418,7 +436,9 @@
 							class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay"
 							class:force-hidden={isNavigating || !initialRenderComplete || !isMounted}
 						>
-							<BigWheel {config} />
+							{#key RESET_ANIMATION_ON_HOVER ? 0 : animationKey}
+								<BigWheel {config} />
+							{/key}
 						</div>
 					{/if}
 					
@@ -446,6 +466,11 @@
 	     on:mouseenter={() => {
 		     isHovering = true;
 		     hasEverHovered = true;
+		     // Reset animation on hover if RESET_ANIMATION_ON_HOVER is false
+		     if (!RESET_ANIMATION_ON_HOVER) {
+			     animationKey++;
+			     hoverCount++;
+		     }
 		     // Use effective dimension for hover preview (portrait on mobile, original on desktop)
 		     const hoverVideoUrl = effectiveDimension === 'portrait' ? 
 			     selectedPreview?.item?.preview_video_url_portrait : 
@@ -492,7 +517,9 @@
 							class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay"
 							class:force-hidden={isNavigating || !initialRenderComplete || !isMounted}
 						>
-							<BigWheel {config} />
+							{#key RESET_ANIMATION_ON_HOVER ? 0 : animationKey}
+								<BigWheel {config} />
+							{/key}
 						</div>
 					{/if}
 					
@@ -524,7 +551,9 @@
 							class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay"
 							class:force-hidden={isNavigating || !initialRenderComplete || !isMounted}
 						>
-							<BigWheel {config} />
+							{#key RESET_ANIMATION_ON_HOVER ? 0 : animationKey}
+								<BigWheel {config} />
+							{/key}
 						</div>
 					{/if}
 					
