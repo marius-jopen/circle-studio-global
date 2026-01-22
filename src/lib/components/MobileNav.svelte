@@ -51,12 +51,12 @@ function openSearchAndNavigate() {
     <div class="md:hidden fixed top-5 right-4 left-4 z-50">
         <div 
             class="bg-gray-100 rounded-full flex items-center transition-all duration-300 ease-in-out overflow-hidden ml-auto"
-            style={searchOpen ? 'width: 100%;' : 'width: 48px;'}
+            style="height: 48px; width: {searchOpen ? '100%' : '48px'}"
         >
             {#if !searchOpen}
                 <button 
                     type="button" 
-                    class="p-3 flex items-center justify-center flex-shrink-0" 
+                    class="w-full h-full p-3 flex items-center justify-center flex-shrink-0" 
                     on:click={openSearch} 
                     aria-label="Search"
                 >
