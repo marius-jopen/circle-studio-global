@@ -61,6 +61,20 @@
             ],
             "default_value": "none"
           }
+        },
+        "columns": {
+          "type": "Select",
+          "config": {
+            "label": "Columns",
+            "placeholder": "",
+            "options": [
+              "1",
+              "2",
+              "3",
+              "4"
+            ],
+            "default_value": "1"
+          }
         }
       },
       "items": {},
