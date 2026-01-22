@@ -3,7 +3,6 @@ import { page } from '$app/stores';
 import { tick } from 'svelte';
 import { goto } from '$app/navigation';
 import { homeSearchQuery, mobileSearchOpen } from '$lib/stores';
-import { scale } from 'svelte/transition';
 
 $: pathname = $page.url.pathname;
 $: isHome = pathname === '/';
@@ -49,39 +48,40 @@ function openSearchAndNavigate() {
 
 <!-- Top right search button (only on homepage) -->
 {#if isHome}
-    <div class="md:hidden fixed top-5 right-4 z-50">
-        {#if !searchOpen}
-            <button 
-                type="button" 
-                class="bg-gray-100 rounded-full p-3 flex items-center justify-center " 
-                on:click={openSearch} 
-                aria-label="Search"
-            >
-                <img src="/search-logo.svg" alt="Search" class="w-5 h-5" />
-            </button>
-        {:else}
-            <div 
-                class="bg-gray-100 rounded-full px-4 py-0 flex items-center gap-x-2  transition-all duration-200"
-                transition:scale={{ start: 0.8, duration: 200 }}
-                style="transform-origin: right center;"
-            >
-                <input 
-                    type="text" 
-                    placeholder="Search" 
-                    class="p-2 flex-1 bg-transparent outline-none text-xl min-w-[200px]" 
-                    bind:this={searchInput} 
-                    bind:value={$homeSearchQuery} 
-                />
+    <div class="md:hidden fixed top-5 right-4 left-4 z-50">
+        <div 
+            class="bg-gray-100 rounded-full flex items-center transition-all duration-300 ease-in-out overflow-hidden ml-auto"
+            style={searchOpen ? 'width: 100%;' : 'width: 48px;'}
+        >
+            {#if !searchOpen}
                 <button 
                     type="button" 
-                    class="text-xl leading-none p-1" 
-                    aria-label="Close search" 
-                    on:click={closeSearch}
+                    class="p-3 flex items-center justify-center flex-shrink-0" 
+                    on:click={openSearch} 
+                    aria-label="Search"
                 >
-                    ×
+                    <img src="/search-logo.svg" alt="Search" class="w-5 h-5" />
                 </button>
-            </div>
-        {/if}
+            {:else}
+                <div class="flex items-center gap-x-2 w-full px-4 py-0">
+                    <input 
+                        type="text" 
+                        placeholder="Search" 
+                        class="p-2 flex-1 bg-transparent outline-none text-xl" 
+                        bind:this={searchInput} 
+                        bind:value={$homeSearchQuery} 
+                    />
+                    <button 
+                        type="button" 
+                        class="text-xl leading-none p-1 flex-shrink-0" 
+                        aria-label="Close search" 
+                        on:click={closeSearch}
+                    >
+                        ×
+                    </button>
+                </div>
+            {/if}
+        </div>
     </div>
 {/if}
 
