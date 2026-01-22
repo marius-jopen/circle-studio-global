@@ -2,6 +2,7 @@
 	import type { ProjectsDocument } from '../../prismicio-types';
 	import { PrismicImage } from '@prismicio/svelte';
 	import { onMount } from 'svelte';
+	import { browser } from '$app/environment';
 	import VideoPlayerMobile from './VideoPlayerMobile.svelte';
 
 	export let project: ProjectsDocument | any;
@@ -32,50 +33,55 @@ $: projectClient = projectData?.client || 'Untitled Client';
 
 	// Store the randomly selected preview per project
 	let selectedPreviewItem: any = null;
-	let lastProjectId: string | null = null;
+	let mountKey = 0; // Force fresh selection on each mount
 
-	// Randomly select a preview video when project data is available
-	$: if (projectData && projectUid) {
+	// Function to select a random preview (only runs in browser)
+	function selectRandomPreview() {
+		if (!browser || !projectData || !projectUid) return;
+		
 		const allItems = Array.isArray(projectData?.preview) ? projectData.preview : [];
 		const currentProjectId = projectData?.id || projectUid || '';
-		const projectChanged = currentProjectId !== lastProjectId;
 		
 		if (allItems.length === 0) {
 			selectedPreviewItem = null;
-			lastProjectId = currentProjectId;
 			console.log(`[ProjectItemMobile] Project: ${currentProjectId} | Total previews: 0 | No selection`);
-		} else {
-			const preferred = filterItemsForDimension(allItems, 'portrait');
-			const candidates = preferred.length > 0 ? preferred : allItems;
-			
-			// Re-select if project changed or we don't have a selection yet
-			if (projectChanged || selectedPreviewItem === null) {
-				// Use Math.random() for truly random selection on each page load
-				const randomValue = Math.random();
-				const randomIndex = Math.floor(randomValue * candidates.length);
-				selectedPreviewItem = candidates[randomIndex];
-				
-				// Console log for debugging
-				const selectedVideoUrl = selectedPreviewItem?.preview_video_url_portrait;
-				const selectedImageUrl = selectedPreviewItem?.preview_image_portrait?.url;
-				
-				console.log(`[ProjectItemMobile] Project: ${currentProjectId} | Dimension: portrait`);
-				console.log(`  Total previews available: ${allItems.length}`);
-				console.log(`  Filtered previews (portrait): ${preferred.length}`);
-				console.log(`  Candidates pool: ${candidates.length}`);
-				console.log(`  Random value: ${randomValue.toFixed(4)}`);
-				console.log(`  Selected index: ${randomIndex} / ${candidates.length - 1}`);
-				console.log(`  Selected video URL: ${selectedVideoUrl || 'none'}`);
-				console.log(`  Selected image URL: ${selectedImageUrl || 'none'}`);
-				
-				lastProjectId = currentProjectId;
-			}
+			return;
 		}
+		
+		const preferred = filterItemsForDimension(allItems, 'portrait');
+		const candidates = preferred.length > 0 ? preferred : allItems;
+		
+		// Always select a new random preview on each mount/page load
+		const randomValue = Math.random();
+		const randomIndex = Math.floor(randomValue * candidates.length);
+		selectedPreviewItem = candidates[randomIndex];
+		
+		// Console log for debugging
+		const selectedVideoUrl = selectedPreviewItem?.preview_video_url_portrait;
+		const selectedImageUrl = selectedPreviewItem?.preview_image_portrait?.url;
+		
+		console.log(`[ProjectItemMobile] Project: ${currentProjectId} | Dimension: portrait`);
+		console.log(`  Total previews available: ${allItems.length}`);
+		console.log(`  Filtered previews (portrait): ${preferred.length}`);
+		console.log(`  Candidates pool: ${candidates.length}`);
+		console.log(`  Random value: ${randomValue.toFixed(4)}`);
+		console.log(`  Selected index: ${randomIndex} / ${candidates.length - 1}`);
+		console.log(`  Selected video URL: ${selectedVideoUrl || 'none'}`);
+		console.log(`  Selected image URL: ${selectedImageUrl || 'none'}`);
+	}
+
+	// Select preview when data is available (only in browser)
+	$: if (browser && projectData && projectUid) {
+		selectRandomPreview();
 	}
 
 	$: selectedPreview = selectedPreviewItem ? { item: selectedPreviewItem, index: 0 } : null;
 
 	onMount(() => {
+		// Force fresh random selection on each mount (each page load)
+		mountKey++;
+		selectRandomPreview();
+		
 		const setupIO = () => {
 			if (!projectElement) return;
 			if (io) { try { io.disconnect(); } catch {}

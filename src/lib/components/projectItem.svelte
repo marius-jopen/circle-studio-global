@@ -240,6 +240,10 @@
 	$: showText = isMobile ? false : (isMounted && isHovering && initialRenderComplete && !isNavigating);
 	
 	onMount(() => {
+		// Force fresh random selection on each mount (each page load)
+		mountKey++;
+		selectRandomPreview();
+		
 		// Check if we're on mobile
 		const checkMobile = () => {
 			isMobile = window.innerWidth < 768;
@@ -297,56 +301,51 @@
 
 	// Store the randomly selected preview per project
 	let selectedPreviewItem: any = null;
-	let lastProjectId: string | null = null;
-	let lastEffectiveDimension: 'landscape' | 'square' | 'portrait' | null = null;
+	let mountKey = 0; // Force fresh selection on each mount
 
-	// Select a preview video when project data is available (truly random on each page load)
-	$: if (projectData && projectUid) {
+	// Function to select a random preview (only runs in browser)
+	function selectRandomPreview() {
+		if (!browser || !projectData || !projectUid) return;
+		
 		const allItems = Array.isArray(projectData?.preview) ? projectData.preview : [];
 		const currentProjectId = projectData?.id || projectUid || '';
 		
-		// Reset selection if project changed or dimension changed
-		const projectChanged = currentProjectId !== lastProjectId;
-		const dimensionChanged = effectiveDimension !== lastEffectiveDimension;
-		
 		if (allItems.length === 0) {
 			selectedPreviewItem = null;
-			lastProjectId = currentProjectId;
-			lastEffectiveDimension = effectiveDimension;
 			console.log(`[ProjectItem] Project: ${currentProjectId} | Total previews: 0 | No selection`);
-		} else {
-			// On mobile, always prefer portrait assets
-			const preferred = filterItemsForDimension(allItems, effectiveDimension);
-			const candidates = preferred.length > 0 ? preferred : allItems;
-			
-			// Re-select if project changed, dimension changed, or we don't have a selection yet
-			if (projectChanged || dimensionChanged || selectedPreviewItem === null) {
-				// Use Math.random() for truly random selection on each page load
-				const randomValue = Math.random();
-				const randomIndex = Math.floor(randomValue * candidates.length);
-				selectedPreviewItem = candidates[randomIndex];
-				
-				// Console log for debugging
-				const selectedVideoUrl = effectiveDimension === 'portrait' 
-					? selectedPreviewItem?.preview_video_url_portrait 
-					: selectedPreviewItem?.preview_video_url_landscape;
-				const selectedImageUrl = effectiveDimension === 'portrait'
-					? selectedPreviewItem?.preview_image_portrait?.url
-					: selectedPreviewItem?.preview_image_landscape?.url;
-				
-				console.log(`[ProjectItem] Project: ${currentProjectId} | Dimension: ${effectiveDimension}`);
-				console.log(`  Total previews available: ${allItems.length}`);
-				console.log(`  Filtered previews (${effectiveDimension}): ${preferred.length}`);
-				console.log(`  Candidates pool: ${candidates.length}`);
-				console.log(`  Random value: ${randomValue.toFixed(4)}`);
-				console.log(`  Selected index: ${randomIndex} / ${candidates.length - 1}`);
-				console.log(`  Selected video URL: ${selectedVideoUrl || 'none'}`);
-				console.log(`  Selected image URL: ${selectedImageUrl || 'none'}`);
-				
-				lastProjectId = currentProjectId;
-				lastEffectiveDimension = effectiveDimension;
-			}
+			return;
 		}
+		
+		// Filter items for the current dimension
+		const preferred = filterItemsForDimension(allItems, effectiveDimension);
+		const candidates = preferred.length > 0 ? preferred : allItems;
+		
+		// Always select a new random preview on each mount/page load
+		const randomValue = Math.random();
+		const randomIndex = Math.floor(randomValue * candidates.length);
+		selectedPreviewItem = candidates[randomIndex];
+		
+		// Console log for debugging
+		const selectedVideoUrl = effectiveDimension === 'portrait' 
+			? selectedPreviewItem?.preview_video_url_portrait 
+			: selectedPreviewItem?.preview_video_url_landscape;
+		const selectedImageUrl = effectiveDimension === 'portrait'
+			? selectedPreviewItem?.preview_image_portrait?.url
+			: selectedPreviewItem?.preview_image_landscape?.url;
+		
+		console.log(`[ProjectItem] Project: ${currentProjectId} | Dimension: ${effectiveDimension}`);
+		console.log(`  Total previews available: ${allItems.length}`);
+		console.log(`  Filtered previews (${effectiveDimension}): ${preferred.length}`);
+		console.log(`  Candidates pool: ${candidates.length}`);
+		console.log(`  Random value: ${randomValue.toFixed(4)}`);
+		console.log(`  Selected index: ${randomIndex} / ${candidates.length - 1}`);
+		console.log(`  Selected video URL: ${selectedVideoUrl || 'none'}`);
+		console.log(`  Selected image URL: ${selectedImageUrl || 'none'}`);
+	}
+
+	// Select preview when data is available (only in browser)
+	$: if (browser && projectData && projectUid) {
+		selectRandomPreview();
 	}
 
 	$: selectedPreview = selectedPreviewItem ? { item: selectedPreviewItem, index: 0 } : null;
