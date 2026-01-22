@@ -40,7 +40,7 @@ html, body {
 }
 
 p {
-    @apply text-base md:text-xl leading-[20px] md:leading-[26px];
+    @apply text-base md:text-xl leading-[24px] md:leading-[26px];
 }
 
 .h0 {
@@ -52,7 +52,7 @@ h1, .h1 {
 }
 
 h2, .h2 {
-    @apply text-base md:text-[40px] font-normal leading-[25x] md:leading-[125%];
+    @apply text-base md:text-[40px] font-normal leading-[24px] md:leading-[125%];
 }
 
 h3, .h3, .h3 p {
