@@ -300,20 +300,7 @@
 	let lastProjectId: string | null = null;
 	let lastEffectiveDimension: 'landscape' | 'square' | 'portrait' | null = null;
 
-	// Seeded random function - produces consistent results for same seed
-	function seededRandom(seed: string): number {
-		let hash = 0;
-		for (let i = 0; i < seed.length; i++) {
-			const char = seed.charCodeAt(i);
-			hash = ((hash << 5) - hash) + char;
-			hash = hash & hash; // Convert to 32bit integer
-		}
-		// Convert to a number between 0 and 1
-		const x = Math.sin(hash) * 10000;
-		return x - Math.floor(x);
-	}
-
-	// Select a preview video when project data is available (deterministic based on project ID)
+	// Select a preview video when project data is available (truly random on each page load)
 	$: if (projectData && projectUid) {
 		const allItems = Array.isArray(projectData?.preview) ? projectData.preview : [];
 		const currentProjectId = projectData?.id || projectUid || '';
@@ -326,6 +313,7 @@
 			selectedPreviewItem = null;
 			lastProjectId = currentProjectId;
 			lastEffectiveDimension = effectiveDimension;
+			console.log(`[ProjectItem] Project: ${currentProjectId} | Total previews: 0 | No selection`);
 		} else {
 			// On mobile, always prefer portrait assets
 			const preferred = filterItemsForDimension(allItems, effectiveDimension);
@@ -333,10 +321,28 @@
 			
 			// Re-select if project changed, dimension changed, or we don't have a selection yet
 			if (projectChanged || dimensionChanged || selectedPreviewItem === null) {
-				// Use seeded random based on project ID + dimension for consistent server/client selection
-				const seed = `${currentProjectId}-${effectiveDimension}`;
-				const randomIndex = Math.floor(seededRandom(seed) * candidates.length);
+				// Use Math.random() for truly random selection on each page load
+				const randomValue = Math.random();
+				const randomIndex = Math.floor(randomValue * candidates.length);
 				selectedPreviewItem = candidates[randomIndex];
+				
+				// Console log for debugging
+				const selectedVideoUrl = effectiveDimension === 'portrait' 
+					? selectedPreviewItem?.preview_video_url_portrait 
+					: selectedPreviewItem?.preview_video_url_landscape;
+				const selectedImageUrl = effectiveDimension === 'portrait'
+					? selectedPreviewItem?.preview_image_portrait?.url
+					: selectedPreviewItem?.preview_image_landscape?.url;
+				
+				console.log(`[ProjectItem] Project: ${currentProjectId} | Dimension: ${effectiveDimension}`);
+				console.log(`  Total previews available: ${allItems.length}`);
+				console.log(`  Filtered previews (${effectiveDimension}): ${preferred.length}`);
+				console.log(`  Candidates pool: ${candidates.length}`);
+				console.log(`  Random value: ${randomValue.toFixed(4)}`);
+				console.log(`  Selected index: ${randomIndex} / ${candidates.length - 1}`);
+				console.log(`  Selected video URL: ${selectedVideoUrl || 'none'}`);
+				console.log(`  Selected image URL: ${selectedImageUrl || 'none'}`);
+				
 				lastProjectId = currentProjectId;
 				lastEffectiveDimension = effectiveDimension;
 			}

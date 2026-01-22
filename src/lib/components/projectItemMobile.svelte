@@ -43,6 +43,7 @@ $: projectClient = projectData?.client || 'Untitled Client';
 		if (allItems.length === 0) {
 			selectedPreviewItem = null;
 			lastProjectId = currentProjectId;
+			console.log(`[ProjectItemMobile] Project: ${currentProjectId} | Total previews: 0 | No selection`);
 		} else {
 			const preferred = filterItemsForDimension(allItems, 'portrait');
 			const candidates = preferred.length > 0 ? preferred : allItems;
@@ -50,8 +51,23 @@ $: projectClient = projectData?.client || 'Untitled Client';
 			// Re-select if project changed or we don't have a selection yet
 			if (projectChanged || selectedPreviewItem === null) {
 				// Use Math.random() for truly random selection on each page load
-				const randomIndex = Math.floor(Math.random() * candidates.length);
+				const randomValue = Math.random();
+				const randomIndex = Math.floor(randomValue * candidates.length);
 				selectedPreviewItem = candidates[randomIndex];
+				
+				// Console log for debugging
+				const selectedVideoUrl = selectedPreviewItem?.preview_video_url_portrait;
+				const selectedImageUrl = selectedPreviewItem?.preview_image_portrait?.url;
+				
+				console.log(`[ProjectItemMobile] Project: ${currentProjectId} | Dimension: portrait`);
+				console.log(`  Total previews available: ${allItems.length}`);
+				console.log(`  Filtered previews (portrait): ${preferred.length}`);
+				console.log(`  Candidates pool: ${candidates.length}`);
+				console.log(`  Random value: ${randomValue.toFixed(4)}`);
+				console.log(`  Selected index: ${randomIndex} / ${candidates.length - 1}`);
+				console.log(`  Selected video URL: ${selectedVideoUrl || 'none'}`);
+				console.log(`  Selected image URL: ${selectedImageUrl || 'none'}`);
+				
 				lastProjectId = currentProjectId;
 			}
 		}
