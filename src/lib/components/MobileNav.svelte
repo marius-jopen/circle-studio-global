@@ -1,14 +1,10 @@
 <script lang="ts">
 import { page } from '$app/stores';
 import { tick } from 'svelte';
-import { goto } from '$app/navigation';
 import { homeSearchQuery, mobileSearchOpen } from '$lib/stores';
-import { fade } from 'svelte/transition';
 
 $: pathname = $page.url.pathname;
 $: isHome = pathname === '/';
-$: isAbout = pathname === '/about' || pathname.startsWith('/about/');
-$: isProject = pathname.startsWith('/work/');
 
 let searchOpen = false;
 let searchInput: HTMLInputElement;
@@ -67,23 +63,6 @@ function closeSearch() {
         }, 300);
     }, 200);
 }
-function openSearchAndNavigate() {
-    // Navigate to home and open search
-    mobileSearchOpen.set(true);
-    goto('/').then(() => {
-        isOpening = true;
-        contentVisible = false;
-        searchOpen = true;
-        // Wait for box to expand (300ms), then fade in content
-        setTimeout(() => {
-            contentVisible = true;
-            isOpening = false;
-            tick().then(() => {
-                searchInput?.focus();
-            });
-        }, 300);
-    });
-}
 </script>
 
 <!-- Top right search button (only on homepage) -->
@@ -135,19 +114,8 @@ function openSearchAndNavigate() {
 <div class="md:hidden fixed bottom-5 left-0 right-0 z-50 flex justify-center items-center mx-4">
     <div class="bg-gray-100 rounded-full py-0 px-0">
         <nav class="flex items-center justify-center gap-x-0 text-xl">
-            {#if isHome}
-                <a href="/" class="text-center font-medium whitespace-nowrap py-2 pl-5 pr-2">Work</a>
-                <a href="/about" class="text-center font-medium py-2 pl-2 pr-5">About</a>
-            {:else if isAbout}
-                <button type="button" class="text-center font-medium py-2 mt-[-1px] pl-5 pr-2 flex items-center justify-center" on:click={openSearchAndNavigate} aria-label="Search">
-                    <img src="/search-logo.svg" alt="Search" class="w-5 h-5" />
-                </button>
-                <a href="/" class="text-center font-medium whitespace-nowrap py-2 pl-2 pr-2">Work</a>
-                <a href="/about" class="text-center font-medium py-2 pl-2 pr-5">About</a>
-            {:else}
-                <a href="/" class="text-center font-medium whitespace-nowrap py-2 pl-5 pr-2">Work</a>
-                <a href="/about" class="text-center font-medium py-2 pl-2 pr-5">About</a>
-            {/if}
+            <a href="/" class="text-center font-medium whitespace-nowrap py-2 pl-5 pr-2">Work</a>
+            <a href="/about" class="text-center font-medium py-2 pl-2 pr-5">About</a>
         </nav>
     </div>
 </div>
