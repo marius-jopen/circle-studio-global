@@ -37,6 +37,44 @@
 		}
 	}
 	
+	// Function to handle Grid click specifically
+	function handleGridClick() {
+		const currentPath = window.location.pathname;
+		if (currentPath === '/' || currentPath === '/preview') {
+			setViewMode('grid');
+		} else {
+			localStorage.setItem('indexViewMode', 'grid');
+			try {
+				sessionStorage.setItem('circle-studio-navigating', 'true');
+			} catch {}
+			goto('/?view=grid');
+		}
+	}
+	
+	// Function to handle List click specifically
+	function handleListClick() {
+		const currentPath = window.location.pathname;
+		if (currentPath === '/' || currentPath === '/preview') {
+			setViewMode('list');
+		} else {
+			localStorage.setItem('indexViewMode', 'list');
+			try {
+				sessionStorage.setItem('circle-studio-navigating', 'true');
+			} catch {}
+			goto('/?view=list');
+		}
+	}
+	
+	// Function to handle Play click - navigate to /play
+	function handlePlayClick(event: MouseEvent) {
+		event.preventDefault();
+		const currentPath = window.location.pathname;
+		try {
+			sessionStorage.setItem('circle-studio-navigating', 'true');
+		} catch {}
+		goto('/play');
+	}
+	
 	// When clicking the logo/wheel, always go home and set Grid view
 	function handleLogoClick(event: MouseEvent) {
 		event.preventDefault();
@@ -63,9 +101,17 @@
 	// Determine current route for conditional mobile wheel visibility
 	const isProject = $derived(currentPath.startsWith('/work/'));
 	const isAbout = $derived(currentPath === '/about' || currentPath.startsWith('/about/'));
+	const isHome = $derived(currentPath === '/' || currentPath === '/preview');
+	const isPlay = $derived(currentPath === '/play' || currentPath === '/play/preview');
 	
 	// Check if we're on home page with grid mode active (show white logo)
-	const isHomePageGrid = $derived((currentPath === '/' || currentPath === '/preview') && $viewMode === 'grid');
+	const isHomePageGrid = $derived(isHome && $viewMode === 'grid');
+	
+	// Active state for navigation items
+	const isGridActive = $derived(isHome && $viewMode === 'grid');
+	const isListActive = $derived(isHome && $viewMode === 'list');
+	// Play is active when on /play route
+	const isPlayActive = $derived(isPlay);
 </script>
 
 <!-- Navigation Header -->
@@ -81,6 +127,52 @@
 			</a>
 		</nav>
 	</div> -->
+
+	<!-- Navigation - Always visible, outside header fade -->
+	<div class="hidden md:flex fixed top-0 right-0 z-[10001] pointer-events-auto px-3 py-4 items-center space-x-2">
+		<!-- Grid and List in same box -->
+		<div class="bg-gray-100 rounded-full px-4 py-2 flex items-center space-x-3">
+			<!-- Grid -->
+			<button
+				class="font-medium transition-colors duration-300 ease-in-out hover:text-neutral-900 focus:outline-none cursor-pointer"
+				class:text-neutral-500={isGridActive}
+				class:text-neutral-900={!isGridActive}
+				onclick={handleGridClick}
+				aria-label="Grid view"
+			>
+				Grid
+			</button>
+			<!-- List -->
+			<button
+				class="font-medium transition-colors duration-300 ease-in-out hover:text-neutral-900 focus:outline-none cursor-pointer"
+				class:text-neutral-500={isListActive}
+				class:text-neutral-900={!isListActive}
+				onclick={handleListClick}
+				aria-label="List view"
+			>
+				List
+			</button>
+		</div>
+		<!-- About -->
+		<a
+			href="/about"
+			class="bg-gray-100 rounded-full px-4 py-2 font-medium transition-colors duration-300 ease-in-out hover:text-neutral-900"
+			class:text-neutral-500={isAbout}
+			class:text-neutral-900={!isAbout}
+		>
+			About
+		</a>
+		<!-- Play -->
+		<a
+			href="/play"
+			class="bg-gray-100 rounded-full px-4 py-2 font-medium transition-colors duration-300 ease-in-out hover:text-neutral-900"
+			class:text-neutral-500={isPlayActive}
+			class:text-neutral-900={!isPlayActive}
+			onclick={handlePlayClick}
+		>
+			Play
+		</a>
+	</div>
 
 	<header class="fixed top-0 z-50 w-full pointer-events-none transition-all duration-600" 
 		class:opacity-0={effectiveFaded} 
@@ -129,46 +221,6 @@
 				
 				<!-- Mobile Navigation removed here; now rendered above header to stay visible -->
 				
-				<!-- Desktop Navigation - Hidden on mobile -->
-				<div class="hidden md:flex pr-1 items-center bg-gray-100 mr-2 pl-5 py-2 rounded-full" class:pointer-events-auto={!effectiveFaded} class:pointer-events-none={effectiveFaded}>
-					<!-- Add Grid/List selector before the navigation -->
-					<div class="flex items-center" class:pointer-events-auto={!effectiveFaded} class:pointer-events-none={effectiveFaded}>
-						<!-- Grid/List selector -->
-						<div class="relative">
-							<button
-								class="font-medium transition-all duration-600 ease-in-out hover:text-neutral-900 focus:outline-none min-w-[50px] text-left cursor-pointer text-neutral-900"
-								onclick={handleViewModeClick}
-								onmouseenter={() => isViewModeHovering = true}
-								onmouseleave={() => isViewModeHovering = false}
-								aria-label="Switch between grid and list view"
-							>
-								{(() => {
-									if (currentPath === '/' || currentPath === '/preview') {
-										// On front page: show toggle option (what you'll get when you click)
-										return $viewMode === 'grid' ? 'List' : 'Grid';
-									} else {
-										// On other pages: show what you want to go to
-										return $viewMode === 'grid' ? 'List' : 'Grid';
-									}
-								})()}
-							</button>
-						</div>
-						
-						<!-- Navigation Links -->
-						<ul class="flex items-right space-x-5 pr-3" class:pointer-events-auto={!faded} class:pointer-events-none={faded}>
-							{#each settings.data.navigation_header as navItem}
-								<li>
-									<PrismicLink 
-										field={navItem} 
-										class="hover:text-neutral-900 transition-colors duration-600 font-medium text-neutral-900"
-									>
-										{navItem.text || 'Link'}
-									</PrismicLink>
-								</li>
-							{/each}
-						</ul>
-					</div>
-				</div>
 			</div>
 			
 		</nav>
@@ -228,4 +280,5 @@
 	:global(header .project-page-logo.project-page img) {
 		filter: brightness(0.9) !important;
 	}
+
 </style> 
