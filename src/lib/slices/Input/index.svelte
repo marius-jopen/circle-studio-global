@@ -24,7 +24,7 @@
 	// Mobile detection for size adjustment
 	let isMobile = $state<boolean>(false);
 	// Padding on mobile to prevent text from touching screen edges (in pixels)
-	const MOBILE_PADDING = 40; // 20px on each side
+	const MOBILE_PADDING = 80; // 40px on each side
 
 	// One-time fade-in control
 	let manualModeState = $state<boolean>(true);
