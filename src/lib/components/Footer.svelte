@@ -6,11 +6,11 @@
   const currentYear = new Date().getFullYear();
 </script>
 
-<footer class="w-full px-3 pb-22 md:pb-4">
-  <div class="md:flex pt-6 md:pt-3 justify-center mt-[-1px] md:justify-between items-center w-full border-t border-gray-200 pt-3">
+<footer class="w-full px-3 pb-22 md:pb-4 ">
+  <div class="md:bg-neutral-100 px-4 pb-3 rounded-full md:flex pt-6 md:pt-3 justify-center mt-[-1px] md:justify-between items-center w-full pt-3 relative">
     <div class="mb-2 md:mb-0 text-sm text-center md:text-left">© {currentYear} ART CAMP EST.2016</div>
     {#if settings?.data?.navigation_footer?.length}
-      <ul class="hidden md:flex items-center space-x-6 ">
+      <ul class="hidden md:flex items-center space-x-6 absolute left-1/2 -translate-x-1/2">
         {#each settings.data.navigation_footer as navItem}
           <li>
             <PrismicLink
