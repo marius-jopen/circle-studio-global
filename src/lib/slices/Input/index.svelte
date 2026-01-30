@@ -23,7 +23,8 @@
 	
 	// Mobile detection for size adjustment
 	let isMobile = $state<boolean>(false);
-	const MOBILE_SIZE_MULTIPLIER = 0.8; // 20% smaller on mobile
+	// Padding on mobile to prevent text from touching screen edges (in pixels)
+	const MOBILE_PADDING = 40; // 20px on each side
 
 	// One-time fade-in control
 	let manualModeState = $state<boolean>(true);
@@ -37,14 +38,10 @@
 		
 		const rect = sectionEl.getBoundingClientRect();
 		const maxByHeight = rect.height * 0.6; // cap wheel at 60% of available height
-		const maxByWidth = rect.width; // do not exceed available width
+		// On mobile, subtract padding to prevent text from touching borders
+		const maxByWidth = isMobile ? rect.width - MOBILE_PADDING : rect.width;
 		const wheelSizePx = Math.max(0, Math.min(maxByHeight, maxByWidth));
-		let percent = (wheelSizePx / BASE_CONTAINER_SIZE) * 100;
-		
-		// Apply 20% reduction on mobile
-		if (isMobile) {
-			percent *= MOBILE_SIZE_MULTIPLIER;
-		}
+		const percent = (wheelSizePx / BASE_CONTAINER_SIZE) * 100;
 		
 		containerSizePercent = Number.isFinite(percent) ? percent : 100;
 	}
@@ -95,6 +92,19 @@
 	});
 </script>
 
+<!-- Mobile: Fixed input at top matching MobileNav search style -->
+<div class="md:hidden fixed top-5 right-4 left-4 z-50">
+	<div class="bg-gray-100 rounded-full flex items-center overflow-hidden" style="height: 48px;">
+		<input
+			id="wheel-text-input-mobile"
+			type="text"
+			placeholder="Type text for the circle..."
+			bind:value={wheelText}
+			class="p-2 px-4 flex-1 bg-transparent outline-none text-xl"
+		/>
+	</div>
+</div>
+
 <section
 	class="min-h-[100svh] flex flex-col px-4 pt-8 pb-12 overflow-y-hidden"
 	data-slice-type={slice.slice_type}
@@ -108,8 +118,8 @@
 		{/if}
 	</div>
 
-	<!-- Input is always visible at the bottom -->
-	<div class="flex justify-center items-center w-full pt-8">
+	<!-- Desktop: Input at the bottom -->
+	<div class="hidden md:flex justify-center items-center w-full pt-8">
 		<input
 			id="wheel-text-input"
 			type="text"

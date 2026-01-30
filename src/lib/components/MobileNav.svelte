@@ -116,7 +116,7 @@ function closeSearch() {
         <nav class="flex items-center justify-center gap-x-0 text-xl">
             <a href="/" class="text-center font-medium whitespace-nowrap py-2 pl-5 pr-2">Work</a>
             <a href="/about" class="text-center font-medium py-2 pl-2 pr-5">About</a>
-            <a href="/play" class="text-center font-medium py-2 pl-2 pr-5">Play</a>
+            <a href="/play" class="text-center font-medium py-2 pl-0 pr-5">Play</a>
         </nav>
     </div>
 </div>
