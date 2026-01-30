@@ -14,10 +14,10 @@
 	// Map x_distance to max-width classes (fraction of container)
 	const maxWidthClass = $derived.by(() => {
 		switch (xDistance) {
-			case 'sm': return 'max-w-11/12';      // 6/12
-			case 'md': return 'max-w-10/12';   // 8/12
-			case 'lg': return 'max-w-9/12';   // 10/12
-			case 'xl': return 'max-w-8/12';   // 11/12
+			case 'sm': return 'max-w-11/12 mx-auto';      // 6/12
+			case 'md': return 'max-w-10/12 mx-auto';   // 8/12
+			case 'lg': return 'max-w-9/12 mx-auto';   // 10/12
+			case 'xl': return 'max-w-8/12 mx-auto';   // 11/12
 			default: return 'max-w-full';          // 12/12
 		}
 	});

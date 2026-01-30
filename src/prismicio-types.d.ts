@@ -244,6 +244,7 @@ export type HomeDocument<Lang extends string = string> = prismic.PrismicDocument
 >;
 
 type PageDocumentDataSlicesSlice =
+	| TagCloudSlice
 	| ListSlice
 	| LogoSlice
 	| ContactSlice
@@ -1378,6 +1379,63 @@ type SpacerSliceVariation = SpacerSliceDefault;
 export type SpacerSlice = prismic.SharedSlice<'spacer', SpacerSliceVariation>;
 
 /**
+ * Item in *TagCloud → Default → Primary → Items*
+ */
+export interface TagCloudSliceDefaultPrimaryItemsItem {
+	/**
+	 * Text field in *TagCloud → Default → Primary → Items*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: tag_cloud.default.primary.items[].text
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	text: prismic.KeyTextField;
+}
+
+/**
+ * Primary content in *TagCloud → Default → Primary*
+ */
+export interface TagCloudSliceDefaultPrimary {
+	/**
+	 * Items field in *TagCloud → Default → Primary*
+	 *
+	 * - **Field Type**: Group
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: tag_cloud.default.primary.items[]
+	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+	 */
+	items: prismic.GroupField<Simplify<TagCloudSliceDefaultPrimaryItemsItem>>;
+}
+
+/**
+ * Default variation for TagCloud Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type TagCloudSliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Simplify<TagCloudSliceDefaultPrimary>,
+	never
+>;
+
+/**
+ * Slice variation for *TagCloud*
+ */
+type TagCloudSliceVariation = TagCloudSliceDefault;
+
+/**
+ * TagCloud Shared Slice
+ *
+ * - **API ID**: `tag_cloud`
+ * - **Description**: TagCloud
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type TagCloudSlice = prismic.SharedSlice<'tag_cloud', TagCloudSliceVariation>;
+
+/**
  * Item in *TextList → Default → Primary → Items*
  */
 export interface TextListSliceDefaultPrimaryItemsItem {
@@ -1637,6 +1695,11 @@ declare module '@prismicio/client' {
 			SpacerSliceDefaultPrimary,
 			SpacerSliceVariation,
 			SpacerSliceDefault,
+			TagCloudSlice,
+			TagCloudSliceDefaultPrimaryItemsItem,
+			TagCloudSliceDefaultPrimary,
+			TagCloudSliceVariation,
+			TagCloudSliceDefault,
 			TextListSlice,
 			TextListSliceDefaultPrimaryItemsItem,
 			TextListSliceDefaultPrimary,

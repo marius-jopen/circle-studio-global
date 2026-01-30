@@ -9,6 +9,7 @@ import List from './List/index.svelte';
 import Logo from './Logo/index.svelte';
 import RichText from './RichText/index.svelte';
 import Spacer from './Spacer/index.svelte';
+import TagCloud from './TagCloud/index.svelte';
 import TextList from './TextList/index.svelte';
 import Video from './Video/index.svelte';
 import Wheel from './Wheel/index.svelte';
@@ -23,6 +24,7 @@ export const components = {
 	logo: Logo,
 	rich_text: RichText,
 	spacer: Spacer,
+	tag_cloud: TagCloud,
 	text_list: TextList,
 	video: Video,
 	wheel: Wheel
