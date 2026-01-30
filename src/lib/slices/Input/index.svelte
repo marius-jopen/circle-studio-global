@@ -20,6 +20,10 @@
 
 	// Will be computed responsively based on available viewport space
 	let containerSizePercent = $state<number>(100);
+	
+	// Mobile detection for size adjustment
+	let isMobile = $state<boolean>(false);
+	const MOBILE_SIZE_MULTIPLIER = 0.8; // 20% smaller on mobile
 
 	// One-time fade-in control
 	let manualModeState = $state<boolean>(true);
@@ -28,11 +32,20 @@
 
 	function updateWheelSize() {
 		if (!sectionEl) return;
+		// Check if mobile
+		isMobile = window.innerWidth < 768;
+		
 		const rect = sectionEl.getBoundingClientRect();
 		const maxByHeight = rect.height * 0.6; // cap wheel at 60% of available height
 		const maxByWidth = rect.width; // do not exceed available width
 		const wheelSizePx = Math.max(0, Math.min(maxByHeight, maxByWidth));
-		const percent = (wheelSizePx / BASE_CONTAINER_SIZE) * 100;
+		let percent = (wheelSizePx / BASE_CONTAINER_SIZE) * 100;
+		
+		// Apply 20% reduction on mobile
+		if (isMobile) {
+			percent *= MOBILE_SIZE_MULTIPLIER;
+		}
+		
 		containerSizePercent = Number.isFinite(percent) ? percent : 100;
 	}
 

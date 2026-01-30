@@ -184,8 +184,8 @@
 		class:dark-mode={isDarkMode}>
 		<nav class="px-3 py-4">
 			<div class="flex justify-between w-full relative">
-				<!-- Mobile: Centered wheel (hidden on project/about pages and when mobile search open) -->
-				{#if !isProject && !isAbout && !$mobileSearchOpen}
+				<!-- Mobile: Centered wheel (hidden on project/about/play pages and when mobile search open) -->
+				{#if !isProject && !isAbout && !isPlay && !$mobileSearchOpen}
 					<MobileWheel isDarkMode={isDarkMode || isHomePageGrid} />
 				{/if}
 				
