@@ -413,9 +413,9 @@
 						</div>
 					{/if}
 					
-					<!-- Desktop static text overlay (always visible on desktop) -->
+					<!-- Desktop static text overlay (fades out on hover) -->
 					{#if !isMobile}
-						<div class="absolute bottom-[-3px] left-0 right-0 p-3 text-white pointer-events-none z-[1]">
+						<div class="absolute bottom-[-3px] left-0 right-0 p-3 text-white pointer-events-none z-[1] transition-opacity duration-300" class:opacity-0={isHovering}>
 							<div class="mb-[-2px] text-lg">{projectTitleRaw}</div>
 							<div class="text-lg opacity-60">{projectClientRaw}</div>
 						</div>
@@ -447,9 +447,9 @@
 						</div>
 					{/if}
 					
-					<!-- Desktop static text overlay (always visible on desktop) -->
+					<!-- Desktop static text overlay (fades out on hover) -->
 					{#if !isMobile}
-						<div class="absolute bottom-[-3px] left-0 right-0 p-3 text-white pointer-events-none z-[1]">
+						<div class="absolute bottom-[-3px] left-0 right-0 p-3 text-white pointer-events-none z-[1] transition-opacity duration-300" class:opacity-0={isHovering}>
 							<div class="text-lg font-medium">{projectTitleRaw}</div>
 							<div class="text-lg opacity-60">{projectClientRaw}</div>
 						</div>
@@ -528,9 +528,9 @@
 						</div>
 					{/if}
 					
-					<!-- Desktop static text overlay (always visible on desktop) -->
+					<!-- Desktop static text overlay (fades out on hover) -->
 					{#if !isMobile}
-						<div class="absolute bottom-[-3px] left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white pointer-events-none z-[1]">
+						<div class="absolute bottom-[-3px] left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white pointer-events-none z-[1] transition-opacity duration-300" class:opacity-0={isHovering}>
 							<div class="text-lg font-medium">{projectTitleRaw}</div>
 							<div class="text-lg opacity-80">{projectClientRaw}</div>
 						</div>
@@ -562,9 +562,9 @@
 						</div>
 					{/if}
 					
-					<!-- Desktop static text overlay (always visible on desktop) -->
+					<!-- Desktop static text overlay (fades out on hover) -->
 					{#if !isMobile}
-						<div class="absolute bottom-[-3px] left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white pointer-events-none z-[1]">
+						<div class="absolute bottom-[-3px] left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white pointer-events-none z-[1] transition-opacity duration-300" class:opacity-0={isHovering}>
 							<div class="text-lg font-medium">{projectTitleRaw}</div>
 							<div class="text-lg opacity-80">{projectClientRaw}</div>
 						</div>

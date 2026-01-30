@@ -1263,6 +1263,17 @@ export interface RichTextSliceDefaultPrimary {
 	 * - **Documentation**: https://prismic.io/docs/fields/select
 	 */
 	bottom_distance: prismic.SelectField<'none' | 'sm' | 'md' | 'lg' | 'xl', 'filled'>;
+
+	/**
+	 * Columns field in *RichText → Default → Primary*
+	 *
+	 * - **Field Type**: Select
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: 1
+	 * - **API ID Path**: rich_text.default.primary.columns
+	 * - **Documentation**: https://prismic.io/docs/fields/select
+	 */
+	columns: prismic.SelectField<'1' | '2' | '3' | '4', 'filled'>;
 }
 
 /**
