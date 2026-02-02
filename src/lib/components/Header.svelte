@@ -129,7 +129,7 @@
 	</div> -->
 
 	<!-- Navigation - Fades with header when sound is on -->
-	<div class="hidden md:flex fixed top-0 right-0 z-[10001] pointer-events-auto px-3 py-4 items-center space-x-2 transition-opacity duration-600"
+	<div class="hidden md:flex fixed top-0 right-2 z-[10001] pointer-events-auto px-3 py-4 items-center space-x-2 transition-opacity duration-600"
 		class:opacity-0={effectiveFaded}
 		class:opacity-100={!effectiveFaded}
 		class:pointer-events-none={effectiveFaded}

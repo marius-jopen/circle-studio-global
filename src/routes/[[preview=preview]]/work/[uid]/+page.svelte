@@ -68,7 +68,7 @@
 </script>
 
 <svelte:head>
-	<title>{data.title}</title>
+	<title>Art Camp - Creative Studio | {data.title}</title>
 	{#if data.meta_description}
 		<meta name="description" content={data.meta_description} />
 	{/if}
