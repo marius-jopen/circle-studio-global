@@ -16,6 +16,9 @@
 	let metaTitle = $derived(page.data?.meta_title ?? data.fallbackMetaTitle);
 	let metaImage = $derived(page.data?.meta_image ?? data.fallbackMetaImage);
 	
+	// Get current URL for og:url
+	let currentUrl = $derived(page.url.origin + page.url.pathname);
+	
 	// Check if we're on admin or login routes
 	let isAdminRoute = $derived(page.url.pathname.startsWith('/admin') || page.url.pathname === '/login');
 	
@@ -184,12 +187,28 @@
 	{#if metaDescription}
 		<meta name="description" content={metaDescription} />
 	{/if}
+	<!-- Open Graph / Facebook -->
 	{#if metaTitle}
-		<meta name="og:title" content={metaTitle} />
+		<meta property="og:title" content={metaTitle} />
+	{/if}
+	{#if metaDescription}
+		<meta property="og:description" content={metaDescription} />
 	{/if}
 	{#if metaImage}
-		<meta name="og:image" content={metaImage} />
-		<meta name="twitter:card" content="summary_large_image" />
+		<meta property="og:image" content={metaImage} />
+	{/if}
+	<meta property="og:url" content={currentUrl} />
+	<meta property="og:type" content="website" />
+	<!-- Twitter -->
+	<meta name="twitter:card" content="summary_large_image" />
+	{#if metaTitle}
+		<meta name="twitter:title" content={metaTitle} />
+	{/if}
+	{#if metaDescription}
+		<meta name="twitter:description" content={metaDescription} />
+	{/if}
+	{#if metaImage}
+		<meta name="twitter:image" content={metaImage} />
 	{/if}
 </svelte:head>
 
