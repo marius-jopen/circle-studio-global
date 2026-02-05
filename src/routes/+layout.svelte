@@ -11,6 +11,11 @@
 	import MobileNav from '$lib/components/MobileNav.svelte';
 	let { children, data } = $props();
 	
+	// Meta tags with fallback to home page values
+	let metaDescription = $derived(page.data?.meta_description ?? data.fallbackMetaDescription);
+	let metaTitle = $derived(page.data?.meta_title ?? data.fallbackMetaTitle);
+	let metaImage = $derived(page.data?.meta_image ?? data.fallbackMetaImage);
+	
 	// Check if we're on admin or login routes
 	let isAdminRoute = $derived(page.url.pathname.startsWith('/admin') || page.url.pathname === '/login');
 	
@@ -176,14 +181,14 @@
 
 <svelte:head>
 	<title>Art Camp - Creative Studio{page.data?.title ? ` | ${page.data.title}` : ''}</title>
-	{#if page.data?.meta_description}
-		<meta name="description" content={page.data.meta_description} />
+	{#if metaDescription}
+		<meta name="description" content={metaDescription} />
 	{/if}
-	{#if page.data?.meta_title}
-		<meta name="og:title" content={page.data.meta_title} />
+	{#if metaTitle}
+		<meta name="og:title" content={metaTitle} />
 	{/if}
-	{#if page.data?.meta_image}
-		<meta name="og:image" content={page.data.meta_image} />
+	{#if metaImage}
+		<meta name="og:image" content={metaImage} />
 		<meta name="twitter:card" content="summary_large_image" />
 	{/if}
 </svelte:head>
