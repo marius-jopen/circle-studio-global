@@ -152,7 +152,7 @@
 				rotationSpeed: 0.31,
 				spacingAmplitudePercent: 1.02,
 				spacingSpeed: 0.1,
-				rotationStart: 0,
+				rotationStart: 20,
 				animationType: 'sin'
 			},
 			{
@@ -160,7 +160,7 @@
 				rotationSpeed: 0.3,
 				spacingAmplitudePercent: 0.65,
 				spacingSpeed: 0.004,
-				rotationStart: 274,
+				rotationStart: 294,
 				animationType: 'sin'
 			},
 			{
