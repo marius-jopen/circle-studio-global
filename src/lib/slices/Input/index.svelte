@@ -40,7 +40,7 @@
 	let isFadingOut = $state<boolean>(false);
 	const FADE_OUT_TIME = 1.5;
 
-	function handleDesktopInputFocus() {
+	function handleInputFocus() {
 		if (isFadingOut) return;
 		if (!wheelText || wheelText === '') return;
 		isFadingOut = true;
@@ -185,6 +185,7 @@
 			placeholder="Type your text here…"
 			bind:value={wheelText}
 			bind:this={mobileInput}
+			onfocus={handleInputFocus}
 			autocomplete="off"
 			autofocus
 			class="py-2 px-5 flex-1 bg-transparent outline-none text-xl font-medium"
@@ -215,7 +216,7 @@
 		type="text"
 		placeholder="Type your text here…"
 		bind:value={wheelText}
-		onfocus={handleDesktopInputFocus}
+		onfocus={handleInputFocus}
 		autocomplete="off"
 		class="px-6 pt-3.5 text-neutral-500 hover:text-primary transition-colors duration-300 pb-4 bg-neutral-100 rounded-md w-full max-w-xl text-3xl outline-none focus:outline-none focus:ring-0 focus:border-black"
 	/>
