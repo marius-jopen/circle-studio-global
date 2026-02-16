@@ -11,7 +11,7 @@
 	const { slice }: Props = $props();
 
 	// Toggle: when true, mobile shows two-column grid; when false, mobile shows text circles (FanWheel)
-	const useMobileGrid = true;
+	const useMobileGrid = false;
 
 	let items = $state<string[]>([]);
 	let urls = $state<string[]>([]);
@@ -163,7 +163,7 @@
 	});
 </script>
 
-<section class="mb-8 mt-8 overflow-x-hidden w-full" data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
+<section class="mb-8 mt-8 w-full" style="overflow-x: clip;" data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
 	<div class="flex justify-center items-center w-full pt-12 pb-12 md:pt-24 md:pb-24">
 		{#if mounted && isMobile && useMobileGrid}
 			<!-- Mobile: Two-column list (only when useMobileGrid is true) -->
@@ -198,7 +198,7 @@
 		{:else if mounted}
 			<!-- FanWheel (responsive radius and font size for mobile/desktop) -->
 			<div class="w-full relative">
-				<FanWheel {items} {urls} radius={wheelRadius} rotationSpeed={rotationSpeed} fontSize={wheelFontSize} bind:isHovering />
+				<FanWheel {items} {urls} radius={wheelRadius} rotationSpeed={rotationSpeed} fontSize={wheelFontSize} fit={isMobile ? 'safe' : 'tight'} bind:isHovering />
 				{#if title}
 					<!-- Centered title: always visible on mobile, fades in/out on hover for desktop -->
 					<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
