@@ -129,13 +129,13 @@
 	</div> -->
 
 	<!-- Navigation - Fades with header when sound is on -->
-	<div class="hidden md:flex fixed top-0 right-2 z-[10001] pointer-events-auto px-3 py-4 items-center space-x-2 transition-opacity duration-600"
+	<div class="hidden md:flex fixed top-0 right-2 z-[10001] pointer-events-auto px-3 py-4 items-center space-x-1.5 transition-opacity duration-600"
 		class:opacity-0={effectiveFaded}
 		class:opacity-100={!effectiveFaded}
 		class:pointer-events-none={effectiveFaded}
 		class:pointer-events-auto={!effectiveFaded}>
 		<!-- Grid and List in same box -->
-		<div class="bg-gray-100 rounded-full px-4 py-2 flex items-center space-x-3">
+		<div class="bg-gray-100 rounded-md px-4 py-2 flex items-center gap-x-3">
 			<!-- Grid -->
 			<button
 				class="font-medium transition-colors duration-300 ease-in-out hover:text-neutral-900 focus:outline-none cursor-pointer"
@@ -146,7 +146,7 @@
 			>
 				Grid
 			</button>
-			<!-- List -->
+			|
 			<button
 				class="font-medium transition-colors duration-300 ease-in-out hover:text-neutral-900 focus:outline-none cursor-pointer"
 				class:text-neutral-500={isListActive}
@@ -160,7 +160,7 @@
 		<!-- About -->
 		<a
 			href="/about"
-			class="bg-gray-100 rounded-full px-4 py-2 font-medium transition-colors duration-300 ease-in-out hover:text-neutral-900"
+			class="bg-gray-100 rounded-md px-4 py-2 font-medium transition-colors duration-300 ease-in-out hover:text-neutral-900"
 			class:text-neutral-500={isAbout}
 			class:text-neutral-900={!isAbout}
 		>
@@ -169,7 +169,7 @@
 		<!-- Play -->
 		<a
 			href="/play"
-			class="bg-gray-100 rounded-full px-4 py-2 font-medium transition-colors duration-300 ease-in-out hover:text-neutral-900"
+			class="bg-gray-100 rounded-md px-4 py-2 font-medium transition-colors duration-300 ease-in-out hover:text-neutral-900"
 			class:text-neutral-500={isPlayActive}
 			class:text-neutral-900={!isPlayActive}
 			onclick={handlePlayClick}
