@@ -30,8 +30,11 @@
 	let isMobile = $state<boolean>(false);
 	let mobileViewportHeight = $state<number>(0);
 	let mobileViewportOffsetTop = $state<number>(0);
+	let windowInnerHeight = $state<number>(0);
 	// Padding on mobile to prevent text from touching screen edges (in pixels)
 	const MOBILE_PADDING = 80; // 40px on each side
+	// Height of the mobile input bar (including padding)
+	const MOBILE_INPUT_HEIGHT = 60;
 
 	// Fade animation control
 	let manualModeState = $state<boolean>(true);
@@ -73,11 +76,13 @@
 		
 		// Use visualViewport height on mobile (accounts for keyboard) if available
 		const availableHeight = (isMobile && window.visualViewport)
-			? window.visualViewport.height
+			? window.visualViewport.height - MOBILE_INPUT_HEIGHT
 			: sectionEl.getBoundingClientRect().height;
 		const availableWidth = sectionEl.getBoundingClientRect().width;
 		
-		const maxByHeight = availableHeight * 0.7; // cap wheel at 70% of available height
+		const maxByHeight = isMobile
+			? availableHeight * 0.6 // smaller circle on mobile to leave room for input
+			: availableHeight * 0.7;
 		// On mobile, subtract padding to prevent text from touching borders
 		const maxByWidth = isMobile ? availableWidth - MOBILE_PADDING : availableWidth;
 		const wheelSizePx = Math.max(0, Math.min(maxByHeight, maxByWidth));
@@ -87,8 +92,10 @@
 	}
 
 	onMount(() => {
+		windowInnerHeight = window.innerHeight;
 		updateWheelSize();
 		const handleResize = () => {
+			windowInnerHeight = window.innerHeight;
 			if (window.visualViewport) {
 				mobileViewportHeight = window.visualViewport.height;
 				mobileViewportOffsetTop = window.visualViewport.offsetTop;
@@ -192,15 +199,16 @@
 	</button>
 {/if}
 
-<!-- Mobile: Input bar at bottom. Hidden when X is clicked so nav can show. -->
+<!-- Mobile: Input bar fixed to bottom of visible viewport (above keyboard). -->
 <div
-	class="md:hidden fixed bottom-5 left-0 right-0 z-50 flex justify-center items-center mx-0 transition-opacity duration-300"
+	class="md:hidden fixed left-0 right-0 z-50 flex justify-center items-center mx-4 transition-opacity duration-300"
 	class:opacity-0={!$playInputActive}
 	class:opacity-100={$playInputActive}
 	class:pointer-events-none={!$playInputActive}
 	class:pointer-events-auto={$playInputActive}
+	style="bottom: {windowInnerHeight > 0 && mobileViewportHeight > 0 ? Math.max(8, windowInnerHeight - mobileViewportHeight - mobileViewportOffsetTop + 8) : 20}px;"
 >
-	<div class="bg-gray-100 rounded-md flex items-center overflow-hidden">
+	<div class="bg-gray-100 rounded-md flex items-center overflow-hidden w-full">
 		<input
 			id="wheel-text-input-mobile"
 			type="text"
@@ -210,7 +218,8 @@
 			onfocus={handleInputFocus}
 			autocomplete="off"
 			autofocus
-			class="py-2 px-5 flex-1 bg-transparent outline-none text-xl font-medium"
+			class="py-2 px-5 flex-1 bg-transparent outline-none text-xl font-medium w-full"
+			style="font-size: 16px;"
 		/>
 	</div>
 </div>
@@ -219,13 +228,13 @@
 	class="flex flex-col px-2 pt-0 md:pt-8 pb-0 md:pb-12 overflow-hidden"
 	class:fixed={isMobile}
 	class:inset-x-0={isMobile}
-	style="height: {isMobile ? (mobileViewportHeight > 0 ? mobileViewportHeight + 'px' : '100dvh') : '92svh'}; top: {isMobile ? mobileViewportOffsetTop + 'px' : ''};"
+	style="height: {isMobile ? (mobileViewportHeight > 0 ? (mobileViewportHeight - MOBILE_INPUT_HEIGHT) + 'px' : '100dvh') : '92svh'}; top: {isMobile ? mobileViewportOffsetTop + 'px' : ''};"
 	data-slice-type={slice.slice_type}
 	data-slice-variation={slice.variation}
 	bind:this={sectionEl}
 >
 	<!-- Wheel area: on mobile, fill space above the fixed input; on desktop, flex-1 -->
-	<div class="flex-1 flex w-full  pb-[72px] md:pb-[100px]" bind:this={wheelAreaEl}>
+	<div class="flex-1 flex w-full pb-0 md:pb-[100px]" bind:this={wheelAreaEl}>
 		{#if !$mobileSearchOpen}
 			<BigWheel config={wheelConfig} />
 		{/if}
