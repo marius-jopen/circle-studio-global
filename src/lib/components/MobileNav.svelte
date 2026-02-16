@@ -1,10 +1,11 @@
 <script lang="ts">
 import { page } from '$app/stores';
 import { tick } from 'svelte';
-import { homeSearchQuery, mobileSearchOpen } from '$lib/stores';
+import { homeSearchQuery, mobileSearchOpen, playInputActive } from '$lib/stores';
 
 $: pathname = $page.url.pathname;
 $: isHome = pathname === '/';
+$: isPlay = pathname === '/play' || pathname === '/play/preview';
 
 let searchOpen = false;
 let searchInput: HTMLInputElement;
@@ -67,15 +68,15 @@ function closeSearch() {
 
 <!-- Top right search button (only on homepage) -->
 {#if isHome}
-    <div class="md:hidden fixed top-5 right-4 left-4 z-50">
+    <div class="md:hidden fixed top-[6px] right-[6px] left-4 z-50">
         <div 
-            class="bg-gray-100 rounded-full flex items-center transition-all duration-300 ease-in-out overflow-hidden ml-auto"
-            style="height: 48px; width: {searchOpen && !shouldShrink ? '100%' : '48px'}"
+            class="bg-gray-100 rounded-md flex items-center transition-all duration-300 ease-in-out overflow-hidden ml-auto"
+            style="width: {searchOpen && !shouldShrink ? '100%' : '40px'}; height: 40px;"
         >
             {#if !searchOpen}
                 <button 
                     type="button" 
-                    class="w-full h-full p-3 flex items-center justify-center flex-shrink-0 transition-opacity duration-200"
+                    class="w-10 h-10 flex items-center justify-center flex-shrink-0 transition-opacity duration-200"
                     class:opacity-0={isOpening}
                     class:opacity-100={!isOpening}
                     on:click={openSearch} 
@@ -110,13 +111,21 @@ function closeSearch() {
     </div>
 {/if}
 
-<!-- Bottom navigation -->
+<!-- Bottom navigation (hidden on /play page when input is active) -->
+{#if !isPlay || !$playInputActive}
 <div class="md:hidden fixed bottom-5 left-0 right-0 z-50 flex justify-center items-center mx-4">
-    <div class="bg-gray-100 rounded-full py-0 px-0">
+    <div class="bg-gray-100 rounded-md py-0 px-0">
         <nav class="flex items-center justify-center gap-x-0 text-xl">
             <a href="/" class="text-center font-medium whitespace-nowrap py-2 pl-5 pr-2">Work</a>
             <a href="/about" class="text-center font-medium py-2 pl-2 pr-5">About</a>
-            <a href="/play" class="text-center font-medium py-2 pl-0 pr-5">Play</a>
+            <a href="/play" class="text-center font-medium py-2 pl-0 pr-5" on:click|preventDefault={() => {
+                if (isPlay) {
+                    playInputActive.set(true);
+                } else {
+                    window.location.href = '/play';
+                }
+            }}>Play</a>
         </nav>
     </div>
 </div>
+{/if}

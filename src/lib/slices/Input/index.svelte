@@ -3,13 +3,18 @@
 	import type { SliceComponentProps } from '@prismicio/svelte';
 	import BigWheel from '../../components/BigWheel.svelte';
 	import { onMount } from 'svelte';
-    import { mobileSearchOpen } from '$lib/stores';
+    import { mobileSearchOpen, playInputActive } from '$lib/stores';
 
 	type Props = SliceComponentProps<Content.InputSlice>;
 
 	const { slice }: Props = $props();
 
 	let wheelText = $state<string>('Type your text here…');
+	let mobileInput = $state<HTMLInputElement | null>(null);
+	function closeMobileInput() {
+		mobileInput?.blur();
+		playInputActive.set(false);
+	}
 
 	// Elements used for measuring available space
 	let sectionEl: HTMLElement;
@@ -26,10 +31,38 @@
 	// Padding on mobile to prevent text from touching screen edges (in pixels)
 	const MOBILE_PADDING = 80; // 40px on each side
 
-	// One-time fade-in control
+	// Fade animation control
 	let manualModeState = $state<boolean>(true);
 	let startInvisibleState = $state<boolean>(true);
 	let triggerFadeInState = $state<boolean>(false);
+	let triggerFadeOutState = $state<boolean>(false);
+	let isFadingOut = $state<boolean>(false);
+	const FADE_OUT_TIME = 1.5;
+
+	function handleDesktopInputFocus() {
+		if (isFadingOut) return;
+		if (!wheelText || wheelText === '') return;
+		isFadingOut = true;
+		// Trigger letter-by-letter fade out
+		triggerFadeOutState = true;
+		setTimeout(() => {
+			triggerFadeOutState = false;
+		}, 100);
+		// After fade out completes, clear text and fade in fresh
+		setTimeout(() => {
+			wheelText = '';
+			isFadingOut = false;
+			// Reset to invisible so new text fades in
+			startInvisibleState = true;
+			// Trigger fade in for whatever gets typed next
+			setTimeout(() => {
+				triggerFadeInState = true;
+				setTimeout(() => {
+					triggerFadeInState = false;
+				}, 100);
+			}, 50);
+		}, FADE_OUT_TIME * 1000);
+	}
 
 	function updateWheelSize() {
 		if (!sectionEl) return;
@@ -57,8 +90,18 @@
 				triggerFadeInState = false;
 			}, 100);
 		}, 50);
+		// Auto-focus mobile input to open keyboard and set store
+		if (window.innerWidth < 768) {
+			playInputActive.set(true);
+			if (mobileInput) {
+				setTimeout(() => {
+					mobileInput?.focus();
+				}, 300);
+			}
+		}
 		return () => {
 			window.removeEventListener('resize', handleResize);
+			playInputActive.set(false);
 		};
 	});
 
@@ -86,33 +129,48 @@
 			startInvisible: startInvisibleState,
 			triggerFadeIn: triggerFadeInState,
 			fadeInTime: 2.5,
-			fadeOutTime: 0,
-			triggerFadeOut: false
+			fadeOutTime: FADE_OUT_TIME,
+			triggerFadeOut: triggerFadeOutState
 		}
 	});
 </script>
 
-<!-- Mobile: Fixed input at top matching MobileNav search style -->
-<div class="md:hidden fixed top-5 right-4 left-4 z-50">
-	<div class="bg-gray-100 rounded-full flex items-center overflow-hidden" style="height: 48px;">
-		<input
-			id="wheel-text-input-mobile"
-			type="text"
-			placeholder="Type text for the circle..."
-			bind:value={wheelText}
-			class="p-2 px-4 flex-1 bg-transparent outline-none text-xl"
-		/>
+{#if $playInputActive}
+	<!-- Mobile: Close button (top right) -->
+	<button
+		class="md:hidden fixed top-[6px] right-[6px] z-50 w-10 h-10 bg-gray-100 rounded-md flex items-center justify-center cursor-pointer"
+		onclick={closeMobileInput}
+		aria-label="Close input"
+	>
+		<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path d="M1 1L13 13M13 1L1 13" stroke="#171717" stroke-width="1.5" stroke-linecap="round"/>
+		</svg>
+	</button>
+
+	<!-- Mobile: Fixed input at bottom -->
+	<div class="md:hidden fixed bottom-5 left-4 right-4 z-50">
+		<div class="bg-gray-100 rounded-md flex items-center overflow-hidden">
+			<input
+				id="wheel-text-input-mobile"
+				type="text"
+				placeholder="Type your text here…"
+				bind:value={wheelText}
+				bind:this={mobileInput}
+				autocomplete="off"
+				class="py-2 px-5 flex-1 bg-transparent outline-none text-xl font-medium"
+			/>
+		</div>
 	</div>
-</div>
+{/if}
 
 <section
-	class="min-h-[100svh] flex flex-col px-4 pt-8 pb-12 overflow-y-hidden"
+	class="h-[100dvh] md:min-h-[100svh] md:h-auto flex flex-col px-4 pt-0 md:pt-8 pb-0 md:pb-12 overflow-hidden"
 	data-slice-type={slice.slice_type}
 	data-slice-variation={slice.variation}
 	bind:this={sectionEl}
 >
-	<!-- Wheel area grows to fill available space; we measure it to size the wheel -->
-	<div class="flex-1 flex justify-center items-center w-full translate-y-4" bind:this={wheelAreaEl}>
+	<!-- Wheel area: on mobile, fill space above the fixed input; on desktop, flex-1 -->
+	<div class="flex-1 flex justify-center items-center w-full pb-[72px] md:pb-0" bind:this={wheelAreaEl}>
 		{#if !$mobileSearchOpen}
 			<BigWheel config={wheelConfig} />
 		{/if}
@@ -123,9 +181,11 @@
 		<input
 			id="wheel-text-input"
 			type="text"
-			placeholder="Type text for the circle..."
+			placeholder="Type your text here…"
 			bind:value={wheelText}
-			class="px-6 pt-3.5 text-neutral-500 hover:text-primary transition-colors duration-300 pb-4 bg-neutral-100 rounded-full w-full max-w-xl text-3xl outline-none focus:outline-none focus:ring-0 focus:border-black"
+			onfocus={handleDesktopInputFocus}
+			autocomplete="off"
+			class="px-6 pt-3.5 text-neutral-500 hover:text-primary transition-colors duration-300 pb-4 bg-neutral-100 rounded-md w-full max-w-xl text-3xl outline-none focus:outline-none focus:ring-0 focus:border-black"
 		/>
 	</div>
 </section>
