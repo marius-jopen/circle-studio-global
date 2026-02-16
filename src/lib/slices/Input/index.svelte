@@ -170,28 +170,37 @@
 	</button>
 {/if}
 
-<!-- Mobile: Input always in DOM for autofocus, visually hidden but browser-visible -->
-<input
-	id="wheel-text-input-mobile"
-	type="text"
-	placeholder="Type your text here…"
-	bind:value={wheelText}
-	bind:this={mobileInput}
-	autocomplete="off"
-	autofocus
-	class="md:hidden fixed bottom-0 left-1/2 -translate-x-1/2 w-[1px] h-[1px] border-0 p-0 m-0 overflow-hidden"
-	style="font-size: 16px; opacity: 0.01; clip: rect(0,0,0,0);"
-/>
+<!-- Mobile: Input bar at bottom. Hidden when X is clicked so nav can show. -->
+<div
+	class="md:hidden fixed bottom-5 left-0 right-0 z-50 flex justify-center items-center mx-0 transition-opacity duration-300"
+	class:opacity-0={!$playInputActive}
+	class:opacity-100={$playInputActive}
+	class:pointer-events-none={!$playInputActive}
+	class:pointer-events-auto={$playInputActive}
+>
+	<div class="bg-gray-100 rounded-md flex items-center overflow-hidden">
+		<input
+			id="wheel-text-input-mobile"
+			type="text"
+			placeholder="Type your text here…"
+			bind:value={wheelText}
+			bind:this={mobileInput}
+			autocomplete="off"
+			autofocus
+			class="py-2 px-5 flex-1 bg-transparent outline-none text-xl font-medium"
+		/>
+	</div>
+</div>
 
 <section
-	class="flex flex-col px-4 pt-0 md:pt-8 pb-0 md:pb-12 overflow-hidden"
+	class="flex flex-col px-2 pt-0 md:pt-8 pb-0 md:pb-12 overflow-hidden"
 	style="height: {isMobile ? (mobileViewportHeight > 0 ? mobileViewportHeight + 'px' : '100dvh') : '92svh'};"
 	data-slice-type={slice.slice_type}
 	data-slice-variation={slice.variation}
 	bind:this={sectionEl}
 >
 	<!-- Wheel area: on mobile, fill space above the fixed input; on desktop, flex-1 -->
-	<div class="flex-1 flex justify-center items-center w-full md:pb-[100px]" bind:this={wheelAreaEl}>
+	<div class="flex-1 flex w-full  pb-[72px] md:pb-[100px]" bind:this={wheelAreaEl}>
 		{#if !$mobileSearchOpen}
 			<BigWheel config={wheelConfig} />
 		{/if}
