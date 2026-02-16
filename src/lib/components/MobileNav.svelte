@@ -68,7 +68,7 @@ function closeSearch() {
 
 <!-- Top right search button (only on homepage) -->
 {#if isHome}
-    <div class="md:hidden fixed top-[6px] right-[6px] left-4 z-50">
+    <div class="md:hidden fixed top-[6px] right-[14px] left-4 z-50">
         <div 
             class="bg-gray-100 rounded-md flex items-center transition-all duration-300 ease-in-out overflow-hidden ml-auto"
             style="width: {searchOpen && !shouldShrink ? '100%' : '40px'}; height: 40px;"
