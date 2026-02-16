@@ -157,7 +157,7 @@
 				bind:value={wheelText}
 				bind:this={mobileInput}
 				autocomplete="off"
-				class="py-2 px-5 flex-1 bg-transparent outline-none text-xl font-medium"
+				class="py-2 px-5 text-neutral-500  transition-colors duration-300 flex-1 bg-transparent outline-none text-xl font-medium"
 			/>
 		</div>
 	</div>
