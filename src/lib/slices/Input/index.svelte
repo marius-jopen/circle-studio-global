@@ -29,6 +29,7 @@
 	// Mobile detection for size adjustment
 	let isMobile = $state<boolean>(false);
 	let mobileViewportHeight = $state<number>(0);
+	let mobileViewportOffsetTop = $state<number>(0);
 	// Padding on mobile to prevent text from touching screen edges (in pixels)
 	const MOBILE_PADDING = 80; // 40px on each side
 
@@ -90,16 +91,31 @@
 		const handleResize = () => {
 			if (window.visualViewport) {
 				mobileViewportHeight = window.visualViewport.height;
+				mobileViewportOffsetTop = window.visualViewport.offsetTop;
 			}
 			updateWheelSize();
+			// Prevent iOS from scrolling the page when keyboard opens
+			if (isMobile) {
+				window.scrollTo(0, 0);
+			}
 		};
 		window.addEventListener('resize', handleResize);
 
-		// Listen to visualViewport resize (keyboard open/close on mobile)
+		// Listen to visualViewport resize and scroll (keyboard open/close on mobile)
 		const vv = window.visualViewport;
 		if (vv) {
 			mobileViewportHeight = vv.height;
+			mobileViewportOffsetTop = vv.offsetTop;
 			vv.addEventListener('resize', handleResize);
+			vv.addEventListener('scroll', handleResize);
+		}
+
+		// Prevent body scrolling on mobile for this page
+		if (window.innerWidth < 768) {
+			document.body.style.overflow = 'hidden';
+			document.body.style.position = 'fixed';
+			document.body.style.width = '100%';
+			document.body.style.height = '100%';
 		}
 
 		// Trigger one-time fade in shortly after mount
@@ -122,7 +138,13 @@
 			window.removeEventListener('resize', handleResize);
 			if (vv) {
 				vv.removeEventListener('resize', handleResize);
+				vv.removeEventListener('scroll', handleResize);
 			}
+			// Restore body scrolling
+			document.body.style.overflow = '';
+			document.body.style.position = '';
+			document.body.style.width = '';
+			document.body.style.height = '';
 			playInputActive.set(false);
 		};
 	});
@@ -195,7 +217,9 @@
 
 <section
 	class="flex flex-col px-2 pt-0 md:pt-8 pb-0 md:pb-12 overflow-hidden"
-	style="height: {isMobile ? (mobileViewportHeight > 0 ? mobileViewportHeight + 'px' : '100dvh') : '92svh'};"
+	class:fixed={isMobile}
+	class:inset-x-0={isMobile}
+	style="height: {isMobile ? (mobileViewportHeight > 0 ? mobileViewportHeight + 'px' : '100dvh') : '92svh'}; top: {isMobile ? mobileViewportOffsetTop + 'px' : ''};"
 	data-slice-type={slice.slice_type}
 	data-slice-variation={slice.variation}
 	bind:this={sectionEl}
