@@ -81,7 +81,7 @@
 		const availableWidth = sectionEl.getBoundingClientRect().width;
 		
 		const maxByHeight = isMobile
-			? availableHeight * 0.6 // smaller circle on mobile to leave room for input
+			? availableHeight * 0.65 // smaller circle on mobile to leave room for input
 			: availableHeight * 0.7;
 		// On mobile, subtract padding to prevent text from touching borders
 		const maxByWidth = isMobile ? availableWidth - MOBILE_PADDING : availableWidth;
@@ -206,7 +206,7 @@
 	class:opacity-100={$playInputActive}
 	class:pointer-events-none={!$playInputActive}
 	class:pointer-events-auto={$playInputActive}
-	style="bottom: {windowInnerHeight > 0 && mobileViewportHeight > 0 ? Math.max(8, windowInnerHeight - mobileViewportHeight - mobileViewportOffsetTop + 8) : 20}px;"
+	style="top: {mobileViewportHeight > 0 ? (mobileViewportOffsetTop + mobileViewportHeight - MOBILE_INPUT_HEIGHT) : windowInnerHeight - MOBILE_INPUT_HEIGHT}px;"
 >
 	<div class="bg-gray-100 rounded-md flex items-center overflow-hidden w-full">
 		<input
