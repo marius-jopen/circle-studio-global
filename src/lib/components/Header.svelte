@@ -201,7 +201,7 @@
 					class:pointer-events-none={!desktopSearchOpen}
 					class:pointer-events-auto={desktopSearchOpen}
 				>
-					<img src="/search-logo.svg" alt="" class="w-5 h-5 flex-shrink-0 opacity-40" />
+					<!-- <img src="/search-logo.svg" alt="" class="w-5 h-5 flex-shrink-0 opacity-40" /> -->
 					<input
 						type="text"
 						placeholder="Search"
