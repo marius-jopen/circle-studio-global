@@ -11,7 +11,7 @@
 	const { slice }: Props = $props();
 
 	// Toggle: when true, mobile shows two-column grid; when false, mobile shows text circles (FanWheel)
-	const useMobileGrid = false;
+	const useMobileGrid = true;
 
 	let items = $state<string[]>([]);
 	let urls = $state<string[]>([]);
