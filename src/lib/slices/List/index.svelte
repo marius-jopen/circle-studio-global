@@ -75,7 +75,7 @@
 
 <section data-slice-type={slice.slice_type} data-slice-variation={slice.variation} class="list-none">
 	{#if sortedItems.length > 0}
-		<div class="divide-y divide-black/10 border-t border-b border-black/10 text-black md:hover:text-black/25 mt-4 mx-6 list-none">
+		<div class="divide-y divide-black/10 border-t border-b border-black/10 text-black md:hover:text-black/25 mt-4 mx-4 list-none">
 			{#each sortedItems as item, index}
 				{@const linkUrl = getLinkUrl(item)}
 				{@const linkText = getLinkText(item)}

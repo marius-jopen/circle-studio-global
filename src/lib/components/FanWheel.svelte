@@ -85,9 +85,9 @@
 	$: outerHeight = 2 * (radius + (fit === 'safe' ? maxTextWidth : fontSize));
 </script>
 
-	<div class="w-full h-full grid place-items-center py-20">
+	<div class="w-full py-20 relative" style={`height:${outerHeight}px`}>
 		<div 
-			class="relative" 
+			class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" 
 			style={`width:${outerWidth}px;height:${outerHeight}px`}
 			role="region"
 			aria-label="Interactive wheel"

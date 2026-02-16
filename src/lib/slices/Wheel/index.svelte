@@ -10,9 +10,13 @@
 
 	const { slice }: Props = $props();
 
+	// Toggle: when true, mobile shows two-column grid; when false, mobile shows text circles (FanWheel)
+	const useMobileGrid = false;
+
 	let items = $state<string[]>([]);
 	let urls = $state<string[]>([]);
 	let isMobile = $state(false);
+	let windowWidth = $state(375);
 	let mounted = $state(false);
 	let title = $state<string | null>(null);
 	let isHovering = $state(false);
@@ -20,9 +24,14 @@
 
 	let isMounted = $state(true);
 
+	// Dynamic radius and font size based on screen width for mobile
+	const wheelRadius = $derived(isMobile ? Math.min(Math.floor(windowWidth * 0.24), 120) : 200);
+	const wheelFontSize = $derived(isMobile ? Math.min(Math.floor(windowWidth * 0.032), 14) : 26);
+
 	function checkMobile() {
 		if (typeof window !== 'undefined') {
 			isMobile = window.innerWidth < 768;
+			windowWidth = window.innerWidth;
 		}
 	}
 
@@ -155,9 +164,9 @@
 </script>
 
 <section class="mb-8 mt-8" data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
-	<div class="flex justify-center items-center w-full md:pt-24 md:pb-24">
-		{#if mounted && isMobile}
-			<!-- Mobile: Two-column list -->
+	<div class="flex justify-center items-center w-full pt-12 pb-12 md:pt-24 md:pb-24">
+		{#if mounted && isMobile && useMobileGrid}
+			<!-- Mobile: Two-column list (only when useMobileGrid is true) -->
 			<div class="w-full content-container px-4 text-primary">
 				{#if title}
 					<div class="mb-6">
@@ -187,16 +196,16 @@
 				</div>
 			</div>
 		{:else if mounted}
-			<!-- Desktop: FanWheel -->
+			<!-- FanWheel (responsive radius and font size for mobile/desktop) -->
 			<div class="w-full relative">
-				<FanWheel {items} {urls} radius={200} rotationSpeed={rotationSpeed} fontSize={26} bind:isHovering />
+				<FanWheel {items} {urls} radius={wheelRadius} rotationSpeed={rotationSpeed} fontSize={wheelFontSize} bind:isHovering />
 				{#if title}
-					<!-- Centered title that fades in/out with wheel hover -->
+					<!-- Centered title: always visible on mobile, fades in/out on hover for desktop -->
 					<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
 						<div 
 							class="text-sm md:text-2xl font-medium text-primary transition-opacity duration-400"
-							class:opacity-0={!isHovering}
-							class:opacity-100={isHovering}
+							class:opacity-0={!isMobile && !isHovering}
+							class:opacity-100={isMobile || isHovering}
 						>
 							{title}
 						</div>

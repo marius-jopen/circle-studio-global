@@ -245,7 +245,7 @@
 	{/if}
 {/if}
 
-<div class="px-3 {shuffledFeatureProject && !isSearchActive ? 'mt-3' : 'mt-3 md:mt-12 md:mt-14'}">
+<div class="px-2 {shuffledFeatureProject && !isSearchActive ? 'mt-2' : 'mt-2 md:mt-2 md:mt-2'}">
 	{#if currentView === 'grid' && !isSearchActive}
 		{#if shuffledFeatureProjects && shuffledFeatureProjects.length > 0}
 			<div class="grid grid-cols-1 md:grid-cols-12 gap-2 pb-2">

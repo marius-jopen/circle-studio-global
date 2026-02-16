@@ -11,7 +11,7 @@
 }
 
 @font-face {
-    font-family: "CircularXXWeb";
+    font-family: "CircularXXWebBold";
     src: url("/circular/CircularXXWeb-Bold.woff2") format("woff2"),
          url("/circular/CircularXXWeb-Bold.woff") format("woff");
     font-weight: 700;
@@ -32,6 +32,10 @@
 html {
     /* Keep scrollbar gutter reserved to avoid layout shifts */
     scrollbar-gutter: stable;
+}
+
+strong {
+    font-family: "CircularXXWebBold";
 }
 
 html, body {

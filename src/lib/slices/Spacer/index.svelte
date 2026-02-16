@@ -26,7 +26,7 @@
 	// If true → use horizontal padding only (px-3). If false → use .content-container
 	const primaryAny = (slice as any).primary || {};
 	const usePaddingOnly: boolean = Boolean(primaryAny.max_width ?? primaryAny.full_width ?? false);
-	const containerClass = usePaddingOnly ? 'px-3' : 'content-container';
+	const containerClass = usePaddingOnly ? 'px-2' : 'content-container';
 </script>
 
 <section

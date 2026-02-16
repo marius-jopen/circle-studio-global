@@ -170,54 +170,56 @@
 	</div> -->
 
 	<!-- Navigation - Fades with header when sound is on -->
-	<div class="hidden md:flex fixed top-0 right-2 z-[10001] pointer-events-auto px-3 py-4 items-center space-x-1.5 transition-opacity duration-600"
+	<div class="hidden md:flex fixed top-0 right-2 z-[10001] pointer-events-auto px-2 py-4 items-center space-x-1.5 transition-opacity duration-600"
 		class:opacity-0={effectiveFaded}
 		class:opacity-100={!effectiveFaded}
 		class:pointer-events-none={effectiveFaded}
 		class:pointer-events-auto={!effectiveFaded}>
-		<!-- Desktop Search (home only) -->
-		{#if isHome}
-			<div
-				class="bg-gray-100 rounded-md flex items-center overflow-hidden transition-all duration-300 ease-in-out relative"
-				style="width: {desktopSearchOpen ? '260px' : '40px'};"
+		<!-- Desktop Search (fades in/out on home page) -->
+		<div
+			class="bg-gray-100 rounded-md flex items-center overflow-hidden transition-all duration-300 ease-in-out relative"
+			class:opacity-0={!isHome}
+			class:opacity-100={isHome}
+			class:pointer-events-none={!isHome}
+			class:pointer-events-auto={isHome}
+			style="width: {desktopSearchOpen && isHome ? '260px' : '40px'};"
+		>
+			<!-- Search icon (collapsed) -->
+			<button
+				class="w-[40px] h-full py-2.5 flex items-center justify-center cursor-pointer focus:outline-none transition-opacity duration-200"
+				class:opacity-100={!desktopSearchOpen}
+				class:opacity-0={desktopSearchOpen}
+				class:pointer-events-auto={!desktopSearchOpen && isHome}
+				class:pointer-events-none={desktopSearchOpen || !isHome}
+				onclick={openDesktopSearch}
+				aria-label="Search"
 			>
-				<!-- Search icon (collapsed) -->
+				<img src="/search-logo.svg" alt="Search" class="w-5 h-5" />
+			</button>
+			<!-- Search input (expanded) -->
+			<div
+				class="absolute inset-0 flex items-center gap-x-2 px-3 transition-opacity duration-200"
+				class:opacity-0={!desktopSearchContentVisible}
+				class:opacity-100={desktopSearchContentVisible}
+				class:pointer-events-none={!desktopSearchOpen}
+				class:pointer-events-auto={desktopSearchOpen}
+			>
+				<!-- <img src="/search-logo.svg" alt="" class="w-5 h-5 flex-shrink-0 opacity-40" /> -->
+				<input
+					type="text"
+					placeholder="Search"
+					class="flex-1 bg-transparent outline-none font-medium text-neutral-900 min-w-0"
+					bind:this={desktopSearchInput}
+					bind:value={$homeSearchQuery}
+					onkeydown={handleDesktopSearchKeydown}
+				/>
 				<button
-					class="w-[40px] h-full py-2.5 flex items-center justify-center cursor-pointer focus:outline-none transition-opacity duration-200"
-					class:opacity-100={!desktopSearchOpen}
-					class:opacity-0={desktopSearchOpen}
-					class:pointer-events-auto={!desktopSearchOpen}
-					class:pointer-events-none={desktopSearchOpen}
-					onclick={openDesktopSearch}
-					aria-label="Search"
-				>
-					<img src="/search-logo.svg" alt="Search" class="w-5 h-5" />
-				</button>
-				<!-- Search input (expanded) -->
-				<div
-					class="absolute inset-0 flex items-center gap-x-2 px-3 transition-opacity duration-200"
-					class:opacity-0={!desktopSearchContentVisible}
-					class:opacity-100={desktopSearchContentVisible}
-					class:pointer-events-none={!desktopSearchOpen}
-					class:pointer-events-auto={desktopSearchOpen}
-				>
-					<!-- <img src="/search-logo.svg" alt="" class="w-5 h-5 flex-shrink-0 opacity-40" /> -->
-					<input
-						type="text"
-						placeholder="Search"
-						class="flex-1 bg-transparent outline-none font-medium text-neutral-900 min-w-0"
-						bind:this={desktopSearchInput}
-						bind:value={$homeSearchQuery}
-						onkeydown={handleDesktopSearchKeydown}
-					/>
-					<button
-						class="text-lg leading-none flex-shrink-0 cursor-pointer text-neutral-400 hover:text-neutral-900 transition-colors focus:outline-none"
-						onclick={closeDesktopSearch}
-						aria-label="Close search"
-					>×</button>
-				</div>
+					class="text-lg leading-none flex-shrink-0 cursor-pointer text-neutral-400 hover:text-neutral-900 transition-colors focus:outline-none"
+					onclick={closeDesktopSearch}
+					aria-label="Close search"
+				>×</button>
 			</div>
-		{/if}
+		</div>
 		<!-- Grid and List in same box -->
 		<div class="bg-gray-100 rounded-md px-4 py-2 flex items-center gap-x-3">
 			<!-- Grid -->

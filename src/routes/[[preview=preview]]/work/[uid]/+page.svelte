@@ -162,7 +162,7 @@
 		{/if}
 	 {/key}
 
-<div class="mx-auto px-3 paragraph-1">
+<div class="mx-auto px-2 paragraph-1">
 	<!-- Project Info -->
 	<div class="mb-14 md:mb-32 flex flex-col md:grid md:grid-cols-2 gap-2 w-full text-primary">
 		<div class="md:col-span-1 pb-12 md:pb-0 h2">
