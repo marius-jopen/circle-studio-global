@@ -168,19 +168,20 @@
 			<path d="M1 1L13 13M13 1L1 13" stroke="#171717" stroke-width="1.5" stroke-linecap="round"/>
 		</svg>
 	</button>
-
-	<!-- Mobile: Hidden input (invisible but still captures keyboard input) -->
-	<input
-		id="wheel-text-input-mobile"
-		type="text"
-		placeholder="Type your text here…"
-		bind:value={wheelText}
-		bind:this={mobileInput}
-		autocomplete="off"
-		class="md:hidden fixed bottom-0 left-0 w-full opacity-0 pointer-events-none z-[-1] h-0"
-		style="font-size: 16px;"
-	/>
 {/if}
+
+<!-- Mobile: Input always in DOM for autofocus, visually hidden but browser-visible -->
+<input
+	id="wheel-text-input-mobile"
+	type="text"
+	placeholder="Type your text here…"
+	bind:value={wheelText}
+	bind:this={mobileInput}
+	autocomplete="off"
+	autofocus
+	class="md:hidden fixed bottom-0 left-1/2 -translate-x-1/2 w-[1px] h-[1px] border-0 p-0 m-0 overflow-hidden"
+	style="font-size: 16px; opacity: 0.01; clip: rect(0,0,0,0);"
+/>
 
 <section
 	class="flex flex-col px-4 pt-0 md:pt-8 pb-0 md:pb-12 overflow-hidden"
