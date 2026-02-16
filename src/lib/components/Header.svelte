@@ -2,16 +2,48 @@
 	import { PrismicLink } from '@prismicio/svelte';
 	import Logo from './Logo.svelte';
 	import MobileWheel from './MobileWheel.svelte';
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { viewMode, setViewMode, initializeViewMode, mobileSearchOpen } from '$lib/stores';
+	import { viewMode, setViewMode, initializeViewMode, mobileSearchOpen, homeSearchQuery } from '$lib/stores';
 	
 	let { settings, faded = false, videoIsDark = false, mainMediaVisible = true } = $props();
 	let isHovering = $state(false);
 	let isViewModeHovering = $state(false);
 	let currentPath = $derived($page.url.pathname);
 	
+	// Desktop search state
+	let desktopSearchOpen = $state(false);
+	let desktopSearchInput = $state<HTMLInputElement | null>(null);
+	let desktopSearchContentVisible = $state(false);
+
+	function openDesktopSearch() {
+		desktopSearchOpen = true;
+		// After the width expands (300ms), fade in input content and focus
+		setTimeout(() => {
+			desktopSearchContentVisible = true;
+			tick().then(() => {
+				desktopSearchInput?.focus();
+			});
+		}, 300);
+	}
+
+	function closeDesktopSearch() {
+		// First fade out the content
+		desktopSearchContentVisible = false;
+		// Then collapse the width after fade out (200ms)
+		setTimeout(() => {
+			desktopSearchOpen = false;
+			homeSearchQuery.set('');
+		}, 200);
+	}
+
+	function handleDesktopSearchKeydown(event: KeyboardEvent) {
+		if (event.key === 'Escape') {
+			closeDesktopSearch();
+		}
+	}
+
 	// Override faded state when hovering over the wheel to prevent unwanted fading
 	let effectiveFaded = $derived(isHovering ? false : faded);
 	
@@ -112,6 +144,15 @@
 	const isListActive = $derived(isHome && $viewMode === 'list');
 	// Play is active when on /play route
 	const isPlayActive = $derived(isPlay);
+
+	// Close desktop search when navigating away from home
+	$effect(() => {
+		if (!isHome && desktopSearchOpen) {
+			desktopSearchOpen = false;
+			desktopSearchContentVisible = false;
+			homeSearchQuery.set('');
+		}
+	});
 </script>
 
 <!-- Navigation Header -->
@@ -134,6 +175,49 @@
 		class:opacity-100={!effectiveFaded}
 		class:pointer-events-none={effectiveFaded}
 		class:pointer-events-auto={!effectiveFaded}>
+		<!-- Desktop Search (home only) -->
+		{#if isHome}
+			<div
+				class="bg-gray-100 rounded-md flex items-center overflow-hidden transition-all duration-300 ease-in-out relative"
+				style="width: {desktopSearchOpen ? '260px' : '40px'};"
+			>
+				<!-- Search icon (collapsed) -->
+				<button
+					class="w-[40px] h-full py-2.5 flex items-center justify-center cursor-pointer focus:outline-none transition-opacity duration-200"
+					class:opacity-100={!desktopSearchOpen}
+					class:opacity-0={desktopSearchOpen}
+					class:pointer-events-auto={!desktopSearchOpen}
+					class:pointer-events-none={desktopSearchOpen}
+					onclick={openDesktopSearch}
+					aria-label="Search"
+				>
+					<img src="/search-logo.svg" alt="Search" class="w-5 h-5" />
+				</button>
+				<!-- Search input (expanded) -->
+				<div
+					class="absolute inset-0 flex items-center gap-x-2 px-3 transition-opacity duration-200"
+					class:opacity-0={!desktopSearchContentVisible}
+					class:opacity-100={desktopSearchContentVisible}
+					class:pointer-events-none={!desktopSearchOpen}
+					class:pointer-events-auto={desktopSearchOpen}
+				>
+					<img src="/search-logo.svg" alt="" class="w-5 h-5 flex-shrink-0 opacity-40" />
+					<input
+						type="text"
+						placeholder="Search"
+						class="flex-1 bg-transparent outline-none font-medium text-neutral-900 min-w-0"
+						bind:this={desktopSearchInput}
+						bind:value={$homeSearchQuery}
+						onkeydown={handleDesktopSearchKeydown}
+					/>
+					<button
+						class="text-lg leading-none flex-shrink-0 cursor-pointer text-neutral-400 hover:text-neutral-900 transition-colors focus:outline-none"
+						onclick={closeDesktopSearch}
+						aria-label="Close search"
+					>×</button>
+				</div>
+			</div>
+		{/if}
 		<!-- Grid and List in same box -->
 		<div class="bg-gray-100 rounded-md px-4 py-2 flex items-center gap-x-3">
 			<!-- Grid -->
