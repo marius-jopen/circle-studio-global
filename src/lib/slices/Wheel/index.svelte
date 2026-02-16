@@ -163,7 +163,7 @@
 	});
 </script>
 
-<section class="mb-8 mt-8" data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
+<section class="mb-8 mt-8 overflow-x-hidden w-full" data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
 	<div class="flex justify-center items-center w-full pt-12 pb-12 md:pt-24 md:pb-24">
 		{#if mounted && isMobile && useMobileGrid}
 			<!-- Mobile: Two-column list (only when useMobileGrid is true) -->

@@ -2,7 +2,7 @@
 	import type { Content } from '@prismicio/client';
 	import type { SliceComponentProps } from '@prismicio/svelte';
 	import BigWheel from '../../components/BigWheel.svelte';
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
     import { mobileSearchOpen, playInputActive } from '$lib/stores';
 
 	type Props = SliceComponentProps<Content.InputSlice>;
@@ -112,11 +112,11 @@
 		// Auto-focus mobile input to open keyboard and set store
 		if (window.innerWidth < 768) {
 			playInputActive.set(true);
-			if (mobileInput) {
+			tick().then(() => {
 				setTimeout(() => {
 					mobileInput?.focus();
 				}, 300);
-			}
+			});
 		}
 		return () => {
 			window.removeEventListener('resize', handleResize);
