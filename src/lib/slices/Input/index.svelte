@@ -28,6 +28,7 @@
 	
 	// Mobile detection for size adjustment
 	let isMobile = $state<boolean>(false);
+	let mobileViewportHeight = $state<number>(0);
 	// Padding on mobile to prevent text from touching screen edges (in pixels)
 	const MOBILE_PADDING = 80; // 40px on each side
 
@@ -69,10 +70,15 @@
 		// Check if mobile
 		isMobile = window.innerWidth < 768;
 		
-		const rect = sectionEl.getBoundingClientRect();
-		const maxByHeight = rect.height * 0.6; // cap wheel at 60% of available height
+		// Use visualViewport height on mobile (accounts for keyboard) if available
+		const availableHeight = (isMobile && window.visualViewport)
+			? window.visualViewport.height
+			: sectionEl.getBoundingClientRect().height;
+		const availableWidth = sectionEl.getBoundingClientRect().width;
+		
+		const maxByHeight = availableHeight * 0.7; // cap wheel at 70% of available height
 		// On mobile, subtract padding to prevent text from touching borders
-		const maxByWidth = isMobile ? rect.width - MOBILE_PADDING : rect.width;
+		const maxByWidth = isMobile ? availableWidth - MOBILE_PADDING : availableWidth;
 		const wheelSizePx = Math.max(0, Math.min(maxByHeight, maxByWidth));
 		const percent = (wheelSizePx / BASE_CONTAINER_SIZE) * 100;
 		
@@ -81,8 +87,21 @@
 
 	onMount(() => {
 		updateWheelSize();
-		const handleResize = () => updateWheelSize();
+		const handleResize = () => {
+			if (window.visualViewport) {
+				mobileViewportHeight = window.visualViewport.height;
+			}
+			updateWheelSize();
+		};
 		window.addEventListener('resize', handleResize);
+
+		// Listen to visualViewport resize (keyboard open/close on mobile)
+		const vv = window.visualViewport;
+		if (vv) {
+			mobileViewportHeight = vv.height;
+			vv.addEventListener('resize', handleResize);
+		}
+
 		// Trigger one-time fade in shortly after mount
 		setTimeout(() => {
 			triggerFadeInState = true;
@@ -101,6 +120,9 @@
 		}
 		return () => {
 			window.removeEventListener('resize', handleResize);
+			if (vv) {
+				vv.removeEventListener('resize', handleResize);
+			}
 			playInputActive.set(false);
 		};
 	});
@@ -147,45 +169,44 @@
 		</svg>
 	</button>
 
-	<!-- Mobile: Fixed input at bottom -->
-	<div class="md:hidden fixed bottom-5 left-4 right-4 z-50">
-		<div class="bg-gray-100 rounded-md flex items-center overflow-hidden">
-			<input
-				id="wheel-text-input-mobile"
-				type="text"
-				placeholder="Type your text here…"
-				bind:value={wheelText}
-				bind:this={mobileInput}
-				autocomplete="off"
-				class="py-2 px-5 text-neutral-500  transition-colors duration-300 flex-1 bg-transparent outline-none text-xl font-medium"
-			/>
-		</div>
-	</div>
+	<!-- Mobile: Hidden input (invisible but still captures keyboard input) -->
+	<input
+		id="wheel-text-input-mobile"
+		type="text"
+		placeholder="Type your text here…"
+		bind:value={wheelText}
+		bind:this={mobileInput}
+		autocomplete="off"
+		class="md:hidden fixed bottom-0 left-0 w-full opacity-0 pointer-events-none z-[-1] h-0"
+		style="font-size: 16px;"
+	/>
 {/if}
 
 <section
-	class="h-[100dvh] md:min-h-[100svh] md:h-auto flex flex-col px-4 pt-0 md:pt-8 pb-0 md:pb-12 overflow-hidden"
+	class="flex flex-col px-4 pt-0 md:pt-8 pb-0 md:pb-12 overflow-hidden"
+	style="height: {isMobile ? (mobileViewportHeight > 0 ? mobileViewportHeight + 'px' : '100dvh') : '92svh'};"
 	data-slice-type={slice.slice_type}
 	data-slice-variation={slice.variation}
 	bind:this={sectionEl}
 >
 	<!-- Wheel area: on mobile, fill space above the fixed input; on desktop, flex-1 -->
-	<div class="flex-1 flex justify-center items-center w-full pb-[72px] md:pb-0" bind:this={wheelAreaEl}>
+	<div class="flex-1 flex justify-center items-center w-full md:pb-[100px]" bind:this={wheelAreaEl}>
 		{#if !$mobileSearchOpen}
 			<BigWheel config={wheelConfig} />
 		{/if}
 	</div>
 
-	<!-- Desktop: Input at the bottom -->
-	<div class="hidden md:flex justify-center items-center w-full pt-8">
-		<input
-			id="wheel-text-input"
-			type="text"
-			placeholder="Type your text here…"
-			bind:value={wheelText}
-			onfocus={handleDesktopInputFocus}
-			autocomplete="off"
-			class="px-6 pt-3.5 text-neutral-500 hover:text-primary transition-colors duration-300 pb-4 bg-neutral-100 rounded-md w-full max-w-xl text-3xl outline-none focus:outline-none focus:ring-0 focus:border-black"
-		/>
-	</div>
 </section>
+
+<!-- Desktop: Input fixed at the bottom center -->
+<div class="hidden md:flex fixed bottom-8 left-0 right-0 justify-center items-center px-4 z-50">
+	<input
+		id="wheel-text-input"
+		type="text"
+		placeholder="Type your text here…"
+		bind:value={wheelText}
+		onfocus={handleDesktopInputFocus}
+		autocomplete="off"
+		class="px-6 pt-3.5 text-neutral-500 hover:text-primary transition-colors duration-300 pb-4 bg-neutral-100 rounded-md w-full max-w-xl text-3xl outline-none focus:outline-none focus:ring-0 focus:border-black"
+	/>
+</div>
