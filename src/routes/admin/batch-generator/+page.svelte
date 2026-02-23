@@ -21,12 +21,12 @@ Invite someone dangerous to tea.`);
 	// Typewriter settings
 	let typewriterSpeed = $state(150); // milliseconds per character (typing)
 	let deleteSpeed = $state(50); // milliseconds per character (deleting - faster)
-	let chapterPause = $state(1200); // milliseconds to pause between chapters
+	let chapterPause = $state(100); // milliseconds to pause between chapters
 	let speedVariation = $state(25); // percentage variation in typing speed (0-100)
-	let visibleDuration = $state(600); // milliseconds to keep chapter visible before deleting
+	let visibleDuration = $state(350); // milliseconds to keep chapter visible before deleting
 	let goodbyePause = $state(800); // milliseconds to pause between goodbye and branding
 	let delayBeforeAfter = $state(300); // milliseconds to pause before animation starts and after it finishes
-	let instantClear = $state(false); // When true, text clears instantly instead of deleting letter by letter
+	let instantClear = $state(true); // When true, text clears instantly instead of deleting letter by letter
 
 	// TextCircle props
 	let textColor = $state('#000000');
