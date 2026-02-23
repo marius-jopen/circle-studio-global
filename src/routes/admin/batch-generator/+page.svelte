@@ -26,6 +26,7 @@ Invite someone dangerous to tea.`);
 	let visibleDuration = $state(600); // milliseconds to keep chapter visible before deleting
 	let goodbyePause = $state(800); // milliseconds to pause between goodbye and branding
 	let delayBeforeAfter = $state(300); // milliseconds to pause before animation starts and after it finishes
+	let instantClear = $state(false); // When true, text clears instantly instead of deleting letter by letter
 
 	// TextCircle props
 	let textColor = $state('#000000');
@@ -112,6 +113,14 @@ Invite someone dangerous to tea.`);
 
 	// Backspace effect - deletes text character by character (backwards)
 	function deleteText(currentText: string, onComplete: () => void) {
+		if (instantClear) {
+			displayText = '';
+			if (isPlaying) {
+				onComplete();
+			}
+			return;
+		}
+
 		let currentIndex = currentText.length;
 
 		function deleteNextCharacter() {
@@ -125,7 +134,6 @@ Invite someone dangerous to tea.`);
 				const variedSpeed = getVariedSpeed(deleteSpeed, speedVariation);
 				typewriterTimeout = setTimeout(deleteNextCharacter, variedSpeed);
 			} else {
-				// Deletion complete, move to next phase
 				displayText = '';
 				if (isPlaying) {
 					onComplete();
@@ -751,19 +759,21 @@ Invite someone dangerous to tea.`);
 				<h2 class="text-lg font-semibold text-gray-900 mb-3">Message Fields</h2>
 				
 				<div class="space-y-3">
-					<Input
-						type="text"
-						label="Hello"
-						bind:value={hello}
-						placeholder="Dear"
-					/>
-					
-					<Input
-						type="text"
-						label="Name"
-						bind:value={name}
-						placeholder="Enter name"
-					/>
+					<div class="grid grid-cols-2 gap-3">
+						<Input
+							type="text"
+							label="Hello"
+							bind:value={hello}
+							placeholder="Dear"
+						/>
+						
+						<Input
+							type="text"
+							label="Name"
+							bind:value={name}
+							placeholder="Enter name"
+						/>
+					</div>
 					
 					<div class="flex flex-col gap-1 w-full">
 						<label for="content-field" class="font-medium text-neutral-700 text-sm">
@@ -780,19 +790,21 @@ Invite someone dangerous to tea.`);
 						></textarea>
 					</div>
 					
-					<Input
-						type="text"
-						label="Goodbye"
-						bind:value={goodbye}
-						placeholder="Love, Santi"
-					/>
-					
-					<Input
-						type="text"
-						label="Branding"
-						bind:value={branding}
-						placeholder="Artcamp, 2026"
-					/>
+					<div class="grid grid-cols-2 gap-3">
+						<Input
+							type="text"
+							label="Goodbye"
+							bind:value={goodbye}
+							placeholder="Love, Santi"
+						/>
+						
+						<Input
+							type="text"
+							label="Branding"
+							bind:value={branding}
+							placeholder="Artcamp, 2026"
+						/>
+					</div>
 				</div>
 			</div>
 
@@ -800,7 +812,7 @@ Invite someone dangerous to tea.`);
 			<div class="bg-white p-6 rounded-lg shadow">
 				<h2 class="text-lg font-semibold text-gray-900 mb-3">Display Settings</h2>
 				
-				<div class="space-y-3">
+				<div class="space-y-4">
 					<!-- Colors side by side -->
 					<div class="grid grid-cols-2 gap-3">
 						<div>
@@ -813,6 +825,7 @@ Invite someone dangerous to tea.`);
 								bind:value={textColor}
 								class="w-full h-9 rounded"
 							/>
+							<p class="text-[10px] text-gray-400 mt-1">Color of the text on the circle.</p>
 						</div>
 						
 						<div>
@@ -825,6 +838,7 @@ Invite someone dangerous to tea.`);
 								bind:value={backgroundColor}
 								class="w-full h-9 rounded"
 							/>
+							<p class="text-[10px] text-gray-400 mt-1">Background of the preview and recording.</p>
 						</div>
 					</div>
 					
@@ -856,6 +870,7 @@ Invite someone dangerous to tea.`);
 							disabled={dynamicTextSize}
 							class="w-full {dynamicTextSize ? 'opacity-50 cursor-not-allowed' : ''}"
 						/>
+						<p class="text-[10px] text-gray-400 mt-1">Size of the letters. "Auto" adjusts the font to fill the circle evenly.</p>
 					</div>
 					
 					<!-- Rotation Speed -->
@@ -872,11 +887,12 @@ Invite someone dangerous to tea.`);
 							bind:value={rotationSpeed}
 							class="w-full"
 						/>
+						<p class="text-[10px] text-gray-400 mt-1">How fast the text circle rotates. Negative values spin counter-clockwise.</p>
 					</div>
 					
 					<!-- Recording Width -->
 					<div>
-						<label for="recording-width" class="block text-xs font-medium text-gray-700 mb-1.5" title="Recording dimensions: {recordingWidth}x{inputFieldVisible ? Math.round(recordingWidth * 1.25) : recordingWidth}px">
+						<label for="recording-width" class="block text-xs font-medium text-gray-700 mb-1.5">
 							Recording Width: {recordingWidth}px
 						</label>
 						<input
@@ -888,6 +904,7 @@ Invite someone dangerous to tea.`);
 							bind:value={recordingWidth}
 							class="w-full"
 						/>
+						<p class="text-[10px] text-gray-400 mt-1">Resolution of the recorded video ({recordingWidth}x{inputFieldVisible ? Math.round(recordingWidth * 1.25) : recordingWidth}px). Higher = better quality but larger file.</p>
 					</div>
 				</div>
 			</div>
@@ -896,9 +913,9 @@ Invite someone dangerous to tea.`);
 			<div class="bg-white p-6 rounded-lg shadow">
 				<h2 class="text-lg font-semibold text-gray-900 mb-3">Animation Settings</h2>
 				
-				<div class="space-y-3">
+				<div class="space-y-4">
 					<div>
-						<label for="typewriter-speed" class="block text-xs font-medium text-gray-700 mb-1.5" title="Milliseconds per character when typing">
+						<label for="typewriter-speed" class="block text-xs font-medium text-gray-700 mb-1.5">
 							Typing Speed: {typewriterSpeed}ms
 						</label>
 						<input
@@ -910,12 +927,26 @@ Invite someone dangerous to tea.`);
 							bind:value={typewriterSpeed}
 							class="w-full"
 						/>
+						<p class="text-[10px] text-gray-400 mt-1">How fast each letter appears when typing. Lower = faster.</p>
 					</div>
 					
 					<div>
-						<label for="delete-speed" class="block text-xs font-medium text-gray-700 mb-1.5" title="Milliseconds per character when deleting">
-							Delete Speed: {deleteSpeed}ms
-						</label>
+						<div class="flex items-center justify-between mb-1.5">
+							<label for="delete-speed" class="text-xs font-medium text-gray-700">
+								Delete Speed: {deleteSpeed}ms
+							</label>
+							<div class="flex items-center gap-2">
+								<input
+									id="instant-clear"
+									type="checkbox"
+									bind:checked={instantClear}
+									class="w-3.5 h-3.5"
+								/>
+								<label for="instant-clear" class="text-xs text-gray-600 cursor-pointer">
+									Instant Clear
+								</label>
+							</div>
+						</div>
 						<input
 							id="delete-speed"
 							type="range"
@@ -923,12 +954,14 @@ Invite someone dangerous to tea.`);
 							max="200"
 							step="10"
 							bind:value={deleteSpeed}
-							class="w-full"
+							disabled={instantClear}
+							class="w-full {instantClear ? 'opacity-50 cursor-not-allowed' : ''}"
 						/>
+						<p class="text-[10px] text-gray-400 mt-1">How fast each letter is removed. "Instant Clear" skips the letter-by-letter deletion and blanks the text immediately.</p>
 					</div>
 					
 					<div>
-						<label for="chapter-pause" class="block text-xs font-medium text-gray-700 mb-1.5" title="Pause duration between chapters (after deletion, before next typing)">
+						<label for="chapter-pause" class="block text-xs font-medium text-gray-700 mb-1.5">
 							Chapter Pause: {chapterPause}ms
 						</label>
 						<input
@@ -940,10 +973,11 @@ Invite someone dangerous to tea.`);
 							bind:value={chapterPause}
 							class="w-full"
 						/>
+						<p class="text-[10px] text-gray-400 mt-1">Blank pause between lines: after one line is cleared and before the next starts typing.</p>
 					</div>
 					
 					<div>
-						<label for="speed-variation" class="block text-xs font-medium text-gray-700 mb-1.5" title="Random variation in typing/deleting speed (0-100%)">
+						<label for="speed-variation" class="block text-xs font-medium text-gray-700 mb-1.5">
 							Speed Variation: {speedVariation}%
 						</label>
 						<input
@@ -955,10 +989,11 @@ Invite someone dangerous to tea.`);
 							bind:value={speedVariation}
 							class="w-full"
 						/>
+						<p class="text-[10px] text-gray-400 mt-1">Randomizes typing and delete speed to feel more human. 0% = perfectly even, higher = more irregular.</p>
 					</div>
 					
 					<div>
-						<label for="visible-duration" class="block text-xs font-medium text-gray-700 mb-1.5" title="How long text stays visible before deletion (scales with word count)">
+						<label for="visible-duration" class="block text-xs font-medium text-gray-700 mb-1.5">
 							Visible Duration: {visibleDuration}ms
 						</label>
 						<input
@@ -970,10 +1005,11 @@ Invite someone dangerous to tea.`);
 							bind:value={visibleDuration}
 							class="w-full"
 						/>
+						<p class="text-[10px] text-gray-400 mt-1">How long a line stays on screen after it finishes typing, before it gets deleted. Scales with word count.</p>
 					</div>
 					
 					<div>
-						<label for="goodbye-pause" class="block text-xs font-medium text-gray-700 mb-1.5" title="Pause between 'Goodbye' and 'Branding' text">
+						<label for="goodbye-pause" class="block text-xs font-medium text-gray-700 mb-1.5">
 							Goodbye Pause: {goodbyePause}ms
 						</label>
 						<input
@@ -985,10 +1021,11 @@ Invite someone dangerous to tea.`);
 							bind:value={goodbyePause}
 							class="w-full"
 						/>
+						<p class="text-[10px] text-gray-400 mt-1">Pause between the goodbye text and the branding text (they type sequentially on the same line).</p>
 					</div>
 					
 					<div>
-						<label for="delay-before-after" class="block text-xs font-medium text-gray-700 mb-1.5" title="Delay before animation starts and after it finishes">
+						<label for="delay-before-after" class="block text-xs font-medium text-gray-700 mb-1.5">
 							Delay Before/After: {delayBeforeAfter}ms
 						</label>
 						<input
@@ -1000,6 +1037,7 @@ Invite someone dangerous to tea.`);
 							bind:value={delayBeforeAfter}
 							class="w-full"
 						/>
+						<p class="text-[10px] text-gray-400 mt-1">Blank time at the very start (before greeting) and very end (after goodbye is deleted) of the full animation.</p>
 					</div>
 				</div>
 			</div>
@@ -1042,15 +1080,17 @@ Invite someone dangerous to tea.`);
 				<!-- Input field (visual only) -->
 				{#if inputFieldVisible}
 					<div class="px-4 pb-6">
-						<div 
-							bind:this={inputFieldRef}
-							class="w-8/12 mx-auto rounded-full h-14 bg-gray-100 px-6 py-3 text-gray-500 text-2xl overflow-x-auto overflow-y-hidden whitespace-nowrap flex items-center"
-							style="scrollbar-width: none; -ms-overflow-style: none;"
-						>
-							{#if displayText}
-								<span class="inline-block">{displayText}</span>
-							{/if}
-							<span class="inline-block w-[1px] h-6 bg-gray-600 ml-1 cursor-blink"></span>
+						<div class="w-8/12 mx-auto rounded-full h-14 bg-gray-100 px-6 py-3 flex items-center">
+							<div 
+								bind:this={inputFieldRef}
+								class="flex-1 text-gray-500 text-2xl overflow-x-auto overflow-y-hidden whitespace-nowrap flex items-center"
+								style="scrollbar-width: none; -ms-overflow-style: none;"
+							>
+								{#if displayText}
+									<span class="inline-block">{displayText}</span>
+								{/if}
+								<span class="inline-block w-[1px] h-6 bg-gray-600 ml-1 cursor-blink flex-shrink-0"></span>
+							</div>
 						</div>
 					</div>
 					<style>

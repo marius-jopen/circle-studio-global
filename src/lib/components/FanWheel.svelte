@@ -85,7 +85,7 @@
 	$: outerHeight = 2 * (radius + (fit === 'safe' ? maxTextWidth : fontSize));
 </script>
 
-	<div class="w-full py-20 relative" style={`height:${outerHeight}px`}>
+	<div class="w-full py-8 md:py-20 relative" style={`min-height:${outerHeight}px`}>
 		<div 
 			class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" 
 			style={`width:${outerWidth}px;height:${outerHeight}px`}
