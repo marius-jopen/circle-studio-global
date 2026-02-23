@@ -1042,7 +1042,7 @@
 		<!-- Canvas & Controls -->
 		<div class="flex-shrink-0 lg:sticky lg:top-5 lg:self-start">
 			<div
-				class="relative rounded-2xl overflow-hidden mx-auto shadow-sm"
+				class="relative rounded-2xl overflow-hidden mx-auto"
 				style="width: {containerSize}px; height: {containerSize}px; {activeBackgroundColor !== 'transparent' ? `background-color: ${activeBackgroundColor};` : ''}"
 				bind:this={containerElement}
 			>
