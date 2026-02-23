@@ -749,306 +749,193 @@ Invite someone dangerous to tea.`);
 	<title>Batch Generator - Admin</title>
 </svelte:head>
 
-<div class="w-full">
-	<h1 class="text-3xl font-bold text-gray-900 mb-8 px-4">Batch Generator</h1>
-	
-	<div class="flex flex-col lg:flex-row gap-6 h-full w-full max-w-7xl mx-auto p-4">
-		<!-- Form Fields - Scrollable -->
-		<div class="flex-1 min-w-0 space-y-4">
-			<div class="bg-white p-6 rounded-lg shadow">
-				<h2 class="text-lg font-semibold text-gray-900 mb-3">Message Fields</h2>
-				
-				<div class="space-y-3">
+<div class="w-full min-h-screen bg-gray-50">
+	<div class="flex flex-col lg:flex-row gap-5 w-full max-w-7xl mx-auto px-4 py-5">
+		<!-- Controls Panel -->
+		<div class="flex-1 min-w-0 space-y-3">
+
+			<!-- Message Fields -->
+			<div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+				<div class="px-4 py-2.5 border-b border-gray-100">
+					<h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Message</h2>
+				</div>
+				<div class="p-4 space-y-3">
 					<div class="grid grid-cols-2 gap-3">
-						<Input
-							type="text"
-							label="Hello"
-							bind:value={hello}
-							placeholder="Dear"
-						/>
-						
-						<Input
-							type="text"
-							label="Name"
-							bind:value={name}
-							placeholder="Enter name"
-						/>
+						<div>
+							<label for="hello-field" class="block text-[11px] font-medium text-gray-500 mb-1">Hello</label>
+							<input id="hello-field" type="text" bind:value={hello} placeholder="Dear"
+								class="w-full px-2.5 py-1.5 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-100 transition-colors" />
+						</div>
+						<div>
+							<label for="name-field" class="block text-[11px] font-medium text-gray-500 mb-1">Name</label>
+							<input id="name-field" type="text" bind:value={name} placeholder="Enter name"
+								class="w-full px-2.5 py-1.5 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-100 transition-colors" />
+						</div>
 					</div>
-					
-					<div class="flex flex-col gap-1 w-full">
-						<label for="content-field" class="font-medium text-neutral-700 text-sm">
-							Content
-						</label>
+					<div>
+						<label for="content-field" class="block text-[11px] font-medium text-gray-500 mb-1">Content</label>
 						<textarea
 							id="content-field"
 							bind:value={content}
-							placeholder="Enter message content"
-							rows="10"
-							class="p-2 border border-gray-300 rounded text-base font-inherit transition-all duration-200 bg-white
-								focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100
-								resize-y min-h-[100px]"
+							placeholder="Enter message content (one line per chapter)"
+							rows="6"
+							class="w-full px-2.5 py-1.5 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-100 transition-colors resize-y min-h-[80px]"
 						></textarea>
 					</div>
-					
 					<div class="grid grid-cols-2 gap-3">
-						<Input
-							type="text"
-							label="Goodbye"
-							bind:value={goodbye}
-							placeholder="Love, Santi"
-						/>
-						
-						<Input
-							type="text"
-							label="Branding"
-							bind:value={branding}
-							placeholder="Artcamp, 2026"
-						/>
+						<div>
+							<label for="goodbye-field" class="block text-[11px] font-medium text-gray-500 mb-1">Goodbye</label>
+							<input id="goodbye-field" type="text" bind:value={goodbye} placeholder="Love, Santi"
+								class="w-full px-2.5 py-1.5 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-100 transition-colors" />
+						</div>
+						<div>
+							<label for="branding-field" class="block text-[11px] font-medium text-gray-500 mb-1">Branding</label>
+							<input id="branding-field" type="text" bind:value={branding} placeholder="Artcamp, 2026"
+								class="w-full px-2.5 py-1.5 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-100 transition-colors" />
+						</div>
 					</div>
 				</div>
 			</div>
 
 			<!-- Display Settings -->
-			<div class="bg-white p-6 rounded-lg shadow">
-				<h2 class="text-lg font-semibold text-gray-900 mb-3">Display Settings</h2>
-				
-				<div class="space-y-4">
-					<!-- Colors side by side -->
+			<div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+				<div class="px-4 py-2.5 border-b border-gray-100">
+					<h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Display</h2>
+				</div>
+				<div class="p-4 space-y-3">
 					<div class="grid grid-cols-2 gap-3">
 						<div>
-							<label for="text-color" class="block text-xs font-medium text-gray-700 mb-1.5">
-								Text Color
-							</label>
-							<input
-								id="text-color"
-								type="color"
-								bind:value={textColor}
-								class="w-full h-9 rounded"
-							/>
-							<p class="text-[10px] text-gray-400 mt-1">Color of the text on the circle.</p>
-						</div>
-						
-						<div>
-							<label for="bg-color" class="block text-xs font-medium text-gray-700 mb-1.5">
-								Background Color
-							</label>
-							<input
-								id="bg-color"
-								type="color"
-								bind:value={backgroundColor}
-								class="w-full h-9 rounded"
-							/>
-							<p class="text-[10px] text-gray-400 mt-1">Background of the preview and recording.</p>
-						</div>
-					</div>
-					
-					<!-- Font Size and Dynamic Text Size -->
-					<div>
-						<div class="flex items-center justify-between mb-1.5">
-							<label for="font-size" class="text-xs font-medium text-gray-700">
-								Font Size: {fontSize}px
-							</label>
+							<label for="text-color" class="block text-[11px] font-medium text-gray-500 mb-1">Text Color</label>
 							<div class="flex items-center gap-2">
-								<input
-									id="dynamic-text-size"
-									type="checkbox"
-									bind:checked={dynamicTextSize}
-									class="w-3.5 h-3.5"
-								/>
-								<label for="dynamic-text-size" class="text-xs text-gray-600 cursor-pointer">
-									Auto
-								</label>
+								<input id="text-color" type="color" bind:value={textColor}
+									class="w-7 h-7 rounded-md border border-gray-200 cursor-pointer p-0" />
+								<span class="text-xs text-gray-400 font-mono">{textColor}</span>
 							</div>
 						</div>
-						<input
-							id="font-size"
-							type="range"
-							min="20"
-							max="80"
-							step="2"
-							bind:value={fontSize}
+						<div>
+							<label for="bg-color" class="block text-[11px] font-medium text-gray-500 mb-1">Background</label>
+							<div class="flex items-center gap-2">
+								<input id="bg-color" type="color" bind:value={backgroundColor}
+									class="w-7 h-7 rounded-md border border-gray-200 cursor-pointer p-0" />
+								<span class="text-xs text-gray-400 font-mono">{backgroundColor}</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="border-t border-gray-100 pt-3">
+						<div class="flex items-center justify-between mb-1">
+							<label for="font-size" class="text-[11px] font-medium text-gray-500">
+								Font Size <span class="text-gray-400">{fontSize}px</span>
+							</label>
+							<label class="inline-flex items-center gap-1.5 cursor-pointer">
+								<input id="dynamic-text-size" type="checkbox" bind:checked={dynamicTextSize} class="w-3 h-3 rounded" />
+								<span class="text-[11px] text-gray-400">Auto</span>
+							</label>
+						</div>
+						<input id="font-size" type="range" min="20" max="80" step="2" bind:value={fontSize}
 							disabled={dynamicTextSize}
-							class="w-full {dynamicTextSize ? 'opacity-50 cursor-not-allowed' : ''}"
-						/>
-						<p class="text-[10px] text-gray-400 mt-1">Size of the letters. "Auto" adjusts the font to fill the circle evenly.</p>
+							class="w-full h-1 {dynamicTextSize ? 'opacity-40 cursor-not-allowed' : ''}" />
+						<p class="text-[10px] text-gray-300 mt-0.5">Auto adjusts to fill the circle evenly.</p>
 					</div>
-					
-					<!-- Rotation Speed -->
+
 					<div>
-						<label for="rotation-speed" class="block text-xs font-medium text-gray-700 mb-1.5">
-							Rotation Speed: {rotationSpeed.toFixed(2)}
+						<label for="rotation-speed" class="block text-[11px] font-medium text-gray-500 mb-1">
+							Rotation <span class="text-gray-400">{rotationSpeed.toFixed(2)}</span>
 						</label>
-						<input
-							id="rotation-speed"
-							type="range"
-							min="-1"
-							max="1"
-							step="0.01"
-							bind:value={rotationSpeed}
-							class="w-full"
-						/>
-						<p class="text-[10px] text-gray-400 mt-1">How fast the text circle rotates. Negative values spin counter-clockwise.</p>
+						<input id="rotation-speed" type="range" min="-1" max="1" step="0.01" bind:value={rotationSpeed} class="w-full h-1" />
+						<p class="text-[10px] text-gray-300 mt-0.5">Negative = counter-clockwise.</p>
 					</div>
-					
-					<!-- Recording Width -->
+
 					<div>
-						<label for="recording-width" class="block text-xs font-medium text-gray-700 mb-1.5">
-							Recording Width: {recordingWidth}px
+						<label for="recording-width" class="block text-[11px] font-medium text-gray-500 mb-1">
+							Recording <span class="text-gray-400">{recordingWidth}x{inputFieldVisible ? Math.round(recordingWidth * 1.25) : recordingWidth}px</span>
 						</label>
-						<input
-							id="recording-width"
-							type="range"
-							min="400"
-							max="2000"
-							step="50"
-							bind:value={recordingWidth}
-							class="w-full"
-						/>
-						<p class="text-[10px] text-gray-400 mt-1">Resolution of the recorded video ({recordingWidth}x{inputFieldVisible ? Math.round(recordingWidth * 1.25) : recordingWidth}px). Higher = better quality but larger file.</p>
+						<input id="recording-width" type="range" min="400" max="2000" step="50" bind:value={recordingWidth} class="w-full h-1" />
+						<p class="text-[10px] text-gray-300 mt-0.5">Higher = better quality, larger file.</p>
 					</div>
 				</div>
 			</div>
 
 			<!-- Animation Settings -->
-			<div class="bg-white p-6 rounded-lg shadow">
-				<h2 class="text-lg font-semibold text-gray-900 mb-3">Animation Settings</h2>
-				
-				<div class="space-y-4">
-					<div>
-						<label for="typewriter-speed" class="block text-xs font-medium text-gray-700 mb-1.5">
-							Typing Speed: {typewriterSpeed}ms
-						</label>
-						<input
-							id="typewriter-speed"
-							type="range"
-							min="20"
-							max="300"
-							step="10"
-							bind:value={typewriterSpeed}
-							class="w-full"
-						/>
-						<p class="text-[10px] text-gray-400 mt-1">How fast each letter appears when typing. Lower = faster.</p>
-					</div>
-					
-					<div>
-						<div class="flex items-center justify-between mb-1.5">
-							<label for="delete-speed" class="text-xs font-medium text-gray-700">
-								Delete Speed: {deleteSpeed}ms
+			<div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+				<div class="px-4 py-2.5 border-b border-gray-100">
+					<h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Animation</h2>
+				</div>
+				<div class="p-4 space-y-3">
+					<div class="grid grid-cols-2 gap-x-4 gap-y-3">
+						<div>
+							<label for="typewriter-speed" class="block text-[11px] font-medium text-gray-500 mb-1">
+								Typing <span class="text-gray-400">{typewriterSpeed}ms</span>
 							</label>
-							<div class="flex items-center gap-2">
-								<input
-									id="instant-clear"
-									type="checkbox"
-									bind:checked={instantClear}
-									class="w-3.5 h-3.5"
-								/>
-								<label for="instant-clear" class="text-xs text-gray-600 cursor-pointer">
-									Instant Clear
+							<input id="typewriter-speed" type="range" min="20" max="300" step="10" bind:value={typewriterSpeed} class="w-full h-1" />
+							<p class="text-[10px] text-gray-300 mt-0.5">Per letter. Lower = faster.</p>
+						</div>
+
+						<div>
+							<div class="flex items-center justify-between mb-1">
+								<label for="delete-speed" class="text-[11px] font-medium text-gray-500">
+									Delete <span class="text-gray-400">{deleteSpeed}ms</span>
+								</label>
+								<label class="inline-flex items-center gap-1 cursor-pointer">
+									<input id="instant-clear" type="checkbox" bind:checked={instantClear} class="w-3 h-3 rounded" />
+									<span class="text-[10px] text-gray-400">Instant</span>
 								</label>
 							</div>
+							<input id="delete-speed" type="range" min="10" max="200" step="10" bind:value={deleteSpeed}
+								disabled={instantClear}
+								class="w-full h-1 {instantClear ? 'opacity-40 cursor-not-allowed' : ''}" />
+							<p class="text-[10px] text-gray-300 mt-0.5">Per letter removal speed.</p>
 						</div>
-						<input
-							id="delete-speed"
-							type="range"
-							min="10"
-							max="200"
-							step="10"
-							bind:value={deleteSpeed}
-							disabled={instantClear}
-							class="w-full {instantClear ? 'opacity-50 cursor-not-allowed' : ''}"
-						/>
-						<p class="text-[10px] text-gray-400 mt-1">How fast each letter is removed. "Instant Clear" skips the letter-by-letter deletion and blanks the text immediately.</p>
+
+						<div>
+							<label for="chapter-pause" class="block text-[11px] font-medium text-gray-500 mb-1">
+								Line Pause <span class="text-gray-400">{chapterPause}ms</span>
+							</label>
+							<input id="chapter-pause" type="range" min="0" max="2000" step="50" bind:value={chapterPause} class="w-full h-1" />
+							<p class="text-[10px] text-gray-300 mt-0.5">Blank gap between lines.</p>
+						</div>
+
+						<div>
+							<label for="speed-variation" class="block text-[11px] font-medium text-gray-500 mb-1">
+								Variation <span class="text-gray-400">{speedVariation}%</span>
+							</label>
+							<input id="speed-variation" type="range" min="0" max="100" step="5" bind:value={speedVariation} class="w-full h-1" />
+							<p class="text-[10px] text-gray-300 mt-0.5">Randomness for natural feel.</p>
+						</div>
+
+						<div>
+							<label for="visible-duration" class="block text-[11px] font-medium text-gray-500 mb-1">
+								Hold <span class="text-gray-400">{visibleDuration}ms</span>
+							</label>
+							<input id="visible-duration" type="range" min="0" max="2000" step="50" bind:value={visibleDuration} class="w-full h-1" />
+							<p class="text-[10px] text-gray-300 mt-0.5">Time on screen before delete. Scales with words.</p>
+						</div>
+
+						<div>
+							<label for="goodbye-pause" class="block text-[11px] font-medium text-gray-500 mb-1">
+								Goodbye Gap <span class="text-gray-400">{goodbyePause}ms</span>
+							</label>
+							<input id="goodbye-pause" type="range" min="0" max="1000" step="50" bind:value={goodbyePause} class="w-full h-1" />
+							<p class="text-[10px] text-gray-300 mt-0.5">Pause before branding types.</p>
+						</div>
 					</div>
-					
-					<div>
-						<label for="chapter-pause" class="block text-xs font-medium text-gray-700 mb-1.5">
-							Chapter Pause: {chapterPause}ms
+
+					<div class="border-t border-gray-100 pt-3">
+						<label for="delay-before-after" class="block text-[11px] font-medium text-gray-500 mb-1">
+							Start/End Delay <span class="text-gray-400">{delayBeforeAfter}ms</span>
 						</label>
-						<input
-							id="chapter-pause"
-							type="range"
-							min="0"
-							max="2000"
-							step="50"
-							bind:value={chapterPause}
-							class="w-full"
-						/>
-						<p class="text-[10px] text-gray-400 mt-1">Blank pause between lines: after one line is cleared and before the next starts typing.</p>
-					</div>
-					
-					<div>
-						<label for="speed-variation" class="block text-xs font-medium text-gray-700 mb-1.5">
-							Speed Variation: {speedVariation}%
-						</label>
-						<input
-							id="speed-variation"
-							type="range"
-							min="0"
-							max="100"
-							step="5"
-							bind:value={speedVariation}
-							class="w-full"
-						/>
-						<p class="text-[10px] text-gray-400 mt-1">Randomizes typing and delete speed to feel more human. 0% = perfectly even, higher = more irregular.</p>
-					</div>
-					
-					<div>
-						<label for="visible-duration" class="block text-xs font-medium text-gray-700 mb-1.5">
-							Visible Duration: {visibleDuration}ms
-						</label>
-						<input
-							id="visible-duration"
-							type="range"
-							min="0"
-							max="2000"
-							step="50"
-							bind:value={visibleDuration}
-							class="w-full"
-						/>
-						<p class="text-[10px] text-gray-400 mt-1">How long a line stays on screen after it finishes typing, before it gets deleted. Scales with word count.</p>
-					</div>
-					
-					<div>
-						<label for="goodbye-pause" class="block text-xs font-medium text-gray-700 mb-1.5">
-							Goodbye Pause: {goodbyePause}ms
-						</label>
-						<input
-							id="goodbye-pause"
-							type="range"
-							min="0"
-							max="1000"
-							step="50"
-							bind:value={goodbyePause}
-							class="w-full"
-						/>
-						<p class="text-[10px] text-gray-400 mt-1">Pause between the goodbye text and the branding text (they type sequentially on the same line).</p>
-					</div>
-					
-					<div>
-						<label for="delay-before-after" class="block text-xs font-medium text-gray-700 mb-1.5">
-							Delay Before/After: {delayBeforeAfter}ms
-						</label>
-						<input
-							id="delay-before-after"
-							type="range"
-							min="0"
-							max="2000"
-							step="100"
-							bind:value={delayBeforeAfter}
-							class="w-full"
-						/>
-						<p class="text-[10px] text-gray-400 mt-1">Blank time at the very start (before greeting) and very end (after goodbye is deleted) of the full animation.</p>
+						<input id="delay-before-after" type="range" min="0" max="2000" step="100" bind:value={delayBeforeAfter} class="w-full h-1" />
+						<p class="text-[10px] text-gray-300 mt-0.5">Blank time before first line and after last line.</p>
 					</div>
 				</div>
 			</div>
-
 		</div>
 
-		<!-- Text Circle Display - Sticky on larger screens -->
-		<div class="flex-shrink-0 lg:sticky lg:top-4 lg:self-start">
+		<!-- Canvas & Controls -->
+		<div class="flex-shrink-0 lg:sticky lg:top-5 lg:self-start">
 			<div 
 				bind:this={containerRef}
-				class="relative rounded-3xl overflow-hidden mx-auto flex flex-col"
+				class="relative rounded-2xl overflow-hidden mx-auto flex flex-col shadow-sm"
 				style="width: {containerWidth}px; height: {containerHeight}px; background-color: {backgroundColor};"
 			>
 				<!-- Circle area -->
@@ -1104,88 +991,88 @@ Invite someone dangerous to tea.`);
 						.cursor-blink {
 							animation: blink 1s infinite;
 						}
+						/* M3-style inputs */
+						:global(.m3-input) {
+							border: 1px solid #79747e;
+							color: #1d1b20;
+						}
+						:global(.m3-input:focus) {
+							border-color: #6750a4;
+							border-width: 2px;
+							padding: 3px 7px;
+						}
+						:global(.m3-input::placeholder) {
+							color: #79747e;
+						}
+						/* M3-style buttons */
+						:global(.m3-btn) {
+							background: #e8def8;
+							color: #1d1b20;
+						}
+						:global(.m3-btn:hover) {
+							background: #d0bcff;
+						}
 					</style>
 				{/if}
 			</div>
 			
-			<!-- Record Video Button and Input Field Visible Toggle -->
-			<div class="mt-4 flex flex-col items-center gap-2">
-				<div class="flex items-center gap-4">
-					<Button 
-						variant="record" 
-						recording={isRecording}
-						on:click={toggleRecording}
-					>
-						{#if !isRecording}
-							<div class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div> Record Video
-						{:else}
-							<span>⏹️ Stop Recording</span>
-						{/if}
-					</Button>
-					
-					<div class="flex items-center gap-2">
-						<input
-							id="input-field-visible"
-							type="checkbox"
-							bind:checked={inputFieldVisible}
-							class="w-4 h-4"
-						/>
-						<label for="input-field-visible" class="text-sm font-medium text-gray-700">
-							Input Field Visible
-						</label>
-					</div>
-				</div>
-				
-				<!-- Restart and Pause Buttons -->
-				<div class="flex items-center gap-2 mt-2">
-					<Button 
-						variant="secondary" 
-						on:click={restartAnimation}
-						disabled={isRecording}
-					>
-						🔄 Restart
-					</Button>
-					
-					<Button 
-						variant="secondary" 
-						on:click={togglePause}
-						disabled={isRecording}
-					>
-						{#if paused}
-							▶️ Resume
-						{:else}
-							⏸️ Pause
-						{/if}
-					</Button>
-				</div>
-				
-				{#if isRecording}
-					<RecordingIndicator {isRecording} {elapsedTime} size="md" />
-				{/if}
-				<div class="mt-3 max-w-md text-center">
-					<p class="text-xs text-gray-600 leading-relaxed">
-						<strong>Browser Recording:</strong> This recording happens in your browser. For best performance, close other programs, browser tabs, and applications to free up CPU and memory.
-					</p>
-				</div>
+			<!-- Toolbar -->
+			<div class="mt-3 flex items-center justify-center gap-2">
+				<button
+					class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors
+						{isRecording ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200'}"
+					onclick={toggleRecording}
+				>
+					{#if !isRecording}
+						<span class="w-2 h-2 bg-red-500 rounded-full"></span> Record
+					{:else}
+						<span class="w-2 h-2 bg-white rounded-sm"></span> Stop
+					{/if}
+				</button>
+
+				<button
+					class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200 transition-colors disabled:opacity-40"
+					onclick={restartAnimation}
+					disabled={isRecording}
+				>
+					Restart
+				</button>
+
+				<button
+					class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200 transition-colors disabled:opacity-40"
+					onclick={togglePause}
+					disabled={isRecording}
+				>
+					{paused ? 'Resume' : 'Pause'}
+				</button>
+
+				<label class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-50 text-gray-500 border border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors">
+					<input type="checkbox" bind:checked={inputFieldVisible} class="w-3 h-3 rounded" />
+					Input
+				</label>
 			</div>
+
+			{#if isRecording}
+				<div class="mt-2 flex justify-center">
+					<RecordingIndicator {isRecording} {elapsedTime} size="md" />
+				</div>
+			{/if}
+
+			<p class="mt-2 text-[10px] text-gray-300 text-center max-w-sm mx-auto leading-relaxed">
+				Recording runs in-browser. Close other tabs for best performance.
+			</p>
 		</div>
 	</div>
 	
 	<!-- Recording Warning Banner -->
 	{#if isRecording}
-		<div class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 max-w-2xl w-full px-4">
-			<div class="bg-yellow-50 border-2 border-yellow-400 rounded-lg shadow-lg p-4">
-				<div class="flex items-start gap-3">
-					<div class="flex-shrink-0 text-2xl">⚠️</div>
-					<div class="flex-1">
-						<h3 class="text-sm font-bold text-yellow-900 mb-2">Recording in Progress</h3>
-						<p class="text-xs text-yellow-800 mb-2">
-							<strong>Please do not:</strong> Touch your computer, scroll, switch tabs, or move the window.
-						</p>
-						<p class="text-xs text-yellow-700">
-							Recording will automatically stop when the animation finishes.
-						</p>
-					</div>
+		<div class="fixed top-3 left-1/2 transform -translate-x-1/2 z-50 max-w-lg w-full px-4">
+			<div class="bg-amber-50 border border-amber-300 rounded-xl shadow-lg px-4 py-3">
+				<div class="flex items-center gap-2.5">
+					<span class="w-2 h-2 bg-red-500 rounded-full animate-pulse flex-shrink-0"></span>
+					<p class="text-xs text-amber-800">
+						<strong>Recording</strong> — Don't touch, scroll, or switch tabs. Stops automatically.
+					</p>
 				</div>
 			</div>
 		</div>
