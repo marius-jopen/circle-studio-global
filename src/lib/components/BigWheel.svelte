@@ -3,14 +3,8 @@
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import { 
-    Button, 
-    Slider, 
-    Input, 
-    Checkbox, 
-    Select, 
     RecordingIndicator,
-    FileUpload,
-    type SelectOption 
+    FileUpload
   } from '../primitives';
 
   export let config: {
@@ -94,7 +88,7 @@
   ];
 
   // Animation type options for select component
-  const animationOptions: SelectOption[] = [
+  const animationOptions = [
     { value: 'sin', label: 'Sinusoidal' },
     { value: 'linear', label: 'Linear' },
     { value: 'ease-in', label: 'Ease In' },
@@ -796,391 +790,360 @@
 
 
 
-<div class="flex flex-col lg:flex-row gap-6 h-full w-full max-w-7xl mx-auto p-4" class:justify-center={!((showControls || (!items && !globalSettings)))} class:items-center={!((showControls || (!items && !globalSettings)))}>
-  <!-- Canvas Container - Sticky on larger screens -->
-  <div class="flex-shrink-0 lg:sticky lg:top-4 lg:self-start">
-    <div 
-      class="relative mx-auto rounded-3xl transition-all duration-200 overflow-hidden"
-      style="width: {containerSize}px; height: {containerSize}px; {activeBackgroundColor !== 'transparent' ? `background-color: ${activeBackgroundColor};` : ''}"
-      bind:this={containerElement}
-    >
-      <!-- Background Media -->
-      {#if backgroundMedia && currentBackgroundFile}
-        <div 
-          class="absolute inset-0 flex items-center justify-center"
-          style="opacity: {backgroundOpacity};"
-        >
-          {#if backgroundMediaType === 'image'}
-            <img
-              src={currentBackgroundFile.url}
-              alt="Background"
-              class="w-full h-full object-cover"
-              style="transform: scale({backgroundScale / 100}) translate({(backgroundPositionX - 50) * 2}%, {(backgroundPositionY - 50) * 2}%);"
-            />
-          {:else if backgroundMediaType === 'video'}
-            <video
-              src={currentBackgroundFile.url}
-              class="w-full h-full object-cover"
-              style="transform: scale({backgroundScale / 100}) translate({(backgroundPositionX - 50) * 2}%, {(backgroundPositionY - 50) * 2}%);"
-              autoplay
-              loop
-              muted
-            >
-              <track kind="captions" />
-            </video>
-          {/if}
-        </div>
-      {/if}
-      {#each renderCircles as circle, i (i)}
-          <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-          <TextCircle
-            text={circle.text}
-            fontSize={fontSize}
-            radius={getRadius(i)}
-            rotationSpeed={circle.rotationSpeed}
-            spacingAmplitudePercent={circle.spacingAmplitudePercent}
-            spacingSpeed={circle.spacingSpeed}
-            rotationStart={circle.rotationStart}
-            animationType={circle.animationType}
-            containerSize={containerSize}
-            paused={animationPaused}
-            textColor={activeTextColor}
-            primaryFontFamily={activePrimaryFontFamily}
-            fadeInTime={activeFadeInTime}
-            fadeOutTime={activeFadeOutTime}
-            pauseTime={activePauseTime}
-            visibleTime={activeVisibleTime}
-            manualMode={activeManualMode}
-            triggerFadeIn={activeTriggerFadeIn}
-            triggerFadeOut={activeTriggerFadeOut}
-            startInvisible={activeStartInvisible}
-            autoTextSize={circle.autoTextSize ?? false}
-            bind:this={textCircleRefs[i]}
-            />
-          </div>
-      {/each}
-    </div>
-    
-    <!-- <div class="flex justify-center mt-4">
-      <Button variant="secondary" on:click={toggleControls}>
-        {showControls ? 'Hide Controls' : 'Show Controls'}
-      </Button>
-    </div> -->
-  </div>
+<div class="w-full">
+	<div class="flex flex-col lg:flex-row gap-5 w-full max-w-7xl mx-auto"
+		class:justify-center={!(showControls || (!items && !globalSettings))}
+		class:items-center={!(showControls || (!items && !globalSettings))}>
 
-  <!-- Controls Container - Scrollable -->
-  {#if showControls || (!items && !globalSettings)}
-  <div class="flex-1 min-w-0">
-    <div class="rounded-3xl p-4 mb-4 bg-white w-full">
-      <h3 class="m-0 mb-4 text-lg font-bold text-neutral-700 pb-2">Main Controls</h3>
-      <div class="flex flex-col gap-4">
-        <Slider 
-          label="Canvas Size" 
-          bind:value={containerSizePercent}
-          min={10}
-          max={200}
-          step={1}
-          unit="%"
-          precision={0}
-          tooltip="📝 Adjust the size of the canvas ({Math.round((containerSizePercent / 100) * baseContainerSize)}px)"
-        />
-        
-        <Slider 
-          label="Font Size" 
-          bind:value={fontSizePercent}
-          min={2}
-          max={20}
-          step={0.1}
-          unit="%"
-          precision={2}
-          tooltip="📝 Font size ({Math.round((fontSizePercent / 100) * containerSize)}px)"
-        />
-        
-        <Slider 
-          label="Distance Between Circles" 
-          bind:value={distancePercent}
-          min={0}
-          max={10}
-          step={0.1}
-          unit="%"
-          precision={2}
-          tooltip="📝 Space between circles ({Math.round((distancePercent / 100) * containerSize)}px)"
-        />
-        
-        <div class="flex justify-between items-center p-2 rounded-3xl bg-white">
-          <span>Animation:</span>
-          <Button variant="primary" on:click={() => paused = !paused}>
-            {paused ? '▶ Play' : '⏸️ Pause'}
-          </Button>
-        </div>
-        
-        <div class="flex gap-4 items-end">
-          <Input 
-            type="color" 
-            label="Text Color" 
-            bind:value={textColor}
-            fullWidth={false}
-          />
-          
-          <Input 
-            type="color" 
-            label="Background Color" 
-            bind:value={backgroundColor}
-            fullWidth={false}
-          />
-        </div>
-        
-        <Checkbox 
-          bind:checked={transparentBackground}
-          label="Transparent Background"
-        />
-      </div>
-    </div>
-    
-    <!-- Fade Animation Controls -->
-    <div class="bg-white rounded-3xl p-4 mb-4 w-full">
-      <h3 class="m-0 mb-4 text-lg font-bold text-neutral-700 border-b border-gray-200 pb-2">Fade Animation</h3>
-      <div class="flex flex-col gap-4">
-        <Checkbox 
-          bind:checked={manualMode}
-          label="Manual Mode"
-          tooltip="📝 Disable automatic fade cycles"
-        />
-        
-        {#if manualMode}
-          <div class="flex gap-2">
-            <Button variant="fade" on:click={handleFadeIn}>Fade In</Button>
-            <Button variant="fade" on:click={handleFadeOut}>Fade Out</Button>
-          </div>
-        {/if}
-        
-        <Slider 
-          label="Fade In Time" 
-          bind:value={fadeInTime}
-          min={0.5}
-          max={10}
-          step={0.1}
-          unit="s"
-          precision={1}
-        />
-        
-        <Slider 
-          label="Fade Out Time" 
-          bind:value={fadeOutTime}
-          min={0.5}
-          max={10}
-          step={0.1}
-          unit="s"
-          precision={1}
-        />
-        
-        {#if !manualMode}
-          <Slider 
-            label="Visible Time" 
-            bind:value={visibleTime}
-            min={1}
-            max={15}
-            step={0.1}
-            unit="s"
-            precision={1}
-          />
-          
-          <Slider 
-            label="Pause Time" 
-            bind:value={pauseTime}
-            min={0.5}
-            max={10}
-            step={0.1}
-            unit="s"
-            precision={1}
-          />
-        {/if}
-      </div>
-    </div>
-    
-    <!-- Export & Recording Controls -->
-    <div class="bg-white rounded-3xl p-4 mb-4 w-full">
-      <h3 class="m-0 mb-4 text-lg font-bold text-neutral-700 border-b border-gray-200 pb-2">Export & Recording</h3>
-      <div class="flex flex-col gap-4">
-        <Input 
-          type="number"
-          label="Export Resolution"
-          bind:value={exportResolution}
-          min={720}
-          max={3840}
-          step={1}
-          tooltip="📝 Resolution in pixels (square format)"
-        />
-        
-        <Checkbox 
-          bind:checked={useHighResRecording}
-          label="High-Resolution Recording"
-          tooltip="📝 Uses higher quality rendering but may be slower"
-        />
-        
-        <div class="flex gap-2 flex-wrap">
-          <Button variant="primary" on:click={saveStill}>
-            Save PNG
-          </Button>
-          
-          <Button 
-            variant="record" 
-            recording={isRecording}
-            on:click={toggleRecording}
-          >
-            {#if !isRecording}
-              <div class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div> Record Video
-            {:else}
-              <span>⏹️ Stop Recording</span>
-            {/if}
-          </Button>
-        </div>
-        
-        <RecordingIndicator {isRecording} {elapsedTime} size="md" />
-      </div>
-    </div>
-    
-    <!-- Background Media Controls -->
-    <div class="bg-white rounded-3xl p-4 mb-4 w-full">
-      <h3 class="m-0 mb-4 text-lg font-bold text-neutral-700 border-b border-gray-200 pb-2">Background Media</h3>
-      <div class="flex flex-col gap-4">
-        <FileUpload
-          label="Background Image/Video"
-          description="Add a background image or video to your animation"
-          maxSize={50}
-          currentFile={currentBackgroundFile}
-          on:upload={handleBackgroundUpload}
-          on:remove={handleBackgroundRemove}
-          on:error={handleBackgroundError}
-        />
-        
-        {#if backgroundMedia}
-          <Slider 
-            label="Background Opacity" 
-            bind:value={backgroundOpacity}
-            min={0}
-            max={1}
-            step={0.01}
-            precision={2}
-            tooltip="📝 Adjust the opacity of the background media"
-          />
-          
-          <Slider 
-            label="Background Scale" 
-            bind:value={backgroundScale}
-            min={50}
-            max={200}
-            step={1}
-            unit="%"
-            precision={0}
-            tooltip="📝 Scale the background media"
-          />
-          
-          <Slider 
-            label="Position X" 
-            bind:value={backgroundPositionX}
-            min={0}
-            max={100}
-            step={1}
-            unit="%"
-            precision={0}
-            tooltip="📝 Horizontal position of the background"
-          />
-          
-          <Slider 
-            label="Position Y" 
-            bind:value={backgroundPositionY}
-            min={0}
-            max={100}
-            step={1}
-            unit="%"
-            precision={0}
-            tooltip="📝 Vertical position of the background"
-          />
-          
-          {#if backgroundMediaType === 'video'}
-            <div class="flex justify-between items-center p-2 rounded-3xl bg-white">
-              <span>Video Playback:</span>
-              <Button variant="primary" on:click={toggleVideoPlayback}>
-                {videoPlaybackLabel}
-              </Button>
-            </div>
-          {/if}
-        {/if}
-      </div>
-    </div>
-    
-    <div class="flex justify-center my-4">
-      <Button rounded on:click={addCircle}>+</Button>
-    </div>
-    
-          {#each circles as circle, i (i)}
-        <div class="bg-white rounded-3xl p-4 mb-4 w-full">
-          <h3 class="m-0 mb-4 text-lg font-bold text-neutral-700 border-b border-gray-200 pb-2">Circle {i + 1}: {circle.text}</h3>
-        <div class="flex flex-col gap-4">
-          <Input 
-            type="text"
-            label="Text"
-            bind:value={circle.text}
-            placeholder="Enter circle text"
-          />
-          
-          <Slider 
-            label="Rotation Speed" 
-            bind:value={circle.rotationSpeed}
-            min={-2}
-            max={2}
-            step={0.01}
-            precision={2}
-          />
-          
-          <Slider 
-            label="Rotation Start" 
-            bind:value={circle.rotationStart}
-            min={0}
-            max={360}
-            step={1}
-            unit="°"
-            precision={0}
-          />
-          
-          <Slider 
-            label="Letter Spacing Amplitude" 
-            bind:value={circle.spacingAmplitudePercent}
-            min={0}
-            max={10}
-            step={0.01}
-            unit="%"
-            precision={2}
-          />
-          
-          <Slider 
-            label="Letter Spacing Speed" 
-            bind:value={circle.spacingSpeed}
-            min={0}
-            max={1}
-            step={0.01}
-            unit=" Hz"
-            precision={2}
-          />
-          
-          <Select 
-            label="Animation Type"
-            bind:value={circle.animationType}
-            options={animationOptions}
-            placeholder="Choose animation..."
-          />
-          
-          {#if circles.length > 1}
-            <div class="mt-4 flex justify-center">
-              <Button variant="danger" size="sm" on:click={() => removeCircle(i)}>
-                Remove Circle
-              </Button>
-            </div>
-          {/if}
-        </div>
-      </div>
-    {/each}
-  </div>
-  {/if}
+		<!-- Controls Panel -->
+		{#if showControls || (!items && !globalSettings)}
+		<div class="flex-1 min-w-0 space-y-3">
+
+			<!-- Circle Configs -->
+			{#each circles as circle, i (i)}
+			<div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+				<div class="px-4 py-2.5 border-b border-gray-100 flex items-center justify-between">
+					<h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Circle {i + 1}</h2>
+					{#if circles.length > 1}
+						<button class="text-xs text-red-400 hover:text-red-600 transition-colors" on:click={() => removeCircle(i)}>Remove</button>
+					{/if}
+				</div>
+				<div class="p-4 space-y-3">
+					<div>
+						<label for="circle-text-{i}" class="block text-[11px] font-medium text-gray-500 mb-1">Text</label>
+						<input id="circle-text-{i}" type="text" bind:value={circle.text} placeholder="Enter circle text"
+							class="w-full px-2.5 py-1.5 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-100 transition-colors" />
+					</div>
+
+					<div class="grid grid-cols-2 gap-3">
+						<div>
+							<label for="rot-speed-{i}" class="block text-[11px] font-medium text-gray-500 mb-1">
+								Rotation <span class="text-gray-400">{circle.rotationSpeed.toFixed(2)}</span>
+							</label>
+							<input id="rot-speed-{i}" type="range" min="-2" max="2" step="0.01" bind:value={circle.rotationSpeed} class="w-full h-1" />
+						</div>
+						<div>
+							<label for="rot-start-{i}" class="block text-[11px] font-medium text-gray-500 mb-1">
+								Start Angle <span class="text-gray-400">{circle.rotationStart}°</span>
+							</label>
+							<input id="rot-start-{i}" type="range" min="0" max="360" step="1" bind:value={circle.rotationStart} class="w-full h-1" />
+						</div>
+					</div>
+
+					<div class="grid grid-cols-2 gap-3">
+						<div>
+							<label for="spacing-amp-{i}" class="block text-[11px] font-medium text-gray-500 mb-1">
+								Spacing Amp <span class="text-gray-400">{circle.spacingAmplitudePercent.toFixed(2)}%</span>
+							</label>
+							<input id="spacing-amp-{i}" type="range" min="0" max="10" step="0.01" bind:value={circle.spacingAmplitudePercent} class="w-full h-1" />
+						</div>
+						<div>
+							<label for="spacing-speed-{i}" class="block text-[11px] font-medium text-gray-500 mb-1">
+								Spacing Speed <span class="text-gray-400">{circle.spacingSpeed.toFixed(2)} Hz</span>
+							</label>
+							<input id="spacing-speed-{i}" type="range" min="0" max="1" step="0.01" bind:value={circle.spacingSpeed} class="w-full h-1" />
+						</div>
+					</div>
+
+					<div>
+						<label for="anim-type-{i}" class="block text-[11px] font-medium text-gray-500 mb-1">Animation Type</label>
+						<select id="anim-type-{i}" bind:value={circle.animationType}
+							class="w-full px-2.5 py-1.5 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-100 transition-colors">
+							{#each animationOptions as opt}
+								<option value={opt.value}>{opt.label}</option>
+							{/each}
+						</select>
+					</div>
+				</div>
+			</div>
+			{/each}
+
+			<button class="w-full py-2 text-xs font-medium text-gray-500 bg-white rounded-xl border border-dashed border-gray-300 hover:bg-gray-50 hover:border-gray-400 transition-colors"
+				on:click={addCircle}>
+				+ Add Circle
+			</button>
+
+			<!-- Display Settings -->
+			<div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+				<div class="px-4 py-2.5 border-b border-gray-100">
+					<h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Display</h2>
+				</div>
+				<div class="p-4 space-y-3">
+					<div class="grid grid-cols-2 gap-3">
+						<div>
+							<label for="text-color" class="block text-[11px] font-medium text-gray-500 mb-1">Text Color</label>
+							<div class="flex items-center gap-2">
+								<input id="text-color" type="color" bind:value={textColor}
+									class="w-7 h-7 rounded-md border border-gray-200 cursor-pointer p-0" />
+								<span class="text-xs text-gray-400 font-mono">{textColor}</span>
+							</div>
+						</div>
+						<div>
+							<label for="bg-color" class="block text-[11px] font-medium text-gray-500 mb-1">Background</label>
+							<div class="flex items-center gap-2">
+								<input id="bg-color" type="color" bind:value={backgroundColor}
+									class="w-7 h-7 rounded-md border border-gray-200 cursor-pointer p-0" />
+								<span class="text-xs text-gray-400 font-mono">{backgroundColor}</span>
+							</div>
+						</div>
+					</div>
+
+					<label class="inline-flex items-center gap-1.5 cursor-pointer">
+						<input type="checkbox" bind:checked={transparentBackground} class="w-3 h-3 rounded" />
+						<span class="text-[11px] text-gray-500">Transparent Background</span>
+					</label>
+
+					<div class="border-t border-gray-100 pt-3">
+						<label for="canvas-size" class="block text-[11px] font-medium text-gray-500 mb-1">
+							Canvas Size <span class="text-gray-400">{Math.round((containerSizePercent / 100) * baseContainerSize)}px</span>
+						</label>
+						<input id="canvas-size" type="range" min="10" max="200" step="1" bind:value={containerSizePercent} class="w-full h-1" />
+					</div>
+
+					<div>
+						<label for="font-size" class="block text-[11px] font-medium text-gray-500 mb-1">
+							Font Size <span class="text-gray-400">{Math.round((fontSizePercent / 100) * containerSize)}px</span>
+						</label>
+						<input id="font-size" type="range" min="2" max="20" step="0.1" bind:value={fontSizePercent} class="w-full h-1" />
+					</div>
+
+					<div>
+						<label for="circle-distance" class="block text-[11px] font-medium text-gray-500 mb-1">
+							Circle Distance <span class="text-gray-400">{Math.round((distancePercent / 100) * containerSize)}px</span>
+						</label>
+						<input id="circle-distance" type="range" min="0" max="10" step="0.1" bind:value={distancePercent} class="w-full h-1" />
+					</div>
+
+					<div>
+						<label for="export-res" class="block text-[11px] font-medium text-gray-500 mb-1">
+							Recording <span class="text-gray-400">{exportResolution}x{exportResolution}px</span>
+						</label>
+						<input id="export-res" type="range" min="720" max="3840" step="10" bind:value={exportResolution} class="w-full h-1" />
+						<p class="text-[10px] text-gray-300 mt-0.5">Higher = better quality, larger file.</p>
+					</div>
+
+					<label class="inline-flex items-center gap-1.5 cursor-pointer">
+						<input type="checkbox" bind:checked={useHighResRecording} class="w-3 h-3 rounded" />
+						<span class="text-[11px] text-gray-500">High-Res Recording</span>
+					</label>
+				</div>
+			</div>
+
+			<!-- Animation Settings -->
+			<div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+				<div class="px-4 py-2.5 border-b border-gray-100">
+					<h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Animation</h2>
+				</div>
+				<div class="p-4 space-y-3">
+					<label class="inline-flex items-center gap-1.5 cursor-pointer">
+						<input type="checkbox" bind:checked={manualMode} class="w-3 h-3 rounded" />
+						<span class="text-[11px] text-gray-500">Manual Mode</span>
+					</label>
+
+					{#if manualMode}
+						<div class="flex gap-2">
+							<button class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200 transition-colors"
+								on:click={handleFadeIn}>Fade In</button>
+							<button class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200 transition-colors"
+								on:click={handleFadeOut}>Fade Out</button>
+						</div>
+					{/if}
+
+					<div class="grid grid-cols-2 gap-x-4 gap-y-3">
+						<div>
+							<label for="fade-in" class="block text-[11px] font-medium text-gray-500 mb-1">
+								Fade In <span class="text-gray-400">{fadeInTime.toFixed(1)}s</span>
+							</label>
+							<input id="fade-in" type="range" min="0.5" max="10" step="0.1" bind:value={fadeInTime} class="w-full h-1" />
+						</div>
+						<div>
+							<label for="fade-out" class="block text-[11px] font-medium text-gray-500 mb-1">
+								Fade Out <span class="text-gray-400">{fadeOutTime.toFixed(1)}s</span>
+							</label>
+							<input id="fade-out" type="range" min="0.5" max="10" step="0.1" bind:value={fadeOutTime} class="w-full h-1" />
+						</div>
+					</div>
+
+					{#if !manualMode}
+						<div class="grid grid-cols-2 gap-x-4 gap-y-3">
+							<div>
+								<label for="visible-time" class="block text-[11px] font-medium text-gray-500 mb-1">
+									Visible <span class="text-gray-400">{visibleTime.toFixed(1)}s</span>
+								</label>
+								<input id="visible-time" type="range" min="1" max="15" step="0.1" bind:value={visibleTime} class="w-full h-1" />
+							</div>
+							<div>
+								<label for="pause-time" class="block text-[11px] font-medium text-gray-500 mb-1">
+									Pause <span class="text-gray-400">{pauseTime.toFixed(1)}s</span>
+								</label>
+								<input id="pause-time" type="range" min="0.5" max="10" step="0.1" bind:value={pauseTime} class="w-full h-1" />
+							</div>
+						</div>
+					{/if}
+				</div>
+			</div>
+
+			<!-- Background Media -->
+			<div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+				<div class="px-4 py-2.5 border-b border-gray-100">
+					<h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Background</h2>
+				</div>
+				<div class="p-4 space-y-3">
+					<FileUpload
+						label="Background Image/Video"
+						description="Add a background image or video"
+						maxSize={50}
+						currentFile={currentBackgroundFile}
+						on:upload={handleBackgroundUpload}
+						on:remove={handleBackgroundRemove}
+						on:error={handleBackgroundError}
+					/>
+
+					{#if backgroundMedia}
+						<div class="grid grid-cols-2 gap-x-4 gap-y-3">
+							<div>
+								<label for="bg-opacity" class="block text-[11px] font-medium text-gray-500 mb-1">
+									Opacity <span class="text-gray-400">{backgroundOpacity.toFixed(2)}</span>
+								</label>
+								<input id="bg-opacity" type="range" min="0" max="1" step="0.01" bind:value={backgroundOpacity} class="w-full h-1" />
+							</div>
+							<div>
+								<label for="bg-scale" class="block text-[11px] font-medium text-gray-500 mb-1">
+									Scale <span class="text-gray-400">{backgroundScale}%</span>
+								</label>
+								<input id="bg-scale" type="range" min="50" max="200" step="1" bind:value={backgroundScale} class="w-full h-1" />
+							</div>
+							<div>
+								<label for="bg-pos-x" class="block text-[11px] font-medium text-gray-500 mb-1">
+									Position X <span class="text-gray-400">{backgroundPositionX}%</span>
+								</label>
+								<input id="bg-pos-x" type="range" min="0" max="100" step="1" bind:value={backgroundPositionX} class="w-full h-1" />
+							</div>
+							<div>
+								<label for="bg-pos-y" class="block text-[11px] font-medium text-gray-500 mb-1">
+									Position Y <span class="text-gray-400">{backgroundPositionY}%</span>
+								</label>
+								<input id="bg-pos-y" type="range" min="0" max="100" step="1" bind:value={backgroundPositionY} class="w-full h-1" />
+							</div>
+						</div>
+
+						{#if backgroundMediaType === 'video'}
+							<button class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200 transition-colors"
+								on:click={toggleVideoPlayback}>
+								{videoPlaybackLabel}
+							</button>
+						{/if}
+					{/if}
+				</div>
+			</div>
+		</div>
+		{/if}
+
+		<!-- Canvas & Controls -->
+		<div class="flex-shrink-0 lg:sticky lg:top-5 lg:self-start">
+			<div
+				class="relative rounded-2xl overflow-hidden mx-auto shadow-sm"
+				style="width: {containerSize}px; height: {containerSize}px; {activeBackgroundColor !== 'transparent' ? `background-color: ${activeBackgroundColor};` : ''}"
+				bind:this={containerElement}
+			>
+				{#if backgroundMedia && currentBackgroundFile}
+					<div class="absolute inset-0 flex items-center justify-center" style="opacity: {backgroundOpacity};">
+						{#if backgroundMediaType === 'image'}
+							<img src={currentBackgroundFile.url} alt="Background" class="w-full h-full object-cover"
+								style="transform: scale({backgroundScale / 100}) translate({(backgroundPositionX - 50) * 2}%, {(backgroundPositionY - 50) * 2}%);" />
+						{:else if backgroundMediaType === 'video'}
+							<video src={currentBackgroundFile.url} class="w-full h-full object-cover"
+								style="transform: scale({backgroundScale / 100}) translate({(backgroundPositionX - 50) * 2}%, {(backgroundPositionY - 50) * 2}%);"
+								autoplay loop muted>
+								<track kind="captions" />
+							</video>
+						{/if}
+					</div>
+				{/if}
+				{#each renderCircles as circle, i (i)}
+					<div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+						<TextCircle
+							text={circle.text}
+							fontSize={fontSize}
+							radius={getRadius(i)}
+							rotationSpeed={circle.rotationSpeed}
+							spacingAmplitudePercent={circle.spacingAmplitudePercent}
+							spacingSpeed={circle.spacingSpeed}
+							rotationStart={circle.rotationStart}
+							animationType={circle.animationType}
+							containerSize={containerSize}
+							paused={animationPaused}
+							textColor={activeTextColor}
+							primaryFontFamily={activePrimaryFontFamily}
+							fadeInTime={activeFadeInTime}
+							fadeOutTime={activeFadeOutTime}
+							pauseTime={activePauseTime}
+							visibleTime={activeVisibleTime}
+							manualMode={activeManualMode}
+							triggerFadeIn={activeTriggerFadeIn}
+							triggerFadeOut={activeTriggerFadeOut}
+							startInvisible={activeStartInvisible}
+							autoTextSize={circle.autoTextSize ?? false}
+							bind:this={textCircleRefs[i]}
+						/>
+					</div>
+				{/each}
+			</div>
+
+			{#if showControls || (!items && !globalSettings)}
+			<!-- Toolbar -->
+			<div class="mt-3 flex items-center justify-center gap-2">
+				<button
+					class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors
+						{isRecording ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200'}"
+					on:click={toggleRecording}
+				>
+					{#if !isRecording}
+						<span class="w-2 h-2 bg-red-500 rounded-full"></span> Record
+					{:else}
+						<span class="w-2 h-2 bg-white rounded-sm"></span> Stop
+					{/if}
+				</button>
+
+				<button
+					class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200 transition-colors"
+					on:click={saveStill}
+				>
+					Save PNG
+				</button>
+
+				<button
+					class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200 transition-colors"
+					on:click={() => paused = !paused}
+				>
+					{paused ? 'Resume' : 'Pause'}
+				</button>
+			</div>
+
+			{#if isRecording}
+				<div class="mt-2 flex justify-center">
+					<RecordingIndicator {isRecording} {elapsedTime} size="md" />
+				</div>
+			{/if}
+
+			<p class="mt-2 text-[10px] text-gray-300 text-center max-w-sm mx-auto leading-relaxed">
+				Recording runs in-browser. Close other tabs for best performance.
+			</p>
+			{/if}
+		</div>
+	</div>
+
+	<!-- Recording Warning Banner -->
+	{#if isRecording}
+		<div class="fixed top-3 left-1/2 transform -translate-x-1/2 z-50 max-w-lg w-full px-4">
+			<div class="bg-amber-50 border border-amber-300 rounded-xl shadow-lg px-4 py-3">
+				<div class="flex items-center gap-2.5">
+					<span class="w-2 h-2 bg-red-500 rounded-full animate-pulse flex-shrink-0"></span>
+					<p class="text-xs text-amber-800">
+						<strong>Recording</strong> — Don't touch, scroll, or switch tabs. Stops automatically.
+					</p>
+				</div>
+			</div>
+		</div>
+	{/if}
 </div>
