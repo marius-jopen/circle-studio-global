@@ -209,7 +209,9 @@
     if (!canvas) return;
     const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
-    const dpr = window.devicePixelRatio || 1;
+    const baseDpr = window.devicePixelRatio || 1;
+    const isMobileCanvas = window.innerWidth < 768;
+    const dpr = isMobileCanvas ? Math.max(baseDpr, 2) * 1.5 : baseDpr;
     const width = canvas.width = containerSize * dpr;
     const height = canvas.height = containerSize * dpr;
     canvas.style.width = `${containerSize}px`;

@@ -194,7 +194,7 @@
 		],
 		globalSettings: {
 			containerSizePercent,
-			fontSizePercent: 20,
+			fontSizePercent: isMobile ? 18 : 20,
 			distancePercent: 0,
 			paused: false,
 			textColor: inverted ? '#ffffff' : '#171717',
