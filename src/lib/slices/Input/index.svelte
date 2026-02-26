@@ -2,6 +2,7 @@
 	import type { Content } from '@prismicio/client';
 	import type { SliceComponentProps } from '@prismicio/svelte';
 	import BigWheel from '../../components/BigWheel.svelte';
+	import Logo from '../../components/Logo.svelte';
 	import { onMount, tick } from 'svelte';
     import { mobileSearchOpen, playInputActive } from '$lib/stores';
 
@@ -208,6 +209,11 @@
 		}
 	});
 </script>
+
+<!-- Mobile: Small rotating logo, top left -->
+<a href="/" class="md:hidden fixed top-2 left-2 z-50">
+	<Logo variant="black" rotationSpeed={10} size={60} />
+</a>
 
 {#if $playInputActive}
 	<!-- Mobile: Close button (top right) -->
