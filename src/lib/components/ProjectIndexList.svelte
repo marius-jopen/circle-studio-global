@@ -109,7 +109,7 @@
 	});
 </script>
 
-<div class="divide-y divide-black/10 border-t border-black/10 text-black md:hover:text-black/25 mt-[180px] md:mt-[200px]">
+<div class="divide-y divide-black/10 text-black md:hover:text-black/25 mt-[180px] md:mt-[210px] bg-neutral-100 rounded px-4 py-1">
 	{#each sortedProjects as project, index}
 		<a href="/work/{project.uid}"
 		   class="block py-2.5 transition-all duration-500 ease-out {visibleItems.has(index) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'} {isMobile ? '' : 'hover:text-black'}"
@@ -129,16 +129,16 @@
 		   }}
 		>
 			<div class="grid grid-cols-12 items-center gap-2 paragraph-1">
-				<div class="col-span-6 md:col-span-4 text-left tracking-wide text-xs md:text-xl">{project.data.client}</div>
-				<div class="col-span-6 md:col-span-4 text-left text-xs md:text-xl">{project.data.title}</div>
+				<div class="col-span-6 md:col-span-4 text-left tracking-wide text-xs md:text-base">{project.data.client}</div>
+				<div class="col-span-6 md:col-span-4 text-left text-xs md:text-base">{project.data.title}</div>
 				<!-- Tags column - hidden on mobile -->
-				<div class="col-span-3 text-left text-xs md:text-xl whitespace-nowrap overflow-hidden text-ellipsis hidden md:block">
+				<div class="col-span-3 text-left text-xs md:text-base whitespace-nowrap overflow-hidden text-ellipsis hidden md:block">
 					{#if project.tags && project.tags.length > 0}
 						{project.tags.join(', ')}
 					{/if}
 				</div>
 				<!-- Year column - hidden on mobile -->
-				<div class="col-span-1 text-right hidden md:block text-xs md:text-xl">{formatYear(project.data.year as string)}</div>
+				<div class="col-span-1 text-right hidden md:block text-xs md:text-base">{formatYear(project.data.year as string)}</div>
 			</div>
 		</a>
 	{/each}
