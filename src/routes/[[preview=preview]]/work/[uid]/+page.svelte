@@ -165,12 +165,12 @@
 <div class="mx-auto px-2 paragraph-1">
 	<!-- Project Info -->
 	<div class="grid grid-cols-1 md:grid-cols-2 gap-2 w-full text-primary mb-2">
-		<div class="h2 bg-neutral-100 rounded-lg px-4 py-2 h-full">
+		<div class="h2 bg-neutral-100 rounded px-4 py-2 h-full">
 			{projectData.title}{projectData.client ? `, ${projectData.client}` : ''}
 		</div>
 
 		{#if projectData.description}
-			<div class="prose prose-lg max-w-none content-text h3 bg-neutral-100 rounded-lg px-4 py-2 h-full [&_*:last-child]:mb-0">
+			<div class="prose prose-lg max-w-none content-text h3 bg-neutral-100 rounded px-4 py-2 h-full [&_*:last-child]:mb-0">
 				<PrismicRichText field={projectData.description} />
 			</div>
 		{/if}

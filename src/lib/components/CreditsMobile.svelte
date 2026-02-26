@@ -18,7 +18,7 @@
 {#if credits && credits.length > 0}
   {@const validCredits = (credits as CreditItem[]).filter((credit: CreditItem) => credit.label && credit.person && credit.person.length > 0)}
   {#if validCredits.length > 0}
-    <section class="mb-4 mt-8 text-sm">
+    <section class="mb-3 mt-0.5 text-sm bg-neutral-100 rounded px-4 py-5">
       <div class=" font-normal text-center w-full mb-4">Credits</div>
       <div class="text-primary">
         {#each validCredits as credit}

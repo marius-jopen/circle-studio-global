@@ -11,7 +11,7 @@
 {#if credits && credits.length > 0}
 	{@const validCredits = credits.filter((credit: { label?: string; person?: any[] }) => credit.label && credit.person && credit.person.length > 0)}
 	{#if validCredits.length > 0}
-		<section class="mb-3 mt-0 bg-neutral-100 rounded-lg px-4 py-5">
+		<section class="mb-3 mt-0 bg-neutral-100 rounded px-4 py-5">
 				<div class="text-black hover:text-black/25 text-base leading-tight">
 					{#each validCredits as credit}
 					<div class="flex justify-between gap-3 pb-1 hover:text-black transition-colors duration-200">
