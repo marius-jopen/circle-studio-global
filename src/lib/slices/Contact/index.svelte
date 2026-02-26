@@ -30,15 +30,17 @@
 	}
 </script>
 
-<section class="content-container mb-10 mt-10 text-center" data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
+<section class="mb-2 -mt-1 text-center bg-neutral-100 rounded px-4 py-28" data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
 	{#if isFilled.link(slice.primary.link)}
 		<button
 			onclick={handleClick}
 			class="h1 text-center w-full contact-link-wrapper cursor-pointer h-[100px] flex items-center flex-row justify-center"
 		>
 			{#if copied}
+			<div class="text-lg">
 				{linkUrl} copied to clipboard. <br />
 				Paste it into your e-mail.
+			</div>
 			{:else}
 				<span class=" hover:text-neutral-400 transition-colors duration-200">
 					{linkText}

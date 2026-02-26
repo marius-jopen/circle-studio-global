@@ -7,4 +7,6 @@
 	const { data }: PageProps = $props();
 </script>
 
-<SliceZone slices={data.page.data.slices} {components} />
+<div class="px-2">
+	<SliceZone slices={data.page.data.slices} {components} />
+</div>
