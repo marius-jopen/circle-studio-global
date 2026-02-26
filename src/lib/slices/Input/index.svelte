@@ -36,6 +36,14 @@
 	// Height of the mobile input bar (including padding)
 	const MOBILE_INPUT_HEIGHT = 60;
 
+	// Invert mode
+	let inverted = $state(false);
+
+	function toggleInvert() {
+		inverted = !inverted;
+		document.body.classList.toggle('play-inverted', inverted);
+	}
+
 	// Fade animation control
 	let manualModeState = $state<boolean>(true);
 	let startInvisibleState = $state<boolean>(true);
@@ -152,6 +160,7 @@
 			document.body.style.position = '';
 			document.body.style.width = '';
 			document.body.style.height = '';
+			document.body.classList.remove('play-inverted');
 			playInputActive.set(false);
 		};
 	});
@@ -174,7 +183,7 @@
 			fontSizePercent: 20,
 			distancePercent: 0,
 			paused: false,
-			textColor: '#171717',
+			textColor: inverted ? '#ffffff' : '#171717',
 			transparentBackground: true,
 			manualMode: manualModeState,
 			startInvisible: startInvisibleState,
@@ -242,8 +251,17 @@
 
 </section>
 
+<!-- Desktop: Invert toggle button, bottom right -->
+<button
+	class="hidden md:flex fixed bottom-3 right-3 z-[200] w-6 h-6 rounded-full items-center justify-center cursor-pointer transition-colors duration-300 pointer-events-auto"
+	class:bg-white={inverted}
+	class:bg-neutral-900={!inverted}
+	onclick={toggleInvert}
+	aria-label="Toggle invert"
+/>
+
 <!-- Desktop: Input fixed at the bottom center -->
-<div class="hidden md:flex fixed bottom-8 left-0 right-0 justify-center items-center px-4 z-50">
+<div class="hidden md:flex fixed bottom-3 left-0 right-0 justify-center items-center px-4 z-50">
 	<input
 		id="wheel-text-input"
 		type="text"
@@ -254,3 +272,20 @@
 		class="px-6 pt-3.5 text-neutral-500 hover:text-primary transition-colors duration-300 pb-4 bg-neutral-100 rounded-md w-full max-w-xl text-3xl outline-none focus:outline-none focus:ring-0 focus:border-black"
 	/>
 </div>
+
+<style>
+	/* Invert mode: page background and body text */
+	:global(body.play-inverted) {
+		background-color: #000 !important;
+		color: #fff !important;
+	}
+	/* Keep navigation colors unchanged */
+	:global(body.play-inverted .desktop-nav),
+	:global(body.play-inverted .desktop-nav *) {
+		color: #171717 !important;
+	}
+	/* Invert the logo wheel image */
+	:global(body.play-inverted header a.logo-link img) {
+		filter: invert(1);
+	}
+</style>
