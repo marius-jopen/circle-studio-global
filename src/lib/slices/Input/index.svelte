@@ -117,6 +117,16 @@
 			if (isMobile) {
 				window.scrollTo(0, 0);
 			}
+			// Re-run after keyboard animation completes (iOS fires resize before keyboard is fully gone)
+			if (isMobile) {
+				setTimeout(() => {
+					if (window.visualViewport) {
+						mobileViewportHeight = window.visualViewport.height;
+						mobileViewportOffsetTop = window.visualViewport.offsetTop;
+					}
+					updateWheelSize();
+				}, 350);
+			}
 		};
 		window.addEventListener('resize', handleResize);
 
@@ -247,7 +257,7 @@
 	bind:this={sectionEl}
 >
 	<!-- Wheel area: on mobile, fill space above the fixed input; on desktop, flex-1 -->
-	<div class="flex-1 flex w-full pb-0 md:pb-[100px]" bind:this={wheelAreaEl}>
+	<div class="flex-1 flex items-center justify-center w-full pb-0 md:pb-[100px]" bind:this={wheelAreaEl}>
 		{#if !$mobileSearchOpen}
 			<BigWheel config={wheelConfig} />
 		{/if}

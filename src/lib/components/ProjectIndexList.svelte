@@ -109,7 +109,7 @@
 	});
 </script>
 
-<div class="divide-y divide-black/10 text-black md:hover:text-black/25 mt-[180px] md:mt-[210px] bg-neutral-100 rounded px-4 py-1">
+<div class="divide-y mb-3 divide-black/10 text-black md:hover:text-black/25 mt-[180px] md:mt-[210px] bg-neutral-100 rounded px-4 py-1">
 	{#each sortedProjects as project, index}
 		<a href="/work/{project.uid}"
 		   class="block py-2.5 transition-all duration-500 ease-out {visibleItems.has(index) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'} {isMobile ? '' : 'hover:text-black'}"
