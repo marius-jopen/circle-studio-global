@@ -184,7 +184,7 @@
 			class:pointer-events-auto={isHome}
 			style="width: {desktopSearchOpen && isHome ? '260px' : '40px'};"
 			onmouseenter={() => { if (isHome) openDesktopSearch(); }}
-			onmouseleave={() => { if (desktopSearchOpen) closeDesktopSearch(); }}
+			onmouseleave={() => { if (desktopSearchOpen && !$homeSearchQuery) closeDesktopSearch(); }}
 		>
 			<!-- Search icon (collapsed) -->
 			<button
