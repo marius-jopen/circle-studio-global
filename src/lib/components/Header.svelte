@@ -183,6 +183,8 @@
 			class:pointer-events-none={!isHome}
 			class:pointer-events-auto={isHome}
 			style="width: {desktopSearchOpen && isHome ? '260px' : '40px'};"
+			onmouseenter={() => { if (isHome) openDesktopSearch(); }}
+			onmouseleave={() => { if (desktopSearchOpen) closeDesktopSearch(); }}
 		>
 			<!-- Search icon (collapsed) -->
 			<button
@@ -191,7 +193,6 @@
 				class:opacity-0={desktopSearchOpen}
 				class:pointer-events-auto={!desktopSearchOpen && isHome}
 				class:pointer-events-none={desktopSearchOpen || !isHome}
-				onclick={openDesktopSearch}
 				aria-label="Search"
 			>
 				<img src="/search-logo.svg" alt="Search" class="w-5 h-5" />
