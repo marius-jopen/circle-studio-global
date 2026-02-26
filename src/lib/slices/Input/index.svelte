@@ -238,7 +238,7 @@
 			placeholder="Type your text here…"
 			bind:value={wheelText}
 			bind:this={mobileInput}
-			onfocus={handleInputFocus}
+			onfocus={(e) => { handleInputFocus(); e.currentTarget.select(); }}
 			autocomplete="off"
 			autofocus
 			class="py-2 px-5 flex-1 bg-transparent outline-none text-xl font-medium w-full"
