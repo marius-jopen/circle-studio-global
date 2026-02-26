@@ -17,8 +17,7 @@
 </script>
 
 {#if projects && projects.length > 0}
-<div class="mt-24 pb-3">
-    <div class="mb-4 paragraph-1 text-center">More work</div>
+<div class="-mt-0.5 pb-3">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
         {#each projects as project, index (project.uid)}
             {#key project.uid}

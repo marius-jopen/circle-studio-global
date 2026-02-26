@@ -194,7 +194,7 @@
 
 	<!-- Related Projects -->
 	{#if relatedProjects && relatedProjects.length > 0}
-		<div class="mt-16">
+		<div class="">
 			<RelatedProjects projects={relatedProjects} />
 		</div>
 	{/if}
