@@ -40,8 +40,12 @@
 	let inverted = $state(false);
 
 	function toggleInvert() {
+		document.body.classList.add('play-no-transition');
 		inverted = !inverted;
 		document.body.classList.toggle('play-inverted', inverted);
+		requestAnimationFrame(() => {
+			document.body.classList.remove('play-no-transition');
+		});
 	}
 
 	// Fade animation control
@@ -274,15 +278,31 @@
 </div>
 
 <style>
+	/* Kill all transitions during the invert toggle */
+	:global(body.play-no-transition),
+	:global(body.play-no-transition *) {
+		transition: none !important;
+	}
 	/* Invert mode: page background and body text */
 	:global(body.play-inverted) {
 		background-color: #000 !important;
 		color: #fff !important;
 	}
-	/* Keep navigation colors unchanged */
+	/* Navigation: dark background + white text */
+	:global(body.play-inverted .desktop-nav > *) {
+		background-color: #404040 !important;
+	}
 	:global(body.play-inverted .desktop-nav),
 	:global(body.play-inverted .desktop-nav *) {
-		color: #171717 !important;
+		color: #fff !important;
+	}
+	/* Desktop input field: dark background + white text */
+	:global(body.play-inverted #wheel-text-input) {
+		background-color: #404040 !important;
+		color: #fff !important;
+	}
+	:global(body.play-inverted #wheel-text-input::placeholder) {
+		color: #a3a3a3 !important;
 	}
 	/* Invert the logo wheel image */
 	:global(body.play-inverted header a.logo-link img) {
