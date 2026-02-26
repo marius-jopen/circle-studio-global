@@ -126,7 +126,7 @@
 		globalSettings: {
 			containerSizePercent: containerSizePercent,
 			fontSizePercent: 10,
-			distancePercent: 1.3,
+			distancePercent: 1.5,
 			paused: false,
 			textColor: "#ffffff",
 			backgroundColor: "#ffffff", 
@@ -149,18 +149,18 @@
 		items: [
 			{
 				text: projectTitle,
-				rotationSpeed: 0.31,
-				spacingAmplitudePercent: 1.02,
-				spacingSpeed: 0.1,
-				rotationStart: 20,
+				rotationSpeed: 0.3,
+				spacingAmplitudePercent: 0,
+				spacingSpeed: 0.2,
+				rotationStart: 0,
 				animationType: 'sin'
 			},
 			{
 				text: projectClient,
-				rotationSpeed: 0.3,
-				spacingAmplitudePercent: 0.65,
-				spacingSpeed: 0.004,
-				rotationStart: 294,
+				rotationSpeed: 0.25,
+				spacingAmplitudePercent: 0,
+				spacingSpeed: 0.2,
+				rotationStart: 180,
 				animationType: 'sin'
 			},
 			{
