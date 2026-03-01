@@ -1,5 +1,6 @@
 <script lang="ts">
   import TextCircle from './TextCircle.svelte';
+  import RichTextInput from './RichTextInput.svelte';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import { 
@@ -811,8 +812,8 @@
 				<div class="p-4 space-y-3">
 					<div>
 						<label for="circle-text-{i}" class="block text-[11px] font-medium text-gray-500 mb-1">Text</label>
-						<input id="circle-text-{i}" type="text" bind:value={circle.text} placeholder="Enter circle text"
-							class="w-full px-2.5 py-1.5 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-100 transition-colors" />
+						<span class="block text-xs text-gray-400 mb-1">Select text, click B to bold</span>
+						<RichTextInput id="circle-text-{i}" bind:value={circle.text} placeholder="Enter circle text" rows={1} />
 					</div>
 
 					<div class="grid grid-cols-2 gap-3">

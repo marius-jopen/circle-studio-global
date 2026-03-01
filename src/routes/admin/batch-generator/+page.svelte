@@ -1,6 +1,8 @@
 <script lang="ts">
 	import TextCircle from '$lib/components/TextCircle.svelte';
+	import RichTextInput from '$lib/components/RichTextInput.svelte';
 	import { Input, Button, RecordingIndicator } from '$lib/primitives';
+	import { parseBoldText, boldTextToHtml } from '$lib/utils/boldText';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
 
@@ -596,28 +598,35 @@ Invite someone dangerous to tea.`);
 						recordingContext.closePath();
 						recordingContext.clip();
 						
-						if (displayText) {
-							// Calculate full text width
-							const fullTextWidth = recordingContext.measureText(displayText).width;
+						if (displayText && recordingContext) {
+							// Parse bold segments and draw each with appropriate font
+							const ctx = recordingContext;
+							const segments = parseBoldText(displayText);
+							const fullTextWidth = segments.reduce((sum, { char, bold }) => {
+								ctx.font = bold ? `bold ${fontSize}px Arial, sans-serif` : `${fontSize}px Arial, sans-serif`;
+								return sum + ctx.measureText(char).width;
+							}, 0);
 							
-							// Calculate scroll position (like browser - scroll to show cursor at right edge when text is long)
 							let scrollX = 0;
 							if (fullTextWidth > maxTextWidth) {
-								// Scroll so cursor is visible at the right edge
 								scrollX = fullTextWidth - maxTextWidth;
 							}
 							
-							// Draw text at scrolled position (moved down by 2px in video, scaled proportionally)
 							const textX = inputFieldX + padding - scrollX;
-							const textYOffset = 2 * (recordingWidth / 600); // Scale from base 600px
+							const textYOffset = 2 * (recordingWidth / 600);
 							const textY = inputFieldY + textYOffset;
-							recordingContext.fillText(displayText, textX, textY);
+							let drawX = textX;
+							for (const { char, bold } of segments) {
+								ctx.font = bold ? `bold ${fontSize}px Arial, sans-serif` : `${fontSize}px Arial, sans-serif`;
+								ctx.fillText(char, drawX, textY);
+								drawX += ctx.measureText(char).width;
+							}
 							
 							// Draw blinking cursor at the end of text (moved down by 2px to match text)
 							const cursorX = textX + fullTextWidth;
 							const cursorOpacity = Math.floor(Date.now() / 500) % 2 === 0 ? 1 : 0;
-							recordingContext.fillStyle = `rgba(75, 85, 99, ${cursorOpacity})`; // gray-600 with opacity
-							recordingContext.fillRect(cursorX, textY - fontSize / 2, 1 * (recordingWidth / 600), fontSize);
+							ctx.fillStyle = `rgba(75, 85, 99, ${cursorOpacity})`; // gray-600 with opacity
+							ctx.fillRect(cursorX, textY - fontSize / 2, 1 * (recordingWidth / 600), fontSize);
 						} else {
 							// Draw blinking cursor even when text is empty (moved down by 2px, scaled proportionally)
 							const cursorX = inputFieldX + padding;
@@ -763,35 +772,26 @@ Invite someone dangerous to tea.`);
 					<div class="grid grid-cols-2 gap-3">
 						<div>
 							<label for="hello-field" class="block text-[11px] font-medium text-gray-500 mb-1">Hello</label>
-							<input id="hello-field" type="text" bind:value={hello} placeholder="Dear"
-								class="w-full px-2.5 py-1.5 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-100 transition-colors" />
+							<RichTextInput id="hello-field" bind:value={hello} placeholder="Dear" rows={1} />
 						</div>
 						<div>
 							<label for="name-field" class="block text-[11px] font-medium text-gray-500 mb-1">Name</label>
-							<input id="name-field" type="text" bind:value={name} placeholder="Enter name"
-								class="w-full px-2.5 py-1.5 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-100 transition-colors" />
+							<RichTextInput id="name-field" bind:value={name} placeholder="Enter name" rows={1} />
 						</div>
 					</div>
 					<div>
 						<label for="content-field" class="block text-[11px] font-medium text-gray-500 mb-1">Content</label>
-						<textarea
-							id="content-field"
-							bind:value={content}
-							placeholder="Enter message content (one line per chapter)"
-							rows="6"
-							class="w-full px-2.5 py-1.5 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-100 transition-colors resize-y min-h-[80px]"
-						></textarea>
+						<span class="block text-xs text-gray-400 mb-1">Select text, click B to bold</span>
+						<RichTextInput id="content-field" bind:value={content} placeholder="Enter message content (one line per chapter)" rows={6} />
 					</div>
 					<div class="grid grid-cols-2 gap-3">
 						<div>
 							<label for="goodbye-field" class="block text-[11px] font-medium text-gray-500 mb-1">Goodbye</label>
-							<input id="goodbye-field" type="text" bind:value={goodbye} placeholder="Love, Santi"
-								class="w-full px-2.5 py-1.5 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-100 transition-colors" />
+							<RichTextInput id="goodbye-field" bind:value={goodbye} placeholder="Love, Santi" rows={1} />
 						</div>
 						<div>
 							<label for="branding-field" class="block text-[11px] font-medium text-gray-500 mb-1">Branding</label>
-							<input id="branding-field" type="text" bind:value={branding} placeholder="Artcamp, 2026"
-								class="w-full px-2.5 py-1.5 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-100 transition-colors" />
+							<RichTextInput id="branding-field" bind:value={branding} placeholder="Artcamp, 2026" rows={1} />
 						</div>
 					</div>
 				</div>
@@ -974,7 +974,7 @@ Invite someone dangerous to tea.`);
 								style="scrollbar-width: none; -ms-overflow-style: none;"
 							>
 								{#if displayText}
-									<span class="inline-block">{displayText}</span>
+									<span class="inline-block">{@html boldTextToHtml(displayText)}</span>
 								{/if}
 								<span class="inline-block w-[1px] h-6 bg-gray-600 ml-1 cursor-blink flex-shrink-0"></span>
 							</div>

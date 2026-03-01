@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
+  import { parseBoldText } from '$lib/utils/boldText';
   export let text: string = "ART CAMP EST.2016";
   export let fontSize: number = 40;
   export let radius: number = 180;
@@ -44,18 +45,31 @@
   let lastTriggerFadeIn = false;
   let lastTriggerFadeOut = false;
 
-  // Initialize letter arrays when text changes
+  // Parsed letters with bold support (**bold** in text)
+  $: parsedLetters = parseBoldText(text);
+
+  // Initialize letter arrays when text changes (preserve opacities during typewriter to avoid glitches)
   $: {
-    const letters = text.split('');
-    if (letterOpacities.length !== letters.length) {
-      letterOpacities = new Array(letters.length).fill(0);
-      letterFadeStartTimes = new Array(letters.length).fill(0);
-      generateRandomFadeTimes();
+    const letters = parsedLetters;
+    const newLen = letters.length;
+    if (letterOpacities.length !== newLen) {
+      if (newLen > letterOpacities.length) {
+        // Expanding (e.g. typewriter): preserve existing opacities, add new at full
+        const next = [...letterOpacities];
+        while (next.length < newLen) next.push(1);
+        letterOpacities = next;
+        letterFadeStartTimes = letterFadeStartTimes.slice(0, newLen);
+        while (letterFadeStartTimes.length < newLen) letterFadeStartTimes.push(0);
+      } else {
+        // Shrinking (e.g. delete): keep opacities for remaining letters
+        letterOpacities = letterOpacities.slice(0, newLen);
+        letterFadeStartTimes = letterFadeStartTimes.slice(0, newLen);
+      }
     }
   }
 
   function generateRandomFadeTimes() {
-    const letters = text.split('');
+    const letters = parsedLetters;
     letterFadeStartTimes = letters.map((_, i) => Math.random());
     // Sort to ensure we have a good distribution
     letterFadeStartTimes.sort((a, b) => a - b);
@@ -165,19 +179,18 @@
     const ctx = measureCanvas.getContext('2d');
     if (!ctx) return baseFontSize;
     
-    const letters = textStr.split('');
+    const letters = parseBoldText(textStr);
     if (letters.length === 0) return baseFontSize;
     
     const circumference = 2 * Math.PI * r;
     if (circumference <= 0) return baseFontSize;
     
-    // Use a large reference font size based on radius for accurate measurement
-    // This ensures we get accurate text width measurements regardless of base font size
     const referenceFontSize = Math.max(200, r * 0.5);
-    ctx.font = `${referenceFontSize}px "${primaryFontFamily}", Arial, Helvetica, sans-serif`;
-    
-    // Measure text width at reference size
-    const totalWidthAtReference = letters.reduce((sum, l) => sum + ctx.measureText(l).width, 0);
+    const fontFamily = `"${primaryFontFamily}", Arial, Helvetica, sans-serif`;
+    const totalWidthAtReference = letters.reduce((sum, { char, bold }) => {
+      ctx.font = bold ? `bold ${referenceFontSize}px ${fontFamily}` : `${referenceFontSize}px ${fontFamily}`;
+      return sum + ctx.measureText(char).width;
+    }, 0);
     if (totalWidthAtReference <= 0) return baseFontSize;
     
     // Calculate the scale factor needed to make text fill the circumference
@@ -229,9 +242,12 @@
 
     // Use elapsedTime instead of performance.now() to allow freezing animations
     const time = elapsedTime;
-    const letters = text.split('');
-    ctx.font = `${effectiveFontSize}px "${primaryFontFamily}", Arial, Helvetica, sans-serif`;
-    const letterWidths = letters.map(l => ctx.measureText(l).width);
+    const letters = parsedLetters;
+    const fontFamily = `"${primaryFontFamily}", Arial, Helvetica, sans-serif`;
+    const letterWidths = letters.map(({ char, bold }) => {
+      ctx.font = bold ? `bold ${effectiveFontSize}px ${fontFamily}` : `${effectiveFontSize}px ${fontFamily}`;
+      return ctx.measureText(char).width;
+    });
     const totalWidth = letterWidths.reduce((a, b) => a + b, 0);
     const circumference = 2 * Math.PI * radius;
     let maxSpacingTotal = Math.max(0, circumference - totalWidth);
@@ -273,7 +289,8 @@
       ctx.save();
       ctx.rotate(angle);
       ctx.translate(0, -radius);
-      ctx.font = `${effectiveFontSize}px "${primaryFontFamily}", Arial, Helvetica, sans-serif`;
+      const { char, bold } = letters[i];
+      ctx.font = bold ? `bold ${effectiveFontSize}px ${fontFamily}` : `${effectiveFontSize}px ${fontFamily}`;
       
       // Apply opacity from fade animation (default to 1 for new letters to avoid white flash)
       const opacity = letterOpacities[i] !== undefined ? letterOpacities[i] : 1;
@@ -290,7 +307,7 @@
         continue;
       }
       
-      ctx.fillText(letters[i], 0, 0);
+      ctx.fillText(char, 0, 0);
       ctx.restore();
       currentAngle += letterArc + spacingArc;
     }
@@ -435,12 +452,15 @@
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
     
-    // Draw text with high quality settings
-    const letters = text.split('');
+    // Draw text with high quality settings (support **bold**)
+    const letters = parseBoldText(text);
     const captureFontSize = effectiveFontSize;
-    ctx.font = `${captureFontSize}px ${fontFamily}`;
+    const fullFontFamily = `"${primaryFontFamily}", Arial, Helvetica, sans-serif`;
 
-    const letterWidths = letters.map(l => ctx.measureText(l).width);
+    const letterWidths = letters.map(({ char, bold }) => {
+      ctx.font = bold ? `bold ${captureFontSize}px ${fullFontFamily}` : `${captureFontSize}px ${fullFontFamily}`;
+      return ctx.measureText(char).width;
+    });
     const totalWidth = letterWidths.reduce((a, b) => a + b, 0);
     const circumference = 2 * Math.PI * radius;
     let maxSpacingTotal = Math.max(0, circumference - totalWidth);
@@ -485,8 +505,8 @@
       ctx.rotate(angle);
       ctx.translate(0, -radius);
       
-      // Use a slightly larger font for high-res rendering
-      ctx.font = `${highResFontSize}px ${fontFamily}`;
+      const { char, bold } = letters[i];
+      ctx.font = bold ? `bold ${highResFontSize}px ${fontFamily}` : `${highResFontSize}px ${fontFamily}`;
       
       // Apply opacity from fade animation (default to 1 for new letters to avoid white flash)
       const opacity = letterOpacities[i] !== undefined ? letterOpacities[i] : 1;
@@ -494,19 +514,15 @@
       
       ctx.textAlign = 'center';
       
-      // Apply subpixel positioning for better text rendering
-      const letter = letters[i];
-      
       // For high-res rendering, add subtle shadow for better readability
       if (highRes) {
-        // Add subtle shadow/edges for sharper text
         ctx.shadowColor = 'rgba(0, 0, 0, 0.1)';
         ctx.shadowBlur = 0.5;
         ctx.shadowOffsetX = 0;
         ctx.shadowOffsetY = 0;
       }
       
-      ctx.fillText(letter, 0, 0);
+      ctx.fillText(char, 0, 0);
       ctx.restore();
       currentAngle += letterArc + spacingArc;
     }
