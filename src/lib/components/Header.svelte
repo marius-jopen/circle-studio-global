@@ -133,6 +133,7 @@
 	// Determine current route for conditional mobile wheel visibility
 	const isProject = $derived(currentPath.startsWith('/work/'));
 	const isAbout = $derived(currentPath === '/about' || currentPath.startsWith('/about/'));
+	const isAboutNew = $derived(currentPath === '/about-new' || currentPath === '/preview/about-new');
 	const isHome = $derived(currentPath === '/' || currentPath === '/preview');
 	const isPlay = $derived(currentPath === '/play' || currentPath === '/play/preview');
 	
@@ -177,7 +178,9 @@
 		class:pointer-events-auto={!effectiveFaded}>
 		<!-- Desktop Search (fades in/out on home page) -->
 		<div
-			class="bg-gray-100 rounded-md flex items-center overflow-hidden transition-all duration-300 ease-in-out relative"
+			class="rounded-md flex items-center overflow-hidden transition-all duration-300 ease-in-out relative"
+			class:bg-white={isAboutNew}
+			class:bg-gray-100={!isAboutNew}
 			class:opacity-0={!isHome}
 			class:opacity-100={isHome}
 			class:pointer-events-none={!isHome}
@@ -225,7 +228,11 @@
 			{/if}
 		</div>
 		<!-- Grid and List in same box -->
-		<div class="bg-gray-100 rounded-md px-4 py-1 flex items-center gap-x-3">
+		<div
+			class="rounded-md px-4 py-1 flex items-center gap-x-3"
+			class:bg-white={isAboutNew}
+			class:bg-gray-100={!isAboutNew}
+		>
 			<!-- Grid -->
 			<button
 			class="text-sm font-medium transition-colors duration-300 ease-in-out hover:text-neutral-900 focus:outline-none cursor-pointer"
@@ -250,7 +257,9 @@
 		<!-- About -->
 		<a
 			href="/about"
-		class="bg-gray-100 rounded-md px-4 py-1.5 text-sm font-medium transition-colors duration-300 ease-in-out hover:text-neutral-900"
+		class="rounded-md px-4 py-1.5 text-sm font-medium transition-colors duration-300 ease-in-out hover:text-neutral-900"
+		class:bg-white={isAboutNew}
+		class:bg-gray-100={!isAboutNew}
 		class:text-neutral-500={isAbout}
 		class:text-neutral-900={!isAbout}
 		>
@@ -259,7 +268,9 @@
 		<!-- Play -->
 		<a
 			href="/play"
-		class="bg-gray-100 rounded-md px-4 py-1.5 text-sm font-medium transition-colors duration-300 ease-in-out hover:text-neutral-900"
+		class="rounded-md px-4 py-1.5 text-sm font-medium transition-colors duration-300 ease-in-out hover:text-neutral-900"
+		class:bg-white={isAboutNew}
+		class:bg-gray-100={!isAboutNew}
 		class:text-neutral-500={isPlayActive}
 		class:text-neutral-900={!isPlayActive}
 			onclick={handlePlayClick}
