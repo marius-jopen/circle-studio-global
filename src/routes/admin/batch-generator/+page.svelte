@@ -1,7 +1,7 @@
 <script lang="ts">
 	import TextCircle from '$lib/components/TextCircle.svelte';
 	import RichTextInput from '$lib/components/RichTextInput.svelte';
-	import { Input, Button, RecordingIndicator } from '$lib/primitives';
+	import { Input, Button, RecordingIndicator, FileUpload } from '$lib/primitives';
 	import { parseBoldText, boldTextToHtml } from '$lib/utils/boldText';
 	import { GIFEncoder, quantize, applyPalette } from 'gifenc';
 	import { buildGifPalette } from '$lib/utils/gifPalette';
@@ -47,6 +47,15 @@ Invite someone dangerous to tea.`);
 	let inputFieldRef = $state<HTMLDivElement | null>(null);
 	let containerRef = $state<HTMLDivElement | null>(null); // Reference to the container to record
 	let textCircleRef = $state<any>(null); // Reference to TextCircle component
+
+	// Background media (image/video)
+	let backgroundMedia = $state<HTMLImageElement | HTMLVideoElement | null>(null);
+	let backgroundMediaType = $state<'image' | 'video' | null>(null);
+	let currentBackgroundFile = $state<{ name: string; type: string; url: string } | null>(null);
+	let backgroundOpacity = $state(1);
+	let backgroundScale = $state(100);
+	let backgroundPositionX = $state(50);
+	let backgroundPositionY = $state(50);
 
 	// Recording state
 	let isRecording = $state(false);
@@ -366,6 +375,34 @@ Invite someone dangerous to tea.`);
 		}
 	}
 
+	// Background media handlers
+	function handleBackgroundUpload(e: CustomEvent<{ file: File; url: string; type: 'image' | 'video' }>) {
+		const { file, url, type } = e.detail;
+		if (currentBackgroundFile) URL.revokeObjectURL(currentBackgroundFile.url);
+		currentBackgroundFile = { name: file.name, type: file.type, url };
+		backgroundMediaType = type;
+		if (type === 'image') {
+			const img = new Image();
+			img.onload = () => { backgroundMedia = img; };
+			img.src = url;
+		} else {
+			const video = document.createElement('video');
+			video.loop = true;
+			video.muted = true;
+			video.onloadeddata = () => { backgroundMedia = video; video.play(); };
+			video.src = url;
+		}
+	}
+	function handleBackgroundRemove() {
+		if (currentBackgroundFile) URL.revokeObjectURL(currentBackgroundFile.url);
+		backgroundMedia = null;
+		backgroundMediaType = null;
+		currentBackgroundFile = null;
+	}
+	function handleBackgroundError(e: CustomEvent<{ message: string }>) {
+		if (browser) alert(e.detail.message);
+	}
+
 	// Recording functions
 	async function startRecording() {
 		if (isRecording || !textCircleRef || !browser) return;
@@ -464,11 +501,30 @@ Invite someone dangerous to tea.`);
 				});
 			}
 
+			// Ensure video background plays during recording
+			if (backgroundMedia && backgroundMediaType === 'video') {
+				(backgroundMedia as HTMLVideoElement).play().catch(() => {});
+			}
 			// Draw blank frame first to ensure clean start
 			recordingContext.clearRect(0, 0, recordingCanvas.width, recordingCanvas.height);
 			if (backgroundColor !== 'transparent') {
 				recordingContext.fillStyle = backgroundColor;
 				recordingContext.fillRect(0, 0, recordingWidth, recordingHeight);
+			}
+			// Draw background media if present (cover mode - fill area, maintain aspect ratio)
+			if (backgroundMedia && currentBackgroundFile) {
+				recordingContext.save();
+				recordingContext.globalAlpha = backgroundOpacity;
+				const mw = backgroundMedia instanceof HTMLImageElement ? backgroundMedia.naturalWidth : (backgroundMedia as HTMLVideoElement).videoWidth;
+				const mh = backgroundMedia instanceof HTMLImageElement ? backgroundMedia.naturalHeight : (backgroundMedia as HTMLVideoElement).videoHeight;
+				if (mw > 0 && mh > 0) {
+					const coverScale = Math.max(recordingWidth / mw, recordingHeight / mh) * (backgroundScale / 100);
+					const drawW = mw * coverScale, drawH = mh * coverScale;
+					const dx = (recordingWidth - drawW) * (backgroundPositionX / 100);
+					const dy = (recordingHeight - drawH) * (backgroundPositionY / 100);
+					recordingContext.drawImage(backgroundMedia, 0, 0, mw, mh, dx, dy, drawW, drawH);
+				}
+				recordingContext.restore();
 			}
 			// Draw empty input field if visible (pixel-aligned)
 			if (inputFieldVisible) {
@@ -526,6 +582,21 @@ Invite someone dangerous to tea.`);
 					if (backgroundColor !== 'transparent') {
 						recordingContext.fillStyle = backgroundColor;
 						recordingContext.fillRect(0, 0, recordingWidth, recordingHeight);
+					}
+					// Draw background media if present (cover mode - fill area, maintain aspect ratio)
+					if (backgroundMedia && currentBackgroundFile) {
+						recordingContext.save();
+						recordingContext.globalAlpha = backgroundOpacity;
+						const mw = backgroundMedia instanceof HTMLImageElement ? backgroundMedia.naturalWidth : (backgroundMedia as HTMLVideoElement).videoWidth;
+						const mh = backgroundMedia instanceof HTMLImageElement ? backgroundMedia.naturalHeight : (backgroundMedia as HTMLVideoElement).videoHeight;
+						if (mw > 0 && mh > 0) {
+							const coverScale = Math.max(recordingWidth / mw, recordingHeight / mh) * (backgroundScale / 100);
+							const drawW = mw * coverScale, drawH = mh * coverScale;
+							const dx = (recordingWidth - drawW) * (backgroundPositionX / 100);
+							const dy = (recordingHeight - drawH) * (backgroundPositionY / 100);
+							recordingContext.drawImage(backgroundMedia, 0, 0, mw, mh, dx, dy, drawW, drawH);
+						}
+						recordingContext.restore();
 					}
 
 					// Only draw circle if there's text to display (avoid drawing old text)
@@ -900,6 +971,52 @@ Invite someone dangerous to tea.`);
 				</div>
 			</div>
 
+			<!-- Background Media -->
+			<div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+				<div class="px-4 py-2.5 border-b border-gray-100">
+					<h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Background</h2>
+				</div>
+				<div class="p-4 space-y-3">
+					<FileUpload
+						label="Background Image/Video"
+						description="Add a background image or video"
+						maxSize={50}
+						currentFile={currentBackgroundFile}
+						on:upload={handleBackgroundUpload}
+						on:remove={handleBackgroundRemove}
+						on:error={handleBackgroundError}
+					/>
+					{#if backgroundMedia}
+						<div class="grid grid-cols-2 gap-x-4 gap-y-3">
+							<div>
+								<label for="bg-opacity" class="block text-[11px] font-medium text-gray-500 mb-1">
+									Opacity <span class="text-gray-400">{backgroundOpacity.toFixed(2)}</span>
+								</label>
+								<input id="bg-opacity" type="range" min="0" max="1" step="0.01" bind:value={backgroundOpacity} class="w-full h-1" />
+							</div>
+							<div>
+								<label for="bg-scale" class="block text-[11px] font-medium text-gray-500 mb-1">
+									Scale <span class="text-gray-400">{backgroundScale}%</span>
+								</label>
+								<input id="bg-scale" type="range" min="50" max="200" step="1" bind:value={backgroundScale} class="w-full h-1" />
+							</div>
+							<div>
+								<label for="bg-pos-x" class="block text-[11px] font-medium text-gray-500 mb-1">
+									Position X <span class="text-gray-400">{backgroundPositionX}%</span>
+								</label>
+								<input id="bg-pos-x" type="range" min="0" max="100" step="1" bind:value={backgroundPositionX} class="w-full h-1" />
+							</div>
+							<div>
+								<label for="bg-pos-y" class="block text-[11px] font-medium text-gray-500 mb-1">
+									Position Y <span class="text-gray-400">{backgroundPositionY}%</span>
+								</label>
+								<input id="bg-pos-y" type="range" min="0" max="100" step="1" bind:value={backgroundPositionY} class="w-full h-1" />
+							</div>
+						</div>
+					{/if}
+				</div>
+			</div>
+
 			<!-- Export Settings -->
 			<div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
 				<div class="px-4 py-2.5 border-b border-gray-100">
@@ -1020,8 +1137,22 @@ Invite someone dangerous to tea.`);
 				class="relative rounded-2xl overflow-hidden mx-auto flex flex-col shadow-sm"
 				style="width: {containerWidth}px; height: {containerHeight}px; background-color: {backgroundColor};"
 			>
+				{#if backgroundMedia && currentBackgroundFile}
+					<div class="absolute inset-0 z-0" style="opacity: {backgroundOpacity};">
+						{#if backgroundMediaType === 'image'}
+							<img src={currentBackgroundFile.url} alt="Background" class="w-full h-full object-cover"
+								style="object-position: {backgroundPositionX}% {backgroundPositionY}%;" />
+						{:else if backgroundMediaType === 'video'}
+							<video src={currentBackgroundFile.url} class="w-full h-full object-cover"
+								style="object-position: {backgroundPositionX}% {backgroundPositionY}%;"
+								autoplay loop muted playsinline>
+								<track kind="captions" />
+							</video>
+						{/if}
+					</div>
+				{/if}
 				<!-- Circle area -->
-				<div class="flex-1 flex items-center justify-center relative">
+				<div class="flex-1 flex items-center justify-center relative z-10">
 					<TextCircle
 						bind:this={textCircleRef}
 						text={displayText}
@@ -1046,9 +1177,9 @@ Invite someone dangerous to tea.`);
 					/>
 				</div>
 				
-				<!-- Input field (visual only) -->
+				<!-- Input field (visual only) - above background -->
 				{#if inputFieldVisible}
-					<div class="px-4 pb-6">
+					<div class="relative z-10 px-4 pb-6">
 						<div class="w-8/12 mx-auto rounded-full h-14 bg-gray-100 px-6 py-3 flex items-center">
 							<div 
 								bind:this={inputFieldRef}
