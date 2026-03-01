@@ -1,0 +1,73 @@
+{
+  "id": "clients_and_collaborators",
+  "type": "SharedSlice",
+  "name": "ClientsAndCollaborators",
+  "description": "ClientsAndCollaborators",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "switch": {
+          "type": "Boolean",
+          "config": {
+            "label": "Switch",
+            "placeholder_false": "false",
+            "placeholder_true": "true",
+            "default_value": false
+          }
+        },
+        "take_collaborators_automatically": {
+          "type": "Boolean",
+          "config": {
+            "label": "Take Collaborators Automatically",
+            "placeholder_false": "false",
+            "placeholder_true": "true",
+            "default_value": false
+          }
+        },
+        "collaborators_title": {
+          "type": "Text",
+          "config": {
+            "label": "Collaborators Title",
+            "placeholder": ""
+          }
+        },
+        "collaborators": {
+          "type": "Link",
+          "config": {
+            "label": "Collaborators",
+            "placeholder": "",
+            "select": null,
+            "allowTargetBlank": true,
+            "allowText": true,
+            "repeat": true
+          }
+        },
+        "clients_title": {
+          "type": "Text",
+          "config": {
+            "label": "Clients Title",
+            "placeholder": ""
+          }
+        },
+        "clients": {
+          "type": "Link",
+          "config": {
+            "label": "Clients",
+            "placeholder": "",
+            "select": null,
+            "allowTargetBlank": true,
+            "allowText": true,
+            "repeat": true
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

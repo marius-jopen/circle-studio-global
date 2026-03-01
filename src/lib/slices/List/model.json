@@ -42,6 +42,14 @@
                   "label": "Year",
                   "placeholder": ""
                 }
+              },
+              "image": {
+                "type": "Image",
+                "config": {
+                  "label": "Image",
+                  "constraint": {},
+                  "thumbnails": []
+                }
               }
             }
           }

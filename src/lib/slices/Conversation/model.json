@@ -1,0 +1,48 @@
+{
+  "id": "conversation",
+  "type": "SharedSlice",
+  "name": "Conversation",
+  "description": "Conversation",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "title": {
+          "type": "Text",
+          "config": {
+            "label": "Title",
+            "placeholder": ""
+          }
+        },
+        "title_2": {
+          "type": "Text",
+          "config": {
+            "label": "Title 2",
+            "placeholder": ""
+          }
+        },
+        "image": {
+          "type": "Image",
+          "config": {
+            "label": "Image",
+            "constraint": {},
+            "thumbnails": []
+          }
+        },
+        "video_url": {
+          "type": "Text",
+          "config": {
+            "label": "Video Url",
+            "placeholder": ""
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

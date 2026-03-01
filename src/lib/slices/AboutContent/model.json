@@ -1,0 +1,112 @@
+{
+  "id": "about_content",
+  "type": "SharedSlice",
+  "name": "AboutContent",
+  "description": "AboutContent",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "text_1": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Text 1",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          }
+        },
+        "text_2": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Text 2",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          }
+        },
+        "text_3": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Text 3",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          }
+        },
+        "skill_1": {
+          "type": "Text",
+          "config": {
+            "label": "Skill 1",
+            "placeholder": ""
+          }
+        },
+        "skill_2": {
+          "type": "Text",
+          "config": {
+            "label": "Skill 2",
+            "placeholder": ""
+          }
+        },
+        "skill_3": {
+          "type": "Text",
+          "config": {
+            "label": "Skill 3",
+            "placeholder": ""
+          }
+        },
+        "skill_4": {
+          "type": "Text",
+          "config": {
+            "label": "Skill 4",
+            "placeholder": ""
+          }
+        },
+        "skill_5": {
+          "type": "Text",
+          "config": {
+            "label": "Skill 5",
+            "placeholder": ""
+          }
+        },
+        "skill_6": {
+          "type": "Text",
+          "config": {
+            "label": "Skill 6",
+            "placeholder": ""
+          }
+        },
+        "skill_image": {
+          "type": "Image",
+          "config": {
+            "label": "Skill Image",
+            "constraint": {},
+            "thumbnails": []
+          }
+        },
+        "poetry": {
+          "type": "Group",
+          "config": {
+            "label": "Poetry",
+            "repeat": true,
+            "fields": {
+              "item": {
+                "type": "Text",
+                "config": {
+                  "label": "Item",
+                  "placeholder": ""
+                }
+              }
+            }
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

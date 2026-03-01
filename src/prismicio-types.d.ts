@@ -244,6 +244,13 @@ export type HomeDocument<Lang extends string = string> = prismic.PrismicDocument
 >;
 
 type PageDocumentDataSlicesSlice =
+	| AboutOpenerSlice
+	| AboutContentSlice
+	| ClientsAndCollaboratorsSlice
+	| VideoAutoplaySlice
+	| VideoAndGeneratorSlice
+	| ConversationSlice
+	| ContactMediaSlice
 	| TagCloudSlice
 	| ListSlice
 	| LogoSlice
@@ -801,6 +808,205 @@ export type AllDocumentTypes =
 	| SettingsDocument;
 
 /**
+ * Item in *AboutContent → Default → Primary → Poetry*
+ */
+export interface AboutContentSliceDefaultPrimaryPoetryItem {
+	/**
+	 * Item field in *AboutContent → Default → Primary → Poetry*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: about_content.default.primary.poetry[].item
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	item: prismic.KeyTextField;
+}
+
+/**
+ * Primary content in *AboutContent → Default → Primary*
+ */
+export interface AboutContentSliceDefaultPrimary {
+	/**
+	 * Text 1 field in *AboutContent → Default → Primary*
+	 *
+	 * - **Field Type**: Rich Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: about_content.default.primary.text_1
+	 * - **Documentation**: https://prismic.io/docs/fields/rich-text
+	 */
+	text_1: prismic.RichTextField;
+
+	/**
+	 * Text 2 field in *AboutContent → Default → Primary*
+	 *
+	 * - **Field Type**: Rich Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: about_content.default.primary.text_2
+	 * - **Documentation**: https://prismic.io/docs/fields/rich-text
+	 */
+	text_2: prismic.RichTextField;
+
+	/**
+	 * Text 3 field in *AboutContent → Default → Primary*
+	 *
+	 * - **Field Type**: Rich Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: about_content.default.primary.text_3
+	 * - **Documentation**: https://prismic.io/docs/fields/rich-text
+	 */
+	text_3: prismic.RichTextField;
+
+	/**
+	 * Skill 1 field in *AboutContent → Default → Primary*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: about_content.default.primary.skill_1
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	skill_1: prismic.KeyTextField;
+
+	/**
+	 * Skill 2 field in *AboutContent → Default → Primary*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: about_content.default.primary.skill_2
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	skill_2: prismic.KeyTextField;
+
+	/**
+	 * Skill 3 field in *AboutContent → Default → Primary*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: about_content.default.primary.skill_3
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	skill_3: prismic.KeyTextField;
+
+	/**
+	 * Skill 4 field in *AboutContent → Default → Primary*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: about_content.default.primary.skill_4
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	skill_4: prismic.KeyTextField;
+
+	/**
+	 * Skill 5 field in *AboutContent → Default → Primary*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: about_content.default.primary.skill_5
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	skill_5: prismic.KeyTextField;
+
+	/**
+	 * Skill 6 field in *AboutContent → Default → Primary*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: about_content.default.primary.skill_6
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	skill_6: prismic.KeyTextField;
+
+	/**
+	 * Skill Image field in *AboutContent → Default → Primary*
+	 *
+	 * - **Field Type**: Image
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: about_content.default.primary.skill_image
+	 * - **Documentation**: https://prismic.io/docs/fields/image
+	 */
+	skill_image: prismic.ImageField<never>;
+
+	/**
+	 * Poetry field in *AboutContent → Default → Primary*
+	 *
+	 * - **Field Type**: Group
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: about_content.default.primary.poetry[]
+	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+	 */
+	poetry: prismic.GroupField<Simplify<AboutContentSliceDefaultPrimaryPoetryItem>>;
+}
+
+/**
+ * Default variation for AboutContent Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type AboutContentSliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Simplify<AboutContentSliceDefaultPrimary>,
+	never
+>;
+
+/**
+ * Slice variation for *AboutContent*
+ */
+type AboutContentSliceVariation = AboutContentSliceDefault;
+
+/**
+ * AboutContent Shared Slice
+ *
+ * - **API ID**: `about_content`
+ * - **Description**: AboutContent
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type AboutContentSlice = prismic.SharedSlice<'about_content', AboutContentSliceVariation>;
+
+/**
+ * Primary content in *AboutOpener → Default → Primary*
+ */
+export interface AboutOpenerSliceDefaultPrimary {
+	/**
+	 * Text field in *AboutOpener → Default → Primary*
+	 *
+	 * - **Field Type**: Rich Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: about_opener.default.primary.text
+	 * - **Documentation**: https://prismic.io/docs/fields/rich-text
+	 */
+	text: prismic.RichTextField;
+}
+
+/**
+ * Default variation for AboutOpener Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type AboutOpenerSliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Simplify<AboutOpenerSliceDefaultPrimary>,
+	never
+>;
+
+/**
+ * Slice variation for *AboutOpener*
+ */
+type AboutOpenerSliceVariation = AboutOpenerSliceDefault;
+
+/**
+ * AboutOpener Shared Slice
+ *
+ * - **API ID**: `about_opener`
+ * - **Description**: AboutOpener
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type AboutOpenerSlice = prismic.SharedSlice<'about_opener', AboutOpenerSliceVariation>;
+
+/**
  * Item in *Circle → Default → Primary → Items*
  */
 export interface CircleSliceDefaultPrimaryItemsItem {
@@ -858,6 +1064,107 @@ type CircleSliceVariation = CircleSliceDefault;
 export type CircleSlice = prismic.SharedSlice<'circle', CircleSliceVariation>;
 
 /**
+ * Primary content in *ClientsAndCollaborators → Default → Primary*
+ */
+export interface ClientsAndCollaboratorsSliceDefaultPrimary {
+	/**
+	 * Switch field in *ClientsAndCollaborators → Default → Primary*
+	 *
+	 * - **Field Type**: Boolean
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: false
+	 * - **API ID Path**: clients_and_collaborators.default.primary.switch
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
+	 */
+	switch: prismic.BooleanField;
+
+	/**
+	 * Take Collaborators Automatically field in *ClientsAndCollaborators → Default → Primary*
+	 *
+	 * - **Field Type**: Boolean
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: false
+	 * - **API ID Path**: clients_and_collaborators.default.primary.take_collaborators_automatically
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
+	 */
+	take_collaborators_automatically: prismic.BooleanField;
+
+	/**
+	 * Collaborators Title field in *ClientsAndCollaborators → Default → Primary*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: clients_and_collaborators.default.primary.collaborators_title
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	collaborators_title: prismic.KeyTextField;
+
+	/**
+	 * Collaborators field in *ClientsAndCollaborators → Default → Primary*
+	 *
+	 * - **Field Type**: Link
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: clients_and_collaborators.default.primary.collaborators
+	 * - **Documentation**: https://prismic.io/docs/fields/link
+	 */
+	collaborators: prismic.Repeatable<
+		prismic.LinkField<string, string, unknown, prismic.FieldState, never>
+	>;
+
+	/**
+	 * Clients Title field in *ClientsAndCollaborators → Default → Primary*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: clients_and_collaborators.default.primary.clients_title
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	clients_title: prismic.KeyTextField;
+
+	/**
+	 * Clients field in *ClientsAndCollaborators → Default → Primary*
+	 *
+	 * - **Field Type**: Link
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: clients_and_collaborators.default.primary.clients
+	 * - **Documentation**: https://prismic.io/docs/fields/link
+	 */
+	clients: prismic.Repeatable<
+		prismic.LinkField<string, string, unknown, prismic.FieldState, never>
+	>;
+}
+
+/**
+ * Default variation for ClientsAndCollaborators Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ClientsAndCollaboratorsSliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Simplify<ClientsAndCollaboratorsSliceDefaultPrimary>,
+	never
+>;
+
+/**
+ * Slice variation for *ClientsAndCollaborators*
+ */
+type ClientsAndCollaboratorsSliceVariation = ClientsAndCollaboratorsSliceDefault;
+
+/**
+ * ClientsAndCollaborators Shared Slice
+ *
+ * - **API ID**: `clients_and_collaborators`
+ * - **Description**: ClientsAndCollaborators
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ClientsAndCollaboratorsSlice = prismic.SharedSlice<
+	'clients_and_collaborators',
+	ClientsAndCollaboratorsSliceVariation
+>;
+
+/**
  * Primary content in *Contact → Default → Primary*
  */
 export interface ContactSliceDefaultPrimary {
@@ -898,6 +1205,140 @@ type ContactSliceVariation = ContactSliceDefault;
  * - **Documentation**: https://prismic.io/docs/slices
  */
 export type ContactSlice = prismic.SharedSlice<'contact', ContactSliceVariation>;
+
+/**
+ * Primary content in *ContactMedia → Default → Primary*
+ */
+export interface ContactMediaSliceDefaultPrimary {
+	/**
+	 * Image field in *ContactMedia → Default → Primary*
+	 *
+	 * - **Field Type**: Image
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: contact_media.default.primary.image
+	 * - **Documentation**: https://prismic.io/docs/fields/image
+	 */
+	image: prismic.ImageField<never>;
+
+	/**
+	 * Video Url field in *ContactMedia → Default → Primary*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: contact_media.default.primary.video_url
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	video_url: prismic.KeyTextField;
+
+	/**
+	 * Text field in *ContactMedia → Default → Primary*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: contact_media.default.primary.text
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	text: prismic.KeyTextField;
+}
+
+/**
+ * Default variation for ContactMedia Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ContactMediaSliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Simplify<ContactMediaSliceDefaultPrimary>,
+	never
+>;
+
+/**
+ * Slice variation for *ContactMedia*
+ */
+type ContactMediaSliceVariation = ContactMediaSliceDefault;
+
+/**
+ * ContactMedia Shared Slice
+ *
+ * - **API ID**: `contact_media`
+ * - **Description**: ContactMedia
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ContactMediaSlice = prismic.SharedSlice<'contact_media', ContactMediaSliceVariation>;
+
+/**
+ * Primary content in *Conversation → Default → Primary*
+ */
+export interface ConversationSliceDefaultPrimary {
+	/**
+	 * Title field in *Conversation → Default → Primary*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: conversation.default.primary.title
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	title: prismic.KeyTextField;
+
+	/**
+	 * Title 2 field in *Conversation → Default → Primary*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: conversation.default.primary.title_2
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	title_2: prismic.KeyTextField;
+
+	/**
+	 * Image field in *Conversation → Default → Primary*
+	 *
+	 * - **Field Type**: Image
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: conversation.default.primary.image
+	 * - **Documentation**: https://prismic.io/docs/fields/image
+	 */
+	image: prismic.ImageField<never>;
+
+	/**
+	 * Video Url field in *Conversation → Default → Primary*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: conversation.default.primary.video_url
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	video_url: prismic.KeyTextField;
+}
+
+/**
+ * Default variation for Conversation Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ConversationSliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Simplify<ConversationSliceDefaultPrimary>,
+	never
+>;
+
+/**
+ * Slice variation for *Conversation*
+ */
+type ConversationSliceVariation = ConversationSliceDefault;
+
+/**
+ * Conversation Shared Slice
+ *
+ * - **API ID**: `conversation`
+ * - **Description**: Conversation
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ConversationSlice = prismic.SharedSlice<'conversation', ConversationSliceVariation>;
 
 /**
  * Item in *Documentation → Default → Primary → items*
@@ -1132,6 +1573,16 @@ export interface ListSliceDefaultPrimaryItemsItem {
 	 * - **Documentation**: https://prismic.io/docs/fields/text
 	 */
 	year: prismic.KeyTextField;
+
+	/**
+	 * Image field in *List → Default → Primary → Items*
+	 *
+	 * - **Field Type**: Image
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: list.default.primary.items[].image
+	 * - **Documentation**: https://prismic.io/docs/fields/image
+	 */
+	image: prismic.ImageField<never>;
 }
 
 /**
@@ -1555,6 +2006,149 @@ type VideoSliceVariation = VideoSliceDefault;
 export type VideoSlice = prismic.SharedSlice<'video', VideoSliceVariation>;
 
 /**
+ * Item in *VideoAndGenerator → Default → Primary → Poetry*
+ */
+export interface VideoAndGeneratorSliceDefaultPrimaryPoetryItem {
+	/**
+	 * Item field in *VideoAndGenerator → Default → Primary → Poetry*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: video_and_generator.default.primary.poetry[].item
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	item: prismic.KeyTextField;
+}
+
+/**
+ * Primary content in *VideoAndGenerator → Default → Primary*
+ */
+export interface VideoAndGeneratorSliceDefaultPrimary {
+	/**
+	 * Switch field in *VideoAndGenerator → Default → Primary*
+	 *
+	 * - **Field Type**: Boolean
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: false
+	 * - **API ID Path**: video_and_generator.default.primary.switch
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
+	 */
+	switch: prismic.BooleanField;
+
+	/**
+	 * Image field in *VideoAndGenerator → Default → Primary*
+	 *
+	 * - **Field Type**: Image
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: video_and_generator.default.primary.image
+	 * - **Documentation**: https://prismic.io/docs/fields/image
+	 */
+	image: prismic.ImageField<never>;
+
+	/**
+	 * Video Url field in *VideoAndGenerator → Default → Primary*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: video_and_generator.default.primary.video_url
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	video_url: prismic.KeyTextField;
+
+	/**
+	 * Poetry field in *VideoAndGenerator → Default → Primary*
+	 *
+	 * - **Field Type**: Group
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: video_and_generator.default.primary.poetry[]
+	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+	 */
+	poetry: prismic.GroupField<Simplify<VideoAndGeneratorSliceDefaultPrimaryPoetryItem>>;
+}
+
+/**
+ * Default variation for VideoAndGenerator Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type VideoAndGeneratorSliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Simplify<VideoAndGeneratorSliceDefaultPrimary>,
+	never
+>;
+
+/**
+ * Slice variation for *VideoAndGenerator*
+ */
+type VideoAndGeneratorSliceVariation = VideoAndGeneratorSliceDefault;
+
+/**
+ * VideoAndGenerator Shared Slice
+ *
+ * - **API ID**: `video_and_generator`
+ * - **Description**: VideoAndGenerator
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type VideoAndGeneratorSlice = prismic.SharedSlice<
+	'video_and_generator',
+	VideoAndGeneratorSliceVariation
+>;
+
+/**
+ * Primary content in *VideoAutoplay → Default → Primary*
+ */
+export interface VideoAutoplaySliceDefaultPrimary {
+	/**
+	 * Image field in *VideoAutoplay → Default → Primary*
+	 *
+	 * - **Field Type**: Image
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: video_autoplay.default.primary.image
+	 * - **Documentation**: https://prismic.io/docs/fields/image
+	 */
+	image: prismic.ImageField<never>;
+
+	/**
+	 * Video Url field in *VideoAutoplay → Default → Primary*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: video_autoplay.default.primary.video_url
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	video_url: prismic.KeyTextField;
+}
+
+/**
+ * Default variation for VideoAutoplay Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type VideoAutoplaySliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Simplify<VideoAutoplaySliceDefaultPrimary>,
+	never
+>;
+
+/**
+ * Slice variation for *VideoAutoplay*
+ */
+type VideoAutoplaySliceVariation = VideoAutoplaySliceDefault;
+
+/**
+ * VideoAutoplay Shared Slice
+ *
+ * - **API ID**: `video_autoplay`
+ * - **Description**: VideoAutoplay
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type VideoAutoplaySlice = prismic.SharedSlice<'video_autoplay', VideoAutoplaySliceVariation>;
+
+/**
  * Primary content in *Wheel → Default → Primary*
  */
 export interface WheelSliceDefaultPrimary {
@@ -1657,15 +2251,36 @@ declare module '@prismicio/client' {
 			SettingsDocument,
 			SettingsDocumentData,
 			AllDocumentTypes,
+			AboutContentSlice,
+			AboutContentSliceDefaultPrimaryPoetryItem,
+			AboutContentSliceDefaultPrimary,
+			AboutContentSliceVariation,
+			AboutContentSliceDefault,
+			AboutOpenerSlice,
+			AboutOpenerSliceDefaultPrimary,
+			AboutOpenerSliceVariation,
+			AboutOpenerSliceDefault,
 			CircleSlice,
 			CircleSliceDefaultPrimaryItemsItem,
 			CircleSliceDefaultPrimary,
 			CircleSliceVariation,
 			CircleSliceDefault,
+			ClientsAndCollaboratorsSlice,
+			ClientsAndCollaboratorsSliceDefaultPrimary,
+			ClientsAndCollaboratorsSliceVariation,
+			ClientsAndCollaboratorsSliceDefault,
 			ContactSlice,
 			ContactSliceDefaultPrimary,
 			ContactSliceVariation,
 			ContactSliceDefault,
+			ContactMediaSlice,
+			ContactMediaSliceDefaultPrimary,
+			ContactMediaSliceVariation,
+			ContactMediaSliceDefault,
+			ConversationSlice,
+			ConversationSliceDefaultPrimary,
+			ConversationSliceVariation,
+			ConversationSliceDefault,
 			DocumentationSlice,
 			DocumentationSliceDefaultPrimaryItemsItem,
 			DocumentationSliceDefaultPrimary,
@@ -1709,6 +2324,15 @@ declare module '@prismicio/client' {
 			VideoSliceDefaultPrimary,
 			VideoSliceVariation,
 			VideoSliceDefault,
+			VideoAndGeneratorSlice,
+			VideoAndGeneratorSliceDefaultPrimaryPoetryItem,
+			VideoAndGeneratorSliceDefaultPrimary,
+			VideoAndGeneratorSliceVariation,
+			VideoAndGeneratorSliceDefault,
+			VideoAutoplaySlice,
+			VideoAutoplaySliceDefaultPrimary,
+			VideoAutoplaySliceVariation,
+			VideoAutoplaySliceDefault,
 			WheelSlice,
 			WheelSliceDefaultPrimary,
 			WheelSliceVariation,

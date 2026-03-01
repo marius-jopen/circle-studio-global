@@ -36,6 +36,27 @@
 				"fieldset": "Slice Zone",
 				"config": {
 					"choices": {
+						"about_opener": {
+							"type": "SharedSlice"
+						},
+						"about_content": {
+							"type": "SharedSlice"
+						},
+						"clients_and_collaborators": {
+							"type": "SharedSlice"
+						},
+						"video_autoplay": {
+							"type": "SharedSlice"
+						},
+						"video_and_generator": {
+							"type": "SharedSlice"
+						},
+						"conversation": {
+							"type": "SharedSlice"
+						},
+						"contact_media": {
+							"type": "SharedSlice"
+						},
 						"tag_cloud": {
 							"type": "SharedSlice"
 						},

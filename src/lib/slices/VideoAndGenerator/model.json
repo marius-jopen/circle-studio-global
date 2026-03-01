@@ -1,0 +1,59 @@
+{
+  "id": "video_and_generator",
+  "type": "SharedSlice",
+  "name": "VideoAndGenerator",
+  "description": "VideoAndGenerator",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "switch": {
+          "type": "Boolean",
+          "config": {
+            "label": "Switch",
+            "placeholder_false": "false",
+            "placeholder_true": "true",
+            "default_value": false
+          }
+        },
+        "image": {
+          "type": "Image",
+          "config": {
+            "label": "Image",
+            "constraint": {},
+            "thumbnails": []
+          }
+        },
+        "video_url": {
+          "type": "Text",
+          "config": {
+            "label": "Video Url",
+            "placeholder": ""
+          }
+        },
+        "poetry": {
+          "type": "Group",
+          "config": {
+            "label": "Poetry",
+            "repeat": true,
+            "fields": {
+              "item": {
+                "type": "Text",
+                "config": {
+                  "label": "Item",
+                  "placeholder": ""
+                }
+              }
+            }
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

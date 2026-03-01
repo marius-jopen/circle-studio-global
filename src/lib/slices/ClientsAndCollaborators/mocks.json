@@ -1,0 +1,57 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"take_collaborators_automatically": {
+				"__TYPE__": "BooleanContent",
+				"value": true
+			},
+			"collaborators": {
+				"__TYPE__": "RepeatableContent",
+				"type": "Link",
+				"value": [
+					{
+						"key": "058e4f65-ad97-425a-9cb8-dd6573a165dc",
+						"__TYPE__": "LinkContent",
+						"value": {
+							"__TYPE__": "ExternalLink",
+							"url": "https://prismic.io",
+							"text": "face"
+						}
+					}
+				]
+			},
+			"clients": {
+				"__TYPE__": "RepeatableContent",
+				"type": "Link",
+				"value": [
+					{
+						"key": "5ba67697-82e7-452d-952e-c308ce90153d",
+						"__TYPE__": "LinkContent",
+						"value": {
+							"__TYPE__": "ExternalLink",
+							"url": "http://twitter.com",
+							"text": "origin"
+						}
+					}
+				]
+			},
+			"clients_title": {
+				"__TYPE__": "FieldContent",
+				"value": "left",
+				"type": "Text"
+			},
+			"collaborators_title": {
+				"__TYPE__": "FieldContent",
+				"value": "although",
+				"type": "Text"
+			},
+			"switch": {
+				"__TYPE__": "BooleanContent",
+				"value": true
+			}
+		},
+		"items": []
+	}
+]
