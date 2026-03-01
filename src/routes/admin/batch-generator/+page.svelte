@@ -3,6 +3,8 @@
 	import RichTextInput from '$lib/components/RichTextInput.svelte';
 	import { Input, Button, RecordingIndicator } from '$lib/primitives';
 	import { parseBoldText, boldTextToHtml } from '$lib/utils/boldText';
+	import { GIFEncoder, quantize, applyPalette } from 'gifenc';
+	import { buildGifPalette } from '$lib/utils/gifPalette';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
 
@@ -41,6 +43,7 @@ Invite someone dangerous to tea.`);
 	let inputFieldVisible = $state(true); // Show input field and use portrait format
 	let recordingWidth = $state(1080); // Recording width in pixels
 	let recordingFps = $state(30); // Frame rate for export (15, 24, 30, 60)
+	let exportFormat = $state<'mp4' | 'gif'>('mp4');
 	let inputFieldRef = $state<HTMLDivElement | null>(null);
 	let containerRef = $state<HTMLDivElement | null>(null); // Reference to the container to record
 	let textCircleRef = $state<any>(null); // Reference to TextCircle component
@@ -49,6 +52,7 @@ Invite someone dangerous to tea.`);
 	let isRecording = $state(false);
 	let recorder: any = null;
 	let recordingStream: MediaStream | null = null;
+	let gifRecordingState: { gif: { writeFrame: (index: Uint8Array, w: number, h: number, opts?: { palette?: number[][]; delay?: number }) => void; finish: () => void; bytes: () => Uint8Array }; palette: number[][]; firstFrame: boolean } | null = null;
 	let elapsedTime = $state(0);
 	let timerInterval: ReturnType<typeof setInterval> | null = null;
 	let recordingCanvas: HTMLCanvasElement | null = null;
@@ -384,9 +388,7 @@ Invite someone dangerous to tea.`);
 		paused = false;
 
 		try {
-			// Dynamically import RecordRTC
-			const RecordRTCModule = await import('recordrtc');
-			const RecordRTC = RecordRTCModule.default;
+			const exportFmt = exportFormat;
 
 			// Determine recording dimensions based on inputFieldVisible and recordingWidth setting
 			let recordingHeight: number;
@@ -423,36 +425,44 @@ Invite someone dangerous to tea.`);
 			recordingContext.imageSmoothingEnabled = true;
 			recordingContext.imageSmoothingQuality = 'high';
 
-			// Create stream from canvas
-			recordingStream = recordingCanvas.captureStream(recordingFps);
+			if (exportFmt === 'gif') {
+				// GIF: initialize encoder (frames added in captureFrame)
+				const gif = GIFEncoder();
+				gifRecordingState = { gif, palette: [], firstFrame: true };
+			} else {
+				// MP4: Create stream from canvas
+				recordingStream = recordingCanvas.captureStream(recordingFps);
 
-			if (!recordingStream || recordingStream.getVideoTracks().length === 0) {
-				console.error('Failed to create media stream from canvas');
-				return;
-			}
+				if (!recordingStream || recordingStream.getVideoTracks().length === 0) {
+					console.error('Failed to create media stream from canvas');
+					return;
+				}
 
-			// Calculate bitrate
-			let bitrate = 8000000; // 8Mbps base
-			if (recordingWidth >= 1440) bitrate = 16000000; // 16Mbps for larger
-			if (recordingWidth >= 2160) bitrate = 30000000; // 30Mbps for 4K
+				// Calculate bitrate
+				let bitrate = 8000000; // 8Mbps base
+				if (recordingWidth >= 1440) bitrate = 16000000; // 16Mbps for larger
+				if (recordingWidth >= 2160) bitrate = 30000000; // 30Mbps for 4K
 
-			// Initialize RecordRTC
-			// @ts-ignore
-			recorder = new RecordRTC(recordingStream, {
-				type: 'video',
-				mimeType: 'video/mp4',
-				frameRate: recordingFps,
-				quality: 1,
-				width: recordingWidth,
-				height: recordingHeight,
-				videoBitsPerSecond: bitrate,
-				frameInterval: 1,
+				// Initialize RecordRTC
+				const RecordRTCModule = await import('recordrtc');
+				const RecordRTC = RecordRTCModule.default;
 				// @ts-ignore
-				numberOfAudioChannels: 0,
-				disableLogs: false,
-				bitsPerSecond: bitrate,
-				bufferSize: 16384
-			});
+				recorder = new RecordRTC(recordingStream, {
+					type: 'video',
+					mimeType: 'video/mp4',
+					frameRate: recordingFps,
+					quality: 1,
+					width: recordingWidth,
+					height: recordingHeight,
+					videoBitsPerSecond: bitrate,
+					frameInterval: 1,
+					// @ts-ignore
+					numberOfAudioChannels: 0,
+					disableLogs: false,
+					bitsPerSecond: bitrate,
+					bufferSize: 16384
+				});
+			}
 
 			// Draw blank frame first to ensure clean start
 			recordingContext.clearRect(0, 0, recordingCanvas.width, recordingCanvas.height);
@@ -460,13 +470,13 @@ Invite someone dangerous to tea.`);
 				recordingContext.fillStyle = backgroundColor;
 				recordingContext.fillRect(0, 0, recordingWidth, recordingHeight);
 			}
-			// Draw empty input field if visible
+			// Draw empty input field if visible (pixel-aligned)
 			if (inputFieldVisible) {
-				const inputFieldY = circleAreaHeight + (inputFieldAreaHeight / 2) + (15 * (recordingWidth / 600));
-				const inputFieldWidth = recordingWidth * 0.67;
-				const inputFieldX = (recordingWidth - inputFieldWidth) / 2;
-				const inputFieldHeight = 56 * (recordingWidth / 600);
-				const borderRadius = inputFieldHeight / 2;
+				const inputFieldY = Math.round(circleAreaHeight + (inputFieldAreaHeight / 2) + (15 * (recordingWidth / 600)));
+				const inputFieldWidth = Math.round(recordingWidth * 0.67);
+				const inputFieldX = Math.round((recordingWidth - inputFieldWidth) / 2);
+				const inputFieldHeight = Math.round(56 * (recordingWidth / 600));
+				const borderRadius = Math.round(inputFieldHeight / 2);
 				recordingContext.fillStyle = '#f3f4f6';
 				recordingContext.beginPath();
 				recordingContext.moveTo(inputFieldX + borderRadius, inputFieldY - inputFieldHeight / 2);
@@ -483,7 +493,7 @@ Invite someone dangerous to tea.`);
 			}
 
 			// Start recording AFTER blank frame is drawn
-			recorder.startRecording();
+			if (recorder) recorder.startRecording();
 			isRecording = true;
 			elapsedTime = 0;
 
@@ -545,16 +555,14 @@ Invite someone dangerous to tea.`);
 						}
 					}
 
-					// Draw input field if visible
+					// Draw input field if visible (pixel-aligned for crisp output, no flashing)
 					if (inputFieldVisible && displayText !== undefined) {
-						// Move input field down by 15px in video (scaled proportionally)
-						const inputFieldYOffset = 15 * (recordingWidth / 600); // Scale from base 600px
-						const inputFieldY = circleAreaHeight + (inputFieldAreaHeight / 2) + inputFieldYOffset;
-						const inputFieldWidth = recordingWidth * 0.67; // 8/12 of width
-						const inputFieldX = (recordingWidth - inputFieldWidth) / 2;
-						// Scale input field height proportionally to recording width
-						const inputFieldHeight = 56 * (recordingWidth / 600); // Scale from base 600px
-						const borderRadius = inputFieldHeight / 2;
+						const inputFieldYOffset = Math.round(15 * (recordingWidth / 600));
+						const inputFieldY = Math.round(circleAreaHeight + (inputFieldAreaHeight / 2) + inputFieldYOffset);
+						const inputFieldWidth = Math.round(recordingWidth * 0.67);
+						const inputFieldX = Math.round((recordingWidth - inputFieldWidth) / 2);
+						const inputFieldHeight = Math.round(56 * (recordingWidth / 600));
+						const borderRadius = Math.round(inputFieldHeight / 2);
 						
 						// Draw input field background (gray-100) with rounded corners
 						recordingContext.fillStyle = '#f3f4f6'; // gray-100
@@ -572,14 +580,13 @@ Invite someone dangerous to tea.`);
 						recordingContext.closePath();
 						recordingContext.fill();
 
-						// Draw text in input field (with proper scrolling behavior like browser)
-						// Scale padding and font size proportionally to recording width
-						const padding = 24 * (recordingWidth / 600); // Scale from base 600px
-						const fontSize = 24 * (recordingWidth / 600); // Scale from base 600px
+						// Draw text - pixel-aligned for crisp rendering
+						const padding = Math.round(24 * (recordingWidth / 600));
+						const fontSize = Math.round(28 * (recordingWidth / 600));
 						const maxTextWidth = inputFieldWidth - (padding * 2);
 						
-						recordingContext.fillStyle = '#9ca3af'; // gray-400
-						recordingContext.font = `${fontSize}px Arial, sans-serif`;
+						recordingContext.fillStyle = '#6b7280'; // gray-500
+						recordingContext.font = `${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif`;
 						recordingContext.textAlign = 'left';
 						recordingContext.textBaseline = 'middle';
 						
@@ -599,11 +606,11 @@ Invite someone dangerous to tea.`);
 						recordingContext.clip();
 						
 						if (displayText && recordingContext) {
-							// Parse bold segments and draw each with appropriate font
 							const ctx = recordingContext;
+							const fontStr = `${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif`;
 							const segments = parseBoldText(displayText);
 							const fullTextWidth = segments.reduce((sum, { char, bold }) => {
-								ctx.font = bold ? `bold ${fontSize}px Arial, sans-serif` : `${fontSize}px Arial, sans-serif`;
+								ctx.font = bold ? `bold ${fontStr}` : fontStr;
 								return sum + ctx.measureText(char).width;
 							}, 0);
 							
@@ -612,35 +619,56 @@ Invite someone dangerous to tea.`);
 								scrollX = fullTextWidth - maxTextWidth;
 							}
 							
-							const textX = inputFieldX + padding - scrollX;
-							const textYOffset = 2 * (recordingWidth / 600);
-							const textY = inputFieldY + textYOffset;
+							const textX = Math.round(inputFieldX + padding - scrollX);
+							const textY = Math.round(inputFieldY + Math.round(2 * (recordingWidth / 600)));
 							let drawX = textX;
 							for (const { char, bold } of segments) {
-								ctx.font = bold ? `bold ${fontSize}px Arial, sans-serif` : `${fontSize}px Arial, sans-serif`;
-								ctx.fillText(char, drawX, textY);
+								ctx.font = bold ? `bold ${fontStr}` : fontStr;
+								ctx.fillText(char, Math.round(drawX), textY);
 								drawX += ctx.measureText(char).width;
 							}
 							
-							// Draw blinking cursor at the end of text (moved down by 2px to match text)
-							const cursorX = textX + fullTextWidth;
-							const cursorOpacity = Math.floor(Date.now() / 500) % 2 === 0 ? 1 : 0;
-							ctx.fillStyle = `rgba(75, 85, 99, ${cursorOpacity})`; // gray-600 with opacity
-							ctx.fillRect(cursorX, textY - fontSize / 2, 1 * (recordingWidth / 600), fontSize);
+							// Cursor: no blink during recording (avoids flashing)
+							const cursorX = Math.round(textX + fullTextWidth);
+							const cursorW = Math.max(1, Math.round(recordingWidth / 600));
+							ctx.fillStyle = '#4b5563'; // gray-600
+							ctx.fillRect(cursorX, Math.round(textY - fontSize / 2), cursorW, fontSize);
 						} else {
-							// Draw blinking cursor even when text is empty (moved down by 2px, scaled proportionally)
-							const cursorX = inputFieldX + padding;
-							const textYOffset = 2 * (recordingWidth / 600); // Scale from base 600px
-							const cursorY = inputFieldY + textYOffset;
-							const cursorOpacity = Math.floor(Date.now() / 500) % 2 === 0 ? 1 : 0;
-							recordingContext.fillStyle = `rgba(75, 85, 99, ${cursorOpacity})`; // gray-600 with opacity
-							recordingContext.fillRect(cursorX, cursorY - fontSize / 2, 1, fontSize);
+							const cursorX = Math.round(inputFieldX + padding);
+							const textYOffset = Math.round(2 * (recordingWidth / 600));
+							const cursorY = Math.round(inputFieldY + textYOffset);
+							const cursorW = Math.max(1, Math.round(recordingWidth / 600));
+							recordingContext.fillStyle = '#4b5563';
+							recordingContext.fillRect(cursorX, Math.round(cursorY - fontSize / 2), cursorW, fontSize);
 						}
 						
 						recordingContext.restore(); // Restore clipping
 					}
 				} catch (error) {
 					console.error('Error capturing frame:', error);
+				}
+
+				// If GIF export, encode this frame
+				if (gifRecordingState && recordingContext && recordingCanvas) {
+					const { gif } = gifRecordingState;
+					const imgData = recordingContext.getImageData(0, 0, recordingCanvas.width, recordingCanvas.height);
+					const data = imgData.data;
+					const isFirst = gifRecordingState.firstFrame;
+
+					if (isFirst) {
+						const basePalette = quantize(data, 250);
+						gifRecordingState.palette = buildGifPalette(basePalette, {
+							textColor,
+							backgroundColor: backgroundColor !== 'transparent' ? backgroundColor : undefined
+						});
+						gifRecordingState.firstFrame = false;
+					}
+					const index = applyPalette(data, gifRecordingState.palette);
+					const gifFps = Math.min(recordingFps, 15); // Cap for reasonable GIF size
+					gif.writeFrame(index, recordingCanvas.width, recordingCanvas.height, {
+						palette: isFirst ? gifRecordingState.palette : undefined,
+						delay: Math.round(1000 / gifFps)
+					});
 				}
 
 				// Schedule next frame at the correct interval
@@ -659,39 +687,58 @@ Invite someone dangerous to tea.`);
 	}
 
 	function stopRecording() {
-		if (!isRecording || !recorder || !browser) return;
+		if (!isRecording || !browser) return;
 
 		try {
-			recorder.stopRecording(() => {
-				try {
-					const blob = recorder.getBlob();
-					if (!blob || blob.size < 1000) {
-						console.error('Recording failed: Blob is too small or invalid', blob);
-						alert('Recording failed. Please try again.');
+			if (gifRecordingState) {
+				// GIF export: finish encoding and download
+				const { gif } = gifRecordingState;
+				gif.finish();
+				const bytes = gif.bytes();
+				const blob = new Blob([new Uint8Array(bytes)], { type: 'image/gif' });
+				const url = URL.createObjectURL(blob);
+				const a = document.createElement('a');
+				a.href = url;
+				a.download = `batch-generator-${Date.now()}.gif`;
+				document.body.appendChild(a);
+				a.click();
+				document.body.removeChild(a);
+				URL.revokeObjectURL(url);
+				gifRecordingState = null;
+				isRecording = false;
+				cleanup();
+			} else if (recorder) {
+				// MP4 export
+				recorder.stopRecording(() => {
+					try {
+						const blob = recorder.getBlob();
+						if (!blob || blob.size < 1000) {
+							console.error('Recording failed: Blob is too small or invalid', blob);
+							alert('Recording failed. Please try again.');
+							isRecording = false;
+							cleanup();
+							return;
+						}
+
+						const url = URL.createObjectURL(blob);
+						const a = document.createElement('a');
+						a.href = url;
+						a.download = `batch-generator-${Date.now()}.mp4`;
+						document.body.appendChild(a);
+						a.click();
+						document.body.removeChild(a);
+						URL.revokeObjectURL(url);
+
 						isRecording = false;
 						cleanup();
-						return;
+					} catch (error) {
+						console.error('Error processing recording:', error);
+						if (browser) alert('Error processing recording. Please try again.');
+						isRecording = false;
+						cleanup();
 					}
-
-					// Create download link
-					const url = URL.createObjectURL(blob);
-					const a = document.createElement('a');
-					a.href = url;
-					a.download = `batch-generator-${Date.now()}.mp4`;
-					document.body.appendChild(a);
-					a.click();
-					document.body.removeChild(a);
-					URL.revokeObjectURL(url);
-
-					isRecording = false;
-					cleanup();
-				} catch (error) {
-					console.error('Error processing recording:', error);
-					if (browser) alert('Error processing recording. Please try again.');
-					isRecording = false;
-					cleanup();
-				}
-			});
+				});
+			}
 		} catch (error) {
 			console.error('Error stopping recording:', error);
 			isRecording = false;
@@ -860,6 +907,15 @@ Invite someone dangerous to tea.`);
 				</div>
 				<div class="p-4 space-y-3">
 					<div>
+						<label for="export-format" class="block text-[11px] font-medium text-gray-500 mb-1">
+							Format
+						</label>
+						<select id="export-format" value={exportFormat} onchange={(e) => { exportFormat = (e.target as HTMLSelectElement).value as 'mp4' | 'gif'; }} class="w-full text-xs py-2 px-3 rounded-lg border border-gray-200 bg-white focus:ring-1 focus:ring-gray-300 focus:border-gray-300">
+							<option value="mp4">MP4 (video)</option>
+							<option value="gif">GIF (animated)</option>
+						</select>
+					</div>
+					<div>
 						<label for="recording-width" class="block text-[11px] font-medium text-gray-500 mb-1">
 							Width <span class="text-gray-400">{recordingWidth}px</span>
 						</label>
@@ -868,9 +924,10 @@ Invite someone dangerous to tea.`);
 					</div>
 					<div>
 						<label for="recording-fps" class="block text-[11px] font-medium text-gray-500 mb-1">
-							Frame Rate <span class="text-gray-400">{recordingFps} fps</span>
+							Frame Rate <span class="text-gray-400">{recordingFps} fps</span>{#if exportFormat === 'gif'} <span class="text-gray-400">(capped 15 for GIF)</span>{/if}
 						</label>
 						<select id="recording-fps" value={recordingFps} onchange={(e) => { recordingFps = Number((e.target as HTMLSelectElement).value); }} class="w-full text-xs py-2 px-3 rounded-lg border border-gray-200 bg-white focus:ring-1 focus:ring-gray-300 focus:border-gray-300">
+							<option value={10}>10 fps</option>
 							<option value={15}>15 fps</option>
 							<option value={24}>24 fps</option>
 							<option value={30}>30 fps</option>

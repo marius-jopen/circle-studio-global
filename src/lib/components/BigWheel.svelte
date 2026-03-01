@@ -1,6 +1,8 @@
 <script lang="ts">
   import TextCircle from './TextCircle.svelte';
   import RichTextInput from './RichTextInput.svelte';
+  import { GIFEncoder, quantize, applyPalette } from 'gifenc';
+  import { buildGifPalette } from '../utils/gifPalette';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import { 
@@ -99,6 +101,7 @@
   const baseContainerSize = 600;
   let exportResolution = 600; // Export width (height = width for square)
   let exportFps = 30; // Frame rate for video export
+  let exportFormat = 'mp4'; // 'mp4' or 'gif'
   let containerElement: HTMLDivElement;
   let textCircleRefs: TextCircle[] = [];
 
@@ -106,6 +109,7 @@
   let isRecording = false;
   let recorder: RecordRTCType | undefined;
   let recordingStream: MediaStream | undefined;
+  let gifRecordingState: { gif: { writeFrame: (index: Uint8Array, w: number, h: number, opts?: { palette?: number[][]; delay?: number }) => void; finish: () => void; bytes: () => Uint8Array }; palette: number[][]; firstFrame: boolean; lastFrameTime: number } | null = null;
   let elapsedTime = 0; // Elapsed recording time in seconds
   let timerInterval: ReturnType<typeof setInterval>; // Timer interval reference
   
@@ -370,10 +374,7 @@
     const wasAnimationPaused = animationPaused;
     
     try {
-      // Dynamically import RecordRTC only in browser
-      const RecordRTCModule = await import('recordrtc');
-      const RecordRTC = RecordRTCModule.default;
-      
+      const exportFmt = exportFormat;
       // Use high-res for recording based on the user's preference
       const useHighRes = activeUseHighResRecording;
       
@@ -399,43 +400,44 @@
       // Make sure animation is not paused during recording
       paused = false;
       
-      // Set up a stream from the canvas
-      recordingStream = recordingCanvas.captureStream(exportFps);
-      
-      // Check if stream is valid
-      if (!recordingStream || recordingStream.getVideoTracks().length === 0) {
-        console.error('Failed to create media stream from canvas');
-        paused = wasAnimationPaused; // Restore original state
-        return;
-      }
-      
-      // Calculate video bitrate based on resolution (higher for larger sizes)
-      let bitrate = 8000000; // Base bitrate 8Mbps
-      if (activeExportResolution >= 1440) bitrate = 16000000; // 16Mbps for 1440p
-      if (activeExportResolution >= 2160) bitrate = 30000000; // 30Mbps for 4K
-      
-      // Initialize RecordRTC
-      // @ts-ignore
-      recorder = new RecordRTC(recordingStream, {
-        type: 'video',
-        mimeType: 'video/mp4',
-        frameRate: exportFps,
-        quality: 1, // Highest quality
-        width: activeExportResolution,
-        height: activeExportResolution,
-        videoBitsPerSecond: bitrate,
-        frameInterval: 1,
+      if (exportFmt === 'gif') {
+        // GIF: initialize encoder (frames added in captureFrame)
+        const gif = GIFEncoder();
+        gifRecordingState = { gif, palette: [], firstFrame: true, lastFrameTime: 0 };
+      } else {
+        // MP4: Set up stream and RecordRTC
+        recordingStream = recordingCanvas.captureStream(exportFps);
+        
+        if (!recordingStream || recordingStream.getVideoTracks().length === 0) {
+          console.error('Failed to create media stream from canvas');
+          paused = wasAnimationPaused; // Restore original state
+          return;
+        }
+        
+        let bitrate = 8000000;
+        if (activeExportResolution >= 1440) bitrate = 16000000;
+        if (activeExportResolution >= 2160) bitrate = 30000000;
+        
+        const RecordRTCModule = await import('recordrtc');
+        const RecordRTC = RecordRTCModule.default;
         // @ts-ignore
-        numberOfAudioChannels: 0,
-        disableLogs: false,
-        // MP4 specific options for better compatibility
-        bitsPerSecond: bitrate,
-        bufferSize: 16384
-      });
-      
-      // Start recording
-      if (recorder) {
-        recorder.startRecording();
+        recorder = new RecordRTC(recordingStream, {
+          type: 'video',
+          mimeType: 'video/mp4',
+          frameRate: exportFps,
+          quality: 1,
+          width: activeExportResolution,
+          height: activeExportResolution,
+          videoBitsPerSecond: bitrate,
+          frameInterval: 1,
+          // @ts-ignore
+          numberOfAudioChannels: 0,
+          disableLogs: false,
+          bitsPerSecond: bitrate,
+          bufferSize: 16384
+        });
+        
+        if (recorder) recorder.startRecording();
       }
       isRecording = true;
       elapsedTime = 0;
@@ -543,6 +545,34 @@
             renderContext!.drawImage(hiResCanvas, 0, 0);
           }
           
+          // If GIF export, encode this frame (throttled to ~15fps for file size)
+          if (gifRecordingState && renderContext) {
+            const now = performance.now();
+            const gifFps = Math.min(exportFps, 15);
+            const minFrameDelay = 1000 / gifFps;
+            if (now - gifRecordingState.lastFrameTime >= minFrameDelay) {
+              gifRecordingState.lastFrameTime = now;
+              const { gif } = gifRecordingState;
+              const imgData = renderContext.getImageData(0, 0, activeExportResolution, activeExportResolution);
+              const data = imgData.data;
+              const isFirst = gifRecordingState.firstFrame;
+
+              if (isFirst) {
+                const basePalette = quantize(data, 250);
+                gifRecordingState.palette = buildGifPalette(basePalette, {
+                  textColor: activeTextColor,
+                  backgroundColor: activeBackgroundColor !== 'transparent' ? activeBackgroundColor : undefined
+                });
+                gifRecordingState.firstFrame = false;
+              }
+              const index = applyPalette(data, gifRecordingState.palette);
+              gif.writeFrame(index, activeExportResolution, activeExportResolution, {
+                palette: isFirst ? gifRecordingState.palette : undefined,
+                delay: Math.round(1000 / gifFps)
+              });
+            }
+          }
+          
           // Request next frame
           requestAnimationFrame(captureFrame);
         } catch (error) {
@@ -563,56 +593,69 @@
 
   // Function to stop recording
   function stopRecording() {
-    if (!isRecording || !recorder || !browser) return;
+    if (!isRecording || !browser) return;
     
-    // Store the current animation state
     const wasAnimationPaused = animationPaused;
     
-    // Clear timer
     if (timerInterval) {
       clearInterval(timerInterval);
     }
     
     try {
-      recorder.stopRecording(() => {
-        try {
-          const blob = recorder?.getBlob();
-          
-          // Check if the blob is valid
-          if (!blob || blob.size < 1000) {
-            console.error('Recording failed: Blob is too small or invalid', blob);
-            alert('Recording failed. Please try again.');
-            return;
-          }
-          
-          // Only run in browser environment
-          if (browser) {
-            const url = URL.createObjectURL(blob);
+      if (gifRecordingState) {
+        // GIF export
+        const { gif } = gifRecordingState;
+        gif.finish();
+        const bytes = gif.bytes();
+        const blob = new Blob([new Uint8Array(bytes)], { type: 'image/gif' });
+        const url = URL.createObjectURL(blob);
+        const downloadLink = document.createElement('a');
+        downloadLink.href = url;
+        downloadLink.download = `circle-studio-${getFormattedDateTime()}.gif`;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        URL.revokeObjectURL(url);
+        gifRecordingState = null;
+        isRecording = false;
+        elapsedTime = 0;
+        paused = wasAnimationPaused;
+      } else if (recorder) {
+        // MP4 export
+        recorder.stopRecording(() => {
+          try {
+            const blob = recorder?.getBlob();
             
-            const downloadLink = document.createElement('a');
-            downloadLink.href = url;
-            downloadLink.download = `circle-studio-${getFormattedDateTime()}.mp4`;
-            document.body.appendChild(downloadLink);
-            downloadLink.click();
-            document.body.removeChild(downloadLink);
+            if (!blob || blob.size < 1000) {
+              console.error('Recording failed: Blob is too small or invalid', blob);
+              alert('Recording failed. Please try again.');
+              return;
+            }
             
-            URL.revokeObjectURL(url);
+            if (browser) {
+              const url = URL.createObjectURL(blob);
+              const downloadLink = document.createElement('a');
+              downloadLink.href = url;
+              downloadLink.download = `circle-studio-${getFormattedDateTime()}.mp4`;
+              document.body.appendChild(downloadLink);
+              downloadLink.click();
+              document.body.removeChild(downloadLink);
+              URL.revokeObjectURL(url);
+            }
+          } catch (error) {
+            console.error('Error processing recording:', error);
+            if (browser) alert('Error processing recording. Please try again.');
+          } finally {
+            isRecording = false;
+            elapsedTime = 0;
+            paused = wasAnimationPaused;
+            
+            if (recordingStream) {
+              recordingStream.getTracks().forEach(track => track.stop());
+            }
           }
-        } catch (error) {
-          console.error('Error processing recording:', error);
-          if (browser) alert('Error processing recording. Please try again.');
-        } finally {
-          isRecording = false;
-          elapsedTime = 0; // Reset elapsed time
-          
-          // Restore pause state
-          paused = wasAnimationPaused;
-          
-          if (recordingStream) {
-            recordingStream.getTracks().forEach(track => track.stop());
-          }
-        }
-      });
+        });
+      }
     } catch (error) {
       console.error('Error stopping recording:', error);
       isRecording = false;
@@ -924,6 +967,15 @@
 				</div>
 				<div class="p-4 space-y-3">
 					<div>
+						<label for="export-format" class="block text-[11px] font-medium text-gray-500 mb-1">
+							Format
+						</label>
+						<select id="export-format" value={exportFormat} on:change={(e) => { exportFormat = (e.currentTarget as HTMLSelectElement).value; }} class="w-full text-xs py-2 px-3 rounded-lg border border-gray-200 bg-white focus:ring-1 focus:ring-gray-300 focus:border-gray-300">
+							<option value="mp4">MP4 (video)</option>
+							<option value="gif">GIF (animated)</option>
+						</select>
+					</div>
+					<div>
 						<label for="export-res" class="block text-[11px] font-medium text-gray-500 mb-1">
 							Width <span class="text-gray-400">{exportResolution}px</span>
 						</label>
@@ -932,9 +984,10 @@
 					</div>
 					<div>
 						<label for="export-fps" class="block text-[11px] font-medium text-gray-500 mb-1">
-							Frame Rate <span class="text-gray-400">{exportFps} fps</span>
+							Frame Rate <span class="text-gray-400">{exportFps} fps</span>{#if exportFormat === 'gif'} <span class="text-gray-400">(capped 15 for GIF)</span>{/if}
 						</label>
 						<select id="export-fps" value={exportFps} on:change={(e) => { exportFps = Number((e.currentTarget as HTMLSelectElement).value); }} class="w-full text-xs py-2 px-3 rounded-lg border border-gray-200 bg-white focus:ring-1 focus:ring-gray-300 focus:border-gray-300">
+							<option value={10}>10 fps</option>
 							<option value={15}>15 fps</option>
 							<option value={24}>24 fps</option>
 							<option value={30}>30 fps</option>
