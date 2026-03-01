@@ -211,7 +211,10 @@
     if (!ctx) return;
     const baseDpr = window.devicePixelRatio || 1;
     const isMobileCanvas = window.innerWidth < 768;
-    const dpr = isMobileCanvas ? Math.max(baseDpr, 2) * 1.5 : baseDpr;
+    const dpr = isMobileCanvas ? Math.max(baseDpr * 1.5, 3) : baseDpr;
+    if (isMobileCanvas && 'imageSmoothingQuality' in ctx) {
+      (ctx as CanvasRenderingContext2D & { imageSmoothingQuality: string }).imageSmoothingQuality = 'high';
+    }
     const width = canvas.width = containerSize * dpr;
     const height = canvas.height = containerSize * dpr;
     canvas.style.width = `${containerSize}px`;
@@ -578,7 +581,6 @@ canvas {
   /* Hardware acceleration for smoother animations */
   transform: translateZ(0);
   will-change: transform;
-  /* Audio-aware throttling - reduce repaints when audio is playing */
-  image-rendering: optimizeSpeed;
+  /* Use default image rendering for smooth text (avoid optimizeSpeed which reduces quality) */
 }
 </style> 
