@@ -43,8 +43,7 @@
 		>
 			{#if copied}
 				<span class="text-center">
-					{emailDisplay} copied to clipboard. <br />
-					Paste it into your e-mail.
+					{emailDisplay} copied to clipboard.
 				</span>
 			{:else}
 				{buttonText}
