@@ -1,5 +1,6 @@
 <script lang="ts">
 import { page } from '$app/stores';
+import { goto } from '$app/navigation';
 import { tick } from 'svelte';
 import { homeSearchQuery, mobileSearchOpen, playInputActive } from '$lib/stores';
 
@@ -115,7 +116,7 @@ function closeSearch() {
 <!-- Bottom navigation (hidden on /play page when input is active) -->
 {#if !isPlay || !$playInputActive}
 <div class="md:hidden fixed bottom-5 left-0 right-0 z-50 flex justify-center items-center mx-4">
-    <div class="bg-gray-100 rounded-md py-0 px-0">
+    <div class="bg-gray-100 rounded-md py-0 px-0 h-12 flex items-center">
         <nav class="flex items-center justify-center gap-x-0 text-xl">
             <a href="/" class="text-center font-medium whitespace-nowrap py-2 pl-5 pr-2 transition-colors duration-300" class:text-neutral-500={isHome} class:text-neutral-900={!isHome}>Work</a>
             <a href="/about" class="text-center font-medium py-2 pl-2 pr-5 transition-colors duration-300" class:text-neutral-500={isAbout} class:text-neutral-900={!isAbout}>About</a>
@@ -123,7 +124,11 @@ function closeSearch() {
                 if (isPlay) {
                     playInputActive.set(true);
                 } else {
-                    window.location.href = '/play';
+                    try {
+                        sessionStorage.setItem('circle-studio-navigating', 'true');
+                        sessionStorage.setItem('user-has-interacted', 'true');
+                    } catch {}
+                    goto('/play');
                 }
             }}>Play</a>
         </nav>

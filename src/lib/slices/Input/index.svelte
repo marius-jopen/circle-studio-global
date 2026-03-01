@@ -3,7 +3,7 @@
 	import type { SliceComponentProps } from '@prismicio/svelte';
 	import BigWheel from '../../components/BigWheel.svelte';
 	import Logo from '../../components/Logo.svelte';
-	import { onMount, tick } from 'svelte';
+	import { onMount } from 'svelte';
     import { mobileSearchOpen, playInputActive } from '$lib/stores';
 
 	type Props = SliceComponentProps<Content.InputSlice>;
@@ -36,14 +36,15 @@
 	
 	// Mobile detection for size adjustment
 	let isMobile = $state<boolean>(false);
-	let mountedAt = 0;
 	let mobileViewportHeight = $state<number>(0);
 	let mobileViewportOffsetTop = $state<number>(0);
 	let windowInnerHeight = $state<number>(0);
 	// Padding on mobile to prevent text from touching screen edges (in pixels)
 	const MOBILE_PADDING = 80; // 40px on each side
-	// Height of the mobile input bar (including padding)
-	const MOBILE_INPUT_HEIGHT = 60;
+	// Height of the mobile input bar (matches nav bar: h-12 = 48px)
+	const MOBILE_INPUT_HEIGHT = 48;
+	// Match nav bar's bottom-5 (20px from bottom)
+	const MOBILE_BOTTOM_OFFSET = 20;
 
 	// Invert mode
 	let inverted = $state(false);
@@ -68,8 +69,6 @@
 	function handleInputFocus() {
 		if (isFadingOut) return;
 		if (!wheelText || wheelText === '') return;
-		// On mobile, skip the initial programmatic focus so default text stays until user taps
-		if (isMobile && mountedAt && Date.now() - mountedAt < 500) return;
 		isFadingOut = true;
 		// Trigger letter-by-letter fade out
 		triggerFadeOutState = true;
@@ -115,7 +114,6 @@
 	}
 
 	onMount(() => {
-		mountedAt = Date.now();
 		windowInnerHeight = window.innerHeight;
 		updateWheelSize();
 		const handleResize = () => {
@@ -131,13 +129,15 @@
 			}
 			// Re-run after keyboard animation completes (iOS fires resize before keyboard is fully gone)
 			if (isMobile) {
-				setTimeout(() => {
-					if (window.visualViewport) {
-						mobileViewportHeight = window.visualViewport.height;
-						mobileViewportOffsetTop = window.visualViewport.offsetTop;
-					}
-					updateWheelSize();
-				}, 350);
+				[350, 650].forEach((delay) => {
+					setTimeout(() => {
+						if (window.visualViewport) {
+							mobileViewportHeight = window.visualViewport.height;
+							mobileViewportOffsetTop = window.visualViewport.offsetTop;
+						}
+						updateWheelSize();
+					}, delay);
+				});
 			}
 		};
 		window.addEventListener('resize', handleResize);
@@ -166,14 +166,9 @@
 				triggerFadeInState = false;
 			}, 100);
 		}, 50);
-		// Auto-focus mobile input to open keyboard and set store
+		// Show mobile input bar (but don't auto-focus - keyboard stays closed until user taps)
 		if (window.innerWidth < 768) {
 			playInputActive.set(true);
-			tick().then(() => {
-				setTimeout(() => {
-					mobileInput?.focus();
-				}, 300);
-			});
 		}
 		return () => {
 			window.removeEventListener('resize', handleResize);
@@ -251,23 +246,27 @@
 	class:opacity-100={$playInputActive}
 	class:pointer-events-none={!$playInputActive}
 	class:pointer-events-auto={$playInputActive}
-	style="top: {mobileViewportHeight > 0 ? (mobileViewportOffsetTop + mobileViewportHeight - MOBILE_INPUT_HEIGHT) : windowInnerHeight - MOBILE_INPUT_HEIGHT}px;"
+	style="top: {mobileViewportHeight > 0 ? (mobileViewportOffsetTop + mobileViewportHeight - MOBILE_INPUT_HEIGHT - MOBILE_BOTTOM_OFFSET) : windowInnerHeight - MOBILE_INPUT_HEIGHT - MOBILE_BOTTOM_OFFSET}px;"
 >
-	<div class="bg-gray-100 rounded-md flex items-center overflow-hidden w-10/12 mx-auto">
+	<div class="bg-gray-100 rounded-md flex items-center overflow-hidden w-10/12 mx-auto h-12">
 		<input
 			id="wheel-text-input-mobile"
 			type="text"
 			placeholder={DEFAULT_PLACEHOLDER}
 			bind:value={wheelText}
 			bind:this={mobileInput}
+			onclick={(e) => {
+				handleInputFocus();
+				e.currentTarget.select();
+			}}
 			onfocus={(e) => {
 				handleInputFocus();
 				e.currentTarget.select();
-				setTimeout(() => e.currentTarget.select(), 500);
+				setTimeout(() => e.currentTarget.select(), 400);
+				setTimeout(() => e.currentTarget.select(), 800);
 			}}
 			onkeydown={handleMobileKeydown}
 			autocomplete="off"
-			autofocus
 			class="py-2 px-5 flex-1 bg-transparent outline-none text-xl font-medium w-full"
 			style="font-size: 16px;"
 		/>
@@ -278,7 +277,7 @@
 	class="flex flex-col px-2 pt-0 md:pt-8 pb-0 md:pb-12 overflow-hidden"
 	class:fixed={isMobile}
 	class:inset-x-0={isMobile}
-	style="height: {isMobile ? (mobileViewportHeight > 0 ? (mobileViewportHeight - MOBILE_INPUT_HEIGHT) + 'px' : '100dvh') : '92svh'}; top: {isMobile ? mobileViewportOffsetTop + 'px' : ''};"
+	style="height: {isMobile ? (mobileViewportHeight > 0 ? (mobileViewportHeight - MOBILE_INPUT_HEIGHT - MOBILE_BOTTOM_OFFSET) + 'px' : 'calc(100dvh - 68px)') : '92svh'}; top: {isMobile ? mobileViewportOffsetTop + 'px' : ''};"
 	data-slice-type={slice.slice_type}
 	data-slice-variation={slice.variation}
 	bind:this={sectionEl}
@@ -340,6 +339,14 @@
 	}
 	:global(body.play-inverted #wheel-text-input::placeholder) {
 		color: #a3a3a3 !important;
+	}
+	/* Mobile input field: keep light background, black text when inverted */
+	:global(body.play-inverted #wheel-text-input-mobile) {
+		background-color: #f5f5f5 !important;
+		color: #000 !important;
+	}
+	:global(body.play-inverted #wheel-text-input-mobile::placeholder) {
+		color: #737373 !important;
 	}
 	/* Invert the logo wheel image */
 	:global(body.play-inverted header a.logo-link img) {
