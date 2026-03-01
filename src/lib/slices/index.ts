@@ -6,6 +6,7 @@ import Circle from './Circle/index.svelte';
 import ClientsAndCollaborators from './ClientsAndCollaborators/index.svelte';
 import Contact from './Contact/index.svelte';
 import ContactMedia from './ContactMedia/index.svelte';
+import ContactUsHeader from './ContactUsHeader/index.svelte';
 import Conversation from './Conversation/index.svelte';
 import Documentation from './Documentation/index.svelte';
 import FeatureList from './FeatureList/index.svelte';
@@ -28,6 +29,7 @@ export const components = {
 	clients_and_collaborators: ClientsAndCollaborators,
 	contact: Contact,
 	contact_media: ContactMedia,
+	contact_us_header: ContactUsHeader,
 	conversation: Conversation,
 	documentation: Documentation,
 	feature_list: FeatureList,

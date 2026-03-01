@@ -244,6 +244,7 @@ export type HomeDocument<Lang extends string = string> = prismic.PrismicDocument
 >;
 
 type PageDocumentDataSlicesSlice =
+	| ContactUsHeaderSlice
 	| AboutOpenerSlice
 	| AboutContentSlice
 	| ClientsAndCollaboratorsSlice
@@ -1269,6 +1270,51 @@ type ContactMediaSliceVariation = ContactMediaSliceDefault;
 export type ContactMediaSlice = prismic.SharedSlice<'contact_media', ContactMediaSliceVariation>;
 
 /**
+ * Primary content in *ContactUsHeader → Default → Primary*
+ */
+export interface ContactUsHeaderSliceDefaultPrimary {
+	/**
+	 * Link field in *ContactUsHeader → Default → Primary*
+	 *
+	 * - **Field Type**: Link
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: contact_us_header.default.primary.link
+	 * - **Documentation**: https://prismic.io/docs/fields/link
+	 */
+	link: prismic.LinkField<string, string, unknown, prismic.FieldState, never>;
+}
+
+/**
+ * Default variation for ContactUsHeader Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ContactUsHeaderSliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Simplify<ContactUsHeaderSliceDefaultPrimary>,
+	never
+>;
+
+/**
+ * Slice variation for *ContactUsHeader*
+ */
+type ContactUsHeaderSliceVariation = ContactUsHeaderSliceDefault;
+
+/**
+ * ContactUsHeader Shared Slice
+ *
+ * - **API ID**: `contact_us_header`
+ * - **Description**: ContactUsHeader
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ContactUsHeaderSlice = prismic.SharedSlice<
+	'contact_us_header',
+	ContactUsHeaderSliceVariation
+>;
+
+/**
  * Primary content in *Conversation → Default → Primary*
  */
 export interface ConversationSliceDefaultPrimary {
@@ -2277,6 +2323,10 @@ declare module '@prismicio/client' {
 			ContactMediaSliceDefaultPrimary,
 			ContactMediaSliceVariation,
 			ContactMediaSliceDefault,
+			ContactUsHeaderSlice,
+			ContactUsHeaderSliceDefaultPrimary,
+			ContactUsHeaderSliceVariation,
+			ContactUsHeaderSliceDefault,
 			ConversationSlice,
 			ConversationSliceDefaultPrimary,
 			ConversationSliceVariation,

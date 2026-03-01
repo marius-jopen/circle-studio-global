@@ -1,0 +1,18 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"link": {
+				"__TYPE__": "LinkContent",
+				"key": "4a6f4b6b-c8c9-48d3-9aa2-e22264db3a07",
+				"value": {
+					"__TYPE__": "ExternalLink",
+					"url": "https://prismic.io",
+					"text": "saddle"
+				}
+			}
+		},
+		"items": []
+	}
+]
