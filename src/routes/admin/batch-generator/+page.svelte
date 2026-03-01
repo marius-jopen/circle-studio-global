@@ -12,7 +12,7 @@
 	let content = $state(`Learn to observe snails and plant impossible gardens. 
 Invite someone dangerous to tea.`);
 	let goodbye = $state('Love, Santi');
-	let branding = $state('Artcamp, 2026');
+	let branding = $state('Art-Camp, 2026');
 
 	// Animation state
 	let currentPhase = $state<'greeting' | 'content' | 'goodbye'>('greeting');
@@ -791,7 +791,7 @@ Invite someone dangerous to tea.`);
 						</div>
 						<div>
 							<label for="branding-field" class="block text-[11px] font-medium text-gray-500 mb-1">Branding</label>
-							<RichTextInput id="branding-field" bind:value={branding} placeholder="Artcamp, 2026" rows={1} />
+							<RichTextInput id="branding-field" bind:value={branding} placeholder="Art-Camp, 2026" rows={1} />
 						</div>
 					</div>
 				</div>
