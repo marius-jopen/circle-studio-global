@@ -10,11 +10,18 @@
 
 	const { slice }: Props = $props();
 
-	let wheelText = $state<string>('Type your text here…');
+	const DEFAULT_PLACEHOLDER = 'Type your text here…';
+	let wheelText = $state<string>(DEFAULT_PLACEHOLDER);
 	let mobileInput = $state<HTMLInputElement | null>(null);
 	function closeMobileInput() {
 		mobileInput?.blur();
 		playInputActive.set(false);
+	}
+
+	function handleMobileKeydown(e: KeyboardEvent) {
+		if (wheelText === DEFAULT_PLACEHOLDER && !e.metaKey && !e.ctrlKey && !e.altKey) {
+			e.currentTarget.select();
+		}
 	}
 
 	// Elements used for measuring available space
@@ -221,7 +228,7 @@
 	onclick={toggleInvert}
 	aria-label="Toggle invert colors"
 >
-	<Logo variant={inverted ? 'white' : 'black'} rotationSpeed={10} size={90} />
+	<Logo variant={inverted ? 'white' : 'black'} rotationSpeed={10} size={75} />
 </button>
 
 {#if $playInputActive}
@@ -250,10 +257,15 @@
 		<input
 			id="wheel-text-input-mobile"
 			type="text"
-			placeholder="Type your text here…"
+			placeholder={DEFAULT_PLACEHOLDER}
 			bind:value={wheelText}
 			bind:this={mobileInput}
-			onfocus={(e) => { handleInputFocus(); e.currentTarget.select(); }}
+			onfocus={(e) => {
+				handleInputFocus();
+				e.currentTarget.select();
+				setTimeout(() => e.currentTarget.select(), 500);
+			}}
+			onkeydown={handleMobileKeydown}
 			autocomplete="off"
 			autofocus
 			class="py-2 px-5 flex-1 bg-transparent outline-none text-xl font-medium w-full"

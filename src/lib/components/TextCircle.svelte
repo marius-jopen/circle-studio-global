@@ -211,7 +211,7 @@
     if (!ctx) return;
     const baseDpr = window.devicePixelRatio || 1;
     const isMobileCanvas = window.innerWidth < 768;
-    const dpr = isMobileCanvas ? Math.max(baseDpr * 1.5, 3) : baseDpr;
+    const dpr = isMobileCanvas ? Math.max(baseDpr * 2, 4) : baseDpr;
     if (isMobileCanvas && 'imageSmoothingQuality' in ctx) {
       (ctx as CanvasRenderingContext2D & { imageSmoothingQuality: string }).imageSmoothingQuality = 'high';
     }
