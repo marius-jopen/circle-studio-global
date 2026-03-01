@@ -29,6 +29,7 @@
 	
 	// Mobile detection for size adjustment
 	let isMobile = $state<boolean>(false);
+	let mountedAt = 0;
 	let mobileViewportHeight = $state<number>(0);
 	let mobileViewportOffsetTop = $state<number>(0);
 	let windowInnerHeight = $state<number>(0);
@@ -60,6 +61,8 @@
 	function handleInputFocus() {
 		if (isFadingOut) return;
 		if (!wheelText || wheelText === '') return;
+		// On mobile, skip the initial programmatic focus so default text stays until user taps
+		if (isMobile && mountedAt && Date.now() - mountedAt < 500) return;
 		isFadingOut = true;
 		// Trigger letter-by-letter fade out
 		triggerFadeOutState = true;
@@ -105,6 +108,7 @@
 	}
 
 	onMount(() => {
+		mountedAt = Date.now();
 		windowInnerHeight = window.innerHeight;
 		updateWheelSize();
 		const handleResize = () => {
@@ -242,7 +246,7 @@
 	class:pointer-events-auto={$playInputActive}
 	style="top: {mobileViewportHeight > 0 ? (mobileViewportOffsetTop + mobileViewportHeight - MOBILE_INPUT_HEIGHT) : windowInnerHeight - MOBILE_INPUT_HEIGHT}px;"
 >
-	<div class="bg-gray-100 rounded-md flex items-center overflow-hidden w-full">
+	<div class="bg-gray-100 rounded-md flex items-center overflow-hidden w-10/12 mx-auto">
 		<input
 			id="wheel-text-input-mobile"
 			type="text"
