@@ -463,9 +463,9 @@
 <div>
 	{#if isReady && normalizedLayout.length > 0}
 		<div class="space-y-2 space-y-2 mb-3 ">
-			{#each normalizedLayout as row}
+			{#each normalizedLayout as row (row.projects.map(p => p.id).join('-'))}
 				<div class="grid dimension-{row.dimension} {row.gridCols} gap-2 gap-2">
-				{#each row.projects as project, index}
+				{#each row.projects as project, index (project.id)}
 					{#if isMobile}
 						<ProjectItemMobile dimension={row.dimension} itemsPerRow={row.configuredItemsPerRow} positionInRow={index} {project} />
 					{:else}

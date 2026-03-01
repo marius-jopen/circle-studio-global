@@ -275,7 +275,7 @@
 	{/if}
 
 	{#if currentView === 'grid'}
-		<ProjectIndex allProjects={filteredAllProjects} {featuredProjectIds} />
+		<ProjectIndex allProjects={filteredAllProjects} featuredProjectIds={isSearchActive ? [] : featuredProjectIds} />
 	{:else}
 		<ProjectIndexList allProjects={filteredAllProjects} {featuredProjectIds} />
 		<!-- Fixed bottom-right hover preview video - only for list view -->
