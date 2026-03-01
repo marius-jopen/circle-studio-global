@@ -199,6 +199,9 @@
 	{/if}
 	<meta property="og:url" content={currentUrl} />
 	<meta property="og:type" content="website" />
+	{#if !isAdminRoute}
+		<link rel="canonical" href={currentUrl} />
+	{/if}
 	<!-- Twitter -->
 	<meta name="twitter:card" content="summary_large_image" />
 	{#if metaTitle}
