@@ -210,10 +210,15 @@
 	});
 </script>
 
-<!-- Mobile: Small rotating logo, top left -->
-<a href="/" class="md:hidden fixed top-2 left-2 z-50">
-	<Logo variant="black" rotationSpeed={10} size={60} />
-</a>
+<!-- Mobile: Small rotating logo, top left – tap to invert colors -->
+<button
+	type="button"
+	class="md:hidden fixed top-2 left-2 z-50 p-0 border-0 bg-transparent cursor-pointer"
+	onclick={toggleInvert}
+	aria-label="Toggle invert colors"
+>
+	<Logo variant={inverted ? 'white' : 'black'} rotationSpeed={10} size={60} />
+</button>
 
 {#if $playInputActive}
 	<!-- Mobile: Close button (top right) -->
