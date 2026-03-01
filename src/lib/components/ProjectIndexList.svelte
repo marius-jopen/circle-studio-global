@@ -78,37 +78,18 @@
 		};
 	}
 
-	// Animation state - track which items are visible
-	let visibleItems = new Set<number>();
+	// Always show all items - stagger animation caused items to stay invisible when reactive updates ran before timeouts
+	$: visibleItems = new Set(filteredProjects.map((_: any, i: number) => i));
 	
 	onMount(() => {
-		// Check if we're on mobile
-		const checkMobile = () => {
-			isMobile = window.innerWidth < 768;
-		};
-		
-		// Initial check
+		const checkMobile = () => { isMobile = window.innerWidth < 768; };
 		checkMobile();
-		
-		// Listen for resize events
 		window.addEventListener('resize', checkMobile);
-		
-		// Trigger staggered animation after component mounts
-		setTimeout(() => {
-			sortedProjects.forEach((_, index) => {
-				setTimeout(() => {
-					visibleItems.add(index);
-					visibleItems = visibleItems; // trigger reactivity
-				}, index * 50);
-			});
-		}, 100);
-		
-		return () => {
-			window.removeEventListener('resize', checkMobile);
-		};
+		return () => window.removeEventListener('resize', checkMobile);
 	});
 </script>
 
+{#if sortedProjects.length > 0}
 <div class="divide-y mb-3 divide-black/10 text-black md:hover:text-black/25 mt-[180px] md:mt-[210px] bg-neutral-100 rounded px-4 py-1">
 	{#each sortedProjects as project, index (project.id)}
 		<a href="/work/{project.uid}"
@@ -143,6 +124,7 @@
 		</a>
 	{/each}
 </div>
+{/if}
 
 <style>
 	/* Staggered animation for list items */

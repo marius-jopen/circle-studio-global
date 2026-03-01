@@ -95,18 +95,20 @@ function closeSearch() {
                     <input 
                         type="text" 
                         placeholder="Search" 
-                        class="p-2 flex-1 bg-transparent outline-none text-xl" 
+                        class="mobile-search-input p-2 flex-1 bg-transparent outline-none text-xl" 
                         bind:this={searchInput} 
-                        bind:value={$homeSearchQuery} 
+                        bind:value={$homeSearchQuery}
                     />
-                    <button 
-                        type="button" 
-                        class="text-xl leading-none p-1 flex-shrink-0" 
-                        aria-label="Close search" 
-                        on:click={closeSearch}
-                    >
-                        ×
-                    </button>
+                    {#if $homeSearchQuery.trim()}
+                        <button 
+                            type="button" 
+                            class="text-xl leading-none p-1 flex-shrink-0" 
+                            aria-label="Clear search" 
+                            on:click={() => { homeSearchQuery.set(''); searchInput?.focus(); }}
+                        >
+                            ×
+                        </button>
+                    {/if}
                 </div>
             {/if}
         </div>
@@ -135,3 +137,12 @@ function closeSearch() {
     </div>
 </div>
 {/if}
+
+<style>
+	/* Hide placeholder when mobile search input is focused or has value */
+	:global(.mobile-search-input:focus::placeholder),
+	:global(.mobile-search-input:not(:placeholder-shown)::placeholder) {
+		opacity: 0;
+		color: transparent;
+	}
+</style>

@@ -5,7 +5,7 @@
 	import { onMount, tick } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { viewMode, setViewMode, initializeViewMode, mobileSearchOpen, homeSearchQuery } from '$lib/stores';
+	import { viewMode, setViewMode, initializeViewMode, mobileSearchOpen, homeSearchQuery, searchZeroResults } from '$lib/stores';
 	
 	let { settings, faded = false, videoIsDark = false, mainMediaVisible = true } = $props();
 	let isHovering = $state(false);
@@ -197,7 +197,8 @@
 			>
 				<img src="/search-logo.svg" alt="Search" class="w-4 h-4" />
 			</button>
-			<!-- Search input (expanded) -->
+			<!-- Search input (expanded) - only render when visible to avoid placeholder bleeding through -->
+			{#if desktopSearchOpen}
 			<div
 				class="absolute inset-0 flex items-center gap-x-2 px-3 transition-opacity duration-200"
 				class:opacity-0={!desktopSearchContentVisible}
@@ -208,17 +209,20 @@
 				<input
 					type="text"
 					placeholder="Search"
-					class="flex-1 bg-transparent outline-none font-medium text-sm text-neutral-900 min-w-0"
+					class="desktop-search-input flex-1 bg-transparent outline-none font-medium text-sm text-neutral-900 min-w-0"
 					bind:this={desktopSearchInput}
 					bind:value={$homeSearchQuery}
 					onkeydown={handleDesktopSearchKeydown}
 				/>
-				<button
-					class="text-base leading-none flex-shrink-0 cursor-pointer text-neutral-400 hover:text-neutral-900 transition-colors focus:outline-none"
-					onclick={closeDesktopSearch}
-					aria-label="Close search"
-				>×</button>
+				{#if $homeSearchQuery.trim()}
+					<button
+						class="text-base leading-none flex-shrink-0 cursor-pointer text-neutral-400 hover:text-neutral-900 transition-colors focus:outline-none"
+						onclick={() => { homeSearchQuery.set(''); desktopSearchInput?.focus(); }}
+						aria-label="Clear search"
+					>×</button>
+				{/if}
 			</div>
+			{/if}
 		</div>
 		<!-- Grid and List in same box -->
 		<div class="bg-gray-100 rounded-md px-4 py-1 flex items-center gap-x-3">
@@ -285,8 +289,8 @@
 					onmouseenter={() => { isHovering = true; }}
 					onmouseleave={() => { isHovering = false; }}
 				>
-					<!-- Black Logo (default) -->
-					<div class="absolute top-4 left-0 transition-opacity duration-600 z-10" class:opacity-0={isDarkMode || isHomePageGrid || isProject} class:opacity-100={!isDarkMode && !isHomePageGrid && !isProject}>
+					<!-- Black Logo (default) - also show when zero search results -->
+					<div class="absolute top-4 left-0 transition-opacity duration-600 z-10" class:opacity-0={(isDarkMode || isHomePageGrid || isProject) && !$searchZeroResults} class:opacity-100={(!isDarkMode && !isHomePageGrid && !isProject) || $searchZeroResults}>
 						<Logo 
 							variant="black"
 							rotationSpeed={isHovering ? 50 : 10}
@@ -294,11 +298,11 @@
 						/>
 					</div>
 					
-					<!-- White Logo (dark mode, home page grid mode, or project pages) -->
-					<div 
-						class="absolute top-4 left-0 transition-opacity duration-600 z-10 project-page-logo" 
-						class:opacity-100={isDarkMode || isHomePageGrid || isProject} 
-						class:opacity-0={!isDarkMode && !isHomePageGrid && !isProject}
+					<!-- White Logo (dark mode, home page grid mode, or project pages) - hide when zero search results -->
+					<div
+						class="absolute top-4 left-0 transition-opacity duration-600 z-10 project-page-logo"
+						class:opacity-100={(isDarkMode || isHomePageGrid || isProject) && !$searchZeroResults}
+						class:opacity-0={(!isDarkMode && !isHomePageGrid && !isProject) || $searchZeroResults}
 						class:project-page={isProject && !isDarkMode}
 					>
 						<Logo 
@@ -369,6 +373,13 @@
 	/* Darken white logo on project pages (when not in dark mode) with 40% brightness */
 	:global(header .project-page-logo.project-page img) {
 		filter: brightness(0.9) !important;
+	}
+
+	/* Hide placeholder when search input is focused or has value */
+	:global(.desktop-search-input:focus::placeholder),
+	:global(.desktop-search-input:not(:placeholder-shown)::placeholder) {
+		opacity: 0;
+		color: transparent;
 	}
 
 </style> 

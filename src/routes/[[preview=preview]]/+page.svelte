@@ -2,13 +2,15 @@
 	import { SliceZone } from '@prismicio/svelte';
 	import { isFilled, asText } from '@prismicio/client';
 	import { components } from '$lib/slices';
+	import Logo from '$lib/components/Logo.svelte';
 	import ProjectIndex from '$lib/components/ProjectIndex.svelte';
 	import ProjectItem from '$lib/components/projectItem.svelte';
 	import ProjectItemMobile from '$lib/components/projectItemMobile.svelte';
     import ProjectIndexList from '$lib/components/ProjectIndexList.svelte';
     import GlobalPreviewPlayer from '$lib/components/GlobalPreviewPlayer.svelte';
     import { onMount, tick } from 'svelte';
-	import { viewMode, initializeViewMode, homeSearchQuery } from '$lib/stores';
+	import { viewMode, initializeViewMode, homeSearchQuery, searchZeroResults } from '$lib/stores';
+	import { hoverPreview } from '$lib/stores/preview';
 
 	export let data;
 	// Use client-provided initial view mode (from +page.ts) to avoid grid flash on SPA nav
@@ -31,6 +33,14 @@
     
     // Check if search is active (has non-empty query)
     $: isSearchActive = $homeSearchQuery.trim().length > 0;
+
+	// Clear hover preview when no results (prevents stale video in circle)
+	$: if (filteredAllProjects.length === 0) {
+		hoverPreview.set({ url: null });
+	}
+
+	// Sync zero-results state for header logo (show black when zero)
+	$: searchZeroResults.set(filteredAllProjects.length === 0 && isSearchActive);
 
 	// Extract featured project IDs to exclude them from ProjectIndex
 	$: featuredProjectIds = (() => {
@@ -87,11 +97,11 @@
 		}
 	}
 
-	// Watch for view mode changes and scroll to top
+	// Watch for view mode changes: scroll to top and reset search filter
 	$: if (previousViewMode !== $viewMode) {
 		previousViewMode = $viewMode;
-		// Scroll to top when view mode changes
 		window.scrollTo({ top: 0 });
+		if (isSearchActive) homeSearchQuery.set('');
 	}
 
 	onMount(() => {
@@ -274,20 +284,30 @@
 		{/if}
 	{/if}
 
-	{#if currentView === 'grid'}
-		<ProjectIndex allProjects={filteredAllProjects} featuredProjectIds={isSearchActive ? [] : featuredProjectIds} />
+	{#if filteredAllProjects.length === 0 && isSearchActive}
+		<!-- Zero results: centered black logo + message, no Contact slice -->
+		<div class="flex flex-col items-center justify-center min-h-[75vh] py-16">
+			<div class="flex flex-col items-center justify-center gap-8">
+				<Logo variant="black" rotationSpeed={10} size={320} />
+				<p class="text-primary font-medium text-lg">no projects with this name</p>
+			</div>
+		</div>
 	{:else}
-		<ProjectIndexList allProjects={filteredAllProjects} {featuredProjectIds} />
-		<!-- Fixed bottom-right hover preview video - only for list view -->
-		<GlobalPreviewPlayer />
-	{/if}
-	{#if currentView === 'grid' && SHOW_PREVIEW_IN_GRID}
-		<!-- Optional: show hover preview in grid mode too -->
-		<GlobalPreviewPlayer />
-	{/if}
+		{#if currentView === 'grid'}
+			<ProjectIndex allProjects={filteredAllProjects} featuredProjectIds={isSearchActive ? [] : featuredProjectIds} />
+		{:else}
+			<ProjectIndexList allProjects={filteredAllProjects} {featuredProjectIds} />
+			<!-- Fixed bottom-right hover preview video - only for list view -->
+			<GlobalPreviewPlayer />
+		{/if}
+		{#if currentView === 'grid' && SHOW_PREVIEW_IN_GRID}
+			<!-- Optional: show hover preview in grid mode too -->
+			<GlobalPreviewPlayer />
+		{/if}
 
-	{#if data.page.data.slices && data.page.data.slices.length > 0 && !isSearchActive}
-		<SliceZone slices={data.page.data.slices} {components} />
+		{#if data.page.data.slices && data.page.data.slices.length > 0}
+			<SliceZone slices={data.page.data.slices} {components} />
+		{/if}
 	{/if}
 </div>
 

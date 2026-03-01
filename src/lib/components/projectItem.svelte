@@ -385,8 +385,12 @@
 		<!-- {projectUid} -->
 		{#if selectedPreview}		
 			{@const preview = selectedPreview.item}
-			{@const imageField = effectiveDimension === 'portrait' ? preview?.preview_image_portrait : preview?.preview_image_landscape}
-			{@const videoUrl = effectiveDimension === 'portrait' ? preview?.preview_video_url_portrait : preview?.preview_video_url_landscape}
+			{@const preferredImage = effectiveDimension === 'portrait' ? preview?.preview_image_portrait : preview?.preview_image_landscape}
+			{@const preferredVideo = effectiveDimension === 'portrait' ? preview?.preview_video_url_portrait : preview?.preview_video_url_landscape}
+			{@const fallbackImage = effectiveDimension === 'portrait' ? preview?.preview_image_landscape : preview?.preview_image_portrait}
+			{@const fallbackVideo = effectiveDimension === 'portrait' ? preview?.preview_video_url_landscape : preview?.preview_video_url_portrait}
+			{@const imageField = preferredImage?.url ? preferredImage : fallbackImage}
+			{@const videoUrl = preferredVideo || fallbackVideo}
 			
 			{#if videoUrl && (!isMobile || ENABLE_VIDEOS_ON_MOBILE)}
 				<div class="relative brightness-[95%]" role="group">
@@ -463,7 +467,23 @@
 						</div>
 					{/if}
 				</div>
+			{:else}
+				<!-- Fallback: no media for this dimension, show titles in placeholder card -->
+				<div class="relative bg-neutral-200 {aspectClass} {cornerClass} flex items-end p-3">
+					<div class="text-black">
+						<div class="text-lg font-medium">{projectTitleRaw}</div>
+						<div class="text-lg opacity-60">{projectClientRaw}</div>
+					</div>
+				</div>
 			{/if}
+		{:else}
+			<!-- No preview media at all, show titles in placeholder card -->
+			<div class="relative bg-neutral-200 {aspectClass} {cornerClass} flex items-end p-3">
+				<div class="text-black">
+					<div class="text-lg font-medium">{projectTitleRaw}</div>
+					<div class="text-lg opacity-60">{projectClientRaw}</div>
+				</div>
+			</div>
 		{/if}
 	</a>
 {:else}
@@ -500,8 +520,12 @@
 		
 		{#if selectedPreview}		
 			{@const preview = selectedPreview.item}
-			{@const imageField = effectiveDimension === 'portrait' ? preview?.preview_image_portrait : preview?.preview_image_landscape}
-			{@const videoUrl = effectiveDimension === 'portrait' ? preview?.preview_video_url_portrait : preview?.preview_video_url_landscape}
+			{@const preferredImage = effectiveDimension === 'portrait' ? preview?.preview_image_portrait : preview?.preview_image_landscape}
+			{@const preferredVideo = effectiveDimension === 'portrait' ? preview?.preview_video_url_portrait : preview?.preview_video_url_landscape}
+			{@const fallbackImage = effectiveDimension === 'portrait' ? preview?.preview_image_landscape : preview?.preview_image_portrait}
+			{@const fallbackVideo = effectiveDimension === 'portrait' ? preview?.preview_video_url_landscape : preview?.preview_video_url_portrait}
+			{@const imageField = preferredImage?.url ? preferredImage : fallbackImage}
+			{@const videoUrl = preferredVideo || fallbackVideo}
 			
 			{#if videoUrl && (!isMobile || ENABLE_VIDEOS_ON_MOBILE)}
 				<div class="relative" role="group">
@@ -578,7 +602,23 @@
 						</div>
 					{/if}
 				</div>
+			{:else}
+				<!-- Fallback: no media for this dimension, show titles in placeholder card -->
+				<div class="relative bg-neutral-200 {aspectClass} {cornerClass} flex items-end p-3">
+					<div class="text-black">
+						<div class="text-lg font-medium">{projectTitleRaw}</div>
+						<div class="text-lg opacity-60">{projectClientRaw}</div>
+					</div>
+				</div>
 			{/if}
+		{:else}
+			<!-- No preview media at all, show titles in placeholder card -->
+			<div class="relative bg-neutral-200 {aspectClass} {cornerClass} flex items-end p-3">
+				<div class="text-black">
+					<div class="text-lg font-medium">{projectTitleRaw}</div>
+					<div class="text-lg opacity-60">{projectClientRaw}</div>
+				</div>
+			</div>
 		{/if}
 	</div>
 {/if}

@@ -40,11 +40,15 @@
 
 	function projectSupportsDimension(project: ProjectsDocument, dimension: 'portrait' | 'square' | 'landscape'): boolean {
 		const items = Array.isArray(project.data?.preview) ? (project.data.preview as any[]) : [];
-		if (dimension === 'portrait') {
-			return items.some((i) => i?.preview_video_url_portrait || i?.preview_image_portrait?.url);
-		}
-		// Treat non-portrait (square/landscape) the same as landscape assets
-		return items.some((i) => i?.preview_video_url_landscape || i?.preview_image_landscape?.url);
+		const hasMedia = items.some(
+			(i) =>
+				i?.preview_video_url_portrait ||
+				i?.preview_image_portrait?.url ||
+				i?.preview_video_url_landscape ||
+				i?.preview_image_landscape?.url
+		);
+		// Support projects with media, or with at least title/client (ProjectItem shows fallback placeholder)
+		return hasMedia || !!(project.data?.title || project.data?.client);
 	}
 
 	// Normalize layout and always set columns to match actual item count
