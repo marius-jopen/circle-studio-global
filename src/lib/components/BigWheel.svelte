@@ -621,38 +621,29 @@
         elapsedTime = 0;
         paused = wasAnimationPaused;
       } else if (recorder) {
-        // MP4 export
+        // MP4 export: download immediately (browser blocks deferred downloads)
         recorder.stopRecording(() => {
-          try {
-            const blob = recorder?.getBlob();
-            
-            if (!blob || blob.size < 1000) {
-              console.error('Recording failed: Blob is too small or invalid', blob);
-              alert('Recording failed. Please try again.');
-              return;
-            }
-            
-            if (browser) {
-              const url = URL.createObjectURL(blob);
-              const downloadLink = document.createElement('a');
-              downloadLink.href = url;
-              downloadLink.download = `circle-studio-${getFormattedDateTime()}.mp4`;
-              document.body.appendChild(downloadLink);
-              downloadLink.click();
-              document.body.removeChild(downloadLink);
-              URL.revokeObjectURL(url);
-            }
-          } catch (error) {
-            console.error('Error processing recording:', error);
-            if (browser) alert('Error processing recording. Please try again.');
-          } finally {
-            isRecording = false;
-            elapsedTime = 0;
-            paused = wasAnimationPaused;
-            
-            if (recordingStream) {
-              recordingStream.getTracks().forEach(track => track.stop());
-            }
+          const blob = recorder?.getBlob();
+          if (!blob || blob.size < 1000) {
+            console.error('Recording failed: Blob is too small or invalid', blob);
+            alert('Recording failed. Please try again.');
+            return;
+          }
+          isRecording = false;
+          elapsedTime = 0;
+          paused = wasAnimationPaused;
+          if (recordingStream) {
+            recordingStream.getTracks().forEach(track => track.stop());
+          }
+          if (browser) {
+            const url = URL.createObjectURL(blob);
+            const downloadLink = document.createElement('a');
+            downloadLink.href = url;
+            downloadLink.download = `circle-studio-${getFormattedDateTime()}.mp4`;
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+            URL.revokeObjectURL(url);
           }
         });
       }

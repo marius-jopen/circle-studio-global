@@ -548,10 +548,11 @@ Invite someone dangerous to tea.`);
 				recordingContext.fill();
 			}
 
-			// Start recording AFTER blank frame is drawn
-			if (recorder) recorder.startRecording();
+			// Don't start MP4 recorder yet - wait for first frame to be drawn (avoids black first frame)
 			isRecording = true;
 			elapsedTime = 0;
+			let recorderStarted = false;
+			let frameIndex = 0;
 
 			// Start timer
 			timerInterval = setInterval(() => {
@@ -693,7 +694,7 @@ Invite someone dangerous to tea.`);
 								scrollX = fullTextWidth - visibleWidth;
 							}
 							
-							const textY = Math.round(inputFieldY + Math.round(2 * (recordingWidth / 600)));
+							const textY = Math.round(inputFieldY);
 							let drawX = Math.round(inputFieldX + padding); // Always start at left padding
 							let skippedWidth = 0;
 							for (const { char, bold } of segments) {
@@ -719,8 +720,7 @@ Invite someone dangerous to tea.`);
 							ctx.fillRect(cursorX, Math.round(textY - fontSize / 2), cursorW, fontSize);
 						} else {
 							const cursorX = Math.round(inputFieldX + padding);
-							const textYOffset = Math.round(2 * (recordingWidth / 600));
-							const cursorY = Math.round(inputFieldY + textYOffset);
+							const cursorY = Math.round(inputFieldY);
 							const cursorW = Math.max(1, Math.round(recordingWidth / 600));
 							recordingContext.fillStyle = '#4b5563';
 							recordingContext.fillRect(cursorX, Math.round(cursorY - fontSize / 2), cursorW, fontSize);
@@ -732,8 +732,8 @@ Invite someone dangerous to tea.`);
 					console.error('Error capturing frame:', error);
 				}
 
-				// If GIF export, encode this frame
-				if (gifRecordingState && recordingContext && recordingCanvas) {
+				// If GIF export, encode this frame (skip first frame - often black)
+				if (gifRecordingState && recordingContext && recordingCanvas && frameIndex > 0) {
 					const { gif } = gifRecordingState;
 					const imgData = recordingContext.getImageData(0, 0, recordingCanvas.width, recordingCanvas.height);
 					const data = imgData.data;
@@ -754,6 +754,13 @@ Invite someone dangerous to tea.`);
 						delay: Math.round(1000 / gifFps)
 					});
 				}
+
+				// Start MP4 recorder after first frame drawn (avoids black first frame)
+				if (recorder && !recorderStarted) {
+					recorder.startRecording();
+					recorderStarted = true;
+				}
+				frameIndex++;
 
 				// Schedule next frame at the correct interval
 				if (isRecording) {
@@ -792,35 +799,26 @@ Invite someone dangerous to tea.`);
 				isRecording = false;
 				cleanup();
 			} else if (recorder) {
-				// MP4 export
+				// MP4 export: download immediately (ffmpeg.wasm trim unreliable in SvelteKit)
 				recorder.stopRecording(() => {
-					try {
-						const blob = recorder.getBlob();
-						if (!blob || blob.size < 1000) {
-							console.error('Recording failed: Blob is too small or invalid', blob);
-							alert('Recording failed. Please try again.');
-							isRecording = false;
-							cleanup();
-							return;
-						}
-
-						const url = URL.createObjectURL(blob);
-						const a = document.createElement('a');
-						a.href = url;
-						a.download = `batch-generator-${Date.now()}.mp4`;
-						document.body.appendChild(a);
-						a.click();
-						document.body.removeChild(a);
-						URL.revokeObjectURL(url);
-
+					const blob = recorder.getBlob();
+					if (!blob || blob.size < 1000) {
+						console.error('Recording failed: Blob is too small or invalid', blob);
+						alert('Recording failed. Please try again.');
 						isRecording = false;
 						cleanup();
-					} catch (error) {
-						console.error('Error processing recording:', error);
-						if (browser) alert('Error processing recording. Please try again.');
-						isRecording = false;
-						cleanup();
+						return;
 					}
+					isRecording = false;
+					cleanup();
+					const url = URL.createObjectURL(blob);
+					const a = document.createElement('a');
+					a.href = url;
+					a.download = `batch-generator-${Date.now()}.mp4`;
+					document.body.appendChild(a);
+					a.click();
+					document.body.removeChild(a);
+					URL.revokeObjectURL(url);
 				});
 			}
 		} catch (error) {
