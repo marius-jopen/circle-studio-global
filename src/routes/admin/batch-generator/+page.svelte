@@ -651,8 +651,9 @@ Invite someone dangerous to tea.`);
 						recordingContext.closePath();
 						recordingContext.fill();
 
-						// Draw text - pixel-aligned for crisp rendering
+						// Draw text - pixel-aligned, always keep left padding (never float text to left edge)
 						const padding = Math.round(24 * (recordingWidth / 600));
+						const minLeftPadding = padding; // Always reserve left padding when text overflows
 						const fontSize = Math.round(28 * (recordingWidth / 600));
 						const maxTextWidth = inputFieldWidth - (padding * 2);
 						
@@ -685,22 +686,34 @@ Invite someone dangerous to tea.`);
 								return sum + ctx.measureText(char).width;
 							}, 0);
 							
+							// Reserve left padding when overflowing - never let text float to left edge
+							const visibleWidth = maxTextWidth - minLeftPadding;
 							let scrollX = 0;
 							if (fullTextWidth > maxTextWidth) {
-								scrollX = fullTextWidth - maxTextWidth;
+								scrollX = fullTextWidth - visibleWidth;
 							}
 							
-							const textX = Math.round(inputFieldX + padding - scrollX);
 							const textY = Math.round(inputFieldY + Math.round(2 * (recordingWidth / 600)));
-							let drawX = textX;
+							let drawX = Math.round(inputFieldX + padding); // Always start at left padding
+							let skippedWidth = 0;
 							for (const { char, bold } of segments) {
 								ctx.font = bold ? `bold ${fontStr}` : fontStr;
+								const charWidth = ctx.measureText(char).width;
+								if (skippedWidth + charWidth <= scrollX) {
+									skippedWidth += charWidth;
+									continue;
+								}
+								// First character that crosses scrollX - may be partial
+								if (skippedWidth < scrollX) {
+									drawX -= (scrollX - skippedWidth);
+									skippedWidth = scrollX;
+								}
 								ctx.fillText(char, Math.round(drawX), textY);
-								drawX += ctx.measureText(char).width;
+								drawX += charWidth;
 							}
 							
-							// Cursor: no blink during recording (avoids flashing)
-							const cursorX = Math.round(textX + fullTextWidth);
+							// Cursor at end of visible text
+							const cursorX = Math.round(inputFieldX + padding + Math.min(fullTextWidth, visibleWidth));
 							const cursorW = Math.max(1, Math.round(recordingWidth / 600));
 							ctx.fillStyle = '#4b5563'; // gray-600
 							ctx.fillRect(cursorX, Math.round(textY - fontSize / 2), cursorW, fontSize);
@@ -1183,7 +1196,7 @@ Invite someone dangerous to tea.`);
 						<div class="w-8/12 mx-auto rounded-full h-14 bg-gray-100 px-6 py-3 flex items-center">
 							<div 
 								bind:this={inputFieldRef}
-								class="flex-1 text-gray-500 text-2xl overflow-x-auto overflow-y-hidden whitespace-nowrap flex items-center"
+								class="flex-1 text-gray-500 text-2xl overflow-x-auto overflow-y-hidden whitespace-nowrap flex items-center min-w-0 pl-3"
 								style="scrollbar-width: none; -ms-overflow-style: none;"
 							>
 								{#if displayText}
