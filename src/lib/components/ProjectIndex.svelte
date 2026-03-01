@@ -117,7 +117,7 @@
 			finalRows.push({
 				type: count === 1 ? 'oneLandscape' : (count === 2 ? 'twoSquares' : 'threeSquares'),
 				projects: projectsToDistribute.splice(0, count),
-				dimension: 'square',
+				dimension: count === 1 ? 'landscape' : 'square',
 				gridCols: getGridColsClass(count),
 				configuredItemsPerRow: count
 			});
