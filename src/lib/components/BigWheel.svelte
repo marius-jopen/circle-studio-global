@@ -97,7 +97,8 @@
     { value: 'steps', label: 'Steps' }
   ];
   const baseContainerSize = 600;
-  let exportResolution = 600; // Default export resolution
+  let exportResolution = 600; // Export width (height = width for square)
+  let exportFps = 30; // Frame rate for video export
   let containerElement: HTMLDivElement;
   let textCircleRefs: TextCircle[] = [];
 
@@ -105,7 +106,6 @@
   let isRecording = false;
   let recorder: RecordRTCType | undefined;
   let recordingStream: MediaStream | undefined;
-  let FPS = 30; // Fixed at 30 FPS
   let elapsedTime = 0; // Elapsed recording time in seconds
   let timerInterval: ReturnType<typeof setInterval>; // Timer interval reference
   
@@ -400,7 +400,7 @@
       paused = false;
       
       // Set up a stream from the canvas
-      recordingStream = recordingCanvas.captureStream(FPS);
+      recordingStream = recordingCanvas.captureStream(exportFps);
       
       // Check if stream is valid
       if (!recordingStream || recordingStream.getVideoTracks().length === 0) {
@@ -419,7 +419,7 @@
       recorder = new RecordRTC(recordingStream, {
         type: 'video',
         mimeType: 'video/mp4',
-        frameRate: 30,
+        frameRate: exportFps,
         quality: 1, // Highest quality
         width: activeExportResolution,
         height: activeExportResolution,
@@ -914,15 +914,34 @@
 						</label>
 						<input id="circle-distance" type="range" min="0" max="10" step="0.1" bind:value={distancePercent} class="w-full h-1" />
 					</div>
+				</div>
+			</div>
 
+			<!-- Export Settings -->
+			<div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+				<div class="px-4 py-2.5 border-b border-gray-100">
+					<h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Export</h2>
+				</div>
+				<div class="p-4 space-y-3">
 					<div>
 						<label for="export-res" class="block text-[11px] font-medium text-gray-500 mb-1">
-							Recording <span class="text-gray-400">{exportResolution}x{exportResolution}px</span>
+							Width <span class="text-gray-400">{exportResolution}px</span>
 						</label>
 						<input id="export-res" type="range" min="720" max="3840" step="10" bind:value={exportResolution} class="w-full h-1" />
-						<p class="text-[10px] text-gray-300 mt-0.5">Higher = better quality, larger file.</p>
+						<p class="text-[10px] text-gray-300 mt-0.5">Height auto ({exportResolution}px). Higher = better quality.</p>
 					</div>
-
+					<div>
+						<label for="export-fps" class="block text-[11px] font-medium text-gray-500 mb-1">
+							Frame Rate <span class="text-gray-400">{exportFps} fps</span>
+						</label>
+						<select id="export-fps" value={exportFps} on:change={(e) => { exportFps = Number((e.currentTarget as HTMLSelectElement).value); }} class="w-full text-xs py-2 px-3 rounded-lg border border-gray-200 bg-white focus:ring-1 focus:ring-gray-300 focus:border-gray-300">
+							<option value={15}>15 fps</option>
+							<option value={24}>24 fps</option>
+							<option value={30}>30 fps</option>
+							<option value={60}>60 fps</option>
+						</select>
+						<p class="text-[10px] text-gray-300 mt-0.5">Higher fps = smoother video, larger file.</p>
+					</div>
 					<label class="inline-flex items-center gap-1.5 cursor-pointer">
 						<input type="checkbox" bind:checked={useHighResRecording} class="w-3 h-3 rounded" />
 						<span class="text-[11px] text-gray-500">High-Res Recording</span>
