@@ -221,7 +221,7 @@
 	onclick={toggleInvert}
 	aria-label="Toggle invert colors"
 >
-	<Logo variant={inverted ? 'white' : 'black'} rotationSpeed={10} size={60} />
+	<Logo variant={inverted ? 'white' : 'black'} rotationSpeed={10} size={90} />
 </button>
 
 {#if $playInputActive}
