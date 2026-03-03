@@ -23,10 +23,10 @@
 	let triggerFadeIn = $state(false);
 	let triggerFadeOut = $state(false);
 
-	const FADE_IN_TIME = 1.7;
-	const FADE_OUT_TIME = 1.7;
+	const FADE_IN_TIME = 1.3;
+	const FADE_OUT_TIME = 1.3;
 	const VISIBLE_TIME = 2.5;
-	const GAP_TIME = 0.8;
+	const GAP_TIME = 0.3;
 
 	let cycleTimeoutA: ReturnType<typeof setTimeout> | null = null;
 	let cycleTimeoutB: ReturnType<typeof setTimeout> | null = null;
@@ -101,9 +101,9 @@
 >
 	<div class="flex flex-col md:flex-row md:items-stretch gap-6 md:gap-2">
 		<!-- Left: White panel with text blocks and skill tags -->
-		<div class="flex-1 min-w-0  ">
+		<div class="flex flex-col min-w-0  ">
 			<!-- Three text columns -->
-			<div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 bg-white rounded-lg px-6 md:px-10 py-8 md:py-12">
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 bg-white rounded-lg px-6 md:px-10 py-8 md:py-12 h-full">
 				{#if isFilled.richText((slice.primary as any).text_1)}
 					<div class=" text-neutral-900">
 						<PrismicRichText field={(slice.primary as any).text_1} />
@@ -146,8 +146,8 @@
 						<TextCircle
 							text={wheelText || poetryItems[0]}
 							containerSize={circleSize}
-							fontSize={56}
-							radius={Math.round(circleSize * 0.43)}
+							fontSize={38}
+							radius={Math.round(circleSize * 0.38)}
 							rotationSpeed={0.1}
 							spacingAmplitudePercent={0.5}
 							spacingSpeed={0}
