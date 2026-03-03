@@ -105,17 +105,17 @@
 			<!-- Three text columns -->
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 bg-white rounded-lg px-6 md:px-10 py-8 md:py-12">
 				{#if isFilled.richText((slice.primary as any).text_1)}
-					<div class="about-content-text text-neutral-900">
+					<div class=" text-neutral-900">
 						<PrismicRichText field={(slice.primary as any).text_1} />
 					</div>
 				{/if}
 				{#if isFilled.richText((slice.primary as any).text_2)}
-					<div class="about-content-text text-neutral-900">
+					<div class=" text-neutral-900">
 						<PrismicRichText field={(slice.primary as any).text_2} />
 					</div>
 				{/if}
 				{#if isFilled.richText((slice.primary as any).text_3)}
-					<div class="about-content-text text-neutral-900">
+					<div class=" text-neutral-900">
 						<PrismicRichText field={(slice.primary as any).text_3} />
 					</div>
 				{/if}
@@ -123,10 +123,10 @@
 
 			<!-- Six skill tags - white with subtle border, 2x3 grid -->
 			{#if skills.length > 0}
-				<div class="mt-10 md:mt-14 grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-2">
+				<div class="mt-2 grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-2">
 					{#each skills as skill}
 						<div
-							class="rounded-lg bg-white px-5 py-3.5 text-center text-sm font-medium text-neutral-900"
+							class="rounded-lg bg-white px-5 py-3.5 text-center text-lg text-neutral-900"
 						>
 							{skill}
 						</div>
@@ -166,20 +166,3 @@
 		{/if}
 	</div>
 </section>
-
-<style>
-	.about-content-text :global(p) {
-		font-size: inherit !important;
-		line-height: 1.5 !important;
-		margin-bottom: 0.5em;
-	}
-
-	.about-content-text :global(p:last-child) {
-		margin-bottom: 0;
-	}
-
-	.about-content-text {
-		font-size: 0.9375rem;
-		line-height: 1.5;
-	}
-</style>
