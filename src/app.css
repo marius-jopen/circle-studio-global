@@ -108,3 +108,17 @@ h3, .h3, .h3 p {
 .content-text strong {
     @apply font-normal;
 }
+
+/* About opener - large responsive intro text */
+.about-opener-text p {
+    @apply text-3xl md:text-[2.75rem] lg:text-[3.25rem] leading-[1.2] mb-[0.85em];
+}
+.about-opener-text p:last-child {
+    @apply mb-0;
+}
+.about-opener-text em {
+    @apply italic;
+}
+.about-opener-text a {
+    @apply underline underline-offset-2;
+}

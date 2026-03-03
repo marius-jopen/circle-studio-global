@@ -8,6 +8,7 @@ $: pathname = $page.url.pathname;
 $: isHome = pathname === '/';
 $: isPlay = pathname === '/play' || pathname === '/play/preview';
 $: isAbout = pathname === '/about' || pathname.startsWith('/about/');
+$: isAboutNew = pathname === '/about-new' || pathname === '/preview/about-new';
 
 let searchOpen = false;
 let searchInput: HTMLInputElement;
@@ -118,7 +119,7 @@ function closeSearch() {
 <!-- Bottom navigation (hidden on /play page when input is active) -->
 {#if !isPlay || !$playInputActive}
 <div class="md:hidden fixed bottom-5 left-0 right-0 z-50 flex justify-center items-center mx-4">
-    <div class="bg-gray-100 rounded-md py-0 px-0 h-12 flex items-center">
+    <div class="rounded-md py-0 px-0 h-12 flex items-center transition-colors" class:bg-white={isAboutNew} class:bg-gray-100={!isAboutNew}>
         <nav class="flex items-center justify-center gap-x-0 text-xl">
             <a href="/" class="text-center font-medium whitespace-nowrap py-2 pl-5 pr-2 transition-colors duration-300" class:text-neutral-500={isHome} class:text-neutral-900={!isHome}>Work</a>
             <a href="/about" class="text-center font-medium py-2 pl-2 pr-5 transition-colors duration-300" class:text-neutral-500={isAbout} class:text-neutral-900={!isAbout}>About</a>

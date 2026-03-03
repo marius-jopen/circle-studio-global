@@ -1,13 +1,13 @@
 <script lang="ts">
   import { PrismicLink } from '@prismicio/svelte';
 
-  let { settings } = $props();
+  let { settings, isAboutNew = false } = $props();
 
   const currentYear = new Date().getFullYear();
 </script>
 
 <footer class="w-full px-2 pb-[75px] md:pb-3 ">
-  <div class="bg-neutral-100 text-black px-4 rounded pb-8 md:pb-3 flex flex-col md:flex-row pt-6 md:pt-3 justify-center mt-[-1px] md:justify-between items-center w-full pt-3 relative">
+  <div class="text-black px-4 rounded pb-8 md:pb-3 flex flex-col md:flex-row pt-6 md:pt-3 justify-center mt-[-1px] md:justify-between items-center w-full pt-3 relative" class:bg-white={isAboutNew} class:bg-neutral-100={!isAboutNew}>
     {#if settings?.data?.navigation_footer?.length}
       <ul class="flex items-center space-x-6 mb-6 md:mb-0 md:absolute md:left-1/2 md:-translate-x-1/2">
         {#each settings.data.navigation_footer as navItem}
