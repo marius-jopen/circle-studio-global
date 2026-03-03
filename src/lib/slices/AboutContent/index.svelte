@@ -74,15 +74,30 @@
 		};
 	});
 
-	// Responsive circle size (300 mobile, 360 desktop)
+	// Circle size: full-width on mobile (via ResizeObserver), fixed 360px on desktop
 	let circleSize = $state(360);
-	onMount(() => {
+	let circleBoxRef = $state<HTMLDivElement | null>(null);
+
+	$effect(() => {
+		const el = circleBoxRef;
+		if (!el || !browser) return;
 		const updateSize = () => {
-			circleSize = window.innerWidth >= 768 ? 360 : 300;
+			const isMobile = window.innerWidth < 768;
+			if (isMobile) {
+				const w = el.clientWidth;
+				circleSize = Math.max(200, w - 48);
+			} else {
+				circleSize = 360;
+			}
 		};
 		updateSize();
+		const ro = new ResizeObserver(updateSize);
+		ro.observe(el);
 		window.addEventListener('resize', updateSize);
-		return () => window.removeEventListener('resize', updateSize);
+		return () => {
+			ro.disconnect();
+			window.removeEventListener('resize', updateSize);
+		};
 	});
 
 	const skills = $derived([
@@ -99,7 +114,7 @@
 	data-slice-type={slice.slice_type}
 	data-slice-variation={slice.variation}
 >
-	<div class="flex flex-col md:flex-row md:items-stretch gap-6 md:gap-2">
+	<div class="flex flex-col md:flex-row md:items-stretch gap-2 md:gap-2">
 		<!-- Left: White panel with text blocks and skill tags -->
 		<div class="flex flex-col min-w-0  ">
 			<!-- Three text columns -->
@@ -135,9 +150,12 @@
 			{/if}
 		</div>
 
-		<!-- Right: White panel with circular text -->
+		<!-- Right: White panel - full width + square on mobile, fixed size on desktop -->
 		{#if poetryItems.length > 0}
-			<div class="bg-white rounded-lg flex items-center justify-center shrink-0">
+			<div
+				bind:this={circleBoxRef}
+				class="bg-white rounded-lg flex items-center justify-center shrink-0 p-6 md:p-8 w-full aspect-square mx-auto md:mx-0 md:w-[408px] md:h-[408px] md:aspect-auto"
+			>
 				<div
 					class="flex items-center justify-center"
 					style="width: {circleSize}px; height: {circleSize}px;"
