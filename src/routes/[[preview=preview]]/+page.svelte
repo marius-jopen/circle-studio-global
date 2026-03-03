@@ -7,7 +7,6 @@
 	import ProjectItem from '$lib/components/projectItem.svelte';
 	import ProjectItemMobile from '$lib/components/projectItemMobile.svelte';
     import ProjectIndexList from '$lib/components/ProjectIndexList.svelte';
-    import GlobalPreviewPlayer from '$lib/components/GlobalPreviewPlayer.svelte';
     import { onMount, tick } from 'svelte';
 	import { viewMode, initializeViewMode, homeSearchQuery, searchZeroResults } from '$lib/stores';
 	import { hoverPreview } from '$lib/stores/preview';
@@ -297,12 +296,6 @@
 			<ProjectIndex allProjects={filteredAllProjects} featuredProjectIds={isSearchActive ? [] : featuredProjectIds} />
 		{:else}
 			<ProjectIndexList allProjects={filteredAllProjects} {featuredProjectIds} />
-			<!-- Fixed bottom-right hover preview video - only for list view -->
-			<GlobalPreviewPlayer />
-		{/if}
-		{#if currentView === 'grid' && SHOW_PREVIEW_IN_GRID}
-			<!-- Optional: show hover preview in grid mode too -->
-			<GlobalPreviewPlayer />
 		{/if}
 
 		{#if data.page.data.slices && data.page.data.slices.length > 0}

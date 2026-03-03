@@ -4,8 +4,15 @@
 	import { PrismicLink } from '@prismicio/svelte';
 	import { isFilled, asLink } from '@prismicio/client';
 	import { onMount } from 'svelte';
+	import { hoverPreview } from '$lib/stores/preview';
+	import { get } from 'svelte/store';
+	import { page } from '$app/state';
 
 	type Props = SliceComponentProps<Content.ListSlice>;
+
+	const isAboutNew = $derived(
+		page.url.pathname === '/about-new' || page.url.pathname === '/preview/about-new'
+	);
 
 	const { slice }: Props = $props();
 
@@ -71,11 +78,35 @@
 		}
 		return '';
 	}
+
+	function getImageUrl(item: any): string | null {
+		if (!item?.image?.url) return null;
+		return item.image.url;
+	}
+
+	function handleItemMouseEnter(item: any, index: number) {
+		if (!isMobile && getImageUrl(item)) {
+			hoverPreview.set({
+				url: null,
+				imageUrl: getImageUrl(item),
+				uid: `list-${index}`
+			});
+		}
+	}
+
+	function handleItemMouseLeave(index: number) {
+		if (!isMobile) {
+			const current = get(hoverPreview);
+			if (current?.uid === `list-${index}`) {
+				hoverPreview.set({ url: null, imageUrl: null });
+			}
+		}
+	}
 </script>
 
 <section data-slice-type={slice.slice_type} data-slice-variation={slice.variation} class="list-none">
 	{#if sortedItems.length > 0}
-		<div class="mb-3 divide-y divide-black/10 text-black md:hover:text-black/25 list-none bg-neutral-100 rounded px-4 py-1">
+		<div class="mb-3 divide-y divide-black/10 text-black md:hover:text-black/25 list-none rounded px-4 py-1" class:bg-white={isAboutNew} class:bg-neutral-100={!isAboutNew}>
 			{#each sortedItems as item, index}
 				{@const linkUrl = getLinkUrl(item)}
 				{@const linkText = getLinkText(item)}
@@ -85,6 +116,8 @@
 					<PrismicLink
 						field={item.link}
 						class="list-item block py-1.5 transition-all duration-500 ease-out {visibleItems.has(index) ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'} {isMobile ? '' : 'hover:text-black'}"
+						onmouseenter={() => handleItemMouseEnter(item, index)}
+						onmouseleave={() => handleItemMouseLeave(index)}
 					>
 						<div class="grid grid-cols-12 items-start gap-2 paragraph-1">
 							<div class="col-span-6  md:col-span-3 text-left tracking-wide text-sm md:text-base">{linkText || 'Magazine'}</div>
@@ -93,7 +126,12 @@
 						</div>
 					</PrismicLink>
 				{:else}
-					<div class="list-item block py-1.5 transition-all duration-500 ease-out {visibleItems.has(index) ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'} {isMobile ? '' : 'hover:text-black'}">
+					<div
+						role="listitem"
+						class="list-item block py-1.5 transition-all duration-500 ease-out {visibleItems.has(index) ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'} {isMobile ? '' : 'hover:text-black'}"
+						onmouseenter={() => handleItemMouseEnter(item, index)}
+						onmouseleave={() => handleItemMouseLeave(index)}
+					>
 						<div class="grid grid-cols-12 items-start gap-2 paragraph-1">
 							<div class="col-span-6  md:col-span-3 text-left tracking-wide text-sm md:text-base">{linkText || 'Magazine'}</div>
 							<div class="col-span-6  md:col-span-6  text-sm md:text-base">{item.text || ''}</div>

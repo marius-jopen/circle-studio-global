@@ -34,16 +34,24 @@
   );
 </script>
 
-{#if $hoverPreview?.url}
+{#if $hoverPreview?.url || $hoverPreview?.imageUrl}
   <div
     class="fixed z-[120] pointer-events-none w-[500px] h-[500px] rounded-full overflow-hidden"
     style="left:0; top:0; transform: translate3d({targetX}px, {targetY}px, 0);"
   >
-    <VideoPlayerSimple
-      hlsUrl={$hoverPreview.url}
-      posterImage={$hoverPreview.poster}
-      classes="w-[500px] h-[500px] rounded-full overflow-hidden"
-    />
+    {#if $hoverPreview?.url}
+      <VideoPlayerSimple
+        hlsUrl={$hoverPreview.url}
+        posterImage={$hoverPreview.poster}
+        classes="w-[500px] h-[500px] rounded-full overflow-hidden"
+      />
+    {:else if $hoverPreview?.imageUrl}
+      <img
+        src={$hoverPreview.imageUrl}
+        alt=""
+        class="w-[500px] h-[500px] object-cover rounded-full"
+      />
+    {/if}
   </div>
 {/if}
 

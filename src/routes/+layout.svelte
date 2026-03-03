@@ -9,6 +9,7 @@
 	import { afterNavigate } from '$app/navigation';
 	import "../app.css";
 	import MobileNav from '$lib/components/MobileNav.svelte';
+	import GlobalPreviewPlayer from '$lib/components/GlobalPreviewPlayer.svelte';
 	let { children, data } = $props();
 	
 	// Meta tags with fallback to home page values
@@ -233,5 +234,8 @@
 		{/if}
 	</div>
 
+	{#if !isAdminRoute}
+		<GlobalPreviewPlayer />
+	{/if}
 	<PrismicPreview {repositoryName} />
 {/if} 
