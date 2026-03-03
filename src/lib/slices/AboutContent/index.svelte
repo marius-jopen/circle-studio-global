@@ -114,7 +114,7 @@
 	data-slice-type={slice.slice_type}
 	data-slice-variation={slice.variation}
 >
-	<div class="flex flex-col md:flex-row md:items-stretch gap-2 md:gap-2">
+	<div class="flex flex-col md:flex-row md:items-stretch gap-2 md:gap-2 mb-2">
 		<!-- Left: White panel with text blocks and skill tags -->
 		<div class="flex flex-col min-w-0  ">
 			<!-- Three text columns -->

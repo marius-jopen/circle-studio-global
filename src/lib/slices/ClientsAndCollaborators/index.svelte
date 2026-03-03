@@ -139,12 +139,12 @@
 </script>
 
 <section
-	class="mb-8 mt-8 w-full"
+	class="mb-2 w-full"
 	style="overflow-x: clip;"
 	data-slice-type={slice.slice_type}
 	data-slice-variation={slice.variation}
 >
-	<div class="flex flex-col md:flex-row justify-center items-stretch w-full pt-12 pb-12 md:pt-24 md:pb-24 gap-8 md:gap-2">
+	<div class="flex flex-col md:flex-row justify-center items-stretch w-full  gap-8 md:gap-2">
 		{#if mounted}
 			<!-- Left box: white background, square, title bottom left -->
 			<div class="flex-1 min-w-0 flex flex-col bg-white rounded-lg overflow-hidden aspect-square">
