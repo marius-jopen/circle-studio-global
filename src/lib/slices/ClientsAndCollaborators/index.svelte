@@ -24,8 +24,8 @@
 	let collaboratorsHovering = $state(false);
 
 	const rotationSpeed = 200;
-	const wheelRadius = $derived(isMobile ? Math.min(Math.floor(windowWidth * 0.2), 100) : 180);
-	const wheelFontSize = $derived(isMobile ? Math.min(Math.floor(windowWidth * 0.028), 12) : 22);
+	const wheelRadius = $derived(isMobile ? Math.min(Math.floor(windowWidth * 0.18), 85) : 140);
+	const wheelFontSize = $derived(isMobile ? Math.min(Math.floor(windowWidth * 0.03), 14) : 18);
 
 	function checkMobile() {
 		if (typeof window !== 'undefined') {
@@ -144,7 +144,7 @@
 	data-slice-type={slice.slice_type}
 	data-slice-variation={slice.variation}
 >
-	<div class="flex flex-col md:flex-row justify-center items-stretch w-full pt-12 pb-12 md:pt-24 md:pb-24 gap-8 md:gap-4">
+	<div class="flex flex-col md:flex-row justify-center items-stretch w-full pt-12 pb-12 md:pt-24 md:pb-24 gap-8 md:gap-2">
 		{#if mounted}
 			<!-- Left box: white background, square, title bottom left -->
 			<div class="flex-1 min-w-0 flex flex-col bg-white rounded-lg overflow-hidden aspect-square">
