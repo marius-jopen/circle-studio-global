@@ -148,6 +148,7 @@
 									width={item.width || 1920}
 									height={item.height || 1080}
 									controlsTextClass={controlsTextClass}
+									minimalControls={projectData.main.length >= 3}
 								/>
 							{:else if item.main_image?.url}
 								<PrismicImage 

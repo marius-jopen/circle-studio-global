@@ -16,6 +16,7 @@
 		unmuteOnUserPlay?: boolean;
 		showControlsOnMount?: boolean;
 		basicVideo?: boolean; // When true: always show controls on mobile, use natural aspect ratio
+		minimalControls?: boolean; // When true: hide time display and fullscreen (e.g. multiple items side by side)
 	}
 
 	const {
@@ -32,7 +33,8 @@
 		defaultMuted = true,
 		unmuteOnUserPlay = false,
 		showControlsOnMount = false,
-		basicVideo = false
+		basicVideo = false,
+		minimalControls = false
 	}: Props = $props();
 
 	const useFixedAspect = $derived(typeof width === 'number' && typeof height === 'number');
@@ -662,7 +664,7 @@
         {#if !isMobile}
             <button
                 data-video-control="true"
-                class="relative block w-full h-3 pointer-events-auto transition-opacity duration-400"
+                class="relative block w-full mb-1 h-3 pointer-events-auto transition-opacity duration-400"
                 class:opacity-100={controlsVisible}
                 class:opacity-0={!controlsVisible}
                 class:pointer-events-none={!controlsVisible}
@@ -685,7 +687,7 @@
             </button>
         {/if}
 
-		<div class="text-white w-full pr-2 md:pr-0">
+		<div class="video-player-controls-bar text-white w-full pr-2 md:pr-0">
 			{#if controls && hasSoundMode}
 				<div class="flex pl-0 pr-1 md:pr-3 pointer-events-none w-full">
 					<div 
@@ -694,7 +696,8 @@
                         class:opacity-0={!controlsVisible}
 					>
 
-							<!-- Time display - hidden on mobile, visible on desktop -->
+							<!-- Time display - hidden on mobile, hidden when minimalControls -->
+							{#if !minimalControls}
 							<button 
 							onclick={(e) => {
 								e.stopPropagation();
@@ -713,6 +716,7 @@
 									return `${mins}:${s(secs)} / ${dmins}:${s(dsecs)}`;
 								})()}
 							</button>
+							{/if}
 
 
 
@@ -780,6 +784,7 @@
 						</button>
 						
 
+						{#if !minimalControls}
 						<button
 							class="{mobileControlsTextClass} text-right w-1/3 md:w-1/4 cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
                         aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
@@ -793,6 +798,7 @@
 							{isFullscreen ? 'Back' : 'Full'}
                         </span>
 						</button>
+						{/if}
 					</div>
 				</div>
 			{/if}
