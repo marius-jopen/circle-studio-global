@@ -35,6 +35,11 @@
 				"__TYPE__": "FieldContent",
 				"value": "putting",
 				"type": "Text"
+			},
+			"mail": {
+				"__TYPE__": "FieldContent",
+				"value": "body",
+				"type": "Text"
 			}
 		},
 		"items": []

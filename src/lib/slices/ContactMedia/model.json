@@ -33,6 +33,13 @@
             "label": "Text",
             "placeholder": ""
           }
+        },
+        "mail": {
+          "type": "Text",
+          "config": {
+            "label": "Mail",
+            "placeholder": ""
+          }
         }
       },
       "items": {}

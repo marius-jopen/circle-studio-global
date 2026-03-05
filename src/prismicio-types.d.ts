@@ -1240,6 +1240,16 @@ export interface ContactMediaSliceDefaultPrimary {
 	 * - **Documentation**: https://prismic.io/docs/fields/text
 	 */
 	text: prismic.KeyTextField;
+
+	/**
+	 * Mail field in *ContactMedia → Default → Primary*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: contact_media.default.primary.mail
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	mail: prismic.KeyTextField;
 }
 
 /**
