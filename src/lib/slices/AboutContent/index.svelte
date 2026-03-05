@@ -82,13 +82,8 @@
 		const el = circleBoxRef;
 		if (!el || !browser) return;
 		const updateSize = () => {
-			const isMobile = window.innerWidth < 768;
-			if (isMobile) {
-				const w = el.clientWidth;
-				circleSize = Math.max(200, w - 48);
-			} else {
-				circleSize = 360;
-			}
+			const w = el.clientWidth;
+			circleSize = Math.max(200, w - 48);
 		};
 		updateSize();
 		const ro = new ResizeObserver(updateSize);
@@ -114,23 +109,23 @@
 	data-slice-type={slice.slice_type}
 	data-slice-variation={slice.variation}
 >
-	<div class="flex flex-col md:flex-row md:items-stretch gap-2 md:gap-2 mb-2">
-		<!-- Left: White panel with text blocks and skill tags -->
-		<div class="flex flex-col min-w-0  ">
+	<div class="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-2 mb-2">
+		<!-- Left: 3/4 width - white panel with text blocks and skill tags -->
+		<div class="md:col-span-3 flex flex-col min-w-0">
 			<!-- Three text columns -->
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 bg-white rounded-lg px-6 md:px-10 py-8 md:py-12 h-full">
 				{#if isFilled.richText((slice.primary as any).text_1)}
-					<div class=" text-neutral-900">
+					<div class="text-left text-neutral-900 min-w-0 px-4 md:px-5">
 						<PrismicRichText field={(slice.primary as any).text_1} />
 					</div>
 				{/if}
 				{#if isFilled.richText((slice.primary as any).text_2)}
-					<div class=" text-neutral-900">
+					<div class="text-left text-neutral-900 min-w-0 px-4 md:px-5">
 						<PrismicRichText field={(slice.primary as any).text_2} />
 					</div>
 				{/if}
 				{#if isFilled.richText((slice.primary as any).text_3)}
-					<div class=" text-neutral-900">
+					<div class="text-left text-neutral-900 min-w-0 px-4 md:px-5">
 						<PrismicRichText field={(slice.primary as any).text_3} />
 					</div>
 				{/if}
@@ -141,7 +136,7 @@
 				<div class="mt-2 grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-2">
 					{#each skills as skill}
 						<div
-							class="rounded-lg bg-white px-5 py-3.5 text-center text-lg text-neutral-900"
+							class="rounded-lg bg-white px-5 py-2.5 text-center text-base text-neutral-900"
 						>
 							{skill}
 						</div>
@@ -150,11 +145,11 @@
 			{/if}
 		</div>
 
-		<!-- Right: White panel - full width + square on mobile, fixed size on desktop -->
+		<!-- Right: 1/4 width - white panel, square -->
 		{#if poetryItems.length > 0}
 			<div
 				bind:this={circleBoxRef}
-				class="bg-white rounded-lg flex items-center justify-center shrink-0 p-6 md:p-8 w-full aspect-square mx-auto md:mx-0 md:w-[408px] md:h-[408px] md:aspect-auto"
+				class="md:col-span-1 bg-white rounded-lg flex items-center justify-center min-w-0 p-6 md:p-8 w-full aspect-square"
 			>
 				<div
 					class="flex items-center justify-center"
