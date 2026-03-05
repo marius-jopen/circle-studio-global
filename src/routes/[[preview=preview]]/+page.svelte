@@ -33,8 +33,8 @@
     // Check if search is active (has non-empty query)
     $: isSearchActive = $homeSearchQuery.trim().length > 0;
 
-	// Clear hover preview when no results (prevents stale video in circle)
-	$: if (filteredAllProjects.length === 0) {
+	// Clear hover preview when no results or when in grid view (grid doesn't use hover preview)
+	$: if (filteredAllProjects.length === 0 || currentView === 'grid') {
 		hoverPreview.set({ url: null });
 	}
 
@@ -240,7 +240,7 @@
 			{#if isMobile}
 				<ProjectItemMobile square={true} dimension="portrait" project={shuffledFeatureProject} />
 			{:else}
-				<ProjectItem dimension="landscape" square={true} project={shuffledFeatureProject} />
+				<ProjectItem dimension="landscape" square={true} project={shuffledFeatureProject} enableHoverPreview={false} />
 			{/if}
 		</div>
 	{/if}
@@ -264,7 +264,7 @@
 							{#if isMobile}
 								<ProjectItemMobile dimension="portrait" project={projectGroup.items} />
 							{:else}
-								<ProjectItem dimension={mapSizeToDimension(projectGroup?.size)} project={projectGroup.items} />
+								<ProjectItem dimension={mapSizeToDimension(projectGroup?.size)} project={projectGroup.items} enableHoverPreview={false} />
 							{/if}
 						</div>
 					{/if}

@@ -15,6 +15,8 @@
 	export let positionInRow: number = 0; // Position in the row (0 = first, 1 = second, etc.)
 	// If true, do not apply rounded corners to media
 	export let square: boolean = false;
+	// If false, do not show hover preview circle (e.g. in grid view)
+	export let enableHoverPreview: boolean = true;
 	
 	// ========================================
 	// 🎛️ MOBILE VIDEO CONTROL - TOGGLE HERE
@@ -361,25 +363,25 @@
 			   animationKey++;
 			   hoverCount++;
 		   }
-		   // Use effective dimension for hover preview (portrait on mobile, original on desktop)
-		   const hoverVideoUrl = effectiveDimension === 'portrait' ? 
-			   selectedPreview?.item?.preview_video_url_portrait : 
-			   selectedPreview?.item?.preview_video_url_landscape;
-		   const hoverPoster = effectiveDimension === 'portrait' ? 
-			   selectedPreview?.item?.preview_image_portrait : 
-			   selectedPreview?.item?.preview_image_landscape;
-		   
-		   if (hoverVideoUrl) {
-			   hoverPreview.set({
-				   url: hoverVideoUrl,
-				   poster: hoverPoster,
-				   uid: projectUid
-			   });
+		   if (enableHoverPreview) {
+			   const hoverVideoUrl = effectiveDimension === 'portrait' ? 
+				   selectedPreview?.item?.preview_video_url_portrait : 
+				   selectedPreview?.item?.preview_video_url_landscape;
+			   const hoverPoster = effectiveDimension === 'portrait' ? 
+				   selectedPreview?.item?.preview_image_portrait : 
+				   selectedPreview?.item?.preview_image_landscape;
+			   if (hoverVideoUrl) {
+				   hoverPreview.set({
+					   url: hoverVideoUrl,
+					   poster: hoverPoster,
+					   uid: projectUid
+				   });
+			   }
 		   }
 	   }}
 	   on:mouseleave={() => {
 		   isHovering = false;
-		   hoverPreview.update(s => (s?.uid === projectUid ? { url: null } : s));
+		   if (enableHoverPreview) hoverPreview.update(s => (s?.uid === projectUid ? { url: null } : s));
 	   }}
 	>
 		<!-- {projectUid} -->
@@ -491,30 +493,29 @@
 	     on:mouseenter={() => {
 		     isHovering = true;
 		     hasEverHovered = true;
-		     // Reset animation on hover if RESET_ANIMATION_ON_HOVER is false
 		     if (!RESET_ANIMATION_ON_HOVER) {
 			     animationKey++;
 			     hoverCount++;
 		     }
-		     // Use effective dimension for hover preview (portrait on mobile, original on desktop)
-		     const hoverVideoUrl = effectiveDimension === 'portrait' ? 
-			     selectedPreview?.item?.preview_video_url_portrait : 
-			     selectedPreview?.item?.preview_video_url_landscape;
-		     const hoverPoster = effectiveDimension === 'portrait' ? 
-			     selectedPreview?.item?.preview_image_portrait : 
-			     selectedPreview?.item?.preview_image_landscape;
-		     
-		     if (hoverVideoUrl) {
-			     hoverPreview.set({
-				     url: hoverVideoUrl,
-				     poster: hoverPoster,
-				     uid: projectUid
-			     });
+		     if (enableHoverPreview) {
+			     const hoverVideoUrl = effectiveDimension === 'portrait' ? 
+				     selectedPreview?.item?.preview_video_url_portrait : 
+				     selectedPreview?.item?.preview_video_url_landscape;
+			     const hoverPoster = effectiveDimension === 'portrait' ? 
+				     selectedPreview?.item?.preview_image_portrait : 
+				     selectedPreview?.item?.preview_image_landscape;
+			     if (hoverVideoUrl) {
+				     hoverPreview.set({
+					     url: hoverVideoUrl,
+					     poster: hoverPoster,
+					     uid: projectUid
+				     });
+			     }
 		     }
 	     }}
 	     on:mouseleave={() => {
 		     isHovering = false;
-		     hoverPreview.update(s => (s?.uid === projectUid ? { url: null } : s));
+		     if (enableHoverPreview) hoverPreview.update(s => (s?.uid === projectUid ? { url: null } : s));
 	     }}
 	>
 		

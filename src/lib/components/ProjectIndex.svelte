@@ -473,7 +473,7 @@
 					{#if isMobile}
 						<ProjectItemMobile dimension={row.dimension} itemsPerRow={row.configuredItemsPerRow} positionInRow={index} {project} />
 					{:else}
-						<ProjectItem dimension={row.dimension} itemsPerRow={row.configuredItemsPerRow} positionInRow={index} {project} />
+						<ProjectItem dimension={row.dimension} itemsPerRow={row.configuredItemsPerRow} positionInRow={index} enableHoverPreview={false} {project} />
 					{/if}
 				{/each}
 				</div>
