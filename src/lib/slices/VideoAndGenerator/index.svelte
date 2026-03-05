@@ -109,7 +109,7 @@
 <section
 	data-slice-type={slice.slice_type}
 	data-slice-variation={slice.variation}
-	class="w-full"
+	class="w-full mb-2"
 >
 	<div class="grid grid-cols-1 md:grid-cols-2 gap-2 w-full">
 		{#if generatorFirst}

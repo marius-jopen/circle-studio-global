@@ -49,11 +49,23 @@
 			}))
 	);
 
+	let hasClickedToPlay = $state(false);
+
+	function requestVideoPlay() {
+		hasClickedToPlay = true;
+		window.dispatchEvent(
+			new CustomEvent('video-play-request', { detail: { context: 'conversation' } })
+		);
+	}
+
+	// Overlay visible until first click; after click, never show again
+	const overlayVisible = $derived(!hasClickedToPlay);
+
 	const bigWheelConfig = $derived({
 		uiVisible: false,
 		globalSettings: {
 			containerSizePercent: (circleSize / 600) * 100,
-			fontSizePercent: 10,
+			fontSizePercent: 7,
 			distancePercent: 1.5,
 			paused: false,
 			textColor: '#ffffff',
@@ -73,7 +85,7 @@
 	class="w-full mb-2"
 >
 	{#if videoUrl}
-		<div class="relative w-full rounded-lg overflow-hidden">
+		<div class="relative w-full rounded-lg overflow-hidden conversation-video-wrapper">
 			<VideoPlayerCustom
 				hlsUrl={videoUrl}
 				posterImage={posterImage}
@@ -86,13 +98,29 @@
 				controlsTextClass="text-base"
 				autoplayOnMount={false}
 				defaultMuted={false}
-				basicVideo={true}
+				basicVideo={false}
+				showControlsOnMount={false}
 			/>
 			{#if circleItems.length > 0}
 				<div
 					bind:this={circleRef}
-					class="absolute inset-0 flex items-center justify-center pointer-events-none bigwheel-overlay"
-					aria-hidden="true"
+					class="absolute inset-0 flex items-center justify-center bigwheel-overlay transition-opacity duration-300 cursor-pointer"
+					class:opacity-0={!overlayVisible}
+					class:pointer-events-none={!overlayVisible}
+					class:pointer-events-auto={overlayVisible}
+					role="button"
+					tabindex="0"
+					aria-label="Play video"
+					onclick={(e) => {
+						e.preventDefault();
+						requestVideoPlay();
+					}}
+					onkeydown={(e) => {
+						if (e.key === 'Enter' || e.key === ' ') {
+							e.preventDefault();
+							requestVideoPlay();
+						}
+					}}
 				>
 					<BigWheel config={bigWheelConfig} />
 				</div>
