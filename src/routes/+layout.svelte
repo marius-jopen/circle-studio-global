@@ -190,6 +190,9 @@
 </script>
 
 <svelte:head>
+	{#if !isAdminRoute}
+		<script async defer src="https://static.cdn.prismic.io/prismic.js?new=true&repo=circle-studio-global"></script>
+	{/if}
 	<title>Art Camp - Creative Studio{page.data?.title ? ` | ${page.data.title}` : ''}</title>
 	{#if metaDescription}
 		<meta name="description" content={metaDescription} />
