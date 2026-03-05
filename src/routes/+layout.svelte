@@ -7,6 +7,7 @@
 	import Intro from '$lib/components/Intro.svelte';
 	import { onMount } from 'svelte';
 	import { afterNavigate } from '$app/navigation';
+	import { hoverPreview } from '$lib/stores/preview';
 	import "../app.css";
 	import MobileNav from '$lib/components/MobileNav.svelte';
 	import GlobalPreviewPlayer from '$lib/components/GlobalPreviewPlayer.svelte';
@@ -143,6 +144,10 @@
 
 		// Re-attach on route changes and reset per-page context
 		afterNavigate(({ to }) => {
+			// Clear list hover preview when entering project page (circle overlay from list view)
+			if (to?.route?.id?.includes('/work/[uid]')) {
+				hoverPreview.set({ url: null, imageUrl: null });
+			}
 			// Scroll to top when navigating to project pages (from related projects or index)
 			if (to?.route?.id?.includes('/work/[uid]')) {
 				// Use multiple methods to ensure it works on all devices, especially mobile
