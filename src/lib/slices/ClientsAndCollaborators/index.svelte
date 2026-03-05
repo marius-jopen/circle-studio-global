@@ -144,10 +144,10 @@
 	data-slice-type={slice.slice_type}
 	data-slice-variation={slice.variation}
 >
-	<div class="flex flex-col md:flex-row justify-center items-stretch w-full  gap-2 md:gap-2">
+	<div class="grid grid-cols-1 md:grid-cols-2 w-full gap-2">
 		{#if mounted}
 			<!-- Left box: white background, square, title bottom left -->
-			<div class="flex-1 min-w-0 flex flex-col bg-white rounded-lg overflow-hidden aspect-square">
+			<div class="min-w-0 flex flex-col bg-white rounded-lg overflow-hidden aspect-square w-full">
 				<div class="flex-1 w-full relative flex justify-center min-h-[200px] md:min-h-[280px]">
 					{#if leftItems.length > 0}
 						<FanWheel
@@ -169,7 +169,7 @@
 			</div>
 
 			<!-- Right box: white background, square, title bottom left -->
-			<div class="flex-1 min-w-0 flex flex-col bg-white rounded-lg overflow-hidden aspect-square">
+			<div class="min-w-0 flex flex-col bg-white rounded-lg overflow-hidden aspect-square w-full">
 				<div class="flex-1 w-full relative flex justify-center min-h-[200px] md:min-h-[280px]">
 					{#if rightItems.length > 0}
 						<FanWheel

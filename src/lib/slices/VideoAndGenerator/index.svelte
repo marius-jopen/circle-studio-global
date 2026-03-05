@@ -103,7 +103,7 @@
 	});
 
 	const panelClass =
-		'bg-white rounded-lg flex items-center justify-center overflow-hidden w-full aspect-square flex-1 min-w-0';
+		'bg-white rounded-lg flex items-center justify-center overflow-hidden w-full aspect-square min-w-0';
 </script>
 
 <section
@@ -111,7 +111,7 @@
 	data-slice-variation={slice.variation}
 	class="w-full"
 >
-	<div class="flex flex-col md:flex-row gap-2 md:gap-2 md:items-stretch w-full">
+	<div class="grid grid-cols-1 md:grid-cols-2 gap-2 w-full">
 		{#if generatorFirst}
 			<!-- First: Batch generator (TextCircle) -->
 			{#if poetryItems.length > 0}
