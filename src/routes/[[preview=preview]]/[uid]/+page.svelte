@@ -9,5 +9,7 @@
 </script>
 
 <div class="px-2 {isAboutNew ? 'bg-neutral-100 min-h-screen' : ''}">
-	<SliceZone slices={data.page.data.slices} {components} />
+	{#if data?.page?.data?.slices}
+		<SliceZone slices={data.page.data.slices} {components} />
+	{/if}
 </div>
