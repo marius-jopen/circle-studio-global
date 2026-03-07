@@ -621,7 +621,8 @@
         elapsedTime = 0;
         paused = wasAnimationPaused;
       } else if (recorder) {
-        // MP4 export: download immediately (browser blocks deferred downloads)
+        // MP4/WebM export: use blob's actual type for extension so file is playable
+        // (browsers often record WebM/Matroska even when mp4 requested).
         recorder.stopRecording(() => {
           const blob = recorder?.getBlob();
           if (!blob || blob.size < 1000) {
@@ -629,6 +630,12 @@
             alert('Recording failed. Please try again.');
             return;
           }
+          const mime = (blob.type || '').toLowerCase();
+          const ext =
+            mime.includes('webm') ? 'webm'
+            : mime.includes('matroska') || mime.includes('x-mkv') ? 'mkv'
+            : mime.includes('mp4') ? 'mp4'
+            : 'webm';
           isRecording = false;
           elapsedTime = 0;
           paused = wasAnimationPaused;
@@ -639,7 +646,7 @@
             const url = URL.createObjectURL(blob);
             const downloadLink = document.createElement('a');
             downloadLink.href = url;
-            downloadLink.download = `circle-studio-${getFormattedDateTime()}.mp4`;
+            downloadLink.download = `circle-studio-${getFormattedDateTime()}.${ext}`;
             document.body.appendChild(downloadLink);
             downloadLink.click();
             document.body.removeChild(downloadLink);

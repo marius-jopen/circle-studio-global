@@ -799,7 +799,8 @@ Invite someone dangerous to tea.`);
 				isRecording = false;
 				cleanup();
 			} else if (recorder) {
-				// MP4 export: download immediately (ffmpeg.wasm trim unreliable in SvelteKit)
+				// MP4/WebM export: download immediately. Use blob's actual type for extension
+				// so the file is playable (browsers often record WebM/Matroska even when mp4 requested).
 				recorder.stopRecording(() => {
 					const blob = recorder.getBlob();
 					if (!blob || blob.size < 1000) {
@@ -809,12 +810,18 @@ Invite someone dangerous to tea.`);
 						cleanup();
 						return;
 					}
+					const mime = (blob.type || '').toLowerCase();
+					const ext =
+						mime.includes('webm') ? 'webm'
+						: mime.includes('matroska') || mime.includes('x-mkv') ? 'mkv'
+						: mime.includes('mp4') ? 'mp4'
+						: 'webm'; // default: most browsers output webm
 					isRecording = false;
 					cleanup();
 					const url = URL.createObjectURL(blob);
 					const a = document.createElement('a');
 					a.href = url;
-					a.download = `batch-generator-${Date.now()}.mp4`;
+					a.download = `batch-generator-${Date.now()}.${ext}`;
 					document.body.appendChild(a);
 					a.click();
 					document.body.removeChild(a);
