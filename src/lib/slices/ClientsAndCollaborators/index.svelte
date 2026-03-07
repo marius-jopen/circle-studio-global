@@ -85,8 +85,7 @@
 					? (async () => {
 							const client = createClient();
 							const docs = await client.getAllByType('people', {
-								orderings: [{ field: 'my.people.title', direction: 'asc' }],
-								pageSize: 100
+								orderings: [{ field: 'my.people.title', direction: 'asc' }]
 							});
 							if (!isMounted) return { items: [], urls: [] };
 							return {
