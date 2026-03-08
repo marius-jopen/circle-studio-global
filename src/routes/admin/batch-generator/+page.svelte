@@ -7,6 +7,7 @@
 	import { buildGifPalette } from '$lib/utils/gifPalette';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
+	import { convertToMp4, preloadFFmpeg } from '$lib/utils/convertToMp4';
 
 	// Form fields
 	let hello = $state('Dear');
@@ -59,6 +60,8 @@ Invite someone dangerous to tea.`);
 
 	// Recording state
 	let isRecording = $state(false);
+	let isConverting = $state(false);
+	let convertProgress = $state(0);
 	let recorder: any = null;
 	let recordingStream: MediaStream | null = null;
 	let gifRecordingState: { gif: { writeFrame: (index: Uint8Array, w: number, h: number, opts?: { palette?: number[][]; delay?: number }) => void; finish: () => void; bytes: () => Uint8Array }; palette: number[][]; firstFrame: boolean } | null = null;
@@ -468,6 +471,7 @@ Invite someone dangerous to tea.`);
 				gifRecordingState = { gif, palette: [], firstFrame: true };
 			} else {
 				// MP4: Create stream from canvas
+				preloadFFmpeg();
 				recordingStream = recordingCanvas.captureStream(recordingFps);
 
 				if (!recordingStream || recordingStream.getVideoTracks().length === 0) {
@@ -799,9 +803,9 @@ Invite someone dangerous to tea.`);
 				isRecording = false;
 				cleanup();
 			} else if (recorder) {
-				// MP4/WebM export: download immediately. Use blob's actual type for extension
-				// so the file is playable (browsers often record WebM/Matroska even when mp4 requested).
-				recorder.stopRecording(() => {
+				// MP4 export: record as WebM, then convert to H.264 MP4 for universal compatibility
+				// (QuickTime, VLC, WhatsApp all require H.264 + yuv420p in MP4 container)
+				recorder.stopRecording(async () => {
 					const blob = recorder.getBlob();
 					if (!blob || blob.size < 1000) {
 						console.error('Recording failed: Blob is too small or invalid', blob);
@@ -810,18 +814,21 @@ Invite someone dangerous to tea.`);
 						cleanup();
 						return;
 					}
-					const mime = (blob.type || '').toLowerCase();
-					const ext =
-						mime.includes('webm') ? 'webm'
-						: mime.includes('matroska') || mime.includes('x-mkv') ? 'mkv'
-						: mime.includes('mp4') ? 'mp4'
-						: 'webm'; // default: most browsers output webm
 					isRecording = false;
 					cleanup();
-					const url = URL.createObjectURL(blob);
+
+					// Convert to compatible MP4
+					isConverting = true;
+					convertProgress = 0;
+					const mp4Blob = await convertToMp4(blob, (ratio) => {
+						convertProgress = ratio;
+					});
+					isConverting = false;
+
+					const url = URL.createObjectURL(mp4Blob);
 					const a = document.createElement('a');
 					a.href = url;
-					a.download = `batch-generator-${Date.now()}.${ext}`;
+					a.download = `batch-generator-${Date.now()}.mp4`;
 					document.body.appendChild(a);
 					a.click();
 					document.body.removeChild(a);
@@ -1251,8 +1258,10 @@ Invite someone dangerous to tea.`);
 			<div class="mt-3 flex items-center justify-center gap-2">
 				<button
 					class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors
-						{isRecording ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200'}"
+						{isRecording ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200'}
+						{isConverting ? 'opacity-40 cursor-not-allowed' : ''}"
 					onclick={toggleRecording}
+					disabled={isConverting}
 				>
 					{#if !isRecording}
 						<span class="w-2 h-2 bg-red-500 rounded-full"></span> Record
@@ -1285,12 +1294,21 @@ Invite someone dangerous to tea.`);
 				</div>
 			{/if}
 
+			{#if isConverting}
+				<div class="mt-2 flex flex-col items-center gap-1.5">
+					<p class="text-xs text-blue-600 font-medium">Converting to MP4... {Math.round(convertProgress * 100)}%</p>
+					<div class="w-48 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+						<div class="h-full bg-blue-500 rounded-full transition-all duration-300" style="width: {convertProgress * 100}%"></div>
+					</div>
+				</div>
+			{/if}
+
 			<p class="mt-2 text-[10px] text-gray-300 text-center max-w-sm mx-auto leading-relaxed">
 				Recording runs in-browser. Close other tabs for best performance.
 			</p>
 		</div>
 	</div>
-	
+
 	<!-- Recording Warning Banner -->
 	{#if isRecording}
 		<div class="fixed top-3 left-1/2 transform -translate-x-1/2 z-50 max-w-lg w-full px-4">

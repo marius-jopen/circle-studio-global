@@ -5,7 +5,8 @@
   import { buildGifPalette } from '../utils/gifPalette';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
-  import { 
+  import { convertToMp4, preloadFFmpeg } from '../utils/convertToMp4';
+  import {
     RecordingIndicator,
     FileUpload
   } from '../primitives';
@@ -107,6 +108,8 @@
 
   // Video recording variables
   let isRecording = false;
+  let isConverting = false;
+  let convertProgress = 0;
   let recorder: RecordRTCType | undefined;
   let recordingStream: MediaStream | undefined;
   let gifRecordingState: { gif: { writeFrame: (index: Uint8Array, w: number, h: number, opts?: { palette?: number[][]; delay?: number }) => void; finish: () => void; bytes: () => Uint8Array }; palette: number[][]; firstFrame: boolean; lastFrameTime: number } | null = null;
@@ -406,6 +409,7 @@
         gifRecordingState = { gif, palette: [], firstFrame: true, lastFrameTime: 0 };
       } else {
         // MP4: Set up stream and RecordRTC
+        preloadFFmpeg();
         recordingStream = recordingCanvas.captureStream(exportFps);
         
         if (!recordingStream || recordingStream.getVideoTracks().length === 0) {
@@ -621,32 +625,35 @@
         elapsedTime = 0;
         paused = wasAnimationPaused;
       } else if (recorder) {
-        // MP4/WebM export: use blob's actual type for extension so file is playable
-        // (browsers often record WebM/Matroska even when mp4 requested).
-        recorder.stopRecording(() => {
+        // MP4 export: record as WebM, then convert to H.264 MP4 for universal compatibility
+        // (QuickTime, VLC, WhatsApp all require H.264 + yuv420p in MP4 container)
+        recorder.stopRecording(async () => {
           const blob = recorder?.getBlob();
           if (!blob || blob.size < 1000) {
             console.error('Recording failed: Blob is too small or invalid', blob);
             alert('Recording failed. Please try again.');
             return;
           }
-          const mime = (blob.type || '').toLowerCase();
-          const ext =
-            mime.includes('webm') ? 'webm'
-            : mime.includes('matroska') || mime.includes('x-mkv') ? 'mkv'
-            : mime.includes('mp4') ? 'mp4'
-            : 'webm';
           isRecording = false;
           elapsedTime = 0;
           paused = wasAnimationPaused;
           if (recordingStream) {
             recordingStream.getTracks().forEach(track => track.stop());
           }
+
+          // Convert to compatible MP4
+          isConverting = true;
+          convertProgress = 0;
+          const mp4Blob = await convertToMp4(blob, (ratio) => {
+            convertProgress = ratio;
+          });
+          isConverting = false;
+
           if (browser) {
-            const url = URL.createObjectURL(blob);
+            const url = URL.createObjectURL(mp4Blob);
             const downloadLink = document.createElement('a');
             downloadLink.href = url;
-            downloadLink.download = `circle-studio-${getFormattedDateTime()}.${ext}`;
+            downloadLink.download = `circle-studio-${getFormattedDateTime()}.mp4`;
             document.body.appendChild(downloadLink);
             downloadLink.click();
             document.body.removeChild(downloadLink);
@@ -1166,8 +1173,10 @@
 			<div class="mt-3 flex items-center justify-center gap-2">
 				<button
 					class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors
-						{isRecording ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200'}"
+						{isRecording ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200'}
+						{isConverting ? 'opacity-40 cursor-not-allowed' : ''}"
 					on:click={toggleRecording}
+					disabled={isConverting}
 				>
 					{#if !isRecording}
 						<span class="w-2 h-2 bg-red-500 rounded-full"></span> Record
@@ -1194,6 +1203,15 @@
 			{#if isRecording}
 				<div class="mt-2 flex justify-center">
 					<RecordingIndicator {isRecording} {elapsedTime} size="md" />
+				</div>
+			{/if}
+
+			{#if isConverting}
+				<div class="mt-2 flex flex-col items-center gap-1.5">
+					<p class="text-xs text-blue-600 font-medium">Converting to MP4... {Math.round(convertProgress * 100)}%</p>
+					<div class="w-48 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+						<div class="h-full bg-blue-500 rounded-full transition-all duration-300" style="width: {convertProgress * 100}%"></div>
+					</div>
 				</div>
 			{/if}
 
