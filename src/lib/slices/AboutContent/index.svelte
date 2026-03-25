@@ -212,6 +212,7 @@
 							spacingSpeed={0}
 							animationType="sin"
 							autoTextSize={true}
+						autoRadius={true}
 							manualMode={true}
 							startInvisible={true}
 							fadeInTime={FADE_IN_TIME}

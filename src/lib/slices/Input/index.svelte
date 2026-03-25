@@ -293,7 +293,7 @@
 
 <!-- Desktop: Invert toggle button, bottom right -->
 <button
-	class="hidden md:flex fixed bottom-3 right-3 z-[200] w-6 h-6 rounded-full items-center justify-center cursor-pointer transition-colors duration-300 pointer-events-auto"
+	class="hidden md:flex fixed bottom-[16px] right-5 z-[200] w-6 h-6 rounded-full items-center justify-center cursor-pointer transition-colors duration-300 pointer-events-auto"
 	class:bg-white={inverted}
 	class:bg-neutral-900={!inverted}
 	onclick={toggleInvert}
@@ -301,7 +301,7 @@
 />
 
 <!-- Desktop: Input fixed at the bottom center -->
-<div class="hidden md:flex fixed bottom-3 left-0 right-0 justify-center items-center px-4 z-50">
+<div class="hidden md:flex fixed bottom-[16px] left-0 right-0 justify-center items-center px-4 z-50">
 	<input
 		id="wheel-text-input"
 		type="text"

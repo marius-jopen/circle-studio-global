@@ -14,6 +14,7 @@
   export let paused: boolean = false;
   export let textColor: string = "#171717";
   export let autoTextSize: boolean = false; // When true, scale font to fill circumference
+  export let autoRadius: boolean = false; // When true, also adapt radius for best fit
   export let startInvisible: boolean = false; // If true, start with letters invisible
   export let primaryFontFamily: string = 'CircularXXWeb';
   
@@ -228,16 +229,46 @@
     return { fontSize: Math.max(2, bestFontSize), radius: bestRadius };
   }
 
-  // Legacy function for non-autoTextSize mode
+  // Original font size computation — scales font to fill circumference (fixed radius)
   function computeEffectiveFontSize(baseFontSize: number, textStr: string, r: number): number {
     if (!autoTextSize || r <= 0) return baseFontSize;
-    // autoTextSize is handled by computeAutoSize
-    return baseFontSize;
+    if (!browser) return baseFontSize;
+    if (!measureCanvas) measureCanvas = document.createElement('canvas');
+    const ctx = measureCanvas.getContext('2d');
+    if (!ctx) return baseFontSize;
+
+    const letters = parseBoldText(textStr);
+    if (letters.length === 0) return baseFontSize;
+
+    const circumference = 2 * Math.PI * r;
+    if (circumference <= 0) return baseFontSize;
+
+    const referenceFontSize = Math.max(200, r * 0.5);
+    const fontFamily = `"${primaryFontFamily}", Arial, Helvetica, sans-serif`;
+    const totalWidthAtReference = letters.reduce((sum, { char, bold }) => {
+      ctx.font = bold ? `bold ${referenceFontSize}px ${fontFamily}` : `${referenceFontSize}px ${fontFamily}`;
+      return sum + ctx.measureText(char).width;
+    }, 0);
+    if (totalWidthAtReference <= 0) return baseFontSize;
+
+    const targetWidth = circumference * 0.977;
+    const scale = targetWidth / totalWidthAtReference;
+    const sized = referenceFontSize * scale;
+
+    const minSize = 2;
+    const edgeMargin = 2;
+    const availableOutward = Math.max(0, (containerSize / 2) - r - edgeMargin);
+    const ascentFactor = 0.85;
+    const maxByEdge = availableOutward / ascentFactor;
+    const genericCap = Math.max(4, (containerSize / 2) * 1.2);
+    const maxSize = Math.max(4, Math.min(genericCap, maxByEdge));
+
+    return Math.min(Math.max(sized, minSize), maxSize);
   }
 
-  $: autoResult = computeAutoSize(text, radius);
-  $: effectiveFontSize = autoTextSize ? autoResult.fontSize : computeEffectiveFontSize(fontSize, text, radius);
-  $: adaptiveRadius = autoTextSize ? autoResult.radius : radius;
+  $: autoResult = autoRadius ? computeAutoSize(text, radius) : { fontSize: 0, radius };
+  $: effectiveFontSize = autoRadius ? autoResult.fontSize : computeEffectiveFontSize(fontSize, text, radius);
+  $: adaptiveRadius = autoRadius ? autoResult.radius : radius;
 
   function draw() {
     if (!canvas) return;
