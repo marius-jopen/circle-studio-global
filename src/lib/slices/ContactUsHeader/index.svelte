@@ -40,11 +40,12 @@
 	>
 		<button
 			onclick={handleClick}
-			class="rounded-md px-4 py-1.5 max-md:h-10 max-md:flex max-md:items-center text-sm max-md:text-base font-medium text-neutral-900 hover:text-neutral-600 transition-colors {$aboutContentVisible ? 'bg-gray-100' : 'bg-white'}"
+			class="rounded-md px-4 py-1.5 max-md:min-h-10 max-md:flex max-md:items-center text-sm max-md:text-base font-medium text-neutral-900 hover:text-neutral-600 transition-colors {$aboutContentVisible ? 'bg-gray-100' : 'bg-white'}"
 		>
 			{#if copied}
-				<span class="text-center">
-					{emailDisplay} copied to clipboard.
+				<span class="text-center max-md:text-right max-md:leading-relaxed max-md:py-1">
+					<span class="md:hidden">{emailDisplay}<br>copied to clipboard.</span>
+					<span class="hidden md:inline">{emailDisplay} copied to clipboard.</span>
 				</span>
 			{:else}
 				{buttonText}
