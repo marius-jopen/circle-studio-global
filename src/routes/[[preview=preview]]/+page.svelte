@@ -254,7 +254,7 @@
 	{/if}
 {/if}
 
-<div class="px-2 {shuffledFeatureProject && !isSearchActive ? 'mt-2' : 'mt-2 md:mt-2 md:mt-2'}">
+<div class="px-2 {isSearchActive && isMobile ? 'mt-0' : shuffledFeatureProject && !isSearchActive ? 'mt-2' : 'mt-2 md:mt-2'}">
 	{#if currentView === 'grid' && !isSearchActive}
 		{#if shuffledFeatureProjects && shuffledFeatureProjects.length > 0}
 			<div class="grid grid-cols-1 md:grid-cols-12 gap-2 pb-2">
@@ -292,7 +292,13 @@
 			</div>
 		</div>
 	{:else}
-		{#if currentView === 'grid'}
+		{#if currentView === 'grid' && isSearchActive && isMobile && filteredAllProjects.length > 0}
+			<!-- First search result full-width on mobile, same as featured item -->
+			<div class="-mx-2 {filteredAllProjects.length === 1 ? 'mb-[12px]' : 'mb-2'}">
+				<ProjectItemMobile square={true} dimension="portrait" project={filteredAllProjects[0]} />
+			</div>
+			<ProjectIndex allProjects={filteredAllProjects.slice(1)} featuredProjectIds={[]} />
+		{:else if currentView === 'grid'}
 			<ProjectIndex allProjects={filteredAllProjects} featuredProjectIds={isSearchActive ? [] : featuredProjectIds} />
 		{:else}
 			<ProjectIndexList allProjects={filteredAllProjects} {featuredProjectIds} />
