@@ -116,6 +116,47 @@
   let elapsedTime = 0; // Elapsed recording time in seconds
   let timerInterval: ReturnType<typeof setInterval>; // Timer interval reference
   
+  // Logo overlay
+  let logoVisible = false;
+  let logoVariant: '1' | '2' = '1';
+  let logoRotation = 0;
+  let logoAnimRunning = false;
+  let logoAnimFrame: number;
+  let logoImg: HTMLImageElement | null = null;
+
+  $: logoColor = textColor === '#ffffff' || textColor === '#FFFFFF' ? 'white' : 'black';
+  $: logoSrc = logoVariant === '2'
+    ? (logoColor === 'white' ? '/logo2-white.png' : '/logo2-black.png')
+    : (logoColor === 'white' ? '/logo-white.png' : '/logo-black.png');
+
+  // Preload logo image for canvas drawing
+  $: if (browser && logoVisible && logoSrc) {
+    const img = new Image();
+    img.src = logoSrc;
+    img.onload = () => { logoImg = img; };
+  }
+
+  function startLogoAnim() {
+    if (logoAnimRunning) return;
+    logoAnimRunning = true;
+    let last = performance.now();
+    function tick(now: number) {
+      if (!logoAnimRunning) return;
+      const dt = (now - last) / 1000;
+      last = now;
+      logoRotation += 10 * dt;
+      logoAnimFrame = requestAnimationFrame(tick);
+    }
+    logoAnimFrame = requestAnimationFrame(tick);
+  }
+
+  function stopLogoAnim() {
+    logoAnimRunning = false;
+    if (logoAnimFrame) cancelAnimationFrame(logoAnimFrame);
+  }
+
+  $: if (logoVisible && browser) { startLogoAnim(); } else { stopLogoAnim(); }
+
   // Background media variables
   let backgroundMedia: HTMLImageElement | HTMLVideoElement | null = null;
   let backgroundMediaType: 'image' | 'video' | null = null;
@@ -544,7 +585,18 @@
             });
             
             hiResCtx.restore();
-            
+
+            // Draw logo overlay top-left if enabled
+            if (logoVisible && logoImg && hiResCtx) {
+              const logoSize = activeExportResolution * 0.12;
+              const logoMargin = activeExportResolution * 0.03;
+              hiResCtx.save();
+              hiResCtx.translate(logoMargin + logoSize / 2, logoMargin + logoSize / 2);
+              hiResCtx.rotate(logoRotation * Math.PI / 180);
+              hiResCtx.drawImage(logoImg, -logoSize / 2, -logoSize / 2, logoSize, logoSize);
+              hiResCtx.restore();
+            }
+
             // Draw the final high-res canvas to the recording canvas
             renderContext!.drawImage(hiResCanvas, 0, 0);
           }
@@ -918,6 +970,18 @@
 					<h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Display</h2>
 				</div>
 				<div class="p-4 space-y-3">
+					<div class="flex items-center gap-3">
+						<label class="inline-flex items-center gap-1.5 cursor-pointer">
+							<input type="checkbox" bind:checked={logoVisible} class="w-3 h-3 rounded" />
+							<span class="text-[11px] text-gray-500">Logo</span>
+						</label>
+						{#if logoVisible}
+							<select bind:value={logoVariant} class="text-[11px] text-gray-500 border border-gray-200 rounded px-1 py-0.5">
+								<option value="1">Logo 1</option>
+								<option value="2">Logo 2</option>
+							</select>
+						{/if}
+					</div>
 					<div class="grid grid-cols-2 gap-3">
 						<div>
 							<label for="text-color" class="block text-[11px] font-medium text-gray-500 mb-1">Text Color</label>
@@ -1166,6 +1230,12 @@
 						/>
 					</div>
 				{/each}
+				<!-- Logo overlay top-left -->
+				{#if logoVisible}
+					<div class="absolute top-2 left-2 z-20" style="width: {containerSize * 0.12}px; height: {containerSize * 0.12}px;">
+						<img src={logoSrc} alt="Logo" class="w-full h-full object-contain" style="transform: rotate({logoRotation}deg);" />
+					</div>
+				{/if}
 			</div>
 
 			{#if showControls || (!items && !globalSettings)}
