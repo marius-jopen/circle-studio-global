@@ -74,7 +74,35 @@
 		};
 	});
 
-	// Circle size: full-width on mobile (via ResizeObserver), fixed 360px on desktop
+	// Track mobile breakpoint
+	let isMobile = $state(false);
+
+	$effect(() => {
+		if (!browser) return;
+		const mq = window.matchMedia('(max-width: 767px)');
+		isMobile = mq.matches;
+		const handler = (e: MediaQueryListEvent) => (isMobile = e.matches);
+		mq.addEventListener('change', handler);
+		return () => mq.removeEventListener('change', handler);
+	});
+
+	// Measure left column height so the right box never exceeds it
+	let leftColRef = $state<HTMLDivElement | null>(null);
+	let leftColHeight = $state(0);
+
+	$effect(() => {
+		const el = leftColRef;
+		if (!el || !browser) return;
+		const update = () => {
+			leftColHeight = el.offsetHeight;
+		};
+		update();
+		const ro = new ResizeObserver(update);
+		ro.observe(el);
+		return () => ro.disconnect();
+	});
+
+	// Circle size based on the right box dimensions (constrained by left column height)
 	let circleSize = $state(360);
 	let circleBoxRef = $state<HTMLDivElement | null>(null);
 
@@ -83,16 +111,13 @@
 		if (!el || !browser) return;
 		const updateSize = () => {
 			const w = el.clientWidth;
-			circleSize = Math.max(200, w - 48);
+			const h = el.clientHeight;
+			circleSize = Math.max(120, Math.min(w, h) - 48);
 		};
 		updateSize();
 		const ro = new ResizeObserver(updateSize);
 		ro.observe(el);
-		window.addEventListener('resize', updateSize);
-		return () => {
-			ro.disconnect();
-			window.removeEventListener('resize', updateSize);
-		};
+		return () => ro.disconnect();
 	});
 
 	const skills = $derived([
@@ -109,11 +134,11 @@
 	data-slice-type={slice.slice_type}
 	data-slice-variation={slice.variation}
 >
-	<div class="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-2 mb-2">
+	<div class="grid grid-cols-1 md:grid-cols-4 md:items-start gap-2 md:gap-2 mb-2">
 		<!-- Left: 3/4 width - white panel with text blocks and skill tags -->
-		<div class="md:col-span-3 flex flex-col min-w-0">
+		<div bind:this={leftColRef} class="md:col-span-3 flex flex-col min-w-0">
 			<!-- Three text columns -->
-			<div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 bg-white rounded-lg px-6 md:px-10 py-8 md:py-12 h-full">
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 bg-white rounded-lg px-6 md:px-10 py-8 md:py-12">
 				{#if isFilled.richText((slice.primary as any).text_1)}
 					<div class="text-left text-neutral-900 min-w-0 px-4 md:px-5">
 						<PrismicRichText field={(slice.primary as any).text_1} />
@@ -145,11 +170,12 @@
 			{/if}
 		</div>
 
-		<!-- Right: 1/4 width - white panel, square -->
+		<!-- Right: 1/4 width - white panel, height matches left column -->
 		{#if poetryItems.length > 0}
 			<div
 				bind:this={circleBoxRef}
-				class="md:col-span-1 bg-white rounded-lg flex items-center justify-center min-w-0 p-6 md:p-8 w-full aspect-square"
+				class="md:col-span-1 bg-white rounded-lg flex items-center justify-center min-w-0 p-6 md:p-8 w-full overflow-hidden {isMobile ? 'aspect-square' : ''}"
+				style={!isMobile && leftColHeight ? `height: ${leftColHeight}px;` : ''}
 			>
 				<div
 					class="flex items-center justify-center"
