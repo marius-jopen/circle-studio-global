@@ -981,6 +981,10 @@
 								<option value="2">Logo 2</option>
 							</select>
 						{/if}
+						<button
+							class="text-[11px] text-gray-500 border border-gray-200 rounded px-2 py-0.5 hover:bg-gray-50 cursor-pointer"
+							on:click={() => { const t = textColor; textColor = backgroundColor; backgroundColor = t; }}
+						>Invert</button>
 					</div>
 					<div class="grid grid-cols-2 gap-3">
 						<div>
