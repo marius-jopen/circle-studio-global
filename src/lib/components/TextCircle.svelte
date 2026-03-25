@@ -164,23 +164,14 @@
     const timeSincePhaseStart = currentTime - phaseStartTime;
     const totalFadeTime = fadePhase === 'fadingIn' ? fadeInTime : fadeOutTime;
 
-    if (fadePhase === 'fadingIn') {
-      // Simple global fade — all letters same opacity, no stagger, no per-letter computation
-      const t = Math.max(0, Math.min(1, timeSincePhaseStart / totalFadeTime));
-      const opacity = t * t * (3 - 2 * t); // smoothstep
-      for (let i = 0; i < letterOpacities.length; i++) {
-        letterOpacities[i] = opacity;
-      }
-    } else {
-      // Staggered fade out per letter
-      letterOpacities = letterOpacities.map((_, i) => {
-        const letterStartTime = letterFadeStartTimes[i] * totalFadeTime * 0.7;
-        const letterFadeDuration = totalFadeTime * 0.5;
-        const letterProgress = Math.max(0, Math.min(1, (timeSincePhaseStart - letterStartTime) / letterFadeDuration));
-        const eased = letterProgress * letterProgress * (3 - 2 * letterProgress);
-        return Math.max(0, 1 - eased);
-      });
-    }
+    // Staggered fade per letter — same logic for in and out
+    letterOpacities = letterOpacities.map((_, i) => {
+      const letterStartTime = letterFadeStartTimes[i] * totalFadeTime * 0.7;
+      const letterFadeDuration = totalFadeTime * 0.5;
+      const letterProgress = Math.max(0, Math.min(1, (timeSincePhaseStart - letterStartTime) / letterFadeDuration));
+      const eased = letterProgress * letterProgress * (3 - 2 * letterProgress);
+      return fadePhase === 'fadingIn' ? eased : Math.max(0, 1 - eased);
+    });
   }
 
   // Compute effective font size and adaptive radius when autoTextSize is enabled
