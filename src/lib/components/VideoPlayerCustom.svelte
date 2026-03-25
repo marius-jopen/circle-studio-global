@@ -16,7 +16,7 @@
 		unmuteOnUserPlay?: boolean;
 		showControlsOnMount?: boolean;
 		basicVideo?: boolean; // When true: always show controls on mobile, use natural aspect ratio
-		minimalControls?: boolean; // When true: hide time display and fullscreen (e.g. multiple items side by side)
+		minimalControls?: boolean; // When true: hide time display (e.g. multiple items side by side)
 	}
 
 	const {
@@ -786,7 +786,6 @@
 						</button>
 						
 
-						{#if !minimalControls}
 						<button
 							class="{mobileControlsTextClass} text-right w-1/3 md:w-1/4 cursor-pointer opacity-80 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-200"
                         aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
@@ -800,7 +799,6 @@
 							{isFullscreen ? 'Back' : 'Full'}
                         </span>
 						</button>
-						{/if}
 					</div>
 				</div>
 			{/if}

@@ -14,6 +14,7 @@
 
 	const controlsTextClass = $derived((itemsPerRow ?? '1') === '1' ? 'h2' : ((itemsPerRow === '2') ? 'text-base' : 'text-sm'));
 	const roundedClass = $derived(noRoundedCorners ? '' : 'rounded');
+	const useMinimalControls = $derived(Number(itemsPerRow ?? '1') >= 3);
 </script>
 
 {#if item}
@@ -29,10 +30,10 @@
 	{#if videoUrl}
 		{#if basicVideo}
 			<!-- basicVideo: Use VideoPlayerCustom on all screen sizes with controls -->
-			<VideoPlayerCustom 
+			<VideoPlayerCustom
 				playMode={displayPlayMode}
 				hlsUrl={videoUrl}
-				posterImage={imageField} 
+				posterImage={imageField}
 				classes="w-full h-auto {roundedClass} object-cover"
 				controlsTextClass={controlsTextClass}
 				controls={true}
@@ -43,14 +44,15 @@
 				unmuteOnUserPlay={isClickToPlayWithSound}
 				showControlsOnMount={needsControlsVisible}
 				basicVideo={true}
+				minimalControls={useMinimalControls}
 			/>
 		{:else}
 			<!-- Desktop: Show video with autoplay -->
 			<div class="hidden md:block">
-				<VideoPlayerCustom 
+				<VideoPlayerCustom
 					playMode={displayPlayMode}
 					hlsUrl={videoUrl}
-					posterImage={imageField} 
+					posterImage={imageField}
 					classes="w-full h-auto {roundedClass} object-cover"
 					controlsTextClass={controlsTextClass}
 					controls={true}
@@ -60,6 +62,7 @@
 					defaultMuted={!isClickToPlayWithSound}
 					unmuteOnUserPlay={isClickToPlayWithSound}
 					showControlsOnMount={isClickToPlayWithSound}
+					minimalControls={useMinimalControls}
 				/>
 			</div>
 			
