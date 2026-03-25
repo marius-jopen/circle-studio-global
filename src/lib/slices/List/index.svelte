@@ -119,10 +119,10 @@
 						onmouseenter={() => handleItemMouseEnter(item, index)}
 						onmouseleave={() => handleItemMouseLeave(index)}
 					>
-						<div class="grid grid-cols-2 md:grid-cols-12 items-start gap-2 paragraph-1">
-							<div class="col-span-1 md:col-span-3 text-left tracking-wide text-xs md:text-base truncate min-w-0">{linkText || 'Magazine'}</div>
-							<div class="col-span-1 md:col-span-6 text-xs md:text-base list-truncate min-w-0">{item.text || ''}</div>
-							<div class="md:col-span-3 text-right text-xs md:text-base hidden md:block">{formatYear(item.year)}</div>
+						<div class="grid grid-cols-2 md:grid-cols-[25%_1fr_auto] items-start gap-2 md:gap-4 paragraph-1">
+							<div class="col-span-1 text-left tracking-wide text-xs md:text-base truncate min-w-0">{linkText || 'Magazine'}</div>
+							<div class="col-span-1 text-xs md:text-base truncate min-w-0">{item.text || ''}</div>
+							<div class="text-right text-xs md:text-base hidden md:block tabular-nums whitespace-nowrap">{formatYear(item.year)}</div>
 						</div>
 					</PrismicLink>
 				{:else}
@@ -132,10 +132,10 @@
 						onmouseenter={() => handleItemMouseEnter(item, index)}
 						onmouseleave={() => handleItemMouseLeave(index)}
 					>
-						<div class="grid grid-cols-2 md:grid-cols-12 items-start gap-2 paragraph-1">
-							<div class="col-span-1 md:col-span-3 text-left tracking-wide text-xs md:text-base truncate min-w-0">{linkText || 'Magazine'}</div>
-							<div class="col-span-1 md:col-span-6 text-xs md:text-base list-truncate min-w-0">{item.text || ''}</div>
-							<div class="md:col-span-3 text-right text-xs md:text-base hidden md:block">{formatYear(item.year)}</div>
+						<div class="grid grid-cols-2 md:grid-cols-[25%_1fr_auto] items-start gap-2 md:gap-4 paragraph-1">
+							<div class="col-span-1 text-left tracking-wide text-xs md:text-base truncate min-w-0">{linkText || 'Magazine'}</div>
+							<div class="col-span-1 text-xs md:text-base truncate min-w-0">{item.text || ''}</div>
+							<div class="text-right text-xs md:text-base hidden md:block tabular-nums whitespace-nowrap">{formatYear(item.year)}</div>
 						</div>
 					</div>
 				{/if}
@@ -162,21 +162,6 @@
 	:global(.list-item) {
 		transition: opacity 0.6s ease-out, transform 0.6s ease-out;
 		list-style: none;
-	}
-
-	/* Truncate with +++ on mobile */
-	@media (max-width: 767px) {
-		:global(.list-truncate) {
-			overflow: hidden;
-			white-space: nowrap;
-			text-overflow: '+++';
-		}
-		/* Fallback for browsers that don't support custom text-overflow */
-		@supports not (text-overflow: '+++') {
-			:global(.list-truncate) {
-				text-overflow: ellipsis;
-			}
-		}
 	}
 
 	/* Mobile-specific adjustments */
