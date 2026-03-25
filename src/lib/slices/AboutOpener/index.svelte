@@ -10,7 +10,7 @@
 
 {#if isFilled.richText(slice.primary.text)}
 	<section
-		class="md:w-8/12 mx-auto pt-24 md:pt-60 pb-12 md:pb-20 text-left text-primary"
+		class="md:w-8/12 mx-auto pt-24 md:pt-60 pb-12 md:pb-20 text-left text-primary px-6 md:px-0"
 		data-slice-type={slice.slice_type}
 		data-slice-variation={slice.variation}
 	>
