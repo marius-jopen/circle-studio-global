@@ -121,9 +121,9 @@ function closeSearch() {
 <div class="md:hidden fixed bottom-5 left-0 right-0 z-50 flex justify-center items-center mx-4">
     <div class="rounded-md py-0 px-0 h-12 flex items-center transition-colors" class:bg-white={isAboutNew} class:bg-gray-100={!isAboutNew}>
         <nav class="flex items-center justify-center gap-x-0 text-xl">
-            <a href="/" class="text-center font-medium whitespace-nowrap py-2 pl-5 pr-2 transition-colors duration-300" class:text-neutral-500={isHome} class:text-neutral-900={!isHome}>Work</a>
-            <a href="/about" class="text-center font-medium py-2 pl-2 pr-5 transition-colors duration-300" class:text-neutral-500={isAbout} class:text-neutral-900={!isAbout}>About</a>
-            <a href="/play" class="text-center font-medium py-2 pl-0 pr-5 transition-colors duration-300" class:text-neutral-500={isPlay} class:text-neutral-900={!isPlay} on:click|preventDefault={() => {
+            <a href="/" class="text-center font-medium whitespace-nowrap py-2 pl-5 pr-4 transition-colors duration-300 {isHome ? 'text-neutral-900 underline underline-offset-[5px] decoration-[1.5px]' : 'text-neutral-900'}">Work</a>
+            <a href="/about" class="text-center font-medium py-2 pl-4 pr-5 transition-colors duration-300 {isAbout || isAboutNew ? 'text-neutral-900 underline underline-offset-[5px] decoration-[1.5px]' : 'text-neutral-900'}">About</a>
+            <a href="/play" class="text-center font-medium py-2 pl-4 pr-5 transition-colors duration-300 {isPlay ? 'text-neutral-900 underline underline-offset-[5px] decoration-[1.5px]' : 'text-neutral-900'}" on:click|preventDefault={() => {
                 if (isPlay) {
                     playInputActive.set(true);
                 } else {
