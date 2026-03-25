@@ -40,6 +40,23 @@
             "label": "Mail",
             "placeholder": ""
           }
+        },
+        "project_link": {
+          "type": "Link",
+          "config": {
+            "label": "Related Project",
+            "select": "document",
+            "customtypes": ["projects"],
+            "placeholder": "Link to a project"
+          }
+        },
+        "random_project": {
+          "type": "Select",
+          "config": {
+            "label": "Random Project",
+            "placeholder": "Off",
+            "options": ["off", "random_project", "random_featured_project"]
+          }
         }
       },
       "items": {}
