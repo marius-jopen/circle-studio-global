@@ -140,17 +140,17 @@
 			<!-- Three text columns -->
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 bg-white rounded-lg px-6 md:px-10 py-8 md:py-12">
 				{#if isFilled.richText((slice.primary as any).text_1)}
-					<div class="text-left text-neutral-900 min-w-0 px-4 md:px-5">
+					<div class="text-left text-neutral-900 min-w-0 px-0 md:px-5">
 						<PrismicRichText field={(slice.primary as any).text_1} />
 					</div>
 				{/if}
 				{#if isFilled.richText((slice.primary as any).text_2)}
-					<div class="text-left text-neutral-900 min-w-0 px-4 md:px-5">
+					<div class="text-left text-neutral-900 min-w-0 px-0 md:px-5">
 						<PrismicRichText field={(slice.primary as any).text_2} />
 					</div>
 				{/if}
 				{#if isFilled.richText((slice.primary as any).text_3)}
-					<div class="text-left text-neutral-900 min-w-0 px-4 md:px-5">
+					<div class="text-left text-neutral-900 min-w-0 px-0 md:px-5">
 						<PrismicRichText field={(slice.primary as any).text_3} />
 					</div>
 				{/if}
