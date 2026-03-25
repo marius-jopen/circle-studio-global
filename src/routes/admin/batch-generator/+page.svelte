@@ -60,6 +60,7 @@ Invite someone dangerous to tea.`);
 	);
 	let logoSize = $state(82);
 	let logoRotation = $state(0);
+	let logoImg: HTMLImageElement | null = null;
 	let logoAnimFrame: number;
 	let logoAnimRunning = false;
 
@@ -86,10 +87,24 @@ Invite someone dangerous to tea.`);
 		const visible = logoVisible;
 		if (visible && browser) {
 			startLogoAnimation();
+			// Preload logo image for canvas recording
+			const img = new Image();
+			img.src = logoSrc;
+			img.onload = () => { logoImg = img; };
 		} else {
 			stopLogoAnimation();
 		}
 		return () => stopLogoAnimation();
+	});
+
+	// Update logo image when src changes
+	$effect(() => {
+		const src = logoSrc;
+		if (browser && logoVisible) {
+			const img = new Image();
+			img.src = src;
+			img.onload = () => { logoImg = img; };
+		}
 	});
 
 	// Background media (image/video)
@@ -672,6 +687,17 @@ Invite someone dangerous to tea.`);
 							recordingContext.drawImage(circleCanvas, -actualContainerSize / 2, -actualContainerSize / 2, actualContainerSize, actualContainerSize);
 							recordingContext.restore();
 						}
+					}
+
+					// Draw logo overlay top-left if enabled
+					if (logoVisible && logoImg) {
+						const lSize = recordingWidth * 0.12;
+						const lMargin = recordingWidth * 0.03;
+						recordingContext.save();
+						recordingContext.translate(lMargin + lSize / 2, lMargin + lSize / 2);
+						recordingContext.rotate(logoRotation * Math.PI / 180);
+						recordingContext.drawImage(logoImg, -lSize / 2, -lSize / 2, lSize, lSize);
+						recordingContext.restore();
 					}
 
 					// Draw input field if visible (pixel-aligned for crisp output, no flashing)
