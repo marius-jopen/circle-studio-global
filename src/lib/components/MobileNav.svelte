@@ -10,6 +10,28 @@ $: isPlay = pathname === '/play' || pathname === '/play/preview';
 $: isAbout = pathname === '/about' || pathname.startsWith('/about/');
 $: isAboutNew = pathname === '/about-new' || pathname === '/preview/about-new';
 
+let atBottom = false;
+
+function checkScroll() {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight;
+    const clientHeight = window.innerHeight;
+    atBottom = scrollTop + clientHeight >= scrollHeight - 100;
+}
+
+import { onMount, onDestroy } from 'svelte';
+
+onMount(() => {
+    window.addEventListener('scroll', checkScroll, { passive: true });
+    checkScroll();
+});
+
+onDestroy(() => {
+    if (typeof window !== 'undefined') {
+        window.removeEventListener('scroll', checkScroll);
+    }
+});
+
 let searchOpen = false;
 let searchInput: HTMLInputElement;
 let isClosing = false;
@@ -67,6 +89,16 @@ function closeSearch() {
         }, 300);
     }, 200);
 }
+
+// Close search when navigating away from home
+$: if (!isHome && searchOpen) {
+    searchOpen = false;
+    mobileSearchOpen.set(false);
+    homeSearchQuery.set('');
+    isClosing = false;
+    shouldShrink = false;
+    contentVisible = true;
+}
 </script>
 
 <!-- Top right search button (only on homepage) -->
@@ -93,23 +125,21 @@ function closeSearch() {
                     class:opacity-0={!contentVisible}
                     class:opacity-100={contentVisible}
                 >
-                    <input 
-                        type="text" 
-                        placeholder="Search" 
-                        class="mobile-search-input p-2 flex-1 bg-transparent outline-none text-xl" 
-                        bind:this={searchInput} 
+                    <input
+                        type="text"
+                        placeholder="Search"
+                        class="mobile-search-input p-2 flex-1 bg-transparent outline-none text-xl"
+                        bind:this={searchInput}
                         bind:value={$homeSearchQuery}
                     />
-                    {#if $homeSearchQuery.trim()}
-                        <button 
-                            type="button" 
-                            class="text-xl leading-none p-1 flex-shrink-0" 
-                            aria-label="Clear search" 
-                            on:click={() => { homeSearchQuery.set(''); searchInput?.focus(); }}
-                        >
-                            ×
-                        </button>
-                    {/if}
+                    <button
+                        type="button"
+                        class="text-xl leading-none p-1 flex-shrink-0"
+                        aria-label="Close search"
+                        on:click={closeSearch}
+                    >
+                        ×
+                    </button>
                 </div>
             {/if}
         </div>
@@ -119,7 +149,7 @@ function closeSearch() {
 <!-- Bottom navigation (hidden on /play page when input is active) -->
 {#if !isPlay || !$playInputActive}
 <div class="md:hidden fixed bottom-5 left-0 right-0 z-50 flex justify-center items-center mx-4">
-    <div class="rounded-md py-0 px-0 h-12 flex items-center transition-colors" class:bg-white={isAboutNew} class:bg-gray-100={!isAboutNew}>
+    <div class="rounded-md py-0 px-0 h-12 flex items-center transition-colors" class:bg-white={isAboutNew && atBottom} class:bg-gray-100={!isAboutNew || !atBottom}>
         <nav class="flex items-center justify-center gap-x-0 text-xl">
             <a href="/" class="text-center font-medium whitespace-nowrap py-2 pl-5 pr-4 transition-colors duration-300 {isHome ? 'text-neutral-900 underline underline-offset-[5px] decoration-[1.5px]' : 'text-neutral-900'}">Work</a>
             <a href="/about" class="text-center font-medium py-2 pl-4 pr-5 transition-colors duration-300 {isAbout || isAboutNew ? 'text-neutral-900 underline underline-offset-[5px] decoration-[1.5px]' : 'text-neutral-900'}">About</a>
