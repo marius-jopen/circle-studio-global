@@ -49,7 +49,7 @@
       <img
         src={$hoverPreview.imageUrl}
         alt=""
-        class="w-[500px] h-[500px] object-cover rounded-full"
+        class="w-[500px] h-[500px] object-cover rounded-full brightness-[0.98]"
       />
     {/if}
   </div>
