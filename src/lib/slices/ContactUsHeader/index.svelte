@@ -34,13 +34,13 @@
 
 {#if isFilled.link(slice.primary.link)}
 	<div
-		class="fixed left-1/2 top-4 -translate-x-1/2 z-[10002] pointer-events-auto"
+		class="fixed z-[10002] pointer-events-auto left-1/2 top-4 -translate-x-1/2 max-md:left-auto max-md:right-[14px] max-md:top-[6px] max-md:translate-x-0"
 		data-slice-type={slice.slice_type}
 		data-slice-variation={slice.variation}
 	>
 		<button
 			onclick={handleClick}
-			class="rounded-md px-4 py-1.5 text-sm font-medium text-neutral-900 hover:text-neutral-600 transition-colors {$aboutContentVisible ? 'bg-gray-100' : 'bg-white'}"
+			class="rounded-md px-4 py-1.5 max-md:h-10 max-md:flex max-md:items-center text-sm max-md:text-base font-medium text-neutral-900 hover:text-neutral-600 transition-colors {$aboutContentVisible ? 'bg-gray-100' : 'bg-white'}"
 		>
 			{#if copied}
 				<span class="text-center">
