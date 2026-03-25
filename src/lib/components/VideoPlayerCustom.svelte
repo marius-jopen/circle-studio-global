@@ -57,12 +57,13 @@
 	const mobileControlsTextClass = $derived.by(() => {
 		if (controlsTextClass === 'text-4xl') {
 			return 'text-xl md:text-4xl';
+		} else if (controlsTextClass.startsWith('text-xs')) {
+			return controlsTextClass;
 		} else if (controlsTextClass === 'text-base') {
-			return 'text-lg md:text-base';
+			return 'text-xs md:text-base';
 		} else if (controlsTextClass === 'text-sm') {
 			return 'text-lg md:text-sm';
 		} else if (controlsTextClass === 'h2') {
-			// map semantic h2 to utility sizes
 			return 'text-lg md:text-3xl';
 		}
 		return 'text-lg md:text-base';
@@ -399,7 +400,8 @@
                 }
             } else {
                 // On mobile or when autoplay is disabled, start with visible controls so the user can choose to play
-                if (isClickToPlayWithSound || isMobile || basicVideo) {
+                // Skip if autoplayOnMount is false AND showControlsOnMount is false (e.g. Conversation with overlay)
+                if ((isClickToPlayWithSound || isMobile || basicVideo) && !(autoplayOnMount === false && showControlsOnMount === false)) {
                     showControls = true;
                 }
                 // For basicVideo on mobile, preload the video so it's ready to play

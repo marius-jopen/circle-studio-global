@@ -53,6 +53,16 @@
 
 	function requestVideoPlay() {
 		hasClickedToPlay = true;
+		// Try to play the video directly (needed for mobile Safari user gesture requirement)
+		const video = document.querySelector('.conversation-video-wrapper video') as HTMLVideoElement;
+		if (video) {
+			video.muted = false;
+			video.play().catch(() => {
+				// Fallback: try muted
+				video.muted = true;
+				video.play().catch(() => {});
+			});
+		}
 		window.dispatchEvent(
 			new CustomEvent('video-play-request', { detail: { context: 'conversation' } })
 		);

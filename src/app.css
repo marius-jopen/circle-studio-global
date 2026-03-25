@@ -7,12 +7,25 @@
 .video-player-controls-bar,
 .video-player-controls-bar *,
 .video-player-controls-bar button,
-.video-player-controls-bar span,
+.video-player-controls-bar span {
+	font-size: 1.5rem !important;
+}
+
+/* Conversation video: smaller controls on mobile */
 .conversation-video-wrapper .video-player-controls-bar,
 .conversation-video-wrapper .video-player-controls-bar *,
 .conversation-video-wrapper .video-player-controls-bar button,
 .conversation-video-wrapper .video-player-controls-bar span {
-	font-size: 1.5rem !important; /* compact controls */
+	font-size: 1.5rem !important;
+}
+
+@media (max-width: 767px) {
+	.conversation-video-wrapper .video-player-controls-bar,
+	.conversation-video-wrapper .video-player-controls-bar *,
+	.conversation-video-wrapper .video-player-controls-bar button,
+	.conversation-video-wrapper .video-player-controls-bar span {
+		font-size: 0.75rem !important;
+	}
 }
 
 /* CircularXX Web - default site font */
