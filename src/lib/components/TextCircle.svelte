@@ -155,68 +155,89 @@
     const timeSincePhaseStart = currentTime - phaseStartTime;
     const totalFadeTime = fadePhase === 'fadingIn' ? fadeInTime : fadeOutTime;
 
-    letterOpacities = letterOpacities.map((_, i) => {
-      const letterStartTime = letterFadeStartTimes[i] * totalFadeTime * 0.7; // Start within first 70% of fade time
-      const letterFadeDuration = totalFadeTime * 0.5; // Each letter takes 50% of total time to fade
-      const letterProgress = Math.max(0, Math.min(1, (timeSincePhaseStart - letterStartTime) / letterFadeDuration));
-      
-      if (fadePhase === 'fadingIn') {
-        return letterProgress;
-      } else {
-        // Ensure smooth fade out with proper easing at the end
-        const opacity = 1 - letterProgress;
-        return Math.max(0, opacity);
+    if (fadePhase === 'fadingIn') {
+      // Simple global fade — all letters same opacity, no stagger, no per-letter computation
+      const t = Math.max(0, Math.min(1, timeSincePhaseStart / totalFadeTime));
+      const opacity = t * t * (3 - 2 * t); // smoothstep
+      for (let i = 0; i < letterOpacities.length; i++) {
+        letterOpacities[i] = opacity;
       }
-    });
+    } else {
+      // Staggered fade out per letter
+      letterOpacities = letterOpacities.map((_, i) => {
+        const letterStartTime = letterFadeStartTimes[i] * totalFadeTime * 0.7;
+        const letterFadeDuration = totalFadeTime * 0.5;
+        const letterProgress = Math.max(0, Math.min(1, (timeSincePhaseStart - letterStartTime) / letterFadeDuration));
+        const eased = letterProgress * letterProgress * (3 - 2 * letterProgress);
+        return Math.max(0, 1 - eased);
+      });
+    }
   }
 
-  // Compute effective font size when autoTextSize is enabled
+  // Compute effective font size and adaptive radius when autoTextSize is enabled
   let measureCanvas: HTMLCanvasElement | null = null;
-  function computeEffectiveFontSize(baseFontSize: number, textStr: string, r: number): number {
-    if (!autoTextSize || r <= 0) return baseFontSize;
-    if (!browser) return baseFontSize;
+  let adaptiveRadius = radius;
+
+  function computeAutoSize(textStr: string, baseRadius: number): { fontSize: number; radius: number } {
+    if (!autoTextSize || baseRadius <= 0 || !browser) return { fontSize, radius: baseRadius };
     if (!measureCanvas) measureCanvas = document.createElement('canvas');
     const ctx = measureCanvas.getContext('2d');
-    if (!ctx) return baseFontSize;
-    
+    if (!ctx) return { fontSize, radius: baseRadius };
+
     const letters = parseBoldText(textStr);
-    if (letters.length === 0) return baseFontSize;
-    
-    const circumference = 2 * Math.PI * r;
-    if (circumference <= 0) return baseFontSize;
-    
-    const referenceFontSize = Math.max(200, r * 0.5);
+    if (letters.length === 0) return { fontSize, radius: baseRadius };
+
     const fontFamily = `"${primaryFontFamily}", Arial, Helvetica, sans-serif`;
-    const totalWidthAtReference = letters.reduce((sum, { char, bold }) => {
-      ctx.font = bold ? `bold ${referenceFontSize}px ${fontFamily}` : `${referenceFontSize}px ${fontFamily}`;
+    const halfContainer = containerSize / 2;
+
+    // Measure total text width at a reference font size
+    const refSize = 200;
+    const totalWidthAtRef = letters.reduce((sum, { char, bold }) => {
+      ctx.font = bold ? `bold ${refSize}px ${fontFamily}` : `${refSize}px ${fontFamily}`;
       return sum + ctx.measureText(char).width;
     }, 0);
-    if (totalWidthAtReference <= 0) return baseFontSize;
-    
-    // Calculate the scale factor needed to make text fill the circumference
-    // Use 97.5% of circumference to leave a small gap between start and end for readability
-    const targetWidth = circumference * 0.977;
-    const scale = targetWidth / totalWidthAtReference;
-    const sized = referenceFontSize * scale;
-    
-    // Prevent absurd values
-    const minSize = 2;
-    
-    // Edge-guard: ensure glyphs don't get cut off beyond canvas bounds
-    // Available outward space from the text baseline to the canvas edge
-    const edgeMargin = 2; // small inner margin in px
-    const availableOutward = Math.max(0, (containerSize / 2) - r - edgeMargin);
-    // Approximate ascent proportion of the font (portion above baseline)
-    const ascentFactor = 0.85; // slightly less conservative to allow larger fonts
-    const maxByEdge = availableOutward / ascentFactor;
-    // Allow font size up to a reasonable fraction of container size
-    const genericCap = Math.max(4, (containerSize / 2) * 1.2);
-    const maxSize = Math.max(4, Math.min(genericCap, maxByEdge));
-    
-    return Math.min(Math.max(sized, minSize), maxSize);
+    if (totalWidthAtRef <= 0) return { fontSize, radius: baseRadius };
+
+    // For a given radius r, the circumference is 2*PI*r
+    // The ideal font size to fill 70% of circumference: size = (2*PI*r * 0.70) / totalWidthAtRef * refSize
+    // The font must not exceed (halfContainer - r) * ascentFactor so letters don't clip
+    // We want the largest font possible, so we search for the best radius
+
+    const ascentFactor = 0.85; // how much of fontSize extends outward from baseline
+    let bestFontSize = fontSize;
+    let bestRadius = baseRadius;
+
+    // Try radii from small to large, find the one that maximizes font size without clipping
+    const minR = halfContainer * 0.15;
+    const maxR = halfContainer * 0.7;
+    const steps = 30;
+
+    for (let i = 0; i <= steps; i++) {
+      const r = minR + (maxR - minR) * (i / steps);
+      const circumference = 2 * Math.PI * r * 0.70;
+      const idealSize = (circumference / totalWidthAtRef) * refSize;
+      const maxByEdge = (halfContainer - r) / ascentFactor;
+      const clampedSize = Math.min(idealSize, maxByEdge);
+
+      if (clampedSize > bestFontSize) {
+        bestFontSize = clampedSize;
+        bestRadius = r;
+      }
+    }
+
+    return { fontSize: Math.max(2, bestFontSize), radius: bestRadius };
   }
 
-  $: effectiveFontSize = computeEffectiveFontSize(fontSize, text, radius);
+  // Legacy function for non-autoTextSize mode
+  function computeEffectiveFontSize(baseFontSize: number, textStr: string, r: number): number {
+    if (!autoTextSize || r <= 0) return baseFontSize;
+    // autoTextSize is handled by computeAutoSize
+    return baseFontSize;
+  }
+
+  $: autoResult = computeAutoSize(text, radius);
+  $: effectiveFontSize = autoTextSize ? autoResult.fontSize : computeEffectiveFontSize(fontSize, text, radius);
+  $: adaptiveRadius = autoTextSize ? autoResult.radius : radius;
 
   function draw() {
     if (!canvas) return;
@@ -244,12 +265,13 @@
     const time = elapsedTime;
     const letters = parsedLetters;
     const fontFamily = `"${primaryFontFamily}", Arial, Helvetica, sans-serif`;
+    const drawRadius = autoTextSize ? adaptiveRadius : radius;
     const letterWidths = letters.map(({ char, bold }) => {
       ctx.font = bold ? `bold ${effectiveFontSize}px ${fontFamily}` : `${effectiveFontSize}px ${fontFamily}`;
       return ctx.measureText(char).width;
     });
     const totalWidth = letterWidths.reduce((a, b) => a + b, 0);
-    const circumference = 2 * Math.PI * radius;
+    const circumference = 2 * Math.PI * drawRadius;
     let maxSpacingTotal = Math.max(0, circumference - totalWidth);
     let maxSpacingPerLetter = letters.length > 0 ? maxSpacingTotal / letters.length : 0;
     let maxSpacingPercent = (maxSpacingPerLetter / circumference) * 100;
@@ -288,10 +310,10 @@
       const angle = currentAngle + letterArc / 2;
       ctx.save();
       ctx.rotate(angle);
-      ctx.translate(0, -radius);
+      ctx.translate(0, -drawRadius);
       const { char, bold } = letters[i];
       ctx.font = bold ? `bold ${effectiveFontSize}px ${fontFamily}` : `${effectiveFontSize}px ${fontFamily}`;
-      
+
       // Apply opacity from fade animation (default to 1 for new letters to avoid white flash)
       const opacity = letterOpacities[i] !== undefined ? letterOpacities[i] : 1;
       const rgb = hexToRgb(textColor);

@@ -42,8 +42,8 @@
 	let triggerFadeIn = $state(false);
 	let triggerFadeOut = $state(false);
 
-	const FADE_IN_TIME = 1.3;
-	const FADE_OUT_TIME = 1.3;
+	const FADE_IN_TIME = 2;
+	const FADE_OUT_TIME = 2;
 	const VISIBLE_TIME = 2.5;
 	const GAP_TIME = 0.3;
 
@@ -131,7 +131,7 @@
 		const updateSize = () => {
 			const w = el.clientWidth;
 			const h = el.clientHeight;
-			circleSize = Math.max(120, Math.min(w, h) - 48);
+			circleSize = Math.max(120, Math.min(w, h) - 16);
 		};
 		updateSize();
 		const ro = new ResizeObserver(updateSize);
@@ -194,24 +194,24 @@
 		{#if poetryItems.length > 0}
 			<div
 				bind:this={circleBoxRef}
-				class="md:col-span-1 bg-white rounded-lg flex items-center justify-center min-w-0 p-6 md:p-8 w-full overflow-hidden {isMobile ? 'aspect-square' : ''}"
+				class="md:col-span-1 bg-white rounded-lg flex items-center justify-center min-w-0 p-2 w-full overflow-hidden {isMobile ? 'aspect-square' : ''}"
 				style={!isMobile && leftColHeight ? `height: ${leftColHeight}px;` : ''}
 			>
 				<div
 					class="flex items-center justify-center"
 					style="width: {circleSize}px; height: {circleSize}px;"
 				>
-					{#key wheelText || poetryItems[0]}
+					{#key false}
 						<TextCircle
 							text={wheelText || poetryItems[0]}
 							containerSize={circleSize}
 							fontSize={38}
-							radius={Math.round(circleSize * 0.38)}
+							radius={Math.round(circleSize * 0.32)}
 							rotationSpeed={0.1}
 							spacingAmplitudePercent={0.5}
 							spacingSpeed={0}
 							animationType="sin"
-							autoTextSize={false}
+							autoTextSize={true}
 							manualMode={true}
 							startInvisible={true}
 							fadeInTime={FADE_IN_TIME}
