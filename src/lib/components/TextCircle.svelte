@@ -48,20 +48,29 @@
   // Parsed letters with bold support (**bold** in text)
   $: parsedLetters = parseBoldText(text);
 
-  // Initialize letter arrays when text changes (preserve opacities during typewriter to avoid glitches)
+  // Track previous text to detect full text changes (not just length changes)
+  let prevText = text;
+
+  // Initialize letter arrays when text changes
   $: {
     const letters = parsedLetters;
     const newLen = letters.length;
-    if (letterOpacities.length !== newLen) {
+    const textChanged = text !== prevText;
+    prevText = text;
+
+    if (textChanged && manualMode) {
+      // Full text swap in manual mode — reset all opacities to 0
+      letterOpacities = new Array(newLen).fill(0);
+      letterFadeStartTimes = new Array(newLen).fill(0);
+    } else if (letterOpacities.length !== newLen) {
+      const initialOpacity = (manualMode || startInvisible) ? 0 : 1;
       if (newLen > letterOpacities.length) {
-        // Expanding (e.g. typewriter): preserve existing opacities, add new at full
         const next = [...letterOpacities];
-        while (next.length < newLen) next.push(1);
+        while (next.length < newLen) next.push(initialOpacity);
         letterOpacities = next;
         letterFadeStartTimes = letterFadeStartTimes.slice(0, newLen);
         while (letterFadeStartTimes.length < newLen) letterFadeStartTimes.push(0);
       } else {
-        // Shrinking (e.g. delete): keep opacities for remaining letters
         letterOpacities = letterOpacities.slice(0, newLen);
         letterFadeStartTimes = letterFadeStartTimes.slice(0, newLen);
       }
