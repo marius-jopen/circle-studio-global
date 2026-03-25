@@ -41,7 +41,7 @@
 			.filter(Boolean)
 			.map((text, i) => ({
 				text,
-				rotationSpeed: i === 0 ? 0.2 : -0.25,
+				rotationSpeed: i === 0 ? 0.3 : 0.25,
 				spacingAmplitudePercent: 0,
 				spacingSpeed: 0.2,
 				rotationStart: i === 0 ? 0 : 180,
