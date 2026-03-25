@@ -255,7 +255,7 @@ let contentVisible = $state(initialServerShow);
       {:else}
         <!-- Other pages: Show Logo -->
         <div class="logo-container" class:content-visible={contentVisible}>
-          <Logo variant="white" rotationSpeed={10} size={logoSize} />
+          <Logo variant="white" rotationSpeed={10} size={logoSize} useOriginal={true} />
         </div>
       {/if}
     </div>

@@ -1,3 +1,8 @@
+<script module lang="ts">
+	// Decided once when the module loads, survives route changes but resets on hard reload
+	const _logoUseAlt = Math.random() < 0.5;
+</script>
+
 <script lang="ts">
 	import { onMount } from 'svelte';
 	
@@ -9,14 +14,16 @@
 	 * @prop size - size of the logo in pixels (default: 100)
 	 */
 	
-	let { 
-		variant = 'black', 
+	let {
+		variant = 'black',
 		rotationSpeed = 50,
-		size = 100
-	}: { 
+		size = 100,
+		useOriginal = false
+	}: {
 		variant?: 'black' | 'white';
 		rotationSpeed?: number;
 		size?: number;
+		useOriginal?: boolean;
 	} = $props();
 	
 	// Track the current rotation angle
@@ -24,8 +31,13 @@
 	let lastTimestamp = $state(0);
 	let animationFrameId: number | null = null;
 	
-	// Select the correct logo source
-	const logoSrc = $derived(variant === 'white' ? '/logo-white.png' : '/logo-black.png');
+	// Pick logo variant once per page load (module-level), consistent across route changes
+	const useAlt = !useOriginal && _logoUseAlt;
+	const logoSrc = $derived(
+		variant === 'white'
+			? (useAlt ? '/logo2-white.png' : '/logo-white.png')
+			: (useAlt ? '/logo2-black.png' : '/logo-black.png')
+	);
 	
 	// Animation loop
 	function animate(timestamp: number) {
