@@ -49,6 +49,49 @@ Invite someone dangerous to tea.`);
 	let containerRef = $state<HTMLDivElement | null>(null); // Reference to the container to record
 	let textCircleRef = $state<any>(null); // Reference to TextCircle component
 
+	// Logo overlay
+	let logoVisible = $state(true);
+	let logoVariant = $state<'1' | '2'>('1');
+	let logoColor = $derived(textColor === '#ffffff' || textColor === '#FFFFFF' ? 'white' : 'black');
+	const logoSrc = $derived(
+		logoVariant === '2'
+			? (logoColor === 'white' ? '/logo2-white.png' : '/logo2-black.png')
+			: (logoColor === 'white' ? '/logo-white.png' : '/logo-black.png')
+	);
+	let logoSize = $state(82);
+	let logoRotation = $state(0);
+	let logoAnimFrame: number;
+	let logoAnimRunning = false;
+
+	function startLogoAnimation() {
+		if (logoAnimRunning) return;
+		logoAnimRunning = true;
+		let last = performance.now();
+		function tick(now: number) {
+			if (!logoAnimRunning) return;
+			const dt = (now - last) / 1000;
+			last = now;
+			logoRotation += 10 * dt;
+			logoAnimFrame = requestAnimationFrame(tick);
+		}
+		logoAnimFrame = requestAnimationFrame(tick);
+	}
+
+	function stopLogoAnimation() {
+		logoAnimRunning = false;
+		if (logoAnimFrame) cancelAnimationFrame(logoAnimFrame);
+	}
+
+	$effect(() => {
+		const visible = logoVisible;
+		if (visible && browser) {
+			startLogoAnimation();
+		} else {
+			stopLogoAnimation();
+		}
+		return () => stopLogoAnimation();
+	});
+
 	// Background media (image/video)
 	let backgroundMedia = $state<HTMLImageElement | HTMLVideoElement | null>(null);
 	let backgroundMediaType = $state<'image' | 'video' | null>(null);
@@ -950,6 +993,18 @@ Invite someone dangerous to tea.`);
 						<input type="checkbox" bind:checked={inputFieldVisible} class="w-3 h-3 rounded" />
 						<span class="text-[11px] text-gray-500">Input</span>
 					</label>
+					<div class="flex items-center gap-3 mt-1">
+						<label class="inline-flex items-center gap-1.5 cursor-pointer">
+							<input type="checkbox" bind:checked={logoVisible} class="w-3 h-3 rounded" />
+							<span class="text-[11px] text-gray-500">Logo</span>
+						</label>
+						{#if logoVisible}
+							<select bind:value={logoVariant} class="text-[11px] text-gray-500 border border-gray-200 rounded px-1 py-0.5">
+								<option value="1">Logo 1</option>
+								<option value="2">Logo 2</option>
+							</select>
+						{/if}
+					</div>
 
 					<div class="grid grid-cols-2 gap-3">
 						<div>
@@ -1174,6 +1229,17 @@ Invite someone dangerous to tea.`);
 								<track kind="captions" />
 							</video>
 						{/if}
+					</div>
+				{/if}
+				<!-- Logo overlay top-left -->
+				{#if logoVisible}
+					<div class="absolute top-3 left-3 z-20" style="width: {logoSize}px; height: {logoSize}px;">
+						<img
+							src={logoSrc}
+							alt="Logo"
+							class="w-full h-full object-contain"
+							style="transform: rotate({logoRotation}deg);"
+						/>
 					</div>
 				{/if}
 				<!-- Circle area -->
