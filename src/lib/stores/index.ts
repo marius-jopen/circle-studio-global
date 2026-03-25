@@ -1,3 +1,3 @@
 export { viewMode, setViewMode, initializeViewMode } from './viewMode';
 export { hoverPreview } from './preview';
-export { homeSearchQuery, mobileSearchOpen, playInputActive, searchZeroResults } from './search';
+export { homeSearchQuery, mobileSearchOpen, playInputActive, searchZeroResults, aboutContentVisible } from './search';

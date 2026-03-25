@@ -2,6 +2,7 @@
 	import type { Content } from '@prismicio/client';
 	import type { SliceComponentProps } from '@prismicio/svelte';
 	import { isFilled, asLink } from '@prismicio/client';
+	import { aboutContentVisible } from '$lib/stores';
 
 	type Props = SliceComponentProps<Content.ContactUsHeaderSlice>;
 
@@ -39,7 +40,7 @@
 	>
 		<button
 			onclick={handleClick}
-			class="bg-white rounded-md px-4 py-1.5 text-sm font-medium text-neutral-900 hover:text-neutral-600 transition-colors"
+			class="rounded-md px-4 py-1.5 text-sm font-medium text-neutral-900 hover:text-neutral-600 transition-colors {$aboutContentVisible ? 'bg-gray-100' : 'bg-white'}"
 		>
 			{#if copied}
 				<span class="text-center">

@@ -5,10 +5,29 @@
 	import TextCircle from '$lib/components/TextCircle.svelte';
 	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
+	import { aboutContentVisible } from '$lib/stores';
 
 	type Props = SliceComponentProps<Content.AboutContentSlice>;
 
 	const { slice }: Props = $props();
+
+	let sectionRef = $state<HTMLElement | null>(null);
+
+	$effect(() => {
+		const el = sectionRef;
+		if (!el || !browser) return;
+		const navHeight = 60;
+		const onScroll = () => {
+			const rect = el.getBoundingClientRect();
+			aboutContentVisible.set(rect.top <= navHeight);
+		};
+		onScroll();
+		window.addEventListener('scroll', onScroll, { passive: true });
+		return () => {
+			window.removeEventListener('scroll', onScroll);
+			aboutContentVisible.set(false);
+		};
+	});
 
 	// Poetry items for the text wheel
 	const poetryItems = $derived(
@@ -131,6 +150,7 @@
 </script>
 
 <section
+	bind:this={sectionRef}
 	data-slice-type={slice.slice_type}
 	data-slice-variation={slice.variation}
 >

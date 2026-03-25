@@ -5,7 +5,7 @@
 	import { onMount, tick } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { viewMode, setViewMode, initializeViewMode, mobileSearchOpen, homeSearchQuery, searchZeroResults } from '$lib/stores';
+	import { viewMode, setViewMode, initializeViewMode, mobileSearchOpen, homeSearchQuery, searchZeroResults, aboutContentVisible } from '$lib/stores';
 	
 	let { settings, faded = false, videoIsDark = false, mainMediaVisible = true } = $props();
 	let isHovering = $state(false);
@@ -139,6 +139,10 @@
 	
 	// Check if we're on home page with grid mode active (show white logo)
 	const isHomePageGrid = $derived(isHome && $viewMode === 'grid');
+
+	// On about-new: white bg by default, switch to gray when AboutContent is in view
+	const navBgWhite = $derived(isAboutNew && !$aboutContentVisible);
+	const navBgGray = $derived(!isAboutNew || $aboutContentVisible);
 	
 	// Active state for navigation items
 	const isGridActive = $derived(isHome && $viewMode === 'grid');
@@ -179,8 +183,8 @@
 		<!-- Desktop Search (fades in/out on home page) -->
 		<div
 			class="rounded-md flex items-center overflow-hidden transition-all duration-300 ease-in-out relative"
-			class:bg-white={isAboutNew}
-			class:bg-gray-100={!isAboutNew}
+			class:bg-white={navBgWhite}
+			class:bg-gray-100={navBgGray}
 			class:opacity-0={!isHome}
 			class:opacity-100={isHome}
 			class:pointer-events-none={!isHome}
@@ -229,9 +233,9 @@
 		</div>
 		<!-- Grid and List in same box -->
 		<div
-			class="rounded-md px-4 py-1 flex items-center gap-x-3"
-			class:bg-white={isAboutNew}
-			class:bg-gray-100={!isAboutNew}
+			class="rounded-md px-4 py-1 flex items-center gap-x-3 transition-colors duration-300"
+			class:bg-white={navBgWhite}
+			class:bg-gray-100={navBgGray}
 		>
 			<!-- Grid -->
 			<button
@@ -258,8 +262,8 @@
 		<a
 			href="/about"
 		class="rounded-md px-4 py-1.5 text-sm font-medium transition-colors duration-300 ease-in-out hover:text-neutral-900"
-		class:bg-white={isAboutNew}
-		class:bg-gray-100={!isAboutNew}
+		class:bg-white={navBgWhite}
+		class:bg-gray-100={navBgGray}
 		class:text-neutral-500={isAbout}
 		class:text-neutral-900={!isAbout}
 		>
@@ -269,8 +273,8 @@
 		<a
 			href="/play"
 		class="rounded-md px-4 py-1.5 text-sm font-medium transition-colors duration-300 ease-in-out hover:text-neutral-900"
-		class:bg-white={isAboutNew}
-		class:bg-gray-100={!isAboutNew}
+		class:bg-white={navBgWhite}
+		class:bg-gray-100={navBgGray}
 		class:text-neutral-500={isPlayActive}
 		class:text-neutral-900={!isPlayActive}
 			onclick={handlePlayClick}
