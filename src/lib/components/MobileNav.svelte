@@ -61,13 +61,14 @@ function openSearch() {
     contentVisible = false;
     searchOpen = true;
     mobileSearchOpen.set(true);
+    // Focus immediately to trigger keyboard
+    tick().then(() => {
+        searchInput?.focus();
+    });
     // Wait for box to expand (300ms), then fade in content
     setTimeout(() => {
         contentVisible = true;
         isOpening = false;
-        tick().then(() => {
-            searchInput?.focus();
-        });
     }, 300);
 }
 function closeSearch() {

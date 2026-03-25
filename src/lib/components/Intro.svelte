@@ -92,9 +92,9 @@ let backgroundVisible = $state(initialServerShow);
 let contentVisible = $state(initialServerShow);
   let introElement: HTMLDivElement;
   let fadePhase = $state<'hidden' | 'visible' | 'fadingOut'>(initialServerShow ? 'visible' : 'hidden');
-  const initialWindowWidth = browser ? window.innerWidth : 1200;
-  let windowWidth = $state(initialWindowWidth);
-  
+  let windowWidth = $state(browser ? window.innerWidth : 0);
+  let sizeReady = $state(browser);
+
   // Logo size based on screen size (match MobileWheel on mobile)
   const logoSize = $derived(windowWidth < 768 ? Math.min(windowWidth * 0.9, 500) : 550);
 
@@ -126,6 +126,7 @@ let contentVisible = $state(initialServerShow);
     // Track width for responsive logo size on mobile
     const updateWidth = () => {
       windowWidth = window.innerWidth;
+      sizeReady = true;
     };
     updateWidth();
     window.addEventListener('resize', updateWidth, { passive: true });
@@ -254,8 +255,10 @@ let contentVisible = $state(initialServerShow);
         </div>
       {:else}
         <!-- Other pages: Show Logo -->
-        <div class="logo-container" class:content-visible={contentVisible}>
-          <Logo variant="white" rotationSpeed={10} size={logoSize} useOriginal={true} />
+        <div class="logo-container" class:content-visible={contentVisible && sizeReady}>
+          {#if sizeReady}
+            <Logo variant="white" rotationSpeed={10} size={logoSize} useOriginal={true} />
+          {/if}
         </div>
       {/if}
     </div>
