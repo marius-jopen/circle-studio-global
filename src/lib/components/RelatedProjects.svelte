@@ -24,7 +24,7 @@
                 {#if isMobile}
                     <ProjectItemMobile dimension="portrait" itemsPerRow={3} positionInRow={index} {project} />
                 {:else}
-                    <ProjectItem dimension="portrait" itemsPerRow={3} positionInRow={index} {project} />
+                    <ProjectItem dimension="portrait" itemsPerRow={3} positionInRow={index} {project} enableHoverPreview={false} />
                 {/if}
             {/key}
         {/each}
