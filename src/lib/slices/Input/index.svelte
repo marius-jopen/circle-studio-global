@@ -64,11 +64,14 @@
 	let triggerFadeInState = $state<boolean>(false);
 	let triggerFadeOutState = $state<boolean>(false);
 	let isFadingOut = $state<boolean>(false);
+	let hasBeenEdited = $state<boolean>(false);
 	const FADE_OUT_TIME = 1.5;
 
 	function handleInputFocus() {
 		if (isFadingOut) return;
+		if (hasBeenEdited) return;
 		if (!wheelText || wheelText === '') return;
+		hasBeenEdited = true;
 		isFadingOut = true;
 		// Trigger letter-by-letter fade out
 		triggerFadeOutState = true;
