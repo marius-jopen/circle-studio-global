@@ -42,9 +42,9 @@
 	let triggerFadeIn = $state(false);
 	let triggerFadeOut = $state(false);
 
-	const FADE_IN_TIME = 2;
-	const FADE_OUT_TIME = 2;
-	const VISIBLE_TIME = 2.5;
+	const FADE_IN_TIME = 1.5;
+	const FADE_OUT_TIME = 1.5;
+	const VISIBLE_TIME = 1.5;
 	const GAP_TIME = 0.3;
 
 	let cycleTimeoutA: ReturnType<typeof setTimeout> | null = null;
