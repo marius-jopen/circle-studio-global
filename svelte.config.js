@@ -21,6 +21,12 @@ const config = {
 					console.warn('Ignoring Prismic-related prerender error to prevent build failure');
 					return;
 				}
+
+				// Ignore static file references that the prerenderer picks up as routes
+				if (path.match(/\.(gif|png|jpg|jpeg|svg|ico|webp|mp4|webm)$/)) {
+					console.warn('Ignoring static file prerender error');
+					return;
+				}
 				
 				// Throw for other errors that we should handle
 				throw new Error(message);
