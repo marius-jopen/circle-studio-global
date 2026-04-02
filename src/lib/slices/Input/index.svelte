@@ -232,7 +232,7 @@
 {#if $playInputActive}
 	<!-- Mobile: Close button (top right) -->
 	<button
-		class="md:hidden fixed top-[6px] right-[6px] z-50 w-10 h-10 bg-gray-100 rounded-md flex items-center justify-center cursor-pointer"
+		class="mobile-close-btn md:hidden fixed top-[6px] right-[6px] z-50 w-10 h-10 bg-gray-100 rounded-md flex items-center justify-center cursor-pointer"
 		onclick={closeMobileInput}
 		aria-label="Close input"
 	>
@@ -251,7 +251,7 @@
 	class:pointer-events-auto={$playInputActive}
 	style="top: {mobileViewportHeight > 0 ? (mobileViewportOffsetTop + mobileViewportHeight - MOBILE_INPUT_HEIGHT - MOBILE_BOTTOM_OFFSET) : windowInnerHeight - MOBILE_INPUT_HEIGHT - MOBILE_BOTTOM_OFFSET}px;"
 >
-	<div class="bg-gray-100 rounded-md flex items-center overflow-hidden w-10/12 mx-auto h-12">
+	<div class="mobile-input-wrapper bg-gray-100 rounded-md flex items-center overflow-hidden w-10/12 mx-auto h-12">
 		<input
 			id="wheel-text-input-mobile"
 			type="text"
@@ -343,13 +343,24 @@
 	:global(body.play-inverted #wheel-text-input::placeholder) {
 		color: #a3a3a3 !important;
 	}
-	/* Mobile input field: keep light background, black text when inverted */
+	/* Mobile input field: dark background + white text when inverted */
 	:global(body.play-inverted #wheel-text-input-mobile) {
-		background-color: #f5f5f5 !important;
-		color: #000 !important;
+		background-color: #404040 !important;
+		color: #fff !important;
 	}
 	:global(body.play-inverted #wheel-text-input-mobile::placeholder) {
-		color: #737373 !important;
+		color: #a3a3a3 !important;
+	}
+	/* Mobile input wrapper: dark background when inverted */
+	:global(body.play-inverted .mobile-input-wrapper) {
+		background-color: #404040 !important;
+	}
+	/* Mobile close button: dark background + white icon when inverted */
+	:global(body.play-inverted .mobile-close-btn) {
+		background-color: #404040 !important;
+	}
+	:global(body.play-inverted .mobile-close-btn svg path) {
+		stroke: #fff !important;
 	}
 	/* Invert the logo wheel image */
 	:global(body.play-inverted header a.logo-link img) {
