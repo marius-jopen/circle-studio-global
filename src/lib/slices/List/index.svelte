@@ -10,8 +10,8 @@
 
 	type Props = SliceComponentProps<Content.ListSlice>;
 
-	const isAboutNew = $derived(
-		page.url.pathname === '/about-new' || page.url.pathname === '/preview/about-new'
+	const isAbout = $derived(
+		page.url.pathname === '/about' || page.url.pathname === '/preview/about'
 	);
 
 	const { slice }: Props = $props();
@@ -106,7 +106,7 @@
 
 <section data-slice-type={slice.slice_type} data-slice-variation={slice.variation} class="list-none">
 	{#if sortedItems.length > 0}
-		<div class="mb-2 divide-y divide-black/10 text-black md:hover:text-black/25 list-none rounded px-4 py-1" class:bg-white={isAboutNew} class:bg-neutral-100={!isAboutNew}>
+		<div class="mb-2 divide-y divide-black/10 text-black md:hover:text-black/25 list-none rounded px-4 py-1" class:bg-white={isAbout} class:bg-neutral-100={!isAbout}>
 			{#each sortedItems as item, index}
 				{@const linkUrl = getLinkUrl(item)}
 				{@const linkText = getLinkText(item)}

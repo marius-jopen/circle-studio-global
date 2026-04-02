@@ -9,9 +9,9 @@
 	import { components } from '$lib/slices';
 
 	const { data }: PageProps = $props();
-	const isAboutNew = $derived(data?.page?.uid === 'about-new');
+	const isAbout = $derived(data?.page?.uid === 'about');
 
-	// Scroll-bound rotation for about-new mobile logo
+	// Scroll-bound rotation for about mobile logo
 	let scrollRotation = $state(0);
 	let targetRotation = $state(0);
 	let lastScrollY = 0;
@@ -25,7 +25,7 @@
 	}
 
 	onMount(() => {
-		if (!isAboutNew) return;
+		if (!isAbout) return;
 		animateScroll();
 		const handleScroll = () => {
 			const now = performance.now();
@@ -63,7 +63,7 @@
 	}
 </script>
 
-{#if isAboutNew}
+{#if isAbout}
 	<a
 		href="/"
 		class="md:hidden fixed top-2 left-2 z-50 p-0"
@@ -74,7 +74,7 @@
 	</a>
 {/if}
 
-<div class="px-2 {isAboutNew ? 'bg-neutral-100 min-h-screen' : ''}">
+<div class="px-2 {isAbout ? 'bg-neutral-100 min-h-screen' : ''}">
 	{#if data?.page?.data?.slices}
 		<SliceZone slices={data.page.data.slices} {components} />
 	{/if}

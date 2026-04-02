@@ -9,7 +9,7 @@ export const playInputActive = writable<boolean>(false);
 /** True when search is active and has zero results - used to show black header logo */
 export const searchZeroResults = writable<boolean>(false);
 
-/** True when AboutContent slice is visible - used to switch nav bg on about-new */
+/** True when AboutContent slice is visible - used to switch nav bg on about page */
 export const aboutContentVisible = writable<boolean>(false);
 
 

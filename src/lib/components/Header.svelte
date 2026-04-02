@@ -132,17 +132,16 @@
 
 	// Determine current route for conditional mobile wheel visibility
 	const isProject = $derived(currentPath.startsWith('/work/'));
-	const isAbout = $derived(currentPath === '/about' || currentPath.startsWith('/about/'));
-	const isAboutNew = $derived(currentPath === '/about-new' || currentPath === '/preview/about-new');
+	const isAbout = $derived(currentPath === '/about' || currentPath === '/preview/about');
 	const isHome = $derived(currentPath === '/' || currentPath === '/preview');
 	const isPlay = $derived(currentPath === '/play' || currentPath === '/play/preview');
 	
 	// Check if we're on home page with grid mode active (show white logo)
 	const isHomePageGrid = $derived(isHome && $viewMode === 'grid');
 
-	// On about-new: white bg by default, switch to gray when AboutContent is in view
-	const navBgWhite = $derived(isAboutNew && !$aboutContentVisible);
-	const navBgGray = $derived(!isAboutNew || $aboutContentVisible);
+	// On about: white bg by default, switch to gray when AboutContent is in view
+	const navBgWhite = $derived(isAbout && !$aboutContentVisible);
+	const navBgGray = $derived(!isAbout || $aboutContentVisible);
 	
 	// Active state for navigation items
 	const isGridActive = $derived(isHome && $viewMode === 'grid');
@@ -290,7 +289,7 @@
 		<nav class="px-3 py-4">
 			<div class="flex justify-between w-full relative">
 				<!-- Mobile: Centered wheel (hidden on project/about/play pages and when mobile search open) -->
-				{#if !isProject && !isAbout && !isAboutNew && !isPlay && !$mobileSearchOpen}
+				{#if !isProject && !isAbout && !isPlay && !$mobileSearchOpen}
 					<MobileWheel isDarkMode={isDarkMode || isHomePageGrid} />
 				{/if}
 				

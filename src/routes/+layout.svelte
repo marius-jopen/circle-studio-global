@@ -23,7 +23,7 @@
 	
 	// Check if we're on admin or login routes
 	let isAdminRoute = $derived(page.url.pathname.startsWith('/admin') || page.url.pathname === '/login');
-	let isAboutNew = $derived(page.url.pathname === '/about-new' || page.url.pathname === '/preview/about-new');
+	let isAbout = $derived(page.url.pathname === '/about' || page.url.pathname === '/preview/about');
 	
 	// Global navigation click detection for video autoplay permissions
 	let headerFaded = $state(false);
@@ -228,7 +228,7 @@
 {#if isAdminRoute}
 	{@render children()}
 {:else}
-	<div class="min-h-screen flex flex-col" class:bg-neutral-100={isAboutNew}>
+	<div class="min-h-screen flex flex-col" class:bg-neutral-100={isAbout}>
 		<Intro />
 		<MobileNav />
 		<Header settings={data.settings} faded={headerFaded} videoIsDark={videoIsDark} mainMediaVisible={mainMediaVisible} />
@@ -238,7 +238,7 @@
 		</main>
 
 		{#if !(page?.data?.page?.data?.no_footer ?? false)}
-			<Footer settings={data.settings} isAboutNew={isAboutNew} />
+			<Footer settings={data.settings} isAbout={isAbout} />
 		{/if}
 	</div>
 

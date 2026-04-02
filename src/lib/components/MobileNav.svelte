@@ -7,8 +7,7 @@ import { homeSearchQuery, mobileSearchOpen, playInputActive } from '$lib/stores'
 $: pathname = $page.url.pathname;
 $: isHome = pathname === '/';
 $: isPlay = pathname === '/play' || pathname === '/play/preview';
-$: isAbout = pathname === '/about' || pathname.startsWith('/about/');
-$: isAboutNew = pathname === '/about-new' || pathname === '/preview/about-new';
+$: isAbout = pathname === '/about' || pathname === '/preview/about';
 
 let atBottom = false;
 
@@ -150,10 +149,10 @@ $: if (!isHome && searchOpen) {
 <!-- Bottom navigation (hidden on /play page when input is active) -->
 {#if !isPlay || !$playInputActive}
 <div class="md:hidden fixed bottom-5 left-0 right-0 z-50 flex justify-center items-center mx-4">
-    <div class="rounded-md py-0 px-0 h-12 flex items-center transition-colors" class:bg-white={isAboutNew && atBottom} class:bg-gray-100={!isAboutNew || !atBottom}>
+    <div class="rounded-md py-0 px-0 h-12 flex items-center transition-colors" class:bg-white={isAbout && atBottom} class:bg-gray-100={!isAbout || !atBottom}>
         <nav class="flex items-center justify-center gap-x-0 text-xl">
             <a href="/" class="text-center font-medium whitespace-nowrap py-2 pl-5 pr-4 transition-colors duration-300 {isHome ? 'text-neutral-900 underline underline-offset-[5px] decoration-[1.5px]' : 'text-neutral-900'}">Work</a>
-            <a href="/about" class="text-center font-medium py-2 pl-4 pr-5 transition-colors duration-300 {isAbout || isAboutNew ? 'text-neutral-900 underline underline-offset-[5px] decoration-[1.5px]' : 'text-neutral-900'}">About</a>
+            <a href="/about" class="text-center font-medium py-2 pl-4 pr-5 transition-colors duration-300 {isAbout ? 'text-neutral-900 underline underline-offset-[5px] decoration-[1.5px]' : 'text-neutral-900'}">About</a>
             <a href="/play" class="text-center font-medium py-2 pl-4 pr-5 transition-colors duration-300 {isPlay ? 'text-neutral-900 underline underline-offset-[5px] decoration-[1.5px]' : 'text-neutral-900'}" on:click|preventDefault={() => {
                 if (isPlay) {
                     playInputActive.set(true);
