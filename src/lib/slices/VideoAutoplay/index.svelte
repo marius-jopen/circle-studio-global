@@ -7,10 +7,12 @@
 
 	const { slice }: Props = $props();
 
+	const hidden = $derived((slice.primary as { hidden?: boolean }).hidden === true);
 	const videoUrl = $derived((slice.primary as { video_url?: string | null }).video_url?.trim() ?? '');
 	const posterImage = $derived((slice.primary as { image?: { url?: string } }).image);
 </script>
 
+{#if !hidden}
 <section
 	data-slice-type={slice.slice_type}
 	data-slice-variation={slice.variation}
@@ -28,3 +30,4 @@
 		/>
 	{/if}
 </section>
+{/if}
