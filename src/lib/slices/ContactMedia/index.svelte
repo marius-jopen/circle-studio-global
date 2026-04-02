@@ -27,6 +27,81 @@
 	let projectDate = $state('');
 	let resolvedProjectLink = $state<string | null>(null);
 
+	// Pool of candidate projects for random modes
+	let projectPool = $state<any[]>([]);
+	let currentPoolIndex = $state(-1);
+
+	// Double-buffer: two slots (A and B), activeSlot tracks which is visible
+	let slotA = $state<{ video: string; title: string; client: string; date: string; link: string } | null>(null);
+	let slotB = $state<{ video: string; title: string; client: string; date: string; link: string } | null>(null);
+	let activeSlot = $state<'A' | 'B'>('A');
+
+	const currentSlot = $derived(activeSlot === 'A' ? slotA : slotB);
+	const nextSlot = $derived(activeSlot === 'A' ? slotB : slotA);
+
+	function extractProjectData(doc: any) {
+		const title = (doc.data.title as string) || '';
+		const client = (doc.data.client as string) || '';
+		const year = (doc.data.year as string) || '';
+		const month = (doc.data.month as string) || '';
+		const date = month ? `${month} ${year}` : year;
+		const link = `/work/${doc.uid}`;
+		let video = '';
+		if (!explicitVideoUrl) {
+			const previews = (doc.data.preview as any[]) ?? [];
+			for (const p of previews) {
+				if (p?.preview_video_url_landscape) {
+					video = p.preview_video_url_landscape.trim();
+					break;
+				}
+			}
+		}
+		return { video, title, client, date, link };
+	}
+
+	function applyProjectData(data: { video: string; title: string; client: string; date: string; link: string }) {
+		fetchedPreviewVideo = data.video;
+		projectTitle = data.title;
+		projectClient = data.client;
+		projectDate = data.date;
+		resolvedProjectLink = data.link;
+	}
+
+	function shuffleArray(arr: any[]) {
+		const shuffled = [...arr];
+		for (let i = shuffled.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+		}
+		return shuffled;
+	}
+
+	function prepareNextSlot() {
+		if (projectPool.length < 2) return;
+		const nextIndex = (currentPoolIndex + 1) % projectPool.length;
+		const doc = projectPool[nextIndex];
+		if (doc?.data) {
+			const data = extractProjectData(doc);
+			if (activeSlot === 'A') {
+				slotB = data;
+			} else {
+				slotA = data;
+			}
+		}
+	}
+
+	function showNextProject() {
+		if (projectPool.length < 2) return;
+		const next = activeSlot === 'A' ? slotB : slotA;
+		if (!next) return;
+		currentPoolIndex = (currentPoolIndex + 1) % projectPool.length;
+		applyProjectData(next);
+		activeSlot = activeSlot === 'A' ? 'B' : 'A';
+		prepareNextSlot();
+	}
+
+	const isRandomMode = $derived(randomMode === 'random_project' || randomMode === 'random_featured_project');
+
 	onMount(async () => {
 		try {
 			const client = createClient();
@@ -34,8 +109,10 @@
 
 			if (randomMode === 'random_project') {
 				const allProjects = await client.getAllByType('projects', { pageSize: 100 });
-				if (allProjects.length > 0) {
-					doc = allProjects[Math.floor(Math.random() * allProjects.length)];
+				projectPool = shuffleArray(allProjects);
+				if (projectPool.length > 0) {
+					currentPoolIndex = 0;
+					doc = projectPool[0];
 				}
 			} else if (randomMode === 'random_featured_project') {
 				const homePage = await client.getSingle('home');
@@ -44,30 +121,22 @@
 					.map((fp: any) => fp?.items?.id)
 					.filter(Boolean);
 				if (featuredIds.length > 0) {
-					const randomId = featuredIds[Math.floor(Math.random() * featuredIds.length)];
-					doc = await client.getByID(randomId);
+					const docs = await Promise.all(featuredIds.map((id: string) => client.getByID(id).catch(() => null)));
+					projectPool = shuffleArray(docs.filter(Boolean));
+					if (projectPool.length > 0) {
+						currentPoolIndex = 0;
+						doc = projectPool[0];
+					}
 				}
 			} else if (projectLinkField?.uid) {
 				doc = await client.getByUID('projects', projectLinkField.uid);
 			}
 
 			if (doc?.data) {
-				projectTitle = (doc.data.title as string) || '';
-				projectClient = (doc.data.client as string) || '';
-				const year = (doc.data.year as string) || '';
-				const month = (doc.data.month as string) || '';
-				projectDate = month ? `${month} ${year}` : year;
-				resolvedProjectLink = `/work/${doc.uid}`;
-
-				if (!explicitVideoUrl) {
-					const previews = (doc.data.preview as any[]) ?? [];
-					for (const p of previews) {
-						if (p?.preview_video_url_landscape) {
-							fetchedPreviewVideo = p.preview_video_url_landscape.trim();
-							break;
-						}
-					}
-				}
+				const data = extractProjectData(doc);
+				slotA = data;
+				applyProjectData(data);
+				prepareNextSlot();
 			}
 		} catch {}
 	});
@@ -144,16 +213,52 @@
 					onmouseenter={() => { isHovering = true; hasEverHovered = true; }}
 					onmouseleave={() => { isHovering = false; }}
 				>
-					<VideoPlayerSimple
-						hlsUrl={videoUrl}
-						posterImage={imageField}
-						classes="w-full h-full object-cover pointer-events-none"
-						dimension="landscape"
-						itemsPerRow={1}
-						containerSizePercent={100}
-						enableOnMobile={true}
-						square={false}
-					/>
+					<!-- Double-buffered video players for instant switching -->
+					{#if slotA?.video}
+						<div class="absolute inset-0" class:z-[1]={activeSlot === 'A'} class:z-0={activeSlot !== 'A'}>
+							{#key slotA.video}
+								<VideoPlayerSimple
+									hlsUrl={explicitVideoUrl || slotA.video}
+									posterImage={imageField}
+									classes="w-full h-full object-cover pointer-events-none"
+									dimension="landscape"
+									itemsPerRow={1}
+									containerSizePercent={100}
+									enableOnMobile={true}
+									square={false}
+								/>
+							{/key}
+						</div>
+					{/if}
+					{#if slotB?.video}
+						<div class="absolute inset-0" class:z-[1]={activeSlot === 'B'} class:z-0={activeSlot !== 'B'}>
+							{#key slotB.video}
+								<VideoPlayerSimple
+									hlsUrl={explicitVideoUrl || slotB.video}
+									posterImage={imageField}
+									classes="w-full h-full object-cover pointer-events-none"
+									dimension="landscape"
+									itemsPerRow={1}
+									containerSizePercent={100}
+									enableOnMobile={true}
+									square={false}
+								/>
+							{/key}
+						</div>
+					{/if}
+					<!-- Fallback for non-random mode (single video) -->
+					{#if !isRandomMode}
+						<VideoPlayerSimple
+							hlsUrl={videoUrl}
+							posterImage={imageField}
+							classes="w-full h-full object-cover pointer-events-none"
+							dimension="landscape"
+							itemsPerRow={1}
+							containerSizePercent={100}
+							enableOnMobile={true}
+							square={false}
+						/>
+					{/if}
 					<!-- Text overlay bottom left like ProjectItem -->
 					{#if projectTitle || projectClient}
 						<div class="absolute bottom-0 left-0 right-0 p-3 text-white pointer-events-none z-[1]">
@@ -162,6 +267,19 @@
 								{#if projectClient}<div class="text-lg opacity-60">{projectClient}</div>{/if}
 							</div>
 						</div>
+					{/if}
+					<!-- Next random project button -->
+					{#if isRandomMode && projectPool.length > 1}
+						<button
+							type="button"
+							onclick={(e) => { e.preventDefault(); e.stopPropagation(); showNextProject(); }}
+							class="absolute bottom-[7px] right-[7px] z-[2] h-10 px-3 rounded-md bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center transition-colors duration-200 pointer-events-auto cursor-pointer"
+							aria-label="Next random project"
+						>
+							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+								<path d="M5 12h14M12 5l7 7-7 7"/>
+							</svg>
+						</button>
 					{/if}
 				</a>
 			{:else}
