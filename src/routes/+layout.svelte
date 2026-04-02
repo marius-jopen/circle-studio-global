@@ -199,7 +199,7 @@
 	{/if}
 	<!-- Open Graph / Facebook -->
 	{#if metaTitle}
-		<meta property="og:title" content={metaTitle} />
+		<meta property="og:title" content="Art Camp - {metaTitle}" />
 	{/if}
 	{#if metaDescription}
 		<meta property="og:description" content={metaDescription} />
@@ -215,7 +215,7 @@
 	<!-- Twitter -->
 	<meta name="twitter:card" content="summary_large_image" />
 	{#if metaTitle}
-		<meta name="twitter:title" content={metaTitle} />
+		<meta name="twitter:title" content="Art Camp - {metaTitle}" />
 	{/if}
 	{#if metaDescription}
 		<meta name="twitter:description" content={metaDescription} />
