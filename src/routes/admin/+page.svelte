@@ -28,6 +28,14 @@
 		</a>
 		
 		<a
+			href="/admin/og-generator"
+			class="block p-6 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
+		>
+			<h2 class="text-xl font-semibold text-gray-900 mb-2">OG Image Generator</h2>
+			<p class="text-gray-600">Generate Open Graph images for projects</p>
+		</a>
+
+		<a
 			href="/admin/settings"
 			class="block p-6 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
 		>
