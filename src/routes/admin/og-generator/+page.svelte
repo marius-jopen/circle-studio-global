@@ -316,6 +316,14 @@
 			>
 				Download PNG (1200x630)
 			</button>
+
+			<!-- Project info -->
+			{#if selectedProject}
+				<div class="text-xs text-gray-400 mt-1">
+					<div><span class="text-gray-500">Title:</span> {selectedProject.data?.title || '—'}</div>
+					<div><span class="text-gray-500">Client:</span> {selectedProject.data?.client || '—'}</div>
+				</div>
+			{/if}
 		</div>
 
 		<!-- Right: Canvas preview -->
