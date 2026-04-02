@@ -127,13 +127,14 @@
 							<TextCircle
 								text={wheelText || poetryItems[0]}
 								containerSize={circleSize}
-								fontSize={Math.round(circleSize * 0.13)}
-								radius={Math.round(circleSize * 0.35)}
+								fontSize={38}
+								radius={Math.round(circleSize * 0.32)}
 								rotationSpeed={0.1}
 								spacingAmplitudePercent={0.5}
 								spacingSpeed={0}
 								animationType="sin"
-								autoTextSize={false}
+								autoTextSize={true}
+								autoRadius={true}
 								manualMode={true}
 								startInvisible={true}
 								fadeInTime={FADE_IN_TIME}
@@ -191,13 +192,14 @@
 							<TextCircle
 								text={wheelText || poetryItems[0]}
 								containerSize={circleSize}
-								fontSize={Math.round(circleSize * 0.13)}
-								radius={Math.round(circleSize * 0.35)}
+								fontSize={38}
+								radius={Math.round(circleSize * 0.32)}
 								rotationSpeed={0.1}
 								spacingAmplitudePercent={0.5}
 								spacingSpeed={0}
 								animationType="sin"
-								autoTextSize={false}
+								autoTextSize={true}
+								autoRadius={true}
 								manualMode={true}
 								startInvisible={true}
 								fadeInTime={FADE_IN_TIME}

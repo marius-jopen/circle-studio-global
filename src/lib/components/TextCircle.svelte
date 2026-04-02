@@ -200,7 +200,7 @@
     if (totalWidthAtRef <= 0) return { fontSize, radius: baseRadius };
 
     // For a given radius r, the circumference is 2*PI*r
-    // The ideal font size to fill 70% of circumference: size = (2*PI*r * 0.70) / totalWidthAtRef * refSize
+    // The ideal font size to fill 85% of circumference: size = (2*PI*r * 0.70) / totalWidthAtRef * refSize
     // The font must not exceed (halfContainer - r) * ascentFactor so letters don't clip
     // We want the largest font possible, so we search for the best radius
 
@@ -215,7 +215,7 @@
 
     for (let i = 0; i <= steps; i++) {
       const r = minR + (maxR - minR) * (i / steps);
-      const circumference = 2 * Math.PI * r * 0.70;
+      const circumference = 2 * Math.PI * r * 0.85;
       const idealSize = (circumference / totalWidthAtRef) * refSize;
       const maxByEdge = (halfContainer - r) / ascentFactor;
       const clampedSize = Math.min(idealSize, maxByEdge);
