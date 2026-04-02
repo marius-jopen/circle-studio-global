@@ -67,18 +67,7 @@
 	});
 </script>
 
-<svelte:head>
-	<title>Art Camp - Creative Studio | {data.title}</title>
-	{#if data.meta_description}
-		<meta name="description" content={data.meta_description} />
-	{/if}
-	{#if data.meta_title}
-		<meta property="og:title" content={data.meta_title} />
-	{/if}
-	{#if data.meta_image}
-		<meta property="og:image" content={data.meta_image} />
-	{/if}
-</svelte:head>
+<!-- Meta tags (og:image, og:title, etc.) are handled by +layout.svelte using page.data -->
 
 	<!-- Main Media -->
 	 {#key projectData.main}

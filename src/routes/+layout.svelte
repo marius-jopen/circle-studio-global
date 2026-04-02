@@ -15,7 +15,7 @@
 	
 	// Meta tags with fallback to home page values
 	let metaDescription = $derived(page.data?.meta_description ?? data.fallbackMetaDescription);
-	let metaTitle = $derived(page.data?.meta_title ?? data.fallbackMetaTitle);
+	let metaTitle = $derived(page.data?.meta_title ?? page.data?.title ?? data.fallbackMetaTitle);
 	let metaImage = $derived(page.data?.meta_image ?? data.fallbackMetaImage);
 	
 	// Get current URL for og:url
