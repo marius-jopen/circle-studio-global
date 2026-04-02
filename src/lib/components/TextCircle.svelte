@@ -200,10 +200,11 @@
     if (totalWidthAtRef <= 0) return { fontSize, radius: baseRadius };
 
     // For a given radius r, the circumference is 2*PI*r
-    // The ideal font size to fill 95% of circumference: size = (2*PI*r * 0.70) / totalWidthAtRef * refSize
+    // The ideal font size to fill 95% of circumference
     // The font must not exceed (halfContainer - r) * ascentFactor so letters don't clip
     // We want the largest font possible, so we search for the best radius
 
+    const fillTarget = 0.95;
     const ascentFactor = 0.85; // how much of fontSize extends outward from baseline
     let bestFontSize = fontSize;
     let bestRadius = baseRadius;
@@ -215,7 +216,7 @@
 
     for (let i = 0; i <= steps; i++) {
       const r = minR + (maxR - minR) * (i / steps);
-      const circumference = 2 * Math.PI * r * 0.95;
+      const circumference = 2 * Math.PI * r * fillTarget;
       const idealSize = (circumference / totalWidthAtRef) * refSize;
       const maxByEdge = (halfContainer - r) / ascentFactor;
       const clampedSize = Math.min(idealSize, maxByEdge);
@@ -224,6 +225,16 @@
         bestFontSize = clampedSize;
         bestRadius = r;
       }
+    }
+
+    // Verify: measure actual text width at bestFontSize and ensure it fits the circumference
+    const actualWidth = letters.reduce((sum, { char, bold }) => {
+      ctx.font = bold ? `bold ${bestFontSize}px ${fontFamily}` : `${bestFontSize}px ${fontFamily}`;
+      return sum + ctx.measureText(char).width;
+    }, 0);
+    const availableArc = 2 * Math.PI * bestRadius * fillTarget;
+    if (actualWidth > availableArc && availableArc > 0) {
+      bestFontSize *= availableArc / actualWidth;
     }
 
     return { fontSize: Math.max(2, bestFontSize), radius: bestRadius };
