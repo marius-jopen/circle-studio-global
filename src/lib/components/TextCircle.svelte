@@ -270,20 +270,35 @@
   $: effectiveFontSize = autoRadius ? autoResult.fontSize : computeEffectiveFontSize(fontSize, text, radius);
   $: adaptiveRadius = autoRadius ? autoResult.radius : radius;
 
+  // Track canvas sizing to avoid reallocating every frame
+  let lastCanvasSize = 0;
+  let lastCanvasDpr = 0;
+  let cachedCtx: CanvasRenderingContext2D | null = null;
+
   function draw() {
     if (!canvas) return;
-    const ctx = canvas.getContext('2d', { alpha: true });
+    if (!cachedCtx) cachedCtx = canvas.getContext('2d', { alpha: true });
+    const ctx = cachedCtx;
     if (!ctx) return;
     const baseDpr = window.devicePixelRatio || 1;
     const isMobileCanvas = window.innerWidth < 768;
     const dpr = isMobileCanvas ? Math.max(baseDpr * 2.5, 6) : baseDpr;
-    if (isMobileCanvas && 'imageSmoothingQuality' in ctx) {
-      (ctx as CanvasRenderingContext2D & { imageSmoothingQuality: string }).imageSmoothingQuality = 'high';
+
+    // Only resize canvas when containerSize or dpr changes
+    if (containerSize !== lastCanvasSize || dpr !== lastCanvasDpr) {
+      canvas.width = containerSize * dpr;
+      canvas.height = containerSize * dpr;
+      canvas.style.width = `${containerSize}px`;
+      canvas.style.height = `${containerSize}px`;
+      if (isMobileCanvas && 'imageSmoothingQuality' in ctx) {
+        (ctx as CanvasRenderingContext2D & { imageSmoothingQuality: string }).imageSmoothingQuality = 'high';
+      }
+      lastCanvasSize = containerSize;
+      lastCanvasDpr = dpr;
     }
-    const width = canvas.width = containerSize * dpr;
-    const height = canvas.height = containerSize * dpr;
-    canvas.style.width = `${containerSize}px`;
-    canvas.style.height = `${containerSize}px`;
+
+    const width = canvas.width;
+    const height = canvas.height;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, width, height);
 
