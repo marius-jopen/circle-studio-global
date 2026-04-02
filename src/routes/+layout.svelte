@@ -198,15 +198,9 @@
 		<meta name="description" content={metaDescription} />
 	{/if}
 	<!-- Open Graph / Facebook -->
-	{#if metaTitle}
-		<meta property="og:title" content="ArtCamp - {metaTitle}" />
-	{/if}
-	{#if metaDescription}
-		<meta property="og:description" content={metaDescription} />
-	{/if}
-	{#if metaImage}
-		<meta property="og:image" content={metaImage} />
-	{/if}
+	<meta property="og:title" content="ArtCamp{metaTitle ? ` - ${metaTitle}` : ''}" />
+	<meta property="og:description" content={metaDescription || 'Art Camp is a multi-disciplinary creative studio established in 2016 in New York City.'} />
+	<meta property="og:image" content={metaImage || `${page.url.origin}/logo-black.png`} />
 	<meta property="og:url" content={currentUrl} />
 	<meta property="og:type" content="website" />
 	{#if !isAdminRoute}
@@ -214,15 +208,9 @@
 	{/if}
 	<!-- Twitter -->
 	<meta name="twitter:card" content="summary_large_image" />
-	{#if metaTitle}
-		<meta name="twitter:title" content="ArtCamp - {metaTitle}" />
-	{/if}
-	{#if metaDescription}
-		<meta name="twitter:description" content={metaDescription} />
-	{/if}
-	{#if metaImage}
-		<meta name="twitter:image" content={metaImage} />
-	{/if}
+	<meta name="twitter:title" content="ArtCamp{metaTitle ? ` - ${metaTitle}` : ''}" />
+	<meta name="twitter:description" content={metaDescription || 'Art Camp is a multi-disciplinary creative studio established in 2016 in New York City.'} />
+	<meta name="twitter:image" content={metaImage || `${page.url.origin}/logo-black.png`} />
 </svelte:head>
 
 {#if isAdminRoute}
