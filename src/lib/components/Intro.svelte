@@ -29,47 +29,31 @@
   
   const projectDate = $derived(isProjectPage ? formatDateToMonthDotDayDotYear(page?.data?.project?.data?.date || '') : '');
 
-  // Project wheel configuration
+  // Project wheel configuration — matches projectItem BigWheel structure
   const projectWheelConfig = $derived({
     uiVisible: false,
     items: [
       {
-        text: 'ART CAMP EST.2016',
-        rotationSpeed: 0.5,
-        spacingAmplitudePercent: 1.1,
-        spacingSpeed: 0.09,
+        text: projectTitle || 'Project',
+        rotationSpeed: 0.3,
+        spacingAmplitudePercent: 0,
+        spacingSpeed: 0.2,
         rotationStart: 0,
         animationType: 'sin'
       },
       {
-        text: projectTitle || 'Project',
-        rotationSpeed: 0.3,
-        spacingAmplitudePercent: 1.1,
-        spacingSpeed: 0.09,
-        rotationStart: 180,
-        animationType: 'sin'
-      },
-      {
         text: projectClient || 'Client',
-        rotationSpeed: 0.6,
-        spacingAmplitudePercent: 1.1,
-        spacingSpeed: 0.05,
-        rotationStart: 80,
-        animationType: 'sin'
-      },
-      {
-        text: projectDate || '',
-        rotationSpeed: 0.4,
-        spacingAmplitudePercent: 1.1,
-        spacingSpeed: 0.11,
-        rotationStart: 250,
+        rotationSpeed: 0.25,
+        spacingAmplitudePercent: 0,
+        spacingSpeed: 0.2,
+        rotationStart: 180,
         animationType: 'sin'
       }
     ],
     globalSettings: {
       containerSizePercent: 100,
-      fontSizePercent: 7,
-      distancePercent: 0.8,
+      fontSizePercent: 10,
+      distancePercent: 1.5,
       paused: false,
       textColor: '#ffffff',
       backgroundColor: '#000000',
@@ -101,6 +85,7 @@ let contentVisible = $state(initialServerShow);
   // Lock/unlock body scroll
   let scrollbarWidth = 0;
   let scrollY = 0;
+  let introLogoHover = $state(false);
 
   function lockScroll() {
     scrollY = window.scrollY;
@@ -249,7 +234,16 @@ let contentVisible = $state(initialServerShow);
   >
     <div class="intro-content cursor-pointer z-30">
       {#if isProjectPage}
-        <!-- Project page: Show BigWheel -->
+        <!-- Project page: Show Logo top-left + BigWheel -->
+        <!-- svelte-ignore a11y_no_static_element_interactions -->
+        <div
+          class="fixed top-2 left-2 md:top-[8px] md:left-[12px] z-[20001]"
+          class:content-visible={contentVisible}
+          onmouseenter={() => introLogoHover = true}
+          onmouseleave={() => introLogoHover = false}
+        >
+          <Logo variant="white" rotationSpeed={introLogoHover ? 50 : 10} size={windowWidth < 768 ? 75 : 185} />
+        </div>
         <div class="wheel-container" class:content-visible={contentVisible}>
           <BigWheel config={projectWheelConfig} />
         </div>
