@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { PrismicPreview } from '@prismicio/svelte/kit';
+	import { asLink } from '@prismicio/client';
 	import { page } from '$app/state';
 	import { repositoryName } from '$lib/prismicio';
 	import Header from '$lib/components/Header.svelte';
@@ -20,6 +21,52 @@
 	
 	// Get current URL for og:url
 	let currentUrl = $derived(page.url.origin + page.url.pathname);
+
+	// Schema.org Organization JSON-LD for search engines / knowledge panel
+	let orgJsonLd = $derived.by(() => {
+		const origin = page.url.origin;
+		const settingsData = (data.settings?.data ?? {}) as {
+			founder_name?: string | null;
+			founder_social_links?: Array<{ url?: unknown }>;
+		};
+		const founderName = settingsData.founder_name?.trim();
+		const founderSameAs = (settingsData.founder_social_links ?? [])
+			.map((item) => asLink(item?.url as Parameters<typeof asLink>[0]))
+			.filter((url): url is string => typeof url === 'string' && url.length > 0);
+
+		const ld: Record<string, unknown> = {
+			'@context': 'https://schema.org',
+			'@type': 'Organization',
+			name: 'Art Camp',
+			alternateName: 'Circle Studio Global',
+			url: origin,
+			logo: `${origin}/logo-black.png`,
+			description:
+				'Art Camp is a multi-disciplinary creative studio established in 2016 in New York City.',
+			foundingDate: '2016',
+			foundingLocation: {
+				'@type': 'Place',
+				address: {
+					'@type': 'PostalAddress',
+					addressLocality: 'New York',
+					addressRegion: 'NY',
+					addressCountry: 'US'
+				}
+			}
+		};
+
+		if (founderName) {
+			const founder: Record<string, unknown> = {
+				'@type': 'Person',
+				name: founderName
+			};
+			if (founderSameAs.length) founder.sameAs = founderSameAs;
+			ld.founder = founder;
+		}
+
+		const json = JSON.stringify(ld).replace(/</g, '\\u003c');
+		return `<script type="application/ld+json">${json}<\/script>`;
+	});
 	
 	// Check if we're on admin or login routes
 	let isAdminRoute = $derived(page.url.pathname.startsWith('/admin') || page.url.pathname === '/login');
@@ -196,6 +243,10 @@
 	<title>Art Camp - Creative Studio{page.data?.title ? ` | ${page.data.title}` : ''}</title>
 	{#if metaDescription}
 		<meta name="description" content={metaDescription} />
+	{/if}
+	<meta name="author" content="Art Camp" />
+	{#if !isAdminRoute}
+		{@html orgJsonLd}
 	{/if}
 	<!-- Open Graph / Facebook -->
 	<meta property="og:title" content="ArtCamp{metaTitle ? ` - ${metaTitle}` : ''}" />

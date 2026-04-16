@@ -28,6 +28,42 @@
 					"repeat": true
 				}
 			}
+		},
+		"Founder": {
+			"founder_name": {
+				"type": "Text",
+				"config": {
+					"label": "Founder Name",
+					"placeholder": "e.g. Santiago Carrasquilla"
+				}
+			},
+			"founder_social_links": {
+				"type": "Group",
+				"config": {
+					"label": "Founder Social Links",
+					"repeat": true,
+					"fields": {
+						"label": {
+							"type": "Text",
+							"config": {
+								"label": "Label",
+								"placeholder": "e.g. Instagram"
+							}
+						},
+						"url": {
+							"type": "Link",
+							"config": {
+								"label": "URL",
+								"placeholder": "https://...",
+								"select": null,
+								"allowTargetBlank": true,
+								"allowText": false,
+								"repeat": false
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 }
