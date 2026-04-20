@@ -38,14 +38,6 @@
 	const DEFAULT_TRUNCATION_LENGTH = 27;
 	// ========================================
 	
-	// ========================================
-	// 🎛️ ANIMATION RESET ON HOVER - TOGGLE HERE
-	// ========================================
-	// When true: Animation continues from where it was (current behavior)
-	// When false: Animation resets every time you hover over the project
-	const RESET_ANIMATION_ON_HOVER = false;
-	// ========================================
-	
 	// Mobile detection
 	let isMobile = false;
 	
@@ -122,7 +114,6 @@
 	$: containerSizePercent = getContainerSizePercent(dimension, itemsPerRow, isMobile);
 
 	// Make config reactive so it updates when projectTitle changes
-	// Include hoverCount in config to force reset when RESET_ANIMATION_ON_HOVER is false
 	$: config = {
 		uiVisible: false,
 		globalSettings: {
@@ -145,8 +136,7 @@
 			manualMode: true, // Use manual mode for controlled animations
 			triggerFadeIn: isHovering && !isNavigating, // Only fade in when hovering and not navigating
 			triggerFadeOut: (!isHovering && hasEverHovered) || isNavigating, // Fade out when leaving hover (only after having hovered) or during navigation
-			startInvisible: true, // Start invisible, only show on hover
-			_resetKey: RESET_ANIMATION_ON_HOVER ? undefined : hoverCount // Internal key to force reset
+			startInvisible: true // Start invisible, only show on hover
 		},
 		items: [
 			{
@@ -184,8 +174,8 @@
 	let isNavigating = false;
 	let projectElement: HTMLElement;
 	let hasEverHovered = false; // Track if user has ever hovered over this item
-	let animationKey = 0; // Key for resetting BigWheel animation on hover
-	let hoverCount = 0; // Track hover count to force config update
+	let isInView = false; // Gated on IntersectionObserver — defers heavy media/canvas until near viewport
+	let viewObserver: IntersectionObserver | null = null;
 	
 	// Check all initial states immediately during script execution (before any rendering)
 	if (browser) {
@@ -281,10 +271,28 @@
 			// Check if mouse is already over this project
 			setTimeout(() => checkInitialHoverState(), 50);
 		}, 500);
-		
+
+		// Lazy-gate video + BigWheel on viewport proximity (one-way: stay mounted after first reveal)
+		if (browser && projectElement && 'IntersectionObserver' in window) {
+			viewObserver = new IntersectionObserver((entries) => {
+				if (entries[0].isIntersecting) {
+					isInView = true;
+					viewObserver?.disconnect();
+					viewObserver = null;
+				}
+			}, { rootMargin: '400px' });
+			viewObserver.observe(projectElement);
+		} else {
+			isInView = true;
+		}
+
 		return () => {
 			window.removeEventListener('welcome-dismissed', handleWelcomeDismissed);
 			window.removeEventListener('resize', checkMobile);
+			if (viewObserver) {
+				viewObserver.disconnect();
+				viewObserver = null;
+			}
 		};
 	});
 	
@@ -354,21 +362,16 @@
 </script>
 
 		{#if clickable}
-    <a href="/work/{projectUid}" class="block " bind:this={projectElement} data-sveltekit-preload-code data-sveltekit-preload-data
+    <a href="/work/{projectUid}" class="block project-item-cv" bind:this={projectElement} data-sveltekit-preload-code data-sveltekit-preload-data
 	   on:mouseenter={() => {
 		   isHovering = true;
 		   hasEverHovered = true;
-		   // Reset animation on hover if RESET_ANIMATION_ON_HOVER is false
-		   if (!RESET_ANIMATION_ON_HOVER) {
-			   animationKey++;
-			   hoverCount++;
-		   }
 		   if (enableHoverPreview) {
-			   const hoverVideoUrl = effectiveDimension === 'portrait' ? 
-				   selectedPreview?.item?.preview_video_url_portrait : 
+			   const hoverVideoUrl = effectiveDimension === 'portrait' ?
+				   selectedPreview?.item?.preview_video_url_portrait :
 				   selectedPreview?.item?.preview_video_url_landscape;
-			   const hoverPoster = effectiveDimension === 'portrait' ? 
-				   selectedPreview?.item?.preview_image_portrait : 
+			   const hoverPoster = effectiveDimension === 'portrait' ?
+				   selectedPreview?.item?.preview_image_portrait :
 				   selectedPreview?.item?.preview_image_landscape;
 			   if (hoverVideoUrl) {
 				   hoverPreview.set({
@@ -406,6 +409,7 @@
 						containerSizePercent={containerSizePercent}
 						enableOnMobile={ENABLE_VIDEOS_ON_MOBILE}
 						{square}
+						inView={isInView}
 					/>
 					<!-- BigWheel positioned directly over the video (desktop only) -->
 					{#if !isMobile}
@@ -413,9 +417,9 @@
 							class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay"
 							class:force-hidden={isNavigating || !initialRenderComplete || !isMounted}
 						>
-							{#key RESET_ANIMATION_ON_HOVER ? 0 : animationKey}
+							{#if isInView}
 								<BigWheel {config} />
-							{/key}
+							{/if}
 						</div>
 					{/if}
 					
@@ -447,9 +451,9 @@
 							class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay"
 							class:force-hidden={isNavigating || !initialRenderComplete || !isMounted}
 						>
-							{#key RESET_ANIMATION_ON_HOVER ? 0 : animationKey}
+							{#if isInView}
 								<BigWheel {config} />
-							{/key}
+							{/if}
 						</div>
 					{/if}
 					
@@ -489,14 +493,10 @@
 		{/if}
 	</a>
 {:else}
-    <div class="block" bind:this={projectElement} role="group"
+    <div class="block project-item-cv" bind:this={projectElement} role="group"
 	     on:mouseenter={() => {
 		     isHovering = true;
 		     hasEverHovered = true;
-		     if (!RESET_ANIMATION_ON_HOVER) {
-			     animationKey++;
-			     hoverCount++;
-		     }
 		     if (enableHoverPreview) {
 			     const hoverVideoUrl = effectiveDimension === 'portrait' ? 
 				     selectedPreview?.item?.preview_video_url_portrait : 
@@ -540,6 +540,7 @@
 						containerSizePercent={containerSizePercent}
 						enableOnMobile={ENABLE_VIDEOS_ON_MOBILE}
 						{square}
+						inView={isInView}
 					/>
 					<!-- BigWheel positioned directly over the video (desktop only) -->
 					{#if !isMobile}
@@ -547,9 +548,9 @@
 							class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay"
 							class:force-hidden={isNavigating || !initialRenderComplete || !isMounted}
 						>
-							{#key RESET_ANIMATION_ON_HOVER ? 0 : animationKey}
+							{#if isInView}
 								<BigWheel {config} />
-							{/key}
+							{/if}
 						</div>
 					{/if}
 					
@@ -581,9 +582,9 @@
 							class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bigwheel-overlay"
 							class:force-hidden={isNavigating || !initialRenderComplete || !isMounted}
 						>
-							{#key RESET_ANIMATION_ON_HOVER ? 0 : animationKey}
+							{#if isInView}
 								<BigWheel {config} />
-							{/key}
+							{/if}
 						</div>
 					{/if}
 					
@@ -625,6 +626,12 @@
 {/if}
 
 <style>
+	/* Viewport-culling: let the browser skip paint+layout for off-screen grid items */
+	.project-item-cv {
+		content-visibility: auto;
+		contain-intrinsic-size: auto 400px;
+	}
+
 	/* Override BigWheel's layout when used as overlay */
 	:global(.bigwheel-overlay > div) {
 		/* Reset the flex layout */

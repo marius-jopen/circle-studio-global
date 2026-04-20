@@ -447,7 +447,7 @@
 
         if (videoElement) {
             const canPlayNativeHls = typeof videoElement.canPlayType === 'function' && videoElement.canPlayType('application/vnd.apple.mpegurl');
-            const preferNativeHls = canPlayNativeHls && isMobile;
+            const preferNativeHls = !!canPlayNativeHls;
             if (useHls) {
                 if (preferNativeHls) {
                     videoElement.src = hlsUrl;
@@ -552,18 +552,19 @@
 		} catch (_) {}
 		
 		if (useHls) {
-			import('hls.js').then(({ default: Hls }) => {
-				if (Hls.isSupported()) {
-					const hls = new Hls({ autoStartLoad: true });
-					hls.loadSource(hlsUrl);
-					hls.attachMedia(videoElement);
-					
-					// Store HLS instance for cleanup
-					(videoElement as any).hls = hls;
-				} else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-					videoElement.src = hlsUrl;
-				}
-			});
+			const canPlayNativeHls = typeof videoElement.canPlayType === 'function' && videoElement.canPlayType('application/vnd.apple.mpegurl');
+			if (canPlayNativeHls) {
+				videoElement.src = hlsUrl;
+			} else {
+				import('hls.js').then(({ default: Hls }) => {
+					if (Hls.isSupported()) {
+						const hls = new Hls({ autoStartLoad: true });
+						hls.loadSource(hlsUrl);
+						hls.attachMedia(videoElement);
+						(videoElement as any).hls = hls;
+					}
+				});
+			}
 		} else {
 			videoElement.src = videoUrl;
 		}

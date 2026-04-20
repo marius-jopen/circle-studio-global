@@ -33,6 +33,8 @@
   let isAnimating = false;
   let lastTimestamp = 0;
   let elapsedTime = 0;
+  let isVisible = true;
+  let visibilityObserver: IntersectionObserver | null = null;
 
   // Audio-aware throttling
   let audioThrottleLevel = 0; // 0 = normal, 1 = reduced, 2 = minimal
@@ -286,6 +288,25 @@
   let lastCanvasDpr = 0;
   let cachedCtx: CanvasRenderingContext2D | null = null;
 
+  // Cache letter widths — recompute only when text/font/size changes, not every frame
+  let cachedLetterWidths: number[] = [];
+  let lastWidthsKey = '';
+  function getLetterWidths(letters: { char: string; bold: boolean }[], size: number, fontFam: string): number[] {
+    const key = `${size}|${fontFam}|${letters.map(l => (l.bold ? 'b' : '') + l.char).join('')}`;
+    if (key === lastWidthsKey) return cachedLetterWidths;
+    if (!browser) return letters.map(() => 0);
+    if (!measureCanvas) measureCanvas = document.createElement('canvas');
+    const mctx = measureCanvas.getContext('2d');
+    if (!mctx) return letters.map(() => 0);
+    const widths = letters.map(({ char, bold }) => {
+      mctx.font = bold ? `bold ${size}px ${fontFam}` : `${size}px ${fontFam}`;
+      return mctx.measureText(char).width;
+    });
+    cachedLetterWidths = widths;
+    lastWidthsKey = key;
+    return widths;
+  }
+
   function draw() {
     if (!canvas) return;
     if (!cachedCtx) cachedCtx = canvas.getContext('2d', { alpha: true });
@@ -293,7 +314,7 @@
     if (!ctx) return;
     const baseDpr = window.devicePixelRatio || 1;
     const isMobileCanvas = window.innerWidth < 768;
-    const dpr = isMobileCanvas ? Math.max(baseDpr * 2.5, 6) : baseDpr;
+    const dpr = isMobileCanvas ? Math.min(baseDpr * 1.25, 2.5) : baseDpr;
 
     // Only resize canvas when containerSize or dpr changes
     if (containerSize !== lastCanvasSize || dpr !== lastCanvasDpr) {
@@ -323,10 +344,7 @@
     const letters = parsedLetters;
     const fontFamily = `"${primaryFontFamily}", Arial, Helvetica, sans-serif`;
     const drawRadius = autoTextSize ? adaptiveRadius : radius;
-    const letterWidths = letters.map(({ char, bold }) => {
-      ctx.font = bold ? `bold ${effectiveFontSize}px ${fontFamily}` : `${effectiveFontSize}px ${fontFamily}`;
-      return ctx.measureText(char).width;
-    });
+    const letterWidths = getLetterWidths(letters, effectiveFontSize, fontFamily);
     const totalWidth = letterWidths.reduce((a, b) => a + b, 0);
     const circumference = 2 * Math.PI * drawRadius;
     let maxSpacingTotal = Math.max(0, circumference - totalWidth);
@@ -406,21 +424,25 @@
     if (!lastTimestamp) {
       lastTimestamp = timestamp;
     }
-    
+
     const deltaTime = (timestamp - lastTimestamp) / 1000;
     lastTimestamp = timestamp;
-    
+
     if (!paused) {
       rotation += rotationSpeed * deltaTime;
       elapsedTime += deltaTime;
-      
+
       // Update fade animations
       updateFadeAnimation();
       updateLetterOpacities();
     }
-    
-    draw();
-    
+
+    // Skip drawing when fully idle: paused with no fade transition in progress
+    const isFading = fadePhase === 'fadingIn' || fadePhase === 'fadingOut';
+    if (!paused || isFading) {
+      draw();
+    }
+
     if (isAnimating) {
       animationFrame = requestAnimationFrame(animate);
     }
@@ -484,8 +506,7 @@
     if (!isAnimating) {
       isAnimating = true;
       lastTimestamp = 0;
-      // Use optimized animation for better audio compatibility
-      animateOptimized();
+      animationFrame = requestAnimationFrame(animate);
     }
   }
 
@@ -617,7 +638,7 @@
   // Watch for paused state changes
   $: {
     if (canvas) {
-      if (!paused && !isAnimating) {
+      if (!paused && !isAnimating && isVisible) {
         startAnimation();
       }
       // Don't stop the animation loop when paused, just freeze the rotation and animations
@@ -662,7 +683,31 @@
     // Start animation only after at least one draw queued post fonts readiness
     // Small delay ensures fonts-applied canvas paint
     setTimeout(() => startAnimation(), 0);
-    return () => stopAnimation();
+
+    // Pause RAF loop when canvas scrolls off-screen
+    if (browser && canvas && 'IntersectionObserver' in window) {
+      visibilityObserver = new IntersectionObserver((entries) => {
+        const entry = entries[0];
+        const nextVisible = entry.isIntersecting || entry.intersectionRatio > 0;
+        if (nextVisible === isVisible) return;
+        isVisible = nextVisible;
+        if (isVisible) {
+          lastTimestamp = 0;
+          startAnimation();
+        } else {
+          stopAnimation();
+        }
+      }, { rootMargin: '200px' });
+      visibilityObserver.observe(canvas);
+    }
+
+    return () => {
+      stopAnimation();
+      if (visibilityObserver) {
+        visibilityObserver.disconnect();
+        visibilityObserver = null;
+      }
+    };
   });
 </script>
 

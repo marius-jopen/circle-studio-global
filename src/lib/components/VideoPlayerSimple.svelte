@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 
 	interface Props {
 		hlsUrl: string;
@@ -11,6 +10,7 @@
 		containerSizePercent?: number;
 		enableOnMobile?: boolean;
 		square?: boolean;
+		inView?: boolean;
 	}
 
 	// Mobile detection
@@ -25,10 +25,12 @@
 		itemsPerRow = 1,
 		containerSizePercent = 80,
 		enableOnMobile = false,
-		square = false
+		square = false,
+		inView = true
 	}: Props = $props();
 
 	let videoElement: HTMLVideoElement;
+	let hlsInstance: any = null;
 
 	const useHls = $derived(hlsUrl && hlsUrl.includes('.m3u8'));
 	const videoUrl = $derived(hlsUrl.replace('.m3u8', '.mp4'));
@@ -139,16 +141,24 @@
 		}
 	};
 
-	onMount(() => {
+	let hasInitialized = false;
+
+	$effect(() => {
+		if (!inView || hasInitialized || !videoElement) return;
+		hasInitialized = true;
+		initVideo();
+	});
+
+	function initVideo() {
 		if (videoElement) {
 			videoElement.muted = true;
 			videoElement.autoplay = !isMobile || enableOnMobile; // Enable autoplay if mobile videos are enabled
 			videoElement.playbackRate = playbackRate;
-			
+
 			// Set webkit-specific attributes for better iOS compatibility
 			videoElement.setAttribute('webkit-playsinline', 'true');
 			videoElement.setAttribute('x-webkit-airplay', 'allow');
-			
+
 			// Try to play if not mobile OR if mobile videos are enabled
 			if (!isMobile || enableOnMobile) {
 				tryPlay();
@@ -157,6 +167,11 @@
 
 		// Load HLS if not mobile OR if mobile videos are enabled
 		if (useHls && videoElement && (!isMobile || enableOnMobile)) {
+			// Safari: use native HLS directly (skip hls.js bundle for faster first frame)
+			if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+				videoElement.src = hlsUrl;
+				return;
+			}
 			import('hls.js').then(async ({ default: Hls }) => {
 				if (Hls.isSupported()) {
 					const networkQuality = await getNetworkQuality();
@@ -218,8 +233,12 @@
 					});
 
 					hls.loadSource(hlsUrl);
-					if (videoElement) {
+					if (videoElement && inView) {
 						hls.attachMedia(videoElement);
+						hlsInstance = hls;
+					} else {
+						// View left before async import resolved — discard
+						hls.destroy();
 					}
 				} else if (videoElement && videoElement.canPlayType('application/vnd.apple.mpegurl')) {
 					videoElement.src = hlsUrl;
@@ -229,7 +248,7 @@
 			// On mobile, just set the poster and don't load video sources
 			videoElement.poster = posterImage?.url || '';
 		}
-	});
+	}
 
 	// Keep playbackRate in sync with prop changes (Svelte runes)
 	$effect(() => {
@@ -261,11 +280,13 @@
 			controlsList="nodownload nofullscreen noremoteplayback"
 			autoplay
 		>
-			{#if useHls}
-				<source src={hlsUrl} type="application/x-mpegURL" />
-				<source src={videoUrl} type="video/mp4" />
-			{:else}
-				<source src={videoUrl} type="video/mp4" />
+			{#if inView}
+				{#if useHls}
+					<source src={hlsUrl} type="application/x-mpegURL" />
+					<source src={videoUrl} type="video/mp4" />
+				{:else}
+					<source src={videoUrl} type="video/mp4" />
+				{/if}
 			{/if}
 		</video>
 	{/if}
