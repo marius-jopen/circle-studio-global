@@ -81,14 +81,6 @@
             "placeholder": ""
           }
         },
-        "skill_image": {
-          "type": "Image",
-          "config": {
-            "label": "Skill Image",
-            "constraint": {},
-            "thumbnails": []
-          }
-        },
         "poetry": {
           "type": "Group",
           "config": {

@@ -40,6 +40,10 @@
 				"__TYPE__": "FieldContent",
 				"value": "music",
 				"type": "Text"
+			},
+			"hidden": {
+				"__TYPE__": "BooleanContent",
+				"value": true
 			}
 		},
 		"items": []

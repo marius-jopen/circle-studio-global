@@ -918,16 +918,6 @@ export interface AboutContentSliceDefaultPrimary {
 	skill_6: prismic.KeyTextField;
 
 	/**
-	 * Skill Image field in *AboutContent → Default → Primary*
-	 *
-	 * - **Field Type**: Image
-	 * - **Placeholder**: *None*
-	 * - **API ID Path**: about_content.default.primary.skill_image
-	 * - **Documentation**: https://prismic.io/docs/fields/image
-	 */
-	skill_image: prismic.ImageField<never>;
-
-	/**
 	 * Poetry field in *AboutContent → Default → Primary*
 	 *
 	 * - **Field Type**: Group
@@ -1250,6 +1240,26 @@ export interface ContactMediaSliceDefaultPrimary {
 	 * - **Documentation**: https://prismic.io/docs/fields/text
 	 */
 	mail: prismic.KeyTextField;
+
+	/**
+	 * Related Project field in *ContactMedia → Default → Primary*
+	 *
+	 * - **Field Type**: Content Relationship
+	 * - **Placeholder**: Link to a project
+	 * - **API ID Path**: contact_media.default.primary.project_link
+	 * - **Documentation**: https://prismic.io/docs/fields/content-relationship
+	 */
+	project_link: prismic.ContentRelationshipField<'projects'>;
+
+	/**
+	 * Random Project field in *ContactMedia → Default → Primary*
+	 *
+	 * - **Field Type**: Select
+	 * - **Placeholder**: Off
+	 * - **API ID Path**: contact_media.default.primary.random_project
+	 * - **Documentation**: https://prismic.io/docs/fields/select
+	 */
+	random_project: prismic.SelectField<'off' | 'random_project' | 'random_featured_project'>;
 }
 
 /**
@@ -1328,6 +1338,17 @@ export type ContactUsHeaderSlice = prismic.SharedSlice<
  * Primary content in *Conversation → Default → Primary*
  */
 export interface ConversationSliceDefaultPrimary {
+	/**
+	 * Hidden field in *Conversation → Default → Primary*
+	 *
+	 * - **Field Type**: Boolean
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: false
+	 * - **API ID Path**: conversation.default.primary.hidden
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
+	 */
+	hidden: prismic.BooleanField;
+
 	/**
 	 * Title field in *Conversation → Default → Primary*
 	 *
@@ -2156,6 +2177,17 @@ export type VideoAndGeneratorSlice = prismic.SharedSlice<
  * Primary content in *VideoAutoplay → Default → Primary*
  */
 export interface VideoAutoplaySliceDefaultPrimary {
+	/**
+	 * Hidden field in *VideoAutoplay → Default → Primary*
+	 *
+	 * - **Field Type**: Boolean
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: false
+	 * - **API ID Path**: video_autoplay.default.primary.hidden
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
+	 */
+	hidden: prismic.BooleanField;
+
 	/**
 	 * Image field in *VideoAutoplay → Default → Primary*
 	 *
