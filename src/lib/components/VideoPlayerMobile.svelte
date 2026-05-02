@@ -128,7 +128,8 @@
 		el.classList.add('bg-white');
 
 		if (resolvedUrl.includes('.m3u8')) {
-			if (el.canPlayType('application/vnd.apple.mpegurl')) {
+			const isSafari = /^((?!chrome|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent);
+			if (isSafari && el.canPlayType('application/vnd.apple.mpegurl')) {
 				el.src = resolvedUrl;
 				el.load();
 			} else {

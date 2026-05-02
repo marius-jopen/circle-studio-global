@@ -447,7 +447,9 @@
 
         if (videoElement) {
             const canPlayNativeHls = typeof videoElement.canPlayType === 'function' && videoElement.canPlayType('application/vnd.apple.mpegurl');
-            const preferNativeHls = !!canPlayNativeHls;
+            const ua = navigator.userAgent;
+            const isSafari = /^((?!chrome|android|crios|fxios|edg).)*safari/i.test(ua);
+            const preferNativeHls = !!canPlayNativeHls && isSafari;
             if (useHls) {
                 if (preferNativeHls) {
                     videoElement.src = hlsUrl;
@@ -553,7 +555,8 @@
 		
 		if (useHls) {
 			const canPlayNativeHls = typeof videoElement.canPlayType === 'function' && videoElement.canPlayType('application/vnd.apple.mpegurl');
-			if (canPlayNativeHls) {
+			const isSafari = /^((?!chrome|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent);
+			if (canPlayNativeHls && isSafari) {
 				videoElement.src = hlsUrl;
 			} else {
 				import('hls.js').then(({ default: Hls }) => {

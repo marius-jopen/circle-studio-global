@@ -168,7 +168,8 @@
 		// Load HLS if not mobile OR if mobile videos are enabled
 		if (useHls && videoElement && (!isMobile || enableOnMobile)) {
 			// Safari: use native HLS directly (skip hls.js bundle for faster first frame)
-			if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+			const isSafari = /^((?!chrome|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent);
+			if (isSafari && videoElement.canPlayType('application/vnd.apple.mpegurl')) {
 				videoElement.src = hlsUrl;
 				return;
 			}
@@ -280,13 +281,8 @@
 			controlsList="nodownload nofullscreen noremoteplayback"
 			autoplay
 		>
-			{#if inView}
-				{#if useHls}
-					<source src={hlsUrl} type="application/x-mpegURL" />
-					<source src={videoUrl} type="video/mp4" />
-				{:else}
-					<source src={videoUrl} type="video/mp4" />
-				{/if}
+			{#if inView && !useHls}
+				<source src={videoUrl} type="video/mp4" />
 			{/if}
 		</video>
 	{/if}
