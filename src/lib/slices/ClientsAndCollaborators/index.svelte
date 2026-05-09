@@ -156,6 +156,8 @@
 							rotationSpeed={rotationSpeed}
 							fontSize={wheelFontSize}
 							fit={isMobile ? 'safe' : 'tight'}
+							staggerMs={40}
+							revealMs={150}
 							bind:isHovering={clientsHovering}
 						/>
 					{/if}
@@ -178,6 +180,9 @@
 							rotationSpeed={-rotationSpeed}
 							fontSize={wheelFontSize}
 							fit={isMobile ? 'safe' : 'tight'}
+							staggerMs={40}
+							revealMs={150}
+							reverseReveal={true}
 							bind:isHovering={collaboratorsHovering}
 						/>
 					{/if}

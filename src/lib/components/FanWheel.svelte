@@ -13,8 +13,14 @@
     export let fit: 'safe' | 'tight' = 'tight';
     // For testing denser wheels: repeat items N times around the circle
     export let repeat: number = 1;
+    // When > 0, items appear one-by-one with this delay (ms) between them.
+    export let staggerMs: number = 0;
+    // Per-item opacity transition duration (ms) when staggered.
+    export let revealMs: number = 200;
+    // When true, the staggered reveal runs from the last item back to the first.
+    export let reverseReveal: boolean = false;
 	import { browser } from '$app/environment';
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 
 	$: size = radius * 2;
 	$: repeatSafe = Math.max(1, Math.floor(repeat));
@@ -80,6 +86,39 @@
 
 	// Compute the maximum text width to size the outer container
 	$: maxTextWidth = Math.max(0, ...items.map((t) => getTextWidth(t)));
+
+	// Staggered reveal: per-item visibility so direction can flip
+	let visibleItems: boolean[] = [];
+	let revealTimers: ReturnType<typeof setTimeout>[] = [];
+
+	function clearRevealTimers() {
+		revealTimers.forEach((t) => clearTimeout(t));
+		revealTimers = [];
+	}
+
+	$: scheduleReveal(renderItems.length, staggerMs, reverseReveal);
+
+	function scheduleReveal(total: number, stagger: number, reverse: boolean) {
+		if (!browser) {
+			visibleItems = new Array(total).fill(true);
+			return;
+		}
+		clearRevealTimers();
+		if (stagger <= 0) {
+			visibleItems = new Array(total).fill(true);
+			return;
+		}
+		visibleItems = new Array(total).fill(false);
+		for (let i = 0; i < total; i++) {
+			const order = reverse ? (total - 1 - i) : i;
+			revealTimers.push(setTimeout(() => {
+				visibleItems[i] = true;
+				visibleItems = visibleItems; // trigger reactivity
+			}, order * stagger));
+		}
+	}
+
+	onDestroy(() => clearRevealTimers());
 	// Outer size: width accounts for longest label; height configurable by `fit`
 	$: outerWidth = 2 * (radius + maxTextWidth);
 	$: outerHeight = 2 * (radius + (fit === 'safe' ? maxTextWidth : fontSize));
@@ -97,6 +136,8 @@
 			<!-- Rotor spinning the entire circle (smooth rAF-driven) -->
 			<div class="absolute inset-0 text-primary wheel" style={`transform: rotate(${angle}deg); will-change: transform;`}>
 			{#each renderItems as label, i}
+				{@const itemOpacity = staggerMs > 0 ? (visibleItems[i] ? 1 : 0) : 1}
+				{@const itemTransition = staggerMs > 0 ? `opacity ${revealMs}ms ease-out` : 'none'}
 				<div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" role="group">
 					{#if renderUrls && renderUrls[i]}
 						<a
@@ -104,12 +145,12 @@
 							target="_blank"
 							rel="noopener noreferrer"
 							class="block whitespace-nowrap select-none transition-colors duration-200 hover:text-primary"
-							style={`transform: rotate(${angleFor(i)}deg) translateY(-${getAdjustedRadius(label)}px) rotate(90deg); transform-origin:50% 50%; font-size:${fontSize}px;`}
+							style={`transform: rotate(${angleFor(i)}deg) translateY(-${getAdjustedRadius(label)}px) rotate(90deg); transform-origin:50% 50%; font-size:${fontSize}px; opacity:${itemOpacity}; transition:${itemTransition};`}
 						>{label}</a>
 					{:else}
 						<span
 							class="block whitespace-nowrap select-none transition-colors duration-200 hover:text-primary"
-							style={`transform: rotate(${angleFor(i)}deg) translateY(-${getAdjustedRadius(label)}px) rotate(90deg); transform-origin:50% 50%; font-size:${fontSize}px;`}
+							style={`transform: rotate(${angleFor(i)}deg) translateY(-${getAdjustedRadius(label)}px) rotate(90deg); transform-origin:50% 50%; font-size:${fontSize}px; opacity:${itemOpacity}; transition:${itemTransition};`}
 						>{label}</span>
 					{/if}
 				</div>
