@@ -21,6 +21,8 @@
 
 	// Get items from slice - Group fields are arrays
 	let items = $derived((slice.primary?.items as any[]) || []);
+
+	let headline = $derived(((slice.primary as any)?.headline as string | null | undefined) ?? '');
 	
 
 	// Sort by year descending
@@ -107,6 +109,13 @@
 <section data-slice-type={slice.slice_type} data-slice-variation={slice.variation} class="list-none">
 	{#if sortedItems.length > 0}
 		<div class="mb-2 divide-y divide-black/10 text-black md:hover:text-black/25 list-none rounded px-4 py-1" class:bg-white={isAbout} class:bg-neutral-100={!isAbout}>
+			{#if headline}
+				<div class="list-item block py-1.5 text-black">
+					<div class="grid grid-cols-2 md:grid-cols-[25%_1fr_auto] items-start gap-2 md:gap-4 paragraph-1">
+						<div class="col-span-2 md:col-span-3 text-left tracking-wide text-xs md:text-base truncate min-w-0">{headline}</div>
+					</div>
+				</div>
+			{/if}
 			{#each sortedItems as item, index}
 				{@const linkUrl = getLinkUrl(item)}
 				{@const linkText = getLinkText(item)}

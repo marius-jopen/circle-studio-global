@@ -12,6 +12,13 @@
       "description": "Default",
       "imageUrl": "",
       "primary": {
+        "headline": {
+          "type": "Text",
+          "config": {
+            "label": "Headline",
+            "placeholder": ""
+          }
+        },
         "items": {
           "type": "Group",
           "config": {
