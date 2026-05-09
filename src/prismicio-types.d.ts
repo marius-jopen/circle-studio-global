@@ -250,6 +250,7 @@ type PageDocumentDataSlicesSlice =
 	| ClientsAndCollaboratorsSlice
 	| VideoAutoplaySlice
 	| VideoAndGeneratorSlice
+	| VideoAndGeneratorMultipleSlice
 	| ConversationSlice
 	| ContactMediaSlice
 	| TagCloudSlice
@@ -260,6 +261,7 @@ type PageDocumentDataSlicesSlice =
 	| VideoSlice
 	| SpacerSlice
 	| DocumentationSlice
+	| MediaMultipleSlice
 	| FeatureListSlice
 	| InputSlice
 	| WheelSlice
@@ -559,7 +561,8 @@ type ProjectsDocumentDataSlicesSlice =
 	| InputSlice
 	| RichTextSlice
 	| SpacerSlice
-	| DocumentationSlice;
+	| DocumentationSlice
+	| MediaMultipleSlice;
 
 /**
  * Content for Projects documents
@@ -1528,6 +1531,106 @@ type DocumentationSliceVariation = DocumentationSliceDefault;
 export type DocumentationSlice = prismic.SharedSlice<'documentation', DocumentationSliceVariation>;
 
 /**
+ * Item in *MediaMultiple → Default → Primary → items*
+ */
+export interface MediaMultipleSliceDefaultPrimaryItemsItem {
+	/**
+	 * Image field in *MediaMultiple → Default → Primary → items*
+	 *
+	 * - **Field Type**: Image
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: media_multiple.default.primary.items[].image
+	 * - **Documentation**: https://prismic.io/docs/fields/image
+	 */
+	image: prismic.ImageField<never>;
+
+	/**
+	 * Video Url field in *MediaMultiple → Default → Primary → items*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: media_multiple.default.primary.items[].video_url
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	video_url: prismic.KeyTextField;
+
+	/**
+	 * Play field in *MediaMultiple → Default → Primary → items*
+	 *
+	 * - **Field Type**: Select
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: no-sound
+	 * - **API ID Path**: media_multiple.default.primary.items[].play
+	 * - **Documentation**: https://prismic.io/docs/fields/select
+	 */
+	play: prismic.SelectField<'no-sound' | 'has-sound' | 'click-to-play-with-sound', 'filled'>;
+
+	/**
+	 * Hide on Mobile field in *MediaMultiple → Default → Primary → items*
+	 *
+	 * - **Field Type**: Boolean
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: false
+	 * - **API ID Path**: media_multiple.default.primary.items[].hide_on_mobile
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
+	 */
+	hide_on_mobile: prismic.BooleanField;
+
+	/**
+	 * No Rounded Corners field in *MediaMultiple → Default → Primary → items*
+	 *
+	 * - **Field Type**: Boolean
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: false
+	 * - **API ID Path**: media_multiple.default.primary.items[].no_rounded_corners
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
+	 */
+	no_rounded_corners: prismic.BooleanField;
+}
+
+/**
+ * Primary content in *MediaMultiple → Default → Primary*
+ */
+export interface MediaMultipleSliceDefaultPrimary {
+	/**
+	 * items field in *MediaMultiple → Default → Primary*
+	 *
+	 * - **Field Type**: Group
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: media_multiple.default.primary.items[]
+	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+	 */
+	items: prismic.GroupField<Simplify<MediaMultipleSliceDefaultPrimaryItemsItem>>;
+}
+
+/**
+ * Default variation for MediaMultiple Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type MediaMultipleSliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Simplify<MediaMultipleSliceDefaultPrimary>,
+	never
+>;
+
+/**
+ * Slice variation for *MediaMultiple*
+ */
+type MediaMultipleSliceVariation = MediaMultipleSliceDefault;
+
+/**
+ * MediaMultiple Shared Slice
+ *
+ * - **API ID**: `media_multiple`
+ * - **Description**: Single fullscreen slideshow of images or videos
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type MediaMultipleSlice = prismic.SharedSlice<'media_multiple', MediaMultipleSliceVariation>;
+
+/**
  * Primary content in *FeatureList → Default → Primary*
  */
 export interface FeatureListSliceDefaultPrimary {
@@ -2174,6 +2277,112 @@ export type VideoAndGeneratorSlice = prismic.SharedSlice<
 >;
 
 /**
+ * Item in *VideoAndGeneratorMultiple → Default → Primary → Media*
+ */
+export interface VideoAndGeneratorMultipleSliceDefaultPrimaryMediaItem {
+	/**
+	 * Image field in *VideoAndGeneratorMultiple → Default → Primary → Media*
+	 *
+	 * - **Field Type**: Image
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: video_and_generator_multiple.default.primary.media[].image
+	 * - **Documentation**: https://prismic.io/docs/fields/image
+	 */
+	image: prismic.ImageField<never>;
+
+	/**
+	 * Video Url field in *VideoAndGeneratorMultiple → Default → Primary → Media*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: video_and_generator_multiple.default.primary.media[].video_url
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	video_url: prismic.KeyTextField;
+}
+
+/**
+ * Item in *VideoAndGeneratorMultiple → Default → Primary → Poetry*
+ */
+export interface VideoAndGeneratorMultipleSliceDefaultPrimaryPoetryItem {
+	/**
+	 * Item field in *VideoAndGeneratorMultiple → Default → Primary → Poetry*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: video_and_generator_multiple.default.primary.poetry[].item
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	item: prismic.KeyTextField;
+}
+
+/**
+ * Primary content in *VideoAndGeneratorMultiple → Default → Primary*
+ */
+export interface VideoAndGeneratorMultipleSliceDefaultPrimary {
+	/**
+	 * Switch field in *VideoAndGeneratorMultiple → Default → Primary*
+	 *
+	 * - **Field Type**: Boolean
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: false
+	 * - **API ID Path**: video_and_generator_multiple.default.primary.switch
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
+	 */
+	switch: prismic.BooleanField;
+
+	/**
+	 * Media field in *VideoAndGeneratorMultiple → Default → Primary*
+	 *
+	 * - **Field Type**: Group
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: video_and_generator_multiple.default.primary.media[]
+	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+	 */
+	media: prismic.GroupField<Simplify<VideoAndGeneratorMultipleSliceDefaultPrimaryMediaItem>>;
+
+	/**
+	 * Poetry field in *VideoAndGeneratorMultiple → Default → Primary*
+	 *
+	 * - **Field Type**: Group
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: video_and_generator_multiple.default.primary.poetry[]
+	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+	 */
+	poetry: prismic.GroupField<Simplify<VideoAndGeneratorMultipleSliceDefaultPrimaryPoetryItem>>;
+}
+
+/**
+ * Default variation for VideoAndGeneratorMultiple Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type VideoAndGeneratorMultipleSliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Simplify<VideoAndGeneratorMultipleSliceDefaultPrimary>,
+	never
+>;
+
+/**
+ * Slice variation for *VideoAndGeneratorMultiple*
+ */
+type VideoAndGeneratorMultipleSliceVariation = VideoAndGeneratorMultipleSliceDefault;
+
+/**
+ * VideoAndGeneratorMultiple Shared Slice
+ *
+ * - **API ID**: `video_and_generator_multiple`
+ * - **Description**: VideoAndGenerator with multiple images or videos
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type VideoAndGeneratorMultipleSlice = prismic.SharedSlice<
+	'video_and_generator_multiple',
+	VideoAndGeneratorMultipleSliceVariation
+>;
+
+/**
  * Primary content in *VideoAutoplay → Default → Primary*
  */
 export interface VideoAutoplaySliceDefaultPrimary {
@@ -2378,6 +2587,11 @@ declare module '@prismicio/client' {
 			DocumentationSliceDefaultPrimary,
 			DocumentationSliceVariation,
 			DocumentationSliceDefault,
+			MediaMultipleSlice,
+			MediaMultipleSliceDefaultPrimaryItemsItem,
+			MediaMultipleSliceDefaultPrimary,
+			MediaMultipleSliceVariation,
+			MediaMultipleSliceDefault,
 			FeatureListSlice,
 			FeatureListSliceDefaultPrimary,
 			FeatureListSliceVariation,
@@ -2421,6 +2635,12 @@ declare module '@prismicio/client' {
 			VideoAndGeneratorSliceDefaultPrimary,
 			VideoAndGeneratorSliceVariation,
 			VideoAndGeneratorSliceDefault,
+			VideoAndGeneratorMultipleSlice,
+			VideoAndGeneratorMultipleSliceDefaultPrimaryMediaItem,
+			VideoAndGeneratorMultipleSliceDefaultPrimaryPoetryItem,
+			VideoAndGeneratorMultipleSliceDefaultPrimary,
+			VideoAndGeneratorMultipleSliceVariation,
+			VideoAndGeneratorMultipleSliceDefault,
 			VideoAutoplaySlice,
 			VideoAutoplaySliceDefaultPrimary,
 			VideoAutoplaySliceVariation,

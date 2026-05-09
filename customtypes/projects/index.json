@@ -202,6 +202,9 @@
 						},
 						"documentation": {
 							"type": "SharedSlice"
+						},
+						"media_multiple": {
+							"type": "SharedSlice"
 						}
 					}
 				}

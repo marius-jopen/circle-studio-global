@@ -13,12 +13,14 @@ import FeatureList from './FeatureList/index.svelte';
 import Input from './Input/index.svelte';
 import List from './List/index.svelte';
 import Logo from './Logo/index.svelte';
+import MediaMultiple from './MediaMultiple/index.svelte';
 import RichText from './RichText/index.svelte';
 import Spacer from './Spacer/index.svelte';
 import TagCloud from './TagCloud/index.svelte';
 import TextList from './TextList/index.svelte';
 import Video from './Video/index.svelte';
 import VideoAndGenerator from './VideoAndGenerator/index.svelte';
+import VideoAndGeneratorMultiple from './VideoAndGeneratorMultiple/index.svelte';
 import VideoAutoplay from './VideoAutoplay/index.svelte';
 import Wheel from './Wheel/index.svelte';
 
@@ -36,12 +38,14 @@ export const components = {
 	input: Input,
 	list: List,
 	logo: Logo,
+	media_multiple: MediaMultiple,
 	rich_text: RichText,
 	spacer: Spacer,
 	tag_cloud: TagCloud,
 	text_list: TextList,
 	video: Video,
 	video_and_generator: VideoAndGenerator,
+	video_and_generator_multiple: VideoAndGeneratorMultiple,
 	video_autoplay: VideoAutoplay,
 	wheel: Wheel
 };
