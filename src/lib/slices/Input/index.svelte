@@ -214,7 +214,8 @@
 			triggerFadeIn: triggerFadeInState,
 			fadeInTime: 2.5,
 			fadeOutTime: FADE_OUT_TIME,
-			triggerFadeOut: triggerFadeOutState
+			triggerFadeOut: triggerFadeOutState,
+			revealMode: 'typewriter' as const
 		}
 	});
 </script>
