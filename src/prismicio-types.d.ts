@@ -262,6 +262,7 @@ type PageDocumentDataSlicesSlice =
 	| SpacerSlice
 	| DocumentationSlice
 	| MediaMultipleSlice
+	| MediaAndCircleSlice
 	| FeatureListSlice
 	| InputSlice
 	| WheelSlice
@@ -1631,6 +1632,108 @@ type MediaMultipleSliceVariation = MediaMultipleSliceDefault;
 export type MediaMultipleSlice = prismic.SharedSlice<'media_multiple', MediaMultipleSliceVariation>;
 
 /**
+ * Item in *MediaAndCircle → Default → Primary → Media*
+ */
+export interface MediaAndCircleSliceDefaultPrimaryMediaItem {
+	/**
+	 * Image field in *MediaAndCircle → Default → Primary → Media*
+	 *
+	 * - **Field Type**: Image
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: media_and_circle.default.primary.media[].image
+	 * - **Documentation**: https://prismic.io/docs/fields/image
+	 */
+	image: prismic.ImageField<never>;
+
+	/**
+	 * Video Url field in *MediaAndCircle → Default → Primary → Media*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: media_and_circle.default.primary.media[].video_url
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	video_url: prismic.KeyTextField;
+}
+
+/**
+ * Primary content in *MediaAndCircle → Default → Primary*
+ */
+export interface MediaAndCircleSliceDefaultPrimary {
+	/**
+	 * Switch column order field in *MediaAndCircle → Default → Primary*
+	 *
+	 * - **Field Type**: Boolean
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: false
+	 * - **API ID Path**: media_and_circle.default.primary.switch
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
+	 */
+	switch: prismic.BooleanField;
+
+	/**
+	 * Invert circle colors field in *MediaAndCircle → Default → Primary*
+	 *
+	 * - **Field Type**: Boolean
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: false
+	 * - **API ID Path**: media_and_circle.default.primary.invert
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
+	 */
+	invert: prismic.BooleanField;
+
+	/**
+	 * Media field in *MediaAndCircle → Default → Primary*
+	 *
+	 * - **Field Type**: Group
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: media_and_circle.default.primary.media[]
+	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+	 */
+	media: prismic.GroupField<Simplify<MediaAndCircleSliceDefaultPrimaryMediaItem>>;
+
+	/**
+	 * Text field in *MediaAndCircle → Default → Primary*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *will never repeat again*
+	 * - **API ID Path**: media_and_circle.default.primary.text
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	text: prismic.KeyTextField;
+}
+
+/**
+ * Default variation for MediaAndCircle Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type MediaAndCircleSliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Simplify<MediaAndCircleSliceDefaultPrimary>,
+	never
+>;
+
+/**
+ * Slice variation for *MediaAndCircle*
+ */
+type MediaAndCircleSliceVariation = MediaAndCircleSliceDefault;
+
+/**
+ * MediaAndCircle Shared Slice
+ *
+ * - **API ID**: `media_and_circle`
+ * - **Description**: Media slideshow on the left, cycling text circle on the right
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type MediaAndCircleSlice = prismic.SharedSlice<
+	'media_and_circle',
+	MediaAndCircleSliceVariation
+>;
+
+/**
  * Primary content in *FeatureList → Default → Primary*
  */
 export interface FeatureListSliceDefaultPrimary {
@@ -2592,6 +2695,11 @@ declare module '@prismicio/client' {
 			MediaMultipleSliceDefaultPrimary,
 			MediaMultipleSliceVariation,
 			MediaMultipleSliceDefault,
+			MediaAndCircleSlice,
+			MediaAndCircleSliceDefaultPrimaryMediaItem,
+			MediaAndCircleSliceDefaultPrimary,
+			MediaAndCircleSliceVariation,
+			MediaAndCircleSliceDefault,
 			FeatureListSlice,
 			FeatureListSliceDefaultPrimary,
 			FeatureListSliceVariation,

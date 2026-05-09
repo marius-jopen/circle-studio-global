@@ -1,0 +1,68 @@
+{
+  "id": "media_and_circle",
+  "type": "SharedSlice",
+  "name": "MediaAndCircle",
+  "description": "Media slideshow on the left, cycling text circle on the right",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "switch": {
+          "type": "Boolean",
+          "config": {
+            "label": "Switch column order",
+            "placeholder_false": "false",
+            "placeholder_true": "true",
+            "default_value": false
+          }
+        },
+        "invert": {
+          "type": "Boolean",
+          "config": {
+            "label": "Invert circle colors",
+            "placeholder_false": "false",
+            "placeholder_true": "true",
+            "default_value": false
+          }
+        },
+        "media": {
+          "type": "Group",
+          "config": {
+            "label": "Media",
+            "repeat": true,
+            "fields": {
+              "image": {
+                "type": "Image",
+                "config": {
+                  "label": "Image",
+                  "constraint": {},
+                  "thumbnails": []
+                }
+              },
+              "video_url": {
+                "type": "Text",
+                "config": {
+                  "label": "Video Url",
+                  "placeholder": ""
+                }
+              }
+            }
+          }
+        },
+        "text": {
+          "type": "Text",
+          "config": {
+            "label": "Text (date is prepended automatically)",
+            "placeholder": "will never repeat again"
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

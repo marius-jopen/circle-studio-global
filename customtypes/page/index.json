@@ -90,6 +90,9 @@
 						"media_multiple": {
 							"type": "SharedSlice"
 						},
+						"media_and_circle": {
+							"type": "SharedSlice"
+						},
 						"feature_list": {
 							"type": "SharedSlice"
 						},
