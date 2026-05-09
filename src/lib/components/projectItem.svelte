@@ -136,7 +136,8 @@
 			manualMode: true, // Use manual mode for controlled animations
 			triggerFadeIn: isHovering && !isNavigating, // Only fade in when hovering and not navigating
 			triggerFadeOut: (!isHovering && hasEverHovered) || isNavigating, // Fade out when leaving hover (only after having hovered) or during navigation
-			startInvisible: true // Start invisible, only show on hover
+			startInvisible: true, // Start invisible, only show on hover
+			revealMode: 'typewriter' as const
 		},
 		items: [
 			{

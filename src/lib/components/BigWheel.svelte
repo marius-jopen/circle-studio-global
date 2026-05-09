@@ -36,6 +36,7 @@
       triggerFadeOut?: boolean;
       startInvisible?: boolean;
       fontFamily?: string;
+      revealMode?: 'fade' | 'typewriter';
     };
   } = {
     uiVisible: false,
@@ -225,6 +226,8 @@
   $: activePrimaryFontFamily = (showControls || (!items && !globalSettings))
     ? 'CircularXXWeb'
     : (globalSettings?.fontFamily ?? 'CircularXXWeb');
+
+  $: activeRevealMode = (globalSettings?.revealMode ?? 'fade') as 'fade' | 'typewriter';
 
   // Initialize from props if uiVisible is true from the start
   onMount(() => {
@@ -1230,6 +1233,7 @@
 							triggerFadeOut={activeTriggerFadeOut}
 							startInvisible={activeStartInvisible}
 							autoTextSize={circle.autoTextSize ?? false}
+							revealMode={activeRevealMode}
 							bind:this={textCircleRefs[i]}
 						/>
 					</div>

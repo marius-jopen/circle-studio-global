@@ -64,7 +64,8 @@
       visibleTime: 0,
       manualMode: true,
       triggerFadeIn: false,
-      triggerFadeOut: false
+      triggerFadeOut: false,
+      revealMode: 'typewriter' as const
     }
   });
 
