@@ -26,6 +26,7 @@
   export let manualMode: boolean = false; // if true, only manual triggers work
   export let triggerFadeIn: boolean = false; // manual trigger for fade in
   export let triggerFadeOut: boolean = false; // manual trigger for fade out
+  export let revealMode: 'fade' | 'typewriter' = 'fade'; // 'typewriter' snaps each letter on sequentially without opacity ramp (only affects fade-in)
 
   let canvas: HTMLCanvasElement;
   let animationFrame: number;
@@ -82,9 +83,14 @@
 
   function generateRandomFadeTimes() {
     const letters = parsedLetters;
-    letterFadeStartTimes = letters.map((_, i) => Math.random());
-    // Sort to ensure we have a good distribution
-    letterFadeStartTimes.sort((a, b) => a - b);
+    if (revealMode === 'typewriter') {
+      // Sequential left-to-right reveal
+      const n = Math.max(1, letters.length);
+      letterFadeStartTimes = letters.map((_, i) => i / n);
+    } else {
+      letterFadeStartTimes = letters.map(() => Math.random());
+      letterFadeStartTimes.sort((a, b) => a - b);
+    }
   }
 
   function updateFadeAnimation() {
@@ -167,10 +173,13 @@
     const timeSincePhaseStart = currentTime - phaseStartTime;
     const totalFadeTime = fadePhase === 'fadingIn' ? fadeInTime : fadeOutTime;
 
-    // Staggered fade per letter — same logic for in and out
+    // Staggered fade per letter — same logic for in and out.
+    // Typewriter mode snaps each letter on/off sequentially (no opacity ramp).
     letterOpacities = letterOpacities.map((_, i) => {
       const letterStartTime = letterFadeStartTimes[i] * totalFadeTime * 0.7;
-      const letterFadeDuration = totalFadeTime * 0.5;
+      const letterFadeDuration = revealMode === 'typewriter'
+        ? 0.0001
+        : totalFadeTime * 0.5;
       const letterProgress = Math.max(0, Math.min(1, (timeSincePhaseStart - letterStartTime) / letterFadeDuration));
       const eased = letterProgress * letterProgress * (3 - 2 * letterProgress);
       return fadePhase === 'fadingIn' ? eased : Math.max(0, 1 - eased);

@@ -45,7 +45,7 @@
 	const FADE_IN_TIME = 1.5;
 	const FADE_OUT_TIME = 1.5;
 	const VISIBLE_TIME = 1.5;
-	const GAP_TIME = 0.3;
+	const GAP_TIME = 0;
 
 	let cycleTimeoutA: ReturnType<typeof setTimeout> | null = null;
 	let cycleTimeoutB: ReturnType<typeof setTimeout> | null = null;
@@ -79,7 +79,7 @@
 				wheelText = poetryItems[poetryIndex] ?? '';
 				setTimeout(() => pulseFade('in'), 50);
 				startCycle(false);
-			}, (FADE_OUT_TIME * 1.5 + GAP_TIME) * 1000);
+			}, (FADE_OUT_TIME * 0.8 + GAP_TIME) * 1000);
 		}, (FADE_IN_TIME + VISIBLE_TIME) * 1000);
 	}
 
@@ -219,6 +219,7 @@
 							fadeOutTime={FADE_OUT_TIME}
 							triggerFadeIn={triggerFadeIn}
 							triggerFadeOut={triggerFadeOut}
+							revealMode="typewriter"
 						/>
 					{/key}
 				</div>

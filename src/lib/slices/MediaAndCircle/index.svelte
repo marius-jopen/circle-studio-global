@@ -222,6 +222,7 @@
 						startInvisible={true}
 						fadeInTime={FADE_IN_TIME}
 						triggerFadeIn={triggerFadeIn}
+						revealMode="typewriter"
 					/>
 				{/key}
 			</div>
