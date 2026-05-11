@@ -154,9 +154,16 @@
   }
 
   function startFadeOut() {
-    fadePhase = 'fadingOut';
-    phaseStartTime = elapsedTime;
-    generateRandomFadeTimes();
+    // All letters vanish together (no per-letter stagger). In automatic mode, immediately
+    // start the next reveal so there's no gap between cycles. Manual mode stays hidden until
+    // the next external trigger.
+    letterOpacities = letterOpacities.map(() => 0);
+    if (manualMode) {
+      fadePhase = 'paused';
+      phaseStartTime = elapsedTime;
+      return;
+    }
+    startFadeIn();
   }
 
   function updateLetterOpacities() {

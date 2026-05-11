@@ -67,7 +67,7 @@
 				wheelText = poetryItems[poetryIndex] ?? '';
 				setTimeout(() => pulseFade('in'), 50);
 				startCycle(false);
-			}, (FADE_OUT_TIME * 0.8 + GAP_TIME) * 1000);
+			}, GAP_TIME * 1000);
 		}, (FADE_IN_TIME + VISIBLE_TIME) * 1000);
 	}
 
