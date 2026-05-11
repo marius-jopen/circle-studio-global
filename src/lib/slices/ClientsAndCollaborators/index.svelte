@@ -177,7 +177,7 @@
 							items={rightItems}
 							urls={rightUrls}
 							radius={wheelRadius}
-							rotationSpeed={-rotationSpeed}
+							rotationSpeed={rotationSpeed}
 							fontSize={wheelFontSize}
 							fit={isMobile ? 'safe' : 'tight'}
 							staggerMs={40}
