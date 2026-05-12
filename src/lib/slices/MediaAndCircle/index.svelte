@@ -39,8 +39,10 @@
 		return typeof m?.video_url === 'string' ? m.video_url.trim() : '';
 	}
 
-	const customText = $derived(
-		((slice.primary as { text?: string | null }).text ?? '').trim() || 'will never repeat again'
+	const textItems = $derived(
+		(slice.primary as { texts?: Array<{ item?: string | null }> }).texts
+			?.map((t) => (typeof t?.item === 'string' ? t.item : '')?.trim())
+			.filter(Boolean) ?? []
 	);
 
 	const switchOrder = $derived((slice.primary as { switch?: boolean }).switch ?? false);
@@ -54,55 +56,60 @@
 	const circleBgClass = $derived(invert ? 'bg-neutral-900' : 'bg-white');
 	const circleTextColor = $derived(invert ? '#ffffff' : '#171717');
 
-	// One-time fade-in on mount; no fade-out afterwards
-	const FADE_IN_TIME = 1.5;
+	// Cycling text with fade in/out (matches VideoAndGenerator)
+	let wheelText = $state('');
+	let textIndex = $state(0);
 	let triggerFadeIn = $state(false);
-	$effect(() => {
-		if (!browser) return;
-		const t = setTimeout(() => {
+	let triggerFadeOut = $state(false);
+
+	const FADE_IN_TIME = 1.3;
+	const FADE_OUT_TIME = 1.3;
+	const VISIBLE_TIME = 2.5;
+	const GAP_TIME = 0;
+
+	let cycleTimeoutA: ReturnType<typeof setTimeout> | null = null;
+	let cycleTimeoutB: ReturnType<typeof setTimeout> | null = null;
+
+	function pulseFade(kind: 'in' | 'out') {
+		if (kind === 'in') {
 			triggerFadeIn = true;
 			setTimeout(() => (triggerFadeIn = false), 50);
-		}, 150);
-		return () => clearTimeout(t);
-	});
-
-	const MONTHS = [
-		'January', 'February', 'March', 'April', 'May', 'June',
-		'July', 'August', 'September', 'October', 'November', 'December'
-	];
-
-	function ordinalSuffix(day: number): string {
-		const j = day % 10;
-		const k = day % 100;
-		if (j === 1 && k !== 11) return 'st';
-		if (j === 2 && k !== 12) return 'nd';
-		if (j === 3 && k !== 13) return 'rd';
-		return 'th';
+		} else {
+			triggerFadeOut = true;
+			setTimeout(() => (triggerFadeOut = false), 50);
+		}
 	}
 
-	function formatDate(d: Date): string {
-		const day = d.getDate();
-		return `${MONTHS[d.getMonth()]} ${day}${ordinalSuffix(day)}, ${d.getFullYear()}`;
-	}
+	function startCycle(initial: boolean) {
+		if (textItems.length === 0) return;
 
-	let today = $state(new Date());
-	const dateLabel = $derived(formatDate(today));
-	const circleText = $derived(`${dateLabel} ${customText}`);
+		if (initial) {
+			wheelText = textItems[0];
+			textIndex = 0;
+			setTimeout(() => pulseFade('in'), 150);
+		}
+
+		if (cycleTimeoutA) clearTimeout(cycleTimeoutA);
+		cycleTimeoutA = setTimeout(() => {
+			pulseFade('out');
+
+			if (cycleTimeoutB) clearTimeout(cycleTimeoutB);
+			cycleTimeoutB = setTimeout(() => {
+				textIndex = (textIndex + 1) % textItems.length;
+				wheelText = textItems[textIndex] ?? '';
+				setTimeout(() => pulseFade('in'), 50);
+				startCycle(false);
+			}, GAP_TIME * 1000);
+		}, (FADE_IN_TIME + VISIBLE_TIME) * 1000);
+	}
 
 	$effect(() => {
-		if (!browser) return;
-		const tick = () => (today = new Date());
-		// Update at next midnight, then every 24h
-		const now = new Date();
-		const next = new Date(now);
-		next.setHours(24, 0, 5, 0);
-		const initial = setTimeout(() => {
-			tick();
-		}, next.getTime() - now.getTime());
-		const daily = setInterval(tick, 24 * 60 * 60 * 1000);
+		if (textItems.length > 0 && browser) {
+			startCycle(true);
+		}
 		return () => {
-			clearTimeout(initial);
-			clearInterval(daily);
+			if (cycleTimeoutA) clearTimeout(cycleTimeoutA);
+			if (cycleTimeoutB) clearTimeout(cycleTimeoutB);
 		};
 	});
 
@@ -197,35 +204,39 @@
 		{/if}
 
 		<!-- Text circle (1/3 width, square) -->
-		<div
-			bind:this={circleBoxRef}
-			class="{circlePanelClass} {circleBgClass} {circleOrderClass} w-full aspect-square md:aspect-auto min-h-0 p-2"
-		>
+		{#if textItems.length > 0}
 			<div
-				class="flex items-center justify-center"
-				style="width: {circleSize}px; height: {circleSize}px;"
+				bind:this={circleBoxRef}
+				class="{circlePanelClass} {circleBgClass} {circleOrderClass} w-full aspect-square md:aspect-auto min-h-0 p-2"
 			>
-				{#key `${circleText}-${invert}`}
-					<TextCircle
-						text={circleText}
-						textColor={circleTextColor}
-						containerSize={circleSize}
-						fontSize={38}
-						radius={Math.round(circleSize * 0.32)}
-						rotationSpeed={0.1}
-						spacingAmplitudePercent={0.5}
-						spacingSpeed={0}
-						animationType="sin"
-						autoTextSize={true}
-						autoRadius={true}
-						manualMode={true}
-						startInvisible={true}
-						fadeInTime={FADE_IN_TIME}
-						triggerFadeIn={triggerFadeIn}
-						revealMode="typewriter"
-					/>
-				{/key}
+				<div
+					class="flex items-center justify-center"
+					style="width: {circleSize}px; height: {circleSize}px;"
+				>
+					{#key wheelText || textItems[0]}
+						<TextCircle
+							text={wheelText || textItems[0]}
+							textColor={circleTextColor}
+							containerSize={circleSize}
+							fontSize={38}
+							radius={Math.round(circleSize * 0.32)}
+							rotationSpeed={0.1}
+							spacingAmplitudePercent={0.5}
+							spacingSpeed={0}
+							animationType="sin"
+							autoTextSize={true}
+							autoRadius={true}
+							manualMode={true}
+							startInvisible={true}
+							fadeInTime={FADE_IN_TIME}
+							fadeOutTime={FADE_OUT_TIME}
+							triggerFadeIn={triggerFadeIn}
+							triggerFadeOut={triggerFadeOut}
+							revealMode="typewriter"
+						/>
+					{/key}
+				</div>
 			</div>
-		</div>
+		{/if}
 	</div>
 </section>

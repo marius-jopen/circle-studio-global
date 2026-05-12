@@ -1694,14 +1694,29 @@ export interface MediaAndCircleSliceDefaultPrimary {
 	media: prismic.GroupField<Simplify<MediaAndCircleSliceDefaultPrimaryMediaItem>>;
 
 	/**
-	 * Text field in *MediaAndCircle → Default → Primary*
+	 * Texts field in *MediaAndCircle → Default → Primary*
+	 *
+	 * - **Field Type**: Group
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: media_and_circle.default.primary.texts[]
+	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+	 */
+	texts: prismic.GroupField<Simplify<MediaAndCircleSliceDefaultPrimaryTextsItem>>;
+}
+
+/**
+ * Item in *MediaAndCircle → Default → Primary → Texts*
+ */
+export interface MediaAndCircleSliceDefaultPrimaryTextsItem {
+	/**
+	 * Item field in *MediaAndCircle → Default → Primary → Texts*
 	 *
 	 * - **Field Type**: Text
-	 * - **Placeholder**: *will never repeat again*
-	 * - **API ID Path**: media_and_circle.default.primary.text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: media_and_circle.default.primary.texts[].item
 	 * - **Documentation**: https://prismic.io/docs/fields/text
 	 */
-	text: prismic.KeyTextField;
+	item: prismic.KeyTextField;
 }
 
 /**
@@ -2811,6 +2826,7 @@ declare module '@prismicio/client' {
 			MediaMultipleSliceDefault,
 			MediaAndCircleSlice,
 			MediaAndCircleSliceDefaultPrimaryMediaItem,
+			MediaAndCircleSliceDefaultPrimaryTextsItem,
 			MediaAndCircleSliceDefaultPrimary,
 			MediaAndCircleSliceVariation,
 			MediaAndCircleSliceDefault,

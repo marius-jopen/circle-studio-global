@@ -48,10 +48,19 @@
 					}
 				]
 			},
-			"text": {
-				"__TYPE__": "FieldContent",
-				"value": "will never repeat again",
-				"type": "Text"
+			"texts": {
+				"__TYPE__": "GroupContentType",
+				"value": [
+					{
+						"__TYPE__": "GroupItemContent",
+						"value": [
+							[
+								"item",
+								{ "__TYPE__": "FieldContent", "value": "will never repeat again", "type": "Text" }
+							]
+						]
+					}
+				]
 			}
 		},
 		"items": []

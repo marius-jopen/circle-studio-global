@@ -54,11 +54,20 @@
             }
           }
         },
-        "text": {
-          "type": "Text",
+        "texts": {
+          "type": "Group",
           "config": {
-            "label": "Text (date is prepended automatically)",
-            "placeholder": "will never repeat again"
+            "label": "Texts",
+            "repeat": true,
+            "fields": {
+              "item": {
+                "type": "Text",
+                "config": {
+                  "label": "Item",
+                  "placeholder": ""
+                }
+              }
+            }
           }
         }
       },
