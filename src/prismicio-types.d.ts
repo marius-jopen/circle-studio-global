@@ -263,6 +263,7 @@ type PageDocumentDataSlicesSlice =
 	| DocumentationSlice
 	| MediaMultipleSlice
 	| MediaAndCircleSlice
+	| MediaMediaSlice
 	| FeatureListSlice
 	| InputSlice
 	| WheelSlice
@@ -1734,6 +1735,119 @@ export type MediaAndCircleSlice = prismic.SharedSlice<
 >;
 
 /**
+ * Item in *MediaMedia → Default → Primary → Media Left*
+ */
+export interface MediaMediaSliceDefaultPrimaryMediaLeftItem {
+	/**
+	 * Image field in *MediaMedia → Default → Primary → Media Left*
+	 *
+	 * - **Field Type**: Image
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: media_media.default.primary.media_left[].image
+	 * - **Documentation**: https://prismic.io/docs/fields/image
+	 */
+	image: prismic.ImageField<never>;
+
+	/**
+	 * Video Url field in *MediaMedia → Default → Primary → Media Left*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: media_media.default.primary.media_left[].video_url
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	video_url: prismic.KeyTextField;
+}
+
+/**
+ * Item in *MediaMedia → Default → Primary → Media Right*
+ */
+export interface MediaMediaSliceDefaultPrimaryMediaRightItem {
+	/**
+	 * Image field in *MediaMedia → Default → Primary → Media Right*
+	 *
+	 * - **Field Type**: Image
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: media_media.default.primary.media_right[].image
+	 * - **Documentation**: https://prismic.io/docs/fields/image
+	 */
+	image: prismic.ImageField<never>;
+
+	/**
+	 * Video Url field in *MediaMedia → Default → Primary → Media Right*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: media_media.default.primary.media_right[].video_url
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	video_url: prismic.KeyTextField;
+}
+
+/**
+ * Primary content in *MediaMedia → Default → Primary*
+ */
+export interface MediaMediaSliceDefaultPrimary {
+	/**
+	 * Switch column order field in *MediaMedia → Default → Primary*
+	 *
+	 * - **Field Type**: Boolean
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: false
+	 * - **API ID Path**: media_media.default.primary.switch
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
+	 */
+	switch: prismic.BooleanField;
+
+	/**
+	 * Media Left field in *MediaMedia → Default → Primary*
+	 *
+	 * - **Field Type**: Group
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: media_media.default.primary.media_left[]
+	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+	 */
+	media_left: prismic.GroupField<Simplify<MediaMediaSliceDefaultPrimaryMediaLeftItem>>;
+
+	/**
+	 * Media Right field in *MediaMedia → Default → Primary*
+	 *
+	 * - **Field Type**: Group
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: media_media.default.primary.media_right[]
+	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+	 */
+	media_right: prismic.GroupField<Simplify<MediaMediaSliceDefaultPrimaryMediaRightItem>>;
+}
+
+/**
+ * Default variation for MediaMedia Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type MediaMediaSliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Simplify<MediaMediaSliceDefaultPrimary>,
+	never
+>;
+
+/**
+ * Slice variation for *MediaMedia*
+ */
+type MediaMediaSliceVariation = MediaMediaSliceDefault;
+
+/**
+ * MediaMedia Shared Slice
+ *
+ * - **API ID**: `media_media`
+ * - **Description**: Two square media slideshows side by side
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type MediaMediaSlice = prismic.SharedSlice<'media_media', MediaMediaSliceVariation>;
+
+/**
  * Primary content in *FeatureList → Default → Primary*
  */
 export interface FeatureListSliceDefaultPrimary {
@@ -2700,6 +2814,12 @@ declare module '@prismicio/client' {
 			MediaAndCircleSliceDefaultPrimary,
 			MediaAndCircleSliceVariation,
 			MediaAndCircleSliceDefault,
+			MediaMediaSlice,
+			MediaMediaSliceDefaultPrimaryMediaLeftItem,
+			MediaMediaSliceDefaultPrimaryMediaRightItem,
+			MediaMediaSliceDefaultPrimary,
+			MediaMediaSliceVariation,
+			MediaMediaSliceDefault,
 			FeatureListSlice,
 			FeatureListSliceDefaultPrimary,
 			FeatureListSliceVariation,

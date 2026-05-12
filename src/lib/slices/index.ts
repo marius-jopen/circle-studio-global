@@ -14,6 +14,7 @@ import Input from './Input/index.svelte';
 import List from './List/index.svelte';
 import Logo from './Logo/index.svelte';
 import MediaAndCircle from './MediaAndCircle/index.svelte';
+import MediaMedia from './MediaMedia/index.svelte';
 import MediaMultiple from './MediaMultiple/index.svelte';
 import RichText from './RichText/index.svelte';
 import Spacer from './Spacer/index.svelte';
@@ -40,6 +41,7 @@ export const components = {
 	list: List,
 	logo: Logo,
 	media_and_circle: MediaAndCircle,
+	media_media: MediaMedia,
 	media_multiple: MediaMultiple,
 	rich_text: RichText,
 	spacer: Spacer,

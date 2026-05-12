@@ -1,0 +1,76 @@
+{
+  "id": "media_media",
+  "type": "SharedSlice",
+  "name": "MediaMedia",
+  "description": "Two square media slideshows side by side",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "switch": {
+          "type": "Boolean",
+          "config": {
+            "label": "Switch column order",
+            "placeholder_false": "false",
+            "placeholder_true": "true",
+            "default_value": false
+          }
+        },
+        "media_left": {
+          "type": "Group",
+          "config": {
+            "label": "Media Left",
+            "repeat": true,
+            "fields": {
+              "image": {
+                "type": "Image",
+                "config": {
+                  "label": "Image",
+                  "constraint": {},
+                  "thumbnails": []
+                }
+              },
+              "video_url": {
+                "type": "Text",
+                "config": {
+                  "label": "Video Url",
+                  "placeholder": ""
+                }
+              }
+            }
+          }
+        },
+        "media_right": {
+          "type": "Group",
+          "config": {
+            "label": "Media Right",
+            "repeat": true,
+            "fields": {
+              "image": {
+                "type": "Image",
+                "config": {
+                  "label": "Image",
+                  "constraint": {},
+                  "thumbnails": []
+                }
+              },
+              "video_url": {
+                "type": "Text",
+                "config": {
+                  "label": "Video Url",
+                  "placeholder": ""
+                }
+              }
+            }
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

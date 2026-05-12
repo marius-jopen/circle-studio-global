@@ -163,7 +163,7 @@
 					{/if}
 				</div>
 				{#if leftTitle}
-					<div class="text-sm md:text-xl font-medium text-primary px-4 md:px-6 pb-4 md:pb-6 pt-0 text-left">
+					<div class="text-sm md:text-xl font-medium text-primary pl-[15px] pr-4 md:pr-6 pb-2.5 pt-0 text-left">
 						{leftTitle}
 					</div>
 				{/if}
@@ -188,7 +188,7 @@
 					{/if}
 				</div>
 				{#if rightTitle}
-					<div class="text-sm md:text-xl font-medium text-primary px-4 md:px-6 pb-4 md:pb-6 pt-0 text-left">
+					<div class="text-sm md:text-xl font-medium text-primary pl-[15px] pr-4 md:pr-6 pb-2.5 pt-0 text-left">
 						{rightTitle}
 					</div>
 				{/if}

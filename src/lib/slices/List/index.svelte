@@ -108,12 +108,10 @@
 
 <section data-slice-type={slice.slice_type} data-slice-variation={slice.variation} class="list-none">
 	{#if sortedItems.length > 0}
-		<div class="mb-2 divide-y divide-black/10 text-black md:hover:text-black/25 list-none rounded px-4 py-1" class:bg-white={isAbout} class:bg-neutral-100={!isAbout}>
+		<div class="mb-2 divide-y divide-black/10 text-black md:hover:text-black/25 list-none rounded-lg overflow-hidden px-4 py-1" class:bg-white={isAbout} class:bg-neutral-100={!isAbout}>
 			{#if headline}
-				<div class="list-item block py-1.5 text-black">
-					<div class="grid grid-cols-2 md:grid-cols-[25%_1fr_auto] items-start gap-2 md:gap-4 paragraph-1">
-						<div class="col-span-2 md:col-span-3 text-left tracking-wide text-xs md:text-base truncate min-w-0">{headline}</div>
-					</div>
+				<div class="text-sm md:text-xl font-medium text-primary pl-0 pr-4 md:pr-6 pt-2.5 pb-[13px] text-left">
+					{headline}
 				</div>
 			{/if}
 			{#each sortedItems as item, index}

@@ -93,6 +93,9 @@
 						"media_and_circle": {
 							"type": "SharedSlice"
 						},
+						"media_media": {
+							"type": "SharedSlice"
+						},
 						"feature_list": {
 							"type": "SharedSlice"
 						},
