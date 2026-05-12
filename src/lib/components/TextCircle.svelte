@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import { parseBoldText } from '$lib/utils/boldText';
+  import { applyTextShortcuts } from '$lib/utils/textShortcuts';
   export let text: string = "ART CAMP EST.2016";
   export let fontSize: number = 40;
   export let radius: number = 180;
@@ -49,8 +50,11 @@
   let lastTriggerFadeIn = false;
   let lastTriggerFadeOut = false;
 
+  // Resolve shortcuts (e.g. [date]) before rendering
+  $: processedText = applyTextShortcuts(text);
+
   // Parsed letters with bold support (**bold** in text)
-  $: parsedLetters = parseBoldText(text);
+  $: parsedLetters = parseBoldText(processedText);
 
   // Track previous text to detect full text changes (not just length changes)
   let prevText = text;
@@ -295,8 +299,8 @@
     return Math.min(Math.max(sized, minSize), maxSize);
   }
 
-  $: autoResult = autoRadius ? computeAutoSize(text, radius) : { fontSize: 0, radius };
-  $: effectiveFontSize = autoRadius ? autoResult.fontSize : computeEffectiveFontSize(fontSize, text, radius);
+  $: autoResult = autoRadius ? computeAutoSize(processedText, radius) : { fontSize: 0, radius };
+  $: effectiveFontSize = autoRadius ? autoResult.fontSize : computeEffectiveFontSize(fontSize, processedText, radius);
   $: adaptiveRadius = autoRadius ? autoResult.radius : radius;
 
   // Track canvas sizing to avoid reallocating every frame
@@ -569,7 +573,7 @@
     ctx.imageSmoothingQuality = 'high';
     
     // Draw text with high quality settings (support **bold**)
-    const letters = parseBoldText(text);
+    const letters = parseBoldText(processedText);
     const captureFontSize = effectiveFontSize;
     const fullFontFamily = `"${primaryFontFamily}", Arial, Helvetica, sans-serif`;
 
@@ -681,7 +685,7 @@
       } catch { try { draw(); } catch {} }
     }
     
-    const letters = text.split('');
+    const letters = processedText.split('');
     if (startInvisible) {
       // Start hidden and wait for manual trigger to fade in
       letterOpacities = new Array(letters.length).fill(0);
