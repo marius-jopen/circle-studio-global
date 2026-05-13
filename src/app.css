@@ -88,7 +88,7 @@ h2, .h2 {
 }
 
 h3, .h3, .h3 p {
-    @apply text-base md:text-2xl font-normal leading-[25x] md:leading-[33px] mb-2;
+    @apply text-base md:text-2xl font-normal leading-[23px] md:leading-[33px] mb-2;
 }
 
 .paragraph-1 {
