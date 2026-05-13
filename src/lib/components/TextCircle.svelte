@@ -16,6 +16,7 @@
   export let textColor: string = "#171717";
   export let autoTextSize: boolean = false; // When true, scale font to fill circumference
   export let autoRadius: boolean = false; // When true, also adapt radius for best fit
+  export let clampShortText: boolean = true; // When true, floor the effective text width so very short strings don't blow up the font size
   export let startInvisible: boolean = false; // If true, start with letters invisible
   export let primaryFontFamily: string = 'CircularXXWeb';
   
@@ -221,6 +222,14 @@
     }, 0);
     if (totalWidthAtRef <= 0) return { fontSize, radius: baseRadius };
 
+    // Optional floor by a reference string so very short text can't blow up the font size
+    let effectiveTotalWidthAtRef = totalWidthAtRef;
+    if (clampShortText) {
+      ctx.font = `${refSize}px ${fontFamily}`;
+      const minTotalWidthAtRef = ctx.measureText('hello hello hello').width;
+      effectiveTotalWidthAtRef = Math.max(totalWidthAtRef, minTotalWidthAtRef);
+    }
+
     // For a given radius r, the circumference is 2*PI*r
     // The ideal font size to fill 95% of circumference
     // The font must not exceed (halfContainer - r) * ascentFactor so letters don't clip
@@ -239,7 +248,7 @@
     for (let i = 0; i <= steps; i++) {
       const r = minR + (maxR - minR) * (i / steps);
       const circumference = 2 * Math.PI * r * fillTarget;
-      const idealSize = (circumference / totalWidthAtRef) * refSize;
+      const idealSize = (circumference / effectiveTotalWidthAtRef) * refSize;
       const maxByEdge = (halfContainer - r) / ascentFactor;
       const clampedSize = Math.min(idealSize, maxByEdge);
 
@@ -284,8 +293,16 @@
     }, 0);
     if (totalWidthAtReference <= 0) return baseFontSize;
 
+    // Optional floor by a reference string so very short text can't blow up the font size
+    let effectiveTotalWidthAtReference = totalWidthAtReference;
+    if (clampShortText) {
+      ctx.font = `${referenceFontSize}px ${fontFamily}`;
+      const minTotalWidthAtReference = ctx.measureText('hello hello hello').width;
+      effectiveTotalWidthAtReference = Math.max(totalWidthAtReference, minTotalWidthAtReference);
+    }
+
     const targetWidth = circumference * 0.977;
-    const scale = targetWidth / totalWidthAtReference;
+    const scale = targetWidth / effectiveTotalWidthAtReference;
     const sized = referenceFontSize * scale;
 
     const minSize = 2;
