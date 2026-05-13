@@ -154,8 +154,8 @@
 
 <div class="mx-auto px-2 paragraph-1 -mt-1">
 	<!-- Project Info -->
-	<div class="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-2 w-full text-primary mb-2">
-		<div class="h3 text-2xl bg-neutral-100 rounded-t md:rounded px-4 pt-2 pb-0 md:pb-2 mb-0! md:mb-2! h-full">
+	<div class="grid grid-cols-1 md:grid-cols-2 gap-0! md:gap-2! w-full text-primary mb-2">
+		<div class="h3 text-2xl bg-neutral-100 rounded-t md:rounded px-4 pt-[13px] md:pt-2 pb-0 md:pb-2 mb-0! md:mb-2! h-full">
 			{projectData.title}{projectData.client ? `, ${projectData.client}` : ''}
 		</div>
 
