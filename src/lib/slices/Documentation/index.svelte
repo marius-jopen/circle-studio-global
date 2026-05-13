@@ -25,18 +25,21 @@
 	const items = $derived(slice.primary.items ?? []);
 	// Show the section if there are any items at all
 	const hasItems = $derived(items.length > 0);
+	// On mobile, the section is empty when every item is hide_on_mobile — collapse it so it doesn't add stray margin
+	const hasMobileItems = $derived(items.some((i) => !i.hide_on_mobile));
+	const mobileVisibilityClass = $derived(hasMobileItems ? '' : 'hidden md:block');
 </script>
 
 {#if hasItems}
-	<section 
-		data-slice-type={slice.slice_type} 
+	<section
+		data-slice-type={slice.slice_type}
 		data-slice-variation={slice.variation}
-		class="mx-auto"
+		class="mx-auto mb-2 {mobileVisibilityClass}"
 	>
 		<div class="grid gap-2 {gridClass}">
 		{#each items as item}
 			{@const needsControlsOnMobile = item.play === 'click-to-play-with-sound' || item.play === 'has-sound'}
-			<div class={item.hide_on_mobile ? 'hidden md:block mb-2' : 'mb-2'}>
+			<div class={item.hide_on_mobile ? 'hidden md:block' : ''}>
 				<DocumentationItem {item} itemsPerRow={itemsPerRow} showVideoOnMobile={false} noRoundedCorners={item.no_rounded_corners} basicVideo={needsControlsOnMobile} />
 			</div>
 		{/each}
