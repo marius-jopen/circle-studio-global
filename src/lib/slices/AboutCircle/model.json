@@ -1,0 +1,53 @@
+{
+	"id": "about_circle",
+	"type": "SharedSlice",
+	"name": "AboutCircle",
+	"description": "About — Circle: rotating circular text (matches AboutContent settings).",
+	"variations": [
+		{
+			"id": "default",
+			"name": "Default",
+			"docURL": "...",
+			"version": "initial",
+			"description": "Default",
+			"imageUrl": "",
+			"primary": {
+				"items": {
+					"type": "Group",
+					"config": {
+						"label": "Items",
+						"repeat": true,
+						"fields": {
+							"text": {
+								"type": "Text",
+								"config": {
+									"label": "Text",
+									"placeholder": ""
+								}
+							}
+						}
+					}
+				},
+				"background_color": {
+					"type": "Select",
+					"config": {
+						"label": "Background Color",
+						"placeholder": "",
+						"options": ["white", "light_gray", "black"],
+						"default_value": "white"
+					}
+				},
+				"text_color": {
+					"type": "Select",
+					"config": {
+						"label": "Text Color",
+						"placeholder": "",
+						"options": ["white", "light_gray", "black"],
+						"default_value": "black"
+					}
+				}
+			},
+			"items": {}
+		}
+	]
+}

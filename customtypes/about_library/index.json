@@ -1,0 +1,31 @@
+{
+	"format": "custom",
+	"id": "about_library",
+	"label": "About — Library",
+	"repeatable": false,
+	"status": true,
+	"json": {
+		"Main": {
+			"slices": {
+				"type": "Slices",
+				"fieldset": "Slice Zone",
+				"config": {
+					"choices": {
+						"about_press": {
+							"type": "SharedSlice"
+						},
+						"about_collaborators": {
+							"type": "SharedSlice"
+						},
+						"about_gallery": {
+							"type": "SharedSlice"
+						},
+						"about_circle": {
+							"type": "SharedSlice"
+						}
+					}
+				}
+			}
+		}
+	}
+}

@@ -36,6 +36,9 @@
 				"fieldset": "Slice Zone",
 				"config": {
 					"choices": {
+						"about_modules_area": {
+							"type": "SharedSlice"
+						},
 						"contact_us_header": {
 							"type": "SharedSlice"
 						},

@@ -70,7 +70,11 @@
 	
 	// Check if we're on admin or login routes
 	let isAdminRoute = $derived(page.url.pathname.startsWith('/admin') || page.url.pathname === '/login');
-	let isAbout = $derived(page.url.pathname === '/about' || page.url.pathname === '/preview/about');
+	let isAbout = $derived(
+		page.url.pathname === '/about' ||
+			page.url.pathname === '/preview/about' ||
+			page.url.pathname === '/test'
+	);
 	
 	// Global navigation click detection for video autoplay permissions
 	let headerFaded = $state(false);

@@ -1,0 +1,18 @@
+{
+	"id": "about_modules_area",
+	"type": "SharedSlice",
+	"name": "AboutModulesArea",
+	"description": "About — Modules Area: pulls blocks from the About Library singleton and renders them in a randomized layout.",
+	"variations": [
+		{
+			"id": "default",
+			"name": "Default",
+			"docURL": "...",
+			"version": "initial",
+			"description": "Default",
+			"imageUrl": "",
+			"primary": {},
+			"items": {}
+		}
+	]
+}

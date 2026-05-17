@@ -1,0 +1,88 @@
+{
+	"id": "about_gallery",
+	"type": "SharedSlice",
+	"name": "AboutGallery",
+	"description": "About — Gallery: 1-4 independent parallel carousels, auto-split from items pool.",
+	"variations": [
+		{
+			"id": "default",
+			"name": "Default",
+			"docURL": "...",
+			"version": "initial",
+			"description": "Default",
+			"imageUrl": "",
+			"primary": {
+				"items": {
+					"type": "Group",
+					"config": {
+						"label": "Items",
+						"repeat": true,
+						"fields": {
+							"image": {
+								"type": "Image",
+								"config": {
+									"label": "Image",
+									"constraint": {},
+									"thumbnails": []
+								}
+							},
+							"video_url": {
+								"type": "Text",
+								"config": {
+									"label": "Video Url",
+									"placeholder": ""
+								}
+							},
+							"play": {
+								"type": "Select",
+								"config": {
+									"label": "Play",
+									"placeholder": "",
+									"options": ["no-sound", "has-sound", "click-to-play-with-sound"],
+									"default_value": "no-sound"
+								}
+							},
+							"hide_on_mobile": {
+								"type": "Boolean",
+								"config": {
+									"label": "Hide on Mobile",
+									"placeholder_false": "false",
+									"placeholder_true": "true",
+									"default_value": false
+								}
+							},
+							"no_rounded_corners": {
+								"type": "Boolean",
+								"config": {
+									"label": "No Rounded Corners",
+									"placeholder_false": "false",
+									"placeholder_true": "true",
+									"default_value": false
+								}
+							}
+						}
+					}
+				},
+				"video_playback_mode": {
+					"type": "Select",
+					"config": {
+						"label": "Video Playback Mode",
+						"placeholder": "",
+						"options": ["continuous", "restart"],
+						"default_value": "continuous"
+					}
+				},
+				"preferred_format": {
+					"type": "Select",
+					"config": {
+						"label": "Preferred Format",
+						"placeholder": "",
+						"options": ["square", "landscape", "portrait"],
+						"default_value": "square"
+					}
+				}
+			},
+			"items": {}
+		}
+	]
+}

@@ -1,0 +1,26 @@
+{
+	"id": "about_collaborators",
+	"type": "SharedSlice",
+	"name": "AboutCollaborators",
+	"description": "About — Collaborators: fan wheel of people from the people custom type. Always rendered at half width.",
+	"variations": [
+		{
+			"id": "default",
+			"name": "Default",
+			"docURL": "...",
+			"version": "initial",
+			"description": "Default",
+			"imageUrl": "",
+			"primary": {
+				"title": {
+					"type": "Text",
+					"config": {
+						"label": "Title",
+						"placeholder": "Optional heading"
+					}
+				}
+			},
+			"items": {}
+		}
+	]
+}

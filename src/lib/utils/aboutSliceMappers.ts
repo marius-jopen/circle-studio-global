@@ -1,0 +1,105 @@
+import type {
+	AboutBlock,
+	CircleBlock,
+	CollaboratorsBlock,
+	GalleryBlock,
+	GalleryItem,
+	PressBlock,
+	PressItem
+} from '$lib/types/aboutBlock';
+import { DEFAULT_ALLOWED_SIZES, PINNED_TYPES, parseColorToken } from '$lib/types/aboutBlock';
+
+interface SliceLike {
+	id?: string;
+	slice_type?: string;
+	primary?: Record<string, any>;
+}
+
+let nonceCounter = 0;
+function fallbackId(prefix: string): string {
+	nonceCounter += 1;
+	return `${prefix}-${nonceCounter}`;
+}
+
+export function sliceToPressBlock(slice: SliceLike): PressBlock {
+	const primary = slice.primary ?? {};
+	const items = ((primary.items ?? []) as Array<Record<string, any>>).map<PressItem>((i) => ({
+		link: i.link ?? null,
+		text: i.text ?? null,
+		year: i.year ?? null,
+		image: i.image ?? null
+	}));
+	return {
+		id: slice.id ?? 'press',
+		type: 'press',
+		allowedSizes: DEFAULT_ALLOWED_SIZES.press,
+		pinned: PINNED_TYPES.has('press'),
+		headline: primary.headline ?? undefined,
+		items
+	};
+}
+
+export function sliceToCollaboratorsBlock(slice: SliceLike): CollaboratorsBlock {
+	const primary = slice.primary ?? {};
+	return {
+		id: slice.id ?? 'collaborators',
+		type: 'collaborators',
+		allowedSizes: DEFAULT_ALLOWED_SIZES.collaborators,
+		pinned: PINNED_TYPES.has('collaborators'),
+		title: primary.title ?? undefined
+	};
+}
+
+export function sliceToCircleBlock(slice: SliceLike): CircleBlock {
+	const primary = slice.primary ?? {};
+	const items = ((primary.items ?? []) as Array<{ text?: string }>)
+		.map((i) => i.text ?? '')
+		.map((s) => s.trim())
+		.filter(Boolean);
+	return {
+		id: slice.id ?? fallbackId('circle'),
+		type: 'circle',
+		allowedSizes: DEFAULT_ALLOWED_SIZES.circle,
+		items,
+		backgroundColor: parseColorToken(primary.background_color, 'white'),
+		textColor: parseColorToken(primary.text_color, 'black')
+	};
+}
+
+export function sliceToGalleryBlock(slice: SliceLike): GalleryBlock {
+	const primary = slice.primary ?? {};
+	const items = (primary.items ?? []) as GalleryItem[];
+	const pf = primary.preferred_format;
+	const preferredFormat =
+		pf === 'landscape' || pf === 'portrait' || pf === 'square' ? pf : 'square';
+	return {
+		id: slice.id ?? fallbackId('gallery'),
+		type: 'gallery',
+		allowedSizes: DEFAULT_ALLOWED_SIZES.gallery,
+		items,
+		videoPlaybackMode:
+			(primary.video_playback_mode as 'continuous' | 'restart') ?? 'continuous',
+		preferredFormat
+	};
+}
+
+export function slicesToBlocks(slices: SliceLike[]): AboutBlock[] {
+	const blocks: AboutBlock[] = [];
+	for (const slice of slices) {
+		switch (slice.slice_type) {
+			case 'about_press':
+				blocks.push(sliceToPressBlock(slice));
+				break;
+			case 'about_collaborators':
+				blocks.push(sliceToCollaboratorsBlock(slice));
+				break;
+			case 'about_circle':
+				blocks.push(sliceToCircleBlock(slice));
+				break;
+			case 'about_gallery':
+				blocks.push(sliceToGalleryBlock(slice));
+				break;
+		}
+	}
+	return blocks;
+}
