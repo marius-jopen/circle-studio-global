@@ -11,7 +11,7 @@
 </script>
 
 {#if block.hideOnMobile}
-	<div class="hidden md:block h-full">
+	<div class="hidden md:block w-full h-full">
 		{#if block.type === 'circle'}<CircleBlock {block} />
 		{:else if block.type === 'gallery'}<GalleryBlock {block} />
 		{:else if block.type === 'collaborators'}<CollaboratorsBlock {block} />

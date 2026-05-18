@@ -94,7 +94,9 @@ function pickBlock(
 
 	if (candidates.length === 0) return null;
 	candidates.sort((a, b) => b.score - a.score);
-	return candidates[0].block;
+	const topScore = candidates[0].score;
+	const topCandidates = candidates.filter((c) => c.score === topScore);
+	return topCandidates[Math.floor(Math.random() * topCandidates.length)].block;
 }
 
 function tryFillPattern(
@@ -105,9 +107,9 @@ function tryFillPattern(
 	const tentativelyUsed = new Set(usedIds);
 	const picked: AboutBlock[] = new Array(pattern.length);
 
-	const slotOrder = pattern
-		.map((size, idx) => ({ size, idx }))
-		.sort((a, b) => SIZE_FRACTIONS[a.size] - SIZE_FRACTIONS[b.size]);
+	const slotOrder = shuffle(
+		pattern.map((size, idx) => ({ size, idx }))
+	).sort((a, b) => SIZE_FRACTIONS[a.size] - SIZE_FRACTIONS[b.size]);
 
 	for (const slot of slotOrder) {
 		const block = pickBlock(pool, slot.size, pattern, tentativelyUsed);
@@ -154,8 +156,16 @@ export function buildAboutLayout(blocks: AboutBlock[]): LayoutRow[] {
 			if (smallCellPatterns.length > 0) candidatePatterns = smallCellPatterns;
 		}
 
-		const hasShapeLockedRemaining = remaining.some(isShapeLocked);
-		if (hasShapeLockedRemaining) {
+		const hasCollabRemaining = remaining.some((b) => b.type === 'collaborators');
+		if (hasCollabRemaining) {
+			const collabPatterns = candidatePatterns.filter(
+				(p) => p.length === 2 && p.every((s) => s === 'half')
+			);
+			if (collabPatterns.length > 0) candidatePatterns = collabPatterns;
+		}
+
+		const hasForcedRemaining = remaining.some(isForcedGallery);
+		if (hasForcedRemaining) {
 			let uniformPatterns = candidatePatterns.filter(isUniformPattern);
 			const hasSquareOrPortraitForce = remaining.some(
 				(b) =>
@@ -212,7 +222,24 @@ export function buildAboutLayout(blocks: AboutBlock[]): LayoutRow[] {
 		lastSignature = rowSignature(chosenPattern);
 	}
 
-	return rows;
+	return shuffleRowsAvoidingAdjacentDupes(rows);
+}
+
+function shuffleRowsAvoidingAdjacentDupes(rows: LayoutRow[]): LayoutRow[] {
+	if (rows.length <= 1) return rows;
+	let attempt = shuffle(rows);
+	for (let tries = 0; tries < 10; tries++) {
+		let hasDup = false;
+		for (let i = 1; i < attempt.length; i++) {
+			if (rowSignature(attempt[i].pattern) === rowSignature(attempt[i - 1].pattern)) {
+				hasDup = true;
+				break;
+			}
+		}
+		if (!hasDup) return attempt;
+		attempt = shuffle(rows);
+	}
+	return attempt;
 }
 
 const COL_SPAN: Record<BlockSize, string> = {
@@ -271,6 +298,38 @@ export function cellAspectRatio(
 	const slotFraction = SIZE_FRACTIONS[row.pattern[slotIdx]];
 	const cellAspectValue = (slotFraction / minFraction) * baseCellAspect;
 	return `${cellAspectValue} / 1`;
+}
+
+export function rowFormat(row: LayoutRow): FormatPreference | null {
+	if (row.blocks.some((b) => b.type === 'press')) return null;
+	const fractions = row.pattern.map((s) => SIZE_FRACTIONS[s]);
+	const minFraction = Math.min(...fractions);
+
+	const forcedGallery = row.blocks.find(
+		(b) => b.type === 'gallery' && b.forceFormat
+	);
+	const hasSquareLocked = row.blocks.some(
+		(b) => b.type === 'circle' || b.type === 'collaborators'
+	);
+
+	if (forcedGallery && forcedGallery.type === 'gallery') {
+		return forcedGallery.preferredFormat;
+	}
+	if (hasSquareLocked) {
+		return 'square';
+	}
+	const smallestBlocks = row.blocks.filter((_, i) => fractions[i] === minFraction);
+	const smallestSlotPrefs: FormatPreference[] = smallestBlocks.map((b) =>
+		b.type === 'gallery' ? b.preferredFormat : 'square'
+	);
+	const requested = strongestPreference(smallestSlotPrefs);
+	return requested === 'portrait' && minFraction > 1 / 3 ? 'square' : requested;
+}
+
+export function smallestSlotIndex(row: LayoutRow): number {
+	const fractions = row.pattern.map((s) => SIZE_FRACTIONS[s]);
+	const minFraction = Math.min(...fractions);
+	return fractions.indexOf(minFraction);
 }
 
 export function rowAspectRatio(row: LayoutRow): string | null {

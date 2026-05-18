@@ -46,13 +46,16 @@ export function sliceToPressBlock(slice: SliceLike): PressBlock {
 
 export function sliceToCollaboratorsBlock(slice: SliceLike): CollaboratorsBlock {
 	const primary = slice.primary ?? {};
+	const items = ((primary.items ?? []) as Array<{ link?: unknown }>).map((i) => i.link);
 	return {
 		id: slice.id ?? 'collaborators',
 		type: 'collaborators',
 		allowedSizes: DEFAULT_ALLOWED_SIZES.collaborators,
 		pinned: PINNED_TYPES.has('collaborators'),
 		hideOnMobile: readHideOnMobile(primary),
-		title: primary.title ?? undefined
+		title: primary.title ?? undefined,
+		items,
+		takeAutomatically: primary.take_automatically === true
 	};
 }
 
@@ -68,6 +71,7 @@ export function sliceToCircleBlock(slice: SliceLike): CircleBlock {
 		allowedSizes: DEFAULT_ALLOWED_SIZES.circle,
 		hideOnMobile: readHideOnMobile(primary),
 		items,
+		headline: primary.headline ?? undefined,
 		backgroundColor: parseColorToken(primary.background_color, 'white'),
 		textColor: parseColorToken(primary.text_color, 'black')
 	};

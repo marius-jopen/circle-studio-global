@@ -61,6 +61,7 @@ export function parseColorToken(value: unknown, fallback: ColorToken): ColorToke
 export interface CircleBlock extends AboutBlockBase {
 	type: 'circle';
 	items: string[];
+	headline?: string;
 	backgroundColor: ColorToken;
 	textColor: ColorToken;
 }
@@ -84,6 +85,8 @@ export interface GalleryBlock extends AboutBlockBase {
 export interface CollaboratorsBlock extends AboutBlockBase {
 	type: 'collaborators';
 	title?: string;
+	items: unknown[];
+	takeAutomatically: boolean;
 }
 
 export interface PressBlock extends AboutBlockBase {

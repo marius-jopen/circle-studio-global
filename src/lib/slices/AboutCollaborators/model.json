@@ -2,7 +2,7 @@
 	"id": "about_collaborators",
 	"type": "SharedSlice",
 	"name": "AboutCollaborators",
-	"description": "About — Collaborators: fan wheel of people from the people custom type. Always rendered at half width.",
+	"description": "About — Collaborators: single FanWheel of clients/collaborators. Mirrors ClientsAndCollaborators with one wheel.",
 	"variations": [
 		{
 			"id": "default",
@@ -16,7 +16,36 @@
 					"type": "Text",
 					"config": {
 						"label": "Title",
-						"placeholder": "Optional heading"
+						"placeholder": "Optional heading shown at bottom-left"
+					}
+				},
+				"items": {
+					"type": "Group",
+					"config": {
+						"label": "Items",
+						"repeat": true,
+						"fields": {
+							"link": {
+								"type": "Link",
+								"config": {
+									"label": "Link",
+									"placeholder": "",
+									"select": null,
+									"allowTargetBlank": true,
+									"allowText": true,
+									"repeat": false
+								}
+							}
+						}
+					}
+				},
+				"take_automatically": {
+					"type": "Boolean",
+					"config": {
+						"label": "Take items automatically (all People)",
+						"placeholder_false": "false",
+						"placeholder_true": "true",
+						"default_value": false
 					}
 				},
 				"hide_on_mobile": {

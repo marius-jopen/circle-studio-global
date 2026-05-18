@@ -14,7 +14,7 @@
 	const bgClass = $derived(BG_CLASS[block.backgroundColor]);
 	const textHex = $derived(TEXT_HEX[block.textColor]);
 
-	const FADE_IN_TIME = 1.5;
+	const FADE_IN_TIME = 2.5;
 	const FADE_OUT_TIME = 1.5;
 	const VISIBLE_TIME = 1.5;
 	const GAP_TIME = 0;
@@ -78,11 +78,13 @@
 			const w = outerRef.clientWidth;
 			const h = outerRef.clientHeight;
 			const target = Math.min(w, h);
+			if (target <= 0) return;
 			containerSize = Math.max(120, target - 16);
 		};
 
 		if (outerRef) {
-			updateSize();
+			// Defer initial measurement to next frame so parent layout has settled
+			requestAnimationFrame(() => requestAnimationFrame(updateSize));
 			resizeObserver = new ResizeObserver(updateSize);
 			resizeObserver.observe(outerRef);
 		}
@@ -99,20 +101,31 @@
 
 <div
 	bind:this={outerRef}
-	class="w-full h-full {bgClass} rounded-lg overflow-hidden flex items-center justify-center"
+	class="relative w-full h-full {bgClass} rounded-lg overflow-hidden"
 >
+	{#if block.headline}
+		<div
+			class="absolute bottom-0 left-0 z-[2] text-sm md:text-xl font-medium text-left pl-4 pr-4 md:pr-6 pt-2.5 pb-[13px] pointer-events-none"
+			style="color: {textHex};"
+		>
+			{block.headline}
+		</div>
+	{/if}
 	{#if mounted && block.items.length > 0}
+		<div class="absolute inset-0 flex items-center justify-center">
 		<TextCircle
 			text={wheelText || block.items[0]}
 			containerSize={containerSize}
 			fontSize={38}
 			radius={Math.round(containerSize * 0.32)}
 			rotationSpeed={0.1}
+			rotationStart={-60}
 			spacingAmplitudePercent={0.5}
 			spacingSpeed={0}
 			animationType="sin"
 			autoTextSize={true}
 			autoRadius={true}
+			maxFontSize={95}
 			manualMode={true}
 			startInvisible={false}
 			fadeInTime={FADE_IN_TIME}
@@ -122,5 +135,6 @@
 			{triggerFadeOut}
 			revealMode="typewriter"
 		/>
+		</div>
 	{/if}
 </div>

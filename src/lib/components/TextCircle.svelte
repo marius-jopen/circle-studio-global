@@ -16,6 +16,7 @@
   export let textColor: string = "#171717";
   export let autoTextSize: boolean = false; // When true, scale font to fill circumference
   export let autoRadius: boolean = false; // When true, also adapt radius for best fit
+  export let maxFontSize: number = Infinity; // Cap on auto-computed font size
   export let clampShortText: boolean = true; // When true, floor the effective text width so very short strings don't blow up the font size
   export let startInvisible: boolean = false; // If true, start with letters invisible
   export let primaryFontFamily: string = 'CircularXXWeb';
@@ -268,7 +269,7 @@
       bestFontSize *= availableArc / actualWidth;
     }
 
-    return { fontSize: Math.max(2, bestFontSize), radius: bestRadius };
+    return { fontSize: Math.max(2, Math.min(bestFontSize, maxFontSize)), radius: bestRadius };
   }
 
   // Original font size computation — scales font to fill circumference (fixed radius)

@@ -73,9 +73,9 @@
 	$: forced, forcedAspect, updateSize();
 </script>
 
-<div bind:this={cellRef} class="w-full h-full flex items-center justify-center">
+<div bind:this={cellRef} class="w-full h-full min-h-0 flex items-center justify-center">
 	<div
-		class="group relative overflow-hidden rounded bg-neutral-100"
+		class="group relative overflow-hidden rounded-lg bg-neutral-100 min-h-0"
 		style={forced
 			? `width: ${mediaW}px; height: ${mediaH}px;`
 			: 'width: 100%; height: 100%;'}

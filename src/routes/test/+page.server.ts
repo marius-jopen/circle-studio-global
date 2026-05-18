@@ -40,7 +40,9 @@ function getDummyBlocks(): AboutBlock[] {
 			type: 'collaborators',
 			allowedSizes: DEFAULT_ALLOWED_SIZES.collaborators,
 			pinned: true,
-			title: 'Collaborators'
+			title: 'Collaborators',
+			items: [],
+			takeAutomatically: true
 		},
 		{
 			id: 'circle-1',
