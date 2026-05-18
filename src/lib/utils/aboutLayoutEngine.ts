@@ -29,29 +29,72 @@ function isPortraitGallery(b: AboutBlock): boolean {
 	return b.type === 'gallery' && b.preferredFormat === 'portrait';
 }
 
+function isForcedGallery(b: AboutBlock): boolean {
+	return b.type === 'gallery' && b.forceFormat === true;
+}
+
+function isShapeLocked(b: AboutBlock): boolean {
+	if (b.type === 'circle' || b.type === 'collaborators') return true;
+	if (b.type === 'gallery' && b.forceFormat) return true;
+	return false;
+}
+
+function isUniformPattern(pattern: BlockSize[]): boolean {
+	return new Set(pattern).size === 1;
+}
+
+type SlotShape = 'square' | 'landscape';
+
+function slotShape(pattern: BlockSize[], slotSize: BlockSize): SlotShape {
+	if (pattern.length === 1 && pattern[0] === 'full') return 'landscape';
+	const minFraction = Math.min(...pattern.map((s) => SIZE_FRACTIONS[s]));
+	return SIZE_FRACTIONS[slotSize] === minFraction ? 'square' : 'landscape';
+}
+
+function slotCanBePortrait(pattern: BlockSize[], slotSize: BlockSize): boolean {
+	const minFraction = Math.min(...pattern.map((s) => SIZE_FRACTIONS[s]));
+	return SIZE_FRACTIONS[slotSize] === minFraction && minFraction <= 1 / 3;
+}
+
 function pickBlock(
 	pool: AboutBlock[],
 	slotSize: BlockSize,
-	usedIds: Set<string>,
-	preferPortrait: boolean
+	pattern: BlockSize[],
+	usedIds: Set<string>
 ): AboutBlock | null {
-	let nonPortraitMatch: AboutBlock | null = null;
-	let portraitMatch: AboutBlock | null = null;
+	const shape = slotShape(pattern, slotSize);
+	const canPortrait = slotCanBePortrait(pattern, slotSize);
+
+	type Scored = { block: AboutBlock; score: number };
+	const candidates: Scored[] = [];
 
 	for (const block of pool) {
 		if (usedIds.has(block.id)) continue;
 		if (!block.allowedSizes.includes(slotSize)) continue;
-		if (isPortraitGallery(block)) {
-			if (!portraitMatch) portraitMatch = block;
-		} else {
-			if (!nonPortraitMatch) nonPortraitMatch = block;
+
+		let score = 0;
+		if (block.pinned) score += 500;
+		if (block.type === 'gallery') {
+			const pref = block.preferredFormat;
+			const matches =
+				(pref === 'square' && shape === 'square') ||
+				(pref === 'landscape' && shape === 'landscape') ||
+				(pref === 'portrait' && canPortrait);
+
+			if (block.forceFormat) {
+				score += matches ? 2000 : 200;
+			} else if (matches) {
+				score += 10;
+			} else if (pref !== 'square' && shape === 'square') {
+				score -= 1;
+			}
 		}
+		candidates.push({ block, score });
 	}
 
-	if (preferPortrait) {
-		return portraitMatch ?? nonPortraitMatch;
-	}
-	return nonPortraitMatch ?? portraitMatch;
+	if (candidates.length === 0) return null;
+	candidates.sort((a, b) => b.score - a.score);
+	return candidates[0].block;
 }
 
 function tryFillPattern(
@@ -61,15 +104,13 @@ function tryFillPattern(
 ): AboutBlock[] | null {
 	const tentativelyUsed = new Set(usedIds);
 	const picked: AboutBlock[] = new Array(pattern.length);
-	const minFraction = Math.min(...pattern.map((s) => SIZE_FRACTIONS[s]));
 
 	const slotOrder = pattern
 		.map((size, idx) => ({ size, idx }))
 		.sort((a, b) => SIZE_FRACTIONS[a.size] - SIZE_FRACTIONS[b.size]);
 
 	for (const slot of slotOrder) {
-		const isSmallest = SIZE_FRACTIONS[slot.size] === minFraction;
-		const block = pickBlock(pool, slot.size, tentativelyUsed, isSmallest);
+		const block = pickBlock(pool, slot.size, pattern, tentativelyUsed);
 		if (!block) return null;
 		picked[slot.idx] = block;
 		tentativelyUsed.add(block.id);
@@ -102,7 +143,32 @@ export function buildAboutLayout(blocks: AboutBlock[]): LayoutRow[] {
 		const remaining = pool.filter((b) => !usedIds.has(b.id));
 		const remainingCount = remaining.length;
 
-		const candidatePatterns = patternsForRemaining(remainingCount);
+		let candidatePatterns = patternsForRemaining(remainingCount);
+
+		const hasPortraitRemaining = remaining.some(isPortraitGallery);
+		if (hasPortraitRemaining) {
+			const smallCellPatterns = candidatePatterns.filter((p) => {
+				const min = Math.min(...p.map((s) => SIZE_FRACTIONS[s]));
+				return min <= 1 / 3;
+			});
+			if (smallCellPatterns.length > 0) candidatePatterns = smallCellPatterns;
+		}
+
+		const hasShapeLockedRemaining = remaining.some(isShapeLocked);
+		if (hasShapeLockedRemaining) {
+			let uniformPatterns = candidatePatterns.filter(isUniformPattern);
+			const hasSquareOrPortraitForce = remaining.some(
+				(b) =>
+					b.type === 'gallery' &&
+					b.forceFormat &&
+					b.preferredFormat !== 'landscape'
+			);
+			if (hasSquareOrPortraitForce && remainingCount > 1) {
+				uniformPatterns = uniformPatterns.filter((p) => p.length > 1);
+			}
+			if (uniformPatterns.length > 0) candidatePatterns = uniformPatterns;
+		}
+
 		const variantPatterns = candidatePatterns.filter(
 			(p) => rowSignature(p) !== lastSignature
 		);
@@ -171,18 +237,70 @@ function strongestPreference(prefs: FormatPreference[]): FormatPreference {
 	return 'square';
 }
 
+export function cellAspectRatio(
+	row: LayoutRow,
+	slotIdx: number
+): string | null {
+	if (row.blocks.some((b) => b.type === 'press')) return null;
+	const fractions = row.pattern.map((s) => SIZE_FRACTIONS[s]);
+	const minFraction = Math.min(...fractions);
+	if (minFraction === 1) return '16 / 9';
+
+	const forcedGallery = row.blocks.find(
+		(b) => b.type === 'gallery' && b.forceFormat
+	);
+	const hasSquareLocked = row.blocks.some(
+		(b) => b.type === 'circle' || b.type === 'collaborators'
+	);
+
+	let baseFormat: FormatPreference;
+	if (forcedGallery && forcedGallery.type === 'gallery') {
+		baseFormat = forcedGallery.preferredFormat;
+	} else if (hasSquareLocked) {
+		baseFormat = 'square';
+	} else {
+		const smallestBlocks = row.blocks.filter((_, i) => fractions[i] === minFraction);
+		const smallestSlotPrefs: FormatPreference[] = smallestBlocks.map((b) =>
+			b.type === 'gallery' ? b.preferredFormat : 'square'
+		);
+		const requested = strongestPreference(smallestSlotPrefs);
+		baseFormat = requested === 'portrait' && minFraction > 1 / 3 ? 'square' : requested;
+	}
+
+	const baseCellAspect = FORMAT_ASPECT[baseFormat];
+	const slotFraction = SIZE_FRACTIONS[row.pattern[slotIdx]];
+	const cellAspectValue = (slotFraction / minFraction) * baseCellAspect;
+	return `${cellAspectValue} / 1`;
+}
+
 export function rowAspectRatio(row: LayoutRow): string | null {
 	if (row.blocks.some((b) => b.type === 'press')) return null;
 	const fractions = row.pattern.map((s) => SIZE_FRACTIONS[s]);
 	const minFraction = Math.min(...fractions);
 	if (minFraction === 1) return '16 / 9';
 
-	const smallestSlotPrefs: FormatPreference[] = row.blocks
-		.map((b, i) => ({ b, i }))
-		.filter(({ i }) => fractions[i] === minFraction)
-		.map(({ b }) => (b.type === 'gallery' ? b.preferredFormat : 'square'));
+	// Shape-locked blocks (forced gallery > circle/collab) drive the row aspect
+	const forcedGallery = row.blocks.find(
+		(b) => b.type === 'gallery' && b.forceFormat
+	);
+	const hasSquareLocked = row.blocks.some(
+		(b) => b.type === 'circle' || b.type === 'collaborators'
+	);
 
-	const format = strongestPreference(smallestSlotPrefs);
+	let format: FormatPreference;
+	if (forcedGallery && forcedGallery.type === 'gallery') {
+		format = forcedGallery.preferredFormat;
+	} else if (hasSquareLocked) {
+		format = 'square';
+	} else {
+		const smallestBlocks = row.blocks.filter((_, i) => fractions[i] === minFraction);
+		const smallestSlotPrefs: FormatPreference[] = smallestBlocks.map((b) =>
+			b.type === 'gallery' ? b.preferredFormat : 'square'
+		);
+		const requested = strongestPreference(smallestSlotPrefs);
+		format = requested === 'portrait' && minFraction > 1 / 3 ? 'square' : requested;
+	}
+
 	const cellAspect = FORMAT_ASPECT[format];
 	return `${cellAspect / minFraction} / 1`;
 }

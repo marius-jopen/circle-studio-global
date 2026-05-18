@@ -23,8 +23,6 @@ export interface GalleryItem {
 	image?: { url: string; alt?: string | null } | null;
 	video_url?: string | null;
 	play?: 'no-sound' | 'has-sound' | 'click-to-play-with-sound';
-	hide_on_mobile?: boolean;
-	no_rounded_corners?: boolean;
 }
 
 export interface PressItem {
@@ -39,6 +37,7 @@ export interface AboutBlockBase {
 	type: BlockType;
 	allowedSizes: BlockSize[];
 	pinned?: boolean;
+	hideOnMobile?: boolean;
 }
 
 export type ColorToken = 'white' | 'light_gray' | 'black';
@@ -79,6 +78,7 @@ export interface GalleryBlock extends AboutBlockBase {
 	items: GalleryItem[];
 	videoPlaybackMode: 'continuous' | 'restart';
 	preferredFormat: FormatPreference;
+	forceFormat: boolean;
 }
 
 export interface CollaboratorsBlock extends AboutBlockBase {

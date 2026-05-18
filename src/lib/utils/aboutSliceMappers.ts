@@ -21,6 +21,10 @@ function fallbackId(prefix: string): string {
 	return `${prefix}-${nonceCounter}`;
 }
 
+function readHideOnMobile(primary: Record<string, any>): boolean {
+	return primary.hide_on_mobile === true;
+}
+
 export function sliceToPressBlock(slice: SliceLike): PressBlock {
 	const primary = slice.primary ?? {};
 	const items = ((primary.items ?? []) as Array<Record<string, any>>).map<PressItem>((i) => ({
@@ -34,6 +38,7 @@ export function sliceToPressBlock(slice: SliceLike): PressBlock {
 		type: 'press',
 		allowedSizes: DEFAULT_ALLOWED_SIZES.press,
 		pinned: PINNED_TYPES.has('press'),
+		hideOnMobile: readHideOnMobile(primary),
 		headline: primary.headline ?? undefined,
 		items
 	};
@@ -46,6 +51,7 @@ export function sliceToCollaboratorsBlock(slice: SliceLike): CollaboratorsBlock 
 		type: 'collaborators',
 		allowedSizes: DEFAULT_ALLOWED_SIZES.collaborators,
 		pinned: PINNED_TYPES.has('collaborators'),
+		hideOnMobile: readHideOnMobile(primary),
 		title: primary.title ?? undefined
 	};
 }
@@ -60,6 +66,7 @@ export function sliceToCircleBlock(slice: SliceLike): CircleBlock {
 		id: slice.id ?? fallbackId('circle'),
 		type: 'circle',
 		allowedSizes: DEFAULT_ALLOWED_SIZES.circle,
+		hideOnMobile: readHideOnMobile(primary),
 		items,
 		backgroundColor: parseColorToken(primary.background_color, 'white'),
 		textColor: parseColorToken(primary.text_color, 'black')
@@ -76,10 +83,12 @@ export function sliceToGalleryBlock(slice: SliceLike): GalleryBlock {
 		id: slice.id ?? fallbackId('gallery'),
 		type: 'gallery',
 		allowedSizes: DEFAULT_ALLOWED_SIZES.gallery,
+		hideOnMobile: readHideOnMobile(primary),
 		items,
 		videoPlaybackMode:
 			(primary.video_playback_mode as 'continuous' | 'restart') ?? 'continuous',
-		preferredFormat
+		preferredFormat,
+		forceFormat: primary.force_format === true
 	};
 }
 

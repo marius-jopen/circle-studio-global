@@ -48,8 +48,9 @@
 		if (initial) {
 			wheelText = block.items[0];
 			poetryIndex = 0;
-			setTimeout(() => pulseFade('in'), 150);
 		}
+
+		const waitBeforeOut = initial ? VISIBLE_TIME : FADE_IN_TIME + VISIBLE_TIME;
 
 		if (cycleTimeoutA) clearTimeout(cycleTimeoutA);
 		cycleTimeoutA = setTimeout(
@@ -64,7 +65,7 @@
 					startCycle(false);
 				}, GAP_TIME * 1000);
 			},
-			(FADE_IN_TIME + VISIBLE_TIME) * 1000
+			waitBeforeOut * 1000
 		);
 	}
 
@@ -113,7 +114,7 @@
 			autoTextSize={true}
 			autoRadius={true}
 			manualMode={true}
-			startInvisible={true}
+			startInvisible={false}
 			fadeInTime={FADE_IN_TIME}
 			fadeOutTime={FADE_OUT_TIME}
 			textColor={textHex}

@@ -2,7 +2,7 @@
 	"id": "about_gallery",
 	"type": "SharedSlice",
 	"name": "AboutGallery",
-	"description": "About — Gallery: 1-4 independent parallel carousels, auto-split from items pool.",
+	"description": "About — Gallery: carousel of images/videos.",
 	"variations": [
 		{
 			"id": "default",
@@ -41,24 +41,6 @@
 									"options": ["no-sound", "has-sound", "click-to-play-with-sound"],
 									"default_value": "no-sound"
 								}
-							},
-							"hide_on_mobile": {
-								"type": "Boolean",
-								"config": {
-									"label": "Hide on Mobile",
-									"placeholder_false": "false",
-									"placeholder_true": "true",
-									"default_value": false
-								}
-							},
-							"no_rounded_corners": {
-								"type": "Boolean",
-								"config": {
-									"label": "No Rounded Corners",
-									"placeholder_false": "false",
-									"placeholder_true": "true",
-									"default_value": false
-								}
 							}
 						}
 					}
@@ -79,6 +61,24 @@
 						"placeholder": "",
 						"options": ["square", "landscape", "portrait"],
 						"default_value": "square"
+					}
+				},
+				"force_format": {
+					"type": "Boolean",
+					"config": {
+						"label": "Force Format (don't crop)",
+						"placeholder_false": "false",
+						"placeholder_true": "true",
+						"default_value": false
+					}
+				},
+				"hide_on_mobile": {
+					"type": "Boolean",
+					"config": {
+						"label": "Hide on Mobile",
+						"placeholder_false": "false",
+						"placeholder_true": "true",
+						"default_value": false
 					}
 				}
 			},

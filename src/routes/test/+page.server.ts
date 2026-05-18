@@ -68,6 +68,7 @@ function getDummyBlocks(): AboutBlock[] {
 			allowedSizes: DEFAULT_ALLOWED_SIZES.gallery,
 			videoPlaybackMode: 'continuous',
 			preferredFormat: 'square',
+			forceFormat: false,
 			items: [
 				{ image: { url: 'https://picsum.photos/seed/g1/600/600' } },
 				{ image: { url: 'https://picsum.photos/seed/g2/600/600' } },
@@ -81,6 +82,7 @@ function getDummyBlocks(): AboutBlock[] {
 			allowedSizes: DEFAULT_ALLOWED_SIZES.gallery,
 			videoPlaybackMode: 'restart',
 			preferredFormat: 'portrait',
+			forceFormat: false,
 			items: [
 				{ image: { url: 'https://picsum.photos/seed/g5/600/600' } },
 				{ image: { url: 'https://picsum.photos/seed/g6/600/600' } },
@@ -95,6 +97,7 @@ function getDummyBlocks(): AboutBlock[] {
 			allowedSizes: DEFAULT_ALLOWED_SIZES.gallery,
 			videoPlaybackMode: 'continuous',
 			preferredFormat: 'square',
+			forceFormat: false,
 			items: [
 				{ image: { url: 'https://picsum.photos/seed/g10/600/600' } },
 				{ image: { url: 'https://picsum.photos/seed/g11/600/600' } }

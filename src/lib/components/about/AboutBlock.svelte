@@ -10,7 +10,15 @@
 	void size;
 </script>
 
-{#if block.type === 'circle'}
+{#if block.hideOnMobile}
+	<div class="hidden md:block h-full">
+		{#if block.type === 'circle'}<CircleBlock {block} />
+		{:else if block.type === 'gallery'}<GalleryBlock {block} />
+		{:else if block.type === 'collaborators'}<CollaboratorsBlock {block} />
+		{:else if block.type === 'press'}<PressBlock {block} />
+		{/if}
+	</div>
+{:else if block.type === 'circle'}
 	<CircleBlock {block} />
 {:else if block.type === 'gallery'}
 	<GalleryBlock {block} />
