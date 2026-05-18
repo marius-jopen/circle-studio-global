@@ -12,6 +12,13 @@ const config = {
 		adapter: adapter(),
 		
 		prerender: {
+			handleEntryGeneratorMismatch: ({ generatedFromId, entry, matchedId }) => {
+				// /[[preview=preview]]/[uid] entry generator returns all Prismic page UIDs,
+				// some of which match dedicated static routes (e.g. /test). Static route wins.
+				console.warn(
+					`Ignoring entry generator mismatch: ${generatedFromId} generated ${entry} matched by ${matchedId}`
+				);
+			},
 			handleHttpError: ({ path, referrer, message }) => {
 				// Log the error for debugging
 				console.warn(`HTTP error during prerendering: ${path} (referred from ${referrer}): ${message}`);
