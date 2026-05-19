@@ -57,6 +57,43 @@ type ContentRelationshipFieldWithData<
 	>;
 }[Exclude<TCustomType[number], string>['id']];
 
+type AboutLibraryDocumentDataSlicesSlice =
+	| AboutPressSlice
+	| AboutCollaboratorsSlice
+	| AboutGallerySlice
+	| AboutCircleSlice;
+
+/**
+ * Content for About — Library documents
+ */
+interface AboutLibraryDocumentData {
+	/**
+	 * Slice Zone field in *About — Library*
+	 *
+	 * - **Field Type**: Slice Zone
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: about_library.slices[]
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/slices
+	 */
+	slices: prismic.SliceZone<AboutLibraryDocumentDataSlicesSlice>;
+}
+
+/**
+ * About — Library document from Prismic
+ *
+ * - **API ID**: `about_library`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type AboutLibraryDocument<Lang extends string = string> = prismic.PrismicDocumentWithoutUID<
+	Simplify<AboutLibraryDocumentData>,
+	'about_library',
+	Lang
+>;
+
 /**
  * Item in *Home → Feature Projects*
  */
@@ -244,6 +281,7 @@ export type HomeDocument<Lang extends string = string> = prismic.PrismicDocument
 >;
 
 type PageDocumentDataSlicesSlice =
+	| AboutModulesAreaSlice
 	| ContactUsHeaderSlice
 	| AboutOpenerSlice
 	| AboutContentSlice
@@ -761,6 +799,31 @@ export type ProjectsDocument<Lang extends string = string> = prismic.PrismicDocu
 >;
 
 /**
+ * Item in *Settings → Founder Social Links*
+ */
+export interface SettingsDocumentDataFounderSocialLinksItem {
+	/**
+	 * Label field in *Settings → Founder Social Links*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: e.g. Instagram
+	 * - **API ID Path**: settings.founder_social_links[].label
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	label: prismic.KeyTextField;
+
+	/**
+	 * URL field in *Settings → Founder Social Links*
+	 *
+	 * - **Field Type**: Link
+	 * - **Placeholder**: https://...
+	 * - **API ID Path**: settings.founder_social_links[].url
+	 * - **Documentation**: https://prismic.io/docs/fields/link
+	 */
+	url: prismic.LinkField<string, string, unknown, prismic.FieldState, never>;
+}
+
+/**
  * Content for Settings documents
  */
 interface SettingsDocumentData {
@@ -788,7 +851,27 @@ interface SettingsDocumentData {
 	 */
 	navigation_footer: prismic.Repeatable<
 		prismic.LinkField<string, string, unknown, prismic.FieldState, never>
-	>;
+	> /**
+	 * Founder Name field in *Settings*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: e.g. Santiago Carrasquilla
+	 * - **API ID Path**: settings.founder_name
+	 * - **Tab**: Founder
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */;
+	founder_name: prismic.KeyTextField;
+
+	/**
+	 * Founder Social Links field in *Settings*
+	 *
+	 * - **Field Type**: Group
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: settings.founder_social_links[]
+	 * - **Tab**: Founder
+	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+	 */
+	founder_social_links: prismic.GroupField<Simplify<SettingsDocumentDataFounderSocialLinksItem>>;
 }
 
 /**
@@ -807,11 +890,204 @@ export type SettingsDocument<Lang extends string = string> = prismic.PrismicDocu
 >;
 
 export type AllDocumentTypes =
+	| AboutLibraryDocument
 	| HomeDocument
 	| PageDocument
 	| PeopleDocument
 	| ProjectsDocument
 	| SettingsDocument;
+
+/**
+ * Item in *AboutCircle → Default → Primary → Items*
+ */
+export interface AboutCircleSliceDefaultPrimaryItemsItem {
+	/**
+	 * Text field in *AboutCircle → Default → Primary → Items*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: about_circle.default.primary.items[].text
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	text: prismic.KeyTextField;
+}
+
+/**
+ * Primary content in *AboutCircle → Default → Primary*
+ */
+export interface AboutCircleSliceDefaultPrimary {
+	/**
+	 * Headline field in *AboutCircle → Default → Primary*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: Optional bottom-left label
+	 * - **API ID Path**: about_circle.default.primary.headline
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	headline: prismic.KeyTextField;
+
+	/**
+	 * Items field in *AboutCircle → Default → Primary*
+	 *
+	 * - **Field Type**: Group
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: about_circle.default.primary.items[]
+	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+	 */
+	items: prismic.GroupField<Simplify<AboutCircleSliceDefaultPrimaryItemsItem>>;
+
+	/**
+	 * Background Color field in *AboutCircle → Default → Primary*
+	 *
+	 * - **Field Type**: Select
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: white
+	 * - **API ID Path**: about_circle.default.primary.background_color
+	 * - **Documentation**: https://prismic.io/docs/fields/select
+	 */
+	background_color: prismic.SelectField<'white' | 'light_gray' | 'black', 'filled'>;
+
+	/**
+	 * Text Color field in *AboutCircle → Default → Primary*
+	 *
+	 * - **Field Type**: Select
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: black
+	 * - **API ID Path**: about_circle.default.primary.text_color
+	 * - **Documentation**: https://prismic.io/docs/fields/select
+	 */
+	text_color: prismic.SelectField<'white' | 'light_gray' | 'black', 'filled'>;
+
+	/**
+	 * Hide on Mobile field in *AboutCircle → Default → Primary*
+	 *
+	 * - **Field Type**: Boolean
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: false
+	 * - **API ID Path**: about_circle.default.primary.hide_on_mobile
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
+	 */
+	hide_on_mobile: prismic.BooleanField;
+}
+
+/**
+ * Default variation for AboutCircle Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type AboutCircleSliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Simplify<AboutCircleSliceDefaultPrimary>,
+	never
+>;
+
+/**
+ * Slice variation for *AboutCircle*
+ */
+type AboutCircleSliceVariation = AboutCircleSliceDefault;
+
+/**
+ * AboutCircle Shared Slice
+ *
+ * - **API ID**: `about_circle`
+ * - **Description**: About — Circle: rotating circular text (matches AboutContent settings).
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type AboutCircleSlice = prismic.SharedSlice<'about_circle', AboutCircleSliceVariation>;
+
+/**
+ * Item in *AboutCollaborators → Default → Primary → Items*
+ */
+export interface AboutCollaboratorsSliceDefaultPrimaryItemsItem {
+	/**
+	 * Link field in *AboutCollaborators → Default → Primary → Items*
+	 *
+	 * - **Field Type**: Link
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: about_collaborators.default.primary.items[].link
+	 * - **Documentation**: https://prismic.io/docs/fields/link
+	 */
+	link: prismic.LinkField<string, string, unknown, prismic.FieldState, never>;
+}
+
+/**
+ * Primary content in *AboutCollaborators → Default → Primary*
+ */
+export interface AboutCollaboratorsSliceDefaultPrimary {
+	/**
+	 * Title field in *AboutCollaborators → Default → Primary*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: Optional heading shown at bottom-left
+	 * - **API ID Path**: about_collaborators.default.primary.title
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	title: prismic.KeyTextField;
+
+	/**
+	 * Items field in *AboutCollaborators → Default → Primary*
+	 *
+	 * - **Field Type**: Group
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: about_collaborators.default.primary.items[]
+	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+	 */
+	items: prismic.GroupField<Simplify<AboutCollaboratorsSliceDefaultPrimaryItemsItem>>;
+
+	/**
+	 * Take items automatically (all People) field in *AboutCollaborators → Default → Primary*
+	 *
+	 * - **Field Type**: Boolean
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: false
+	 * - **API ID Path**: about_collaborators.default.primary.take_automatically
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
+	 */
+	take_automatically: prismic.BooleanField;
+
+	/**
+	 * Hide on Mobile field in *AboutCollaborators → Default → Primary*
+	 *
+	 * - **Field Type**: Boolean
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: false
+	 * - **API ID Path**: about_collaborators.default.primary.hide_on_mobile
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
+	 */
+	hide_on_mobile: prismic.BooleanField;
+}
+
+/**
+ * Default variation for AboutCollaborators Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type AboutCollaboratorsSliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Simplify<AboutCollaboratorsSliceDefaultPrimary>,
+	never
+>;
+
+/**
+ * Slice variation for *AboutCollaborators*
+ */
+type AboutCollaboratorsSliceVariation = AboutCollaboratorsSliceDefault;
+
+/**
+ * AboutCollaborators Shared Slice
+ *
+ * - **API ID**: `about_collaborators`
+ * - **Description**: About — Collaborators: single FanWheel of clients/collaborators. Mirrors ClientsAndCollaborators with one wheel.
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type AboutCollaboratorsSlice = prismic.SharedSlice<
+	'about_collaborators',
+	AboutCollaboratorsSliceVariation
+>;
 
 /**
  * Item in *AboutContent → Default → Primary → Poetry*
@@ -961,6 +1237,158 @@ type AboutContentSliceVariation = AboutContentSliceDefault;
 export type AboutContentSlice = prismic.SharedSlice<'about_content', AboutContentSliceVariation>;
 
 /**
+ * Item in *AboutGallery → Default → Primary → Items*
+ */
+export interface AboutGallerySliceDefaultPrimaryItemsItem {
+	/**
+	 * Image field in *AboutGallery → Default → Primary → Items*
+	 *
+	 * - **Field Type**: Image
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: about_gallery.default.primary.items[].image
+	 * - **Documentation**: https://prismic.io/docs/fields/image
+	 */
+	image: prismic.ImageField<never>;
+
+	/**
+	 * Video Url field in *AboutGallery → Default → Primary → Items*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: about_gallery.default.primary.items[].video_url
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	video_url: prismic.KeyTextField;
+
+	/**
+	 * Play field in *AboutGallery → Default → Primary → Items*
+	 *
+	 * - **Field Type**: Select
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: no-sound
+	 * - **API ID Path**: about_gallery.default.primary.items[].play
+	 * - **Documentation**: https://prismic.io/docs/fields/select
+	 */
+	play: prismic.SelectField<'no-sound' | 'has-sound' | 'click-to-play-with-sound', 'filled'>;
+}
+
+/**
+ * Primary content in *AboutGallery → Default → Primary*
+ */
+export interface AboutGallerySliceDefaultPrimary {
+	/**
+	 * Items field in *AboutGallery → Default → Primary*
+	 *
+	 * - **Field Type**: Group
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: about_gallery.default.primary.items[]
+	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+	 */
+	items: prismic.GroupField<Simplify<AboutGallerySliceDefaultPrimaryItemsItem>>;
+
+	/**
+	 * Video Playback Mode field in *AboutGallery → Default → Primary*
+	 *
+	 * - **Field Type**: Select
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: continuous
+	 * - **API ID Path**: about_gallery.default.primary.video_playback_mode
+	 * - **Documentation**: https://prismic.io/docs/fields/select
+	 */
+	video_playback_mode: prismic.SelectField<'continuous' | 'restart', 'filled'>;
+
+	/**
+	 * Preferred Format field in *AboutGallery → Default → Primary*
+	 *
+	 * - **Field Type**: Select
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: square
+	 * - **API ID Path**: about_gallery.default.primary.preferred_format
+	 * - **Documentation**: https://prismic.io/docs/fields/select
+	 */
+	preferred_format: prismic.SelectField<'square' | 'landscape' | 'portrait', 'filled'>;
+
+	/**
+	 * Force Format (don't crop) field in *AboutGallery → Default → Primary*
+	 *
+	 * - **Field Type**: Boolean
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: false
+	 * - **API ID Path**: about_gallery.default.primary.force_format
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
+	 */
+	force_format: prismic.BooleanField;
+
+	/**
+	 * Hide on Mobile field in *AboutGallery → Default → Primary*
+	 *
+	 * - **Field Type**: Boolean
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: false
+	 * - **API ID Path**: about_gallery.default.primary.hide_on_mobile
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
+	 */
+	hide_on_mobile: prismic.BooleanField;
+}
+
+/**
+ * Default variation for AboutGallery Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type AboutGallerySliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Simplify<AboutGallerySliceDefaultPrimary>,
+	never
+>;
+
+/**
+ * Slice variation for *AboutGallery*
+ */
+type AboutGallerySliceVariation = AboutGallerySliceDefault;
+
+/**
+ * AboutGallery Shared Slice
+ *
+ * - **API ID**: `about_gallery`
+ * - **Description**: About — Gallery: carousel of images/videos.
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type AboutGallerySlice = prismic.SharedSlice<'about_gallery', AboutGallerySliceVariation>;
+
+/**
+ * Default variation for AboutModulesArea Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type AboutModulesAreaSliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Record<string, never>,
+	never
+>;
+
+/**
+ * Slice variation for *AboutModulesArea*
+ */
+type AboutModulesAreaSliceVariation = AboutModulesAreaSliceDefault;
+
+/**
+ * AboutModulesArea Shared Slice
+ *
+ * - **API ID**: `about_modules_area`
+ * - **Description**: About — Modules Area: pulls blocks from the About Library singleton and renders them in a randomized layout.
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type AboutModulesAreaSlice = prismic.SharedSlice<
+	'about_modules_area',
+	AboutModulesAreaSliceVariation
+>;
+
+/**
  * Primary content in *AboutOpener → Default → Primary*
  */
 export interface AboutOpenerSliceDefaultPrimary {
@@ -1001,6 +1429,114 @@ type AboutOpenerSliceVariation = AboutOpenerSliceDefault;
  * - **Documentation**: https://prismic.io/docs/slices
  */
 export type AboutOpenerSlice = prismic.SharedSlice<'about_opener', AboutOpenerSliceVariation>;
+
+/**
+ * Item in *AboutPress → Default → Primary → Items*
+ */
+export interface AboutPressSliceDefaultPrimaryItemsItem {
+	/**
+	 * Link field in *AboutPress → Default → Primary → Items*
+	 *
+	 * - **Field Type**: Link
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: about_press.default.primary.items[].link
+	 * - **Documentation**: https://prismic.io/docs/fields/link
+	 */
+	link: prismic.LinkField<string, string, unknown, prismic.FieldState, never>;
+
+	/**
+	 * Text field in *AboutPress → Default → Primary → Items*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: about_press.default.primary.items[].text
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	text: prismic.KeyTextField;
+
+	/**
+	 * Year field in *AboutPress → Default → Primary → Items*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: about_press.default.primary.items[].year
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	year: prismic.KeyTextField;
+
+	/**
+	 * Image field in *AboutPress → Default → Primary → Items*
+	 *
+	 * - **Field Type**: Image
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: about_press.default.primary.items[].image
+	 * - **Documentation**: https://prismic.io/docs/fields/image
+	 */
+	image: prismic.ImageField<never>;
+}
+
+/**
+ * Primary content in *AboutPress → Default → Primary*
+ */
+export interface AboutPressSliceDefaultPrimary {
+	/**
+	 * Headline field in *AboutPress → Default → Primary*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: about_press.default.primary.headline
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	headline: prismic.KeyTextField;
+
+	/**
+	 * Items field in *AboutPress → Default → Primary*
+	 *
+	 * - **Field Type**: Group
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: about_press.default.primary.items[]
+	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+	 */
+	items: prismic.GroupField<Simplify<AboutPressSliceDefaultPrimaryItemsItem>>;
+
+	/**
+	 * Hide on Mobile field in *AboutPress → Default → Primary*
+	 *
+	 * - **Field Type**: Boolean
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: false
+	 * - **API ID Path**: about_press.default.primary.hide_on_mobile
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
+	 */
+	hide_on_mobile: prismic.BooleanField;
+}
+
+/**
+ * Default variation for AboutPress Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type AboutPressSliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Simplify<AboutPressSliceDefaultPrimary>,
+	never
+>;
+
+/**
+ * Slice variation for *AboutPress*
+ */
+type AboutPressSliceVariation = AboutPressSliceDefault;
+
+/**
+ * AboutPress Shared Slice
+ *
+ * - **API ID**: `about_press`
+ * - **Description**: About — Press: list of press mentions (mirrors the List slice). Always rendered at full width.
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type AboutPressSlice = prismic.SharedSlice<'about_press', AboutPressSliceVariation>;
 
 /**
  * Item in *Circle → Default → Primary → Items*
@@ -1533,104 +2069,233 @@ type DocumentationSliceVariation = DocumentationSliceDefault;
 export type DocumentationSlice = prismic.SharedSlice<'documentation', DocumentationSliceVariation>;
 
 /**
- * Item in *MediaMultiple → Default → Primary → items*
+ * Primary content in *FeatureList → Default → Primary*
  */
-export interface MediaMultipleSliceDefaultPrimaryItemsItem {
+export interface FeatureListSliceDefaultPrimary {
 	/**
-	 * Image field in *MediaMultiple → Default → Primary → items*
+	 * Take Collaborators Automatically field in *FeatureList → Default → Primary*
 	 *
-	 * - **Field Type**: Image
+	 * - **Field Type**: Boolean
 	 * - **Placeholder**: *None*
-	 * - **API ID Path**: media_multiple.default.primary.items[].image
-	 * - **Documentation**: https://prismic.io/docs/fields/image
+	 * - **Default Value**: false
+	 * - **API ID Path**: feature_list.default.primary.take_collaborators_automatically
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
 	 */
-	image: prismic.ImageField<never>;
+	take_collaborators_automatically: prismic.BooleanField;
 
 	/**
-	 * Video Url field in *MediaMultiple → Default → Primary → items*
+	 * Items field in *FeatureList → Default → Primary*
+	 *
+	 * - **Field Type**: Link
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: feature_list.default.primary.items
+	 * - **Documentation**: https://prismic.io/docs/fields/link
+	 */
+	items: prismic.Repeatable<prismic.LinkField<string, string, unknown, prismic.FieldState, never>>;
+
+	/**
+	 * Title field in *FeatureList → Default → Primary*
 	 *
 	 * - **Field Type**: Text
 	 * - **Placeholder**: *None*
-	 * - **API ID Path**: media_multiple.default.primary.items[].video_url
+	 * - **API ID Path**: feature_list.default.primary.title
 	 * - **Documentation**: https://prismic.io/docs/fields/text
 	 */
-	video_url: prismic.KeyTextField;
-
-	/**
-	 * Play field in *MediaMultiple → Default → Primary → items*
-	 *
-	 * - **Field Type**: Select
-	 * - **Placeholder**: *None*
-	 * - **Default Value**: no-sound
-	 * - **API ID Path**: media_multiple.default.primary.items[].play
-	 * - **Documentation**: https://prismic.io/docs/fields/select
-	 */
-	play: prismic.SelectField<'no-sound' | 'has-sound' | 'click-to-play-with-sound', 'filled'>;
-
-	/**
-	 * Hide on Mobile field in *MediaMultiple → Default → Primary → items*
-	 *
-	 * - **Field Type**: Boolean
-	 * - **Placeholder**: *None*
-	 * - **Default Value**: false
-	 * - **API ID Path**: media_multiple.default.primary.items[].hide_on_mobile
-	 * - **Documentation**: https://prismic.io/docs/fields/boolean
-	 */
-	hide_on_mobile: prismic.BooleanField;
-
-	/**
-	 * No Rounded Corners field in *MediaMultiple → Default → Primary → items*
-	 *
-	 * - **Field Type**: Boolean
-	 * - **Placeholder**: *None*
-	 * - **Default Value**: false
-	 * - **API ID Path**: media_multiple.default.primary.items[].no_rounded_corners
-	 * - **Documentation**: https://prismic.io/docs/fields/boolean
-	 */
-	no_rounded_corners: prismic.BooleanField;
+	title: prismic.KeyTextField;
 }
 
 /**
- * Primary content in *MediaMultiple → Default → Primary*
- */
-export interface MediaMultipleSliceDefaultPrimary {
-	/**
-	 * items field in *MediaMultiple → Default → Primary*
-	 *
-	 * - **Field Type**: Group
-	 * - **Placeholder**: *None*
-	 * - **API ID Path**: media_multiple.default.primary.items[]
-	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
-	 */
-	items: prismic.GroupField<Simplify<MediaMultipleSliceDefaultPrimaryItemsItem>>;
-}
-
-/**
- * Default variation for MediaMultiple Slice
+ * Default variation for FeatureList Slice
  *
  * - **API ID**: `default`
  * - **Description**: Default
  * - **Documentation**: https://prismic.io/docs/slices
  */
-export type MediaMultipleSliceDefault = prismic.SharedSliceVariation<
+export type FeatureListSliceDefault = prismic.SharedSliceVariation<
 	'default',
-	Simplify<MediaMultipleSliceDefaultPrimary>,
+	Simplify<FeatureListSliceDefaultPrimary>,
 	never
 >;
 
 /**
- * Slice variation for *MediaMultiple*
+ * Slice variation for *FeatureList*
  */
-type MediaMultipleSliceVariation = MediaMultipleSliceDefault;
+type FeatureListSliceVariation = FeatureListSliceDefault;
 
 /**
- * MediaMultiple Shared Slice
+ * FeatureList Shared Slice
  *
- * - **API ID**: `media_multiple`
- * - **Description**: Single fullscreen slideshow of images or videos
+ * - **API ID**: `feature_list`
+ * - **Description**: FeatureList
  * - **Documentation**: https://prismic.io/docs/slices
  */
-export type MediaMultipleSlice = prismic.SharedSlice<'media_multiple', MediaMultipleSliceVariation>;
+export type FeatureListSlice = prismic.SharedSlice<'feature_list', FeatureListSliceVariation>;
+
+/**
+ * Default variation for Input Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type InputSliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Record<string, never>,
+	never
+>;
+
+/**
+ * Slice variation for *Input*
+ */
+type InputSliceVariation = InputSliceDefault;
+
+/**
+ * Input Shared Slice
+ *
+ * - **API ID**: `input`
+ * - **Description**: Input
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type InputSlice = prismic.SharedSlice<'input', InputSliceVariation>;
+
+/**
+ * Item in *List → Default → Primary → Items*
+ */
+export interface ListSliceDefaultPrimaryItemsItem {
+	/**
+	 * Link field in *List → Default → Primary → Items*
+	 *
+	 * - **Field Type**: Link
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: list.default.primary.items[].link
+	 * - **Documentation**: https://prismic.io/docs/fields/link
+	 */
+	link: prismic.LinkField<string, string, unknown, prismic.FieldState, never>;
+
+	/**
+	 * Text field in *List → Default → Primary → Items*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: list.default.primary.items[].text
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	text: prismic.KeyTextField;
+
+	/**
+	 * Year field in *List → Default → Primary → Items*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: list.default.primary.items[].year
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	year: prismic.KeyTextField;
+
+	/**
+	 * Image field in *List → Default → Primary → Items*
+	 *
+	 * - **Field Type**: Image
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: list.default.primary.items[].image
+	 * - **Documentation**: https://prismic.io/docs/fields/image
+	 */
+	image: prismic.ImageField<never>;
+}
+
+/**
+ * Primary content in *List → Default → Primary*
+ */
+export interface ListSliceDefaultPrimary {
+	/**
+	 * Headline field in *List → Default → Primary*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: list.default.primary.headline
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	headline: prismic.KeyTextField;
+
+	/**
+	 * Items field in *List → Default → Primary*
+	 *
+	 * - **Field Type**: Group
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: list.default.primary.items[]
+	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+	 */
+	items: prismic.GroupField<Simplify<ListSliceDefaultPrimaryItemsItem>>;
+}
+
+/**
+ * Default variation for List Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ListSliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Simplify<ListSliceDefaultPrimary>,
+	never
+>;
+
+/**
+ * Slice variation for *List*
+ */
+type ListSliceVariation = ListSliceDefault;
+
+/**
+ * List Shared Slice
+ *
+ * - **API ID**: `list`
+ * - **Description**: List
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ListSlice = prismic.SharedSlice<'list', ListSliceVariation>;
+
+/**
+ * Primary content in *Logo → Default → Primary*
+ */
+export interface LogoSliceDefaultPrimary {
+	/**
+	 * Display field in *Logo → Default → Primary*
+	 *
+	 * - **Field Type**: Select
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: logo.default.primary.display
+	 * - **Documentation**: https://prismic.io/docs/fields/select
+	 */
+	display: prismic.SelectField<'both' | 'desktop' | 'mobile'>;
+}
+
+/**
+ * Default variation for Logo Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type LogoSliceDefault = prismic.SharedSliceVariation<
+	'default',
+	Simplify<LogoSliceDefaultPrimary>,
+	never
+>;
+
+/**
+ * Slice variation for *Logo*
+ */
+type LogoSliceVariation = LogoSliceDefault;
+
+/**
+ * Logo Shared Slice
+ *
+ * - **API ID**: `logo`
+ * - **Description**: Logo
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type LogoSlice = prismic.SharedSlice<'logo', LogoSliceVariation>;
 
 /**
  * Item in *MediaAndCircle → Default → Primary → Media*
@@ -1655,6 +2320,21 @@ export interface MediaAndCircleSliceDefaultPrimaryMediaItem {
 	 * - **Documentation**: https://prismic.io/docs/fields/text
 	 */
 	video_url: prismic.KeyTextField;
+}
+
+/**
+ * Item in *MediaAndCircle → Default → Primary → Texts*
+ */
+export interface MediaAndCircleSliceDefaultPrimaryTextsItem {
+	/**
+	 * Item field in *MediaAndCircle → Default → Primary → Texts*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: media_and_circle.default.primary.texts[].item
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	item: prismic.KeyTextField;
 }
 
 /**
@@ -1702,21 +2382,6 @@ export interface MediaAndCircleSliceDefaultPrimary {
 	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
 	 */
 	texts: prismic.GroupField<Simplify<MediaAndCircleSliceDefaultPrimaryTextsItem>>;
-}
-
-/**
- * Item in *MediaAndCircle → Default → Primary → Texts*
- */
-export interface MediaAndCircleSliceDefaultPrimaryTextsItem {
-	/**
-	 * Item field in *MediaAndCircle → Default → Primary → Texts*
-	 *
-	 * - **Field Type**: Text
-	 * - **Placeholder**: *None*
-	 * - **API ID Path**: media_and_circle.default.primary.texts[].item
-	 * - **Documentation**: https://prismic.io/docs/fields/text
-	 */
-	item: prismic.KeyTextField;
 }
 
 /**
@@ -1863,223 +2528,104 @@ type MediaMediaSliceVariation = MediaMediaSliceDefault;
 export type MediaMediaSlice = prismic.SharedSlice<'media_media', MediaMediaSliceVariation>;
 
 /**
- * Primary content in *FeatureList → Default → Primary*
+ * Item in *MediaMultiple → Default → Primary → items*
  */
-export interface FeatureListSliceDefaultPrimary {
+export interface MediaMultipleSliceDefaultPrimaryItemsItem {
 	/**
-	 * Take Collaborators Automatically field in *FeatureList → Default → Primary*
+	 * Image field in *MediaMultiple → Default → Primary → items*
+	 *
+	 * - **Field Type**: Image
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: media_multiple.default.primary.items[].image
+	 * - **Documentation**: https://prismic.io/docs/fields/image
+	 */
+	image: prismic.ImageField<never>;
+
+	/**
+	 * Video Url field in *MediaMultiple → Default → Primary → items*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: media_multiple.default.primary.items[].video_url
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	video_url: prismic.KeyTextField;
+
+	/**
+	 * Play field in *MediaMultiple → Default → Primary → items*
+	 *
+	 * - **Field Type**: Select
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: no-sound
+	 * - **API ID Path**: media_multiple.default.primary.items[].play
+	 * - **Documentation**: https://prismic.io/docs/fields/select
+	 */
+	play: prismic.SelectField<'no-sound' | 'has-sound' | 'click-to-play-with-sound', 'filled'>;
+
+	/**
+	 * Hide on Mobile field in *MediaMultiple → Default → Primary → items*
 	 *
 	 * - **Field Type**: Boolean
 	 * - **Placeholder**: *None*
 	 * - **Default Value**: false
-	 * - **API ID Path**: feature_list.default.primary.take_collaborators_automatically
+	 * - **API ID Path**: media_multiple.default.primary.items[].hide_on_mobile
 	 * - **Documentation**: https://prismic.io/docs/fields/boolean
 	 */
-	take_collaborators_automatically: prismic.BooleanField;
+	hide_on_mobile: prismic.BooleanField;
 
 	/**
-	 * Items field in *FeatureList → Default → Primary*
+	 * No Rounded Corners field in *MediaMultiple → Default → Primary → items*
 	 *
-	 * - **Field Type**: Link
+	 * - **Field Type**: Boolean
 	 * - **Placeholder**: *None*
-	 * - **API ID Path**: feature_list.default.primary.items
-	 * - **Documentation**: https://prismic.io/docs/fields/link
+	 * - **Default Value**: false
+	 * - **API ID Path**: media_multiple.default.primary.items[].no_rounded_corners
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
 	 */
-	items: prismic.Repeatable<prismic.LinkField<string, string, unknown, prismic.FieldState, never>>;
-
-	/**
-	 * Title field in *FeatureList → Default → Primary*
-	 *
-	 * - **Field Type**: Text
-	 * - **Placeholder**: *None*
-	 * - **API ID Path**: feature_list.default.primary.title
-	 * - **Documentation**: https://prismic.io/docs/fields/text
-	 */
-	title: prismic.KeyTextField;
+	no_rounded_corners: prismic.BooleanField;
 }
 
 /**
- * Default variation for FeatureList Slice
- *
- * - **API ID**: `default`
- * - **Description**: Default
- * - **Documentation**: https://prismic.io/docs/slices
+ * Primary content in *MediaMultiple → Default → Primary*
  */
-export type FeatureListSliceDefault = prismic.SharedSliceVariation<
-	'default',
-	Simplify<FeatureListSliceDefaultPrimary>,
-	never
->;
-
-/**
- * Slice variation for *FeatureList*
- */
-type FeatureListSliceVariation = FeatureListSliceDefault;
-
-/**
- * FeatureList Shared Slice
- *
- * - **API ID**: `feature_list`
- * - **Description**: FeatureList
- * - **Documentation**: https://prismic.io/docs/slices
- */
-export type FeatureListSlice = prismic.SharedSlice<'feature_list', FeatureListSliceVariation>;
-
-/**
- * Default variation for Input Slice
- *
- * - **API ID**: `default`
- * - **Description**: Default
- * - **Documentation**: https://prismic.io/docs/slices
- */
-export type InputSliceDefault = prismic.SharedSliceVariation<
-	'default',
-	Record<string, never>,
-	never
->;
-
-/**
- * Slice variation for *Input*
- */
-type InputSliceVariation = InputSliceDefault;
-
-/**
- * Input Shared Slice
- *
- * - **API ID**: `input`
- * - **Description**: Input
- * - **Documentation**: https://prismic.io/docs/slices
- */
-export type InputSlice = prismic.SharedSlice<'input', InputSliceVariation>;
-
-/**
- * Item in *List → Default → Primary → Items*
- */
-export interface ListSliceDefaultPrimaryItemsItem {
+export interface MediaMultipleSliceDefaultPrimary {
 	/**
-	 * Link field in *List → Default → Primary → Items*
-	 *
-	 * - **Field Type**: Link
-	 * - **Placeholder**: *None*
-	 * - **API ID Path**: list.default.primary.items[].link
-	 * - **Documentation**: https://prismic.io/docs/fields/link
-	 */
-	link: prismic.LinkField<string, string, unknown, prismic.FieldState, never>;
-
-	/**
-	 * Text field in *List → Default → Primary → Items*
-	 *
-	 * - **Field Type**: Text
-	 * - **Placeholder**: *None*
-	 * - **API ID Path**: list.default.primary.items[].text
-	 * - **Documentation**: https://prismic.io/docs/fields/text
-	 */
-	text: prismic.KeyTextField;
-
-	/**
-	 * Year field in *List → Default → Primary → Items*
-	 *
-	 * - **Field Type**: Text
-	 * - **Placeholder**: *None*
-	 * - **API ID Path**: list.default.primary.items[].year
-	 * - **Documentation**: https://prismic.io/docs/fields/text
-	 */
-	year: prismic.KeyTextField;
-
-	/**
-	 * Image field in *List → Default → Primary → Items*
-	 *
-	 * - **Field Type**: Image
-	 * - **Placeholder**: *None*
-	 * - **API ID Path**: list.default.primary.items[].image
-	 * - **Documentation**: https://prismic.io/docs/fields/image
-	 */
-	image: prismic.ImageField<never>;
-}
-
-/**
- * Primary content in *List → Default → Primary*
- */
-export interface ListSliceDefaultPrimary {
-	/**
-	 * Items field in *List → Default → Primary*
+	 * items field in *MediaMultiple → Default → Primary*
 	 *
 	 * - **Field Type**: Group
 	 * - **Placeholder**: *None*
-	 * - **API ID Path**: list.default.primary.items[]
+	 * - **API ID Path**: media_multiple.default.primary.items[]
 	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
 	 */
-	items: prismic.GroupField<Simplify<ListSliceDefaultPrimaryItemsItem>>;
+	items: prismic.GroupField<Simplify<MediaMultipleSliceDefaultPrimaryItemsItem>>;
 }
 
 /**
- * Default variation for List Slice
+ * Default variation for MediaMultiple Slice
  *
  * - **API ID**: `default`
  * - **Description**: Default
  * - **Documentation**: https://prismic.io/docs/slices
  */
-export type ListSliceDefault = prismic.SharedSliceVariation<
+export type MediaMultipleSliceDefault = prismic.SharedSliceVariation<
 	'default',
-	Simplify<ListSliceDefaultPrimary>,
+	Simplify<MediaMultipleSliceDefaultPrimary>,
 	never
 >;
 
 /**
- * Slice variation for *List*
+ * Slice variation for *MediaMultiple*
  */
-type ListSliceVariation = ListSliceDefault;
+type MediaMultipleSliceVariation = MediaMultipleSliceDefault;
 
 /**
- * List Shared Slice
+ * MediaMultiple Shared Slice
  *
- * - **API ID**: `list`
- * - **Description**: List
+ * - **API ID**: `media_multiple`
+ * - **Description**: Single fullscreen slideshow of images or videos
  * - **Documentation**: https://prismic.io/docs/slices
  */
-export type ListSlice = prismic.SharedSlice<'list', ListSliceVariation>;
-
-/**
- * Primary content in *Logo → Default → Primary*
- */
-export interface LogoSliceDefaultPrimary {
-	/**
-	 * Display field in *Logo → Default → Primary*
-	 *
-	 * - **Field Type**: Select
-	 * - **Placeholder**: *None*
-	 * - **API ID Path**: logo.default.primary.display
-	 * - **Documentation**: https://prismic.io/docs/fields/select
-	 */
-	display: prismic.SelectField<'both' | 'desktop' | 'mobile'>;
-}
-
-/**
- * Default variation for Logo Slice
- *
- * - **API ID**: `default`
- * - **Description**: Default
- * - **Documentation**: https://prismic.io/docs/slices
- */
-export type LogoSliceDefault = prismic.SharedSliceVariation<
-	'default',
-	Simplify<LogoSliceDefaultPrimary>,
-	never
->;
-
-/**
- * Slice variation for *Logo*
- */
-type LogoSliceVariation = LogoSliceDefault;
-
-/**
- * Logo Shared Slice
- *
- * - **API ID**: `logo`
- * - **Description**: Logo
- * - **Documentation**: https://prismic.io/docs/slices
- */
-export type LogoSlice = prismic.SharedSlice<'logo', LogoSliceVariation>;
+export type MediaMultipleSlice = prismic.SharedSlice<'media_multiple', MediaMultipleSliceVariation>;
 
 /**
  * Primary content in *RichText → Default → Primary*
@@ -2761,6 +3307,9 @@ declare module '@prismicio/client' {
 
 	namespace Content {
 		export type {
+			AboutLibraryDocument,
+			AboutLibraryDocumentData,
+			AboutLibraryDocumentDataSlicesSlice,
 			HomeDocument,
 			HomeDocumentData,
 			HomeDocumentDataFeatureProjectsItem,
@@ -2779,16 +3328,40 @@ declare module '@prismicio/client' {
 			ProjectsDocumentDataSlicesSlice,
 			SettingsDocument,
 			SettingsDocumentData,
+			SettingsDocumentDataFounderSocialLinksItem,
 			AllDocumentTypes,
+			AboutCircleSlice,
+			AboutCircleSliceDefaultPrimaryItemsItem,
+			AboutCircleSliceDefaultPrimary,
+			AboutCircleSliceVariation,
+			AboutCircleSliceDefault,
+			AboutCollaboratorsSlice,
+			AboutCollaboratorsSliceDefaultPrimaryItemsItem,
+			AboutCollaboratorsSliceDefaultPrimary,
+			AboutCollaboratorsSliceVariation,
+			AboutCollaboratorsSliceDefault,
 			AboutContentSlice,
 			AboutContentSliceDefaultPrimaryPoetryItem,
 			AboutContentSliceDefaultPrimary,
 			AboutContentSliceVariation,
 			AboutContentSliceDefault,
+			AboutGallerySlice,
+			AboutGallerySliceDefaultPrimaryItemsItem,
+			AboutGallerySliceDefaultPrimary,
+			AboutGallerySliceVariation,
+			AboutGallerySliceDefault,
+			AboutModulesAreaSlice,
+			AboutModulesAreaSliceVariation,
+			AboutModulesAreaSliceDefault,
 			AboutOpenerSlice,
 			AboutOpenerSliceDefaultPrimary,
 			AboutOpenerSliceVariation,
 			AboutOpenerSliceDefault,
+			AboutPressSlice,
+			AboutPressSliceDefaultPrimaryItemsItem,
+			AboutPressSliceDefaultPrimary,
+			AboutPressSliceVariation,
+			AboutPressSliceDefault,
 			CircleSlice,
 			CircleSliceDefaultPrimaryItemsItem,
 			CircleSliceDefaultPrimary,
@@ -2819,23 +3392,6 @@ declare module '@prismicio/client' {
 			DocumentationSliceDefaultPrimary,
 			DocumentationSliceVariation,
 			DocumentationSliceDefault,
-			MediaMultipleSlice,
-			MediaMultipleSliceDefaultPrimaryItemsItem,
-			MediaMultipleSliceDefaultPrimary,
-			MediaMultipleSliceVariation,
-			MediaMultipleSliceDefault,
-			MediaAndCircleSlice,
-			MediaAndCircleSliceDefaultPrimaryMediaItem,
-			MediaAndCircleSliceDefaultPrimaryTextsItem,
-			MediaAndCircleSliceDefaultPrimary,
-			MediaAndCircleSliceVariation,
-			MediaAndCircleSliceDefault,
-			MediaMediaSlice,
-			MediaMediaSliceDefaultPrimaryMediaLeftItem,
-			MediaMediaSliceDefaultPrimaryMediaRightItem,
-			MediaMediaSliceDefaultPrimary,
-			MediaMediaSliceVariation,
-			MediaMediaSliceDefault,
 			FeatureListSlice,
 			FeatureListSliceDefaultPrimary,
 			FeatureListSliceVariation,
@@ -2852,6 +3408,23 @@ declare module '@prismicio/client' {
 			LogoSliceDefaultPrimary,
 			LogoSliceVariation,
 			LogoSliceDefault,
+			MediaAndCircleSlice,
+			MediaAndCircleSliceDefaultPrimaryMediaItem,
+			MediaAndCircleSliceDefaultPrimaryTextsItem,
+			MediaAndCircleSliceDefaultPrimary,
+			MediaAndCircleSliceVariation,
+			MediaAndCircleSliceDefault,
+			MediaMediaSlice,
+			MediaMediaSliceDefaultPrimaryMediaLeftItem,
+			MediaMediaSliceDefaultPrimaryMediaRightItem,
+			MediaMediaSliceDefaultPrimary,
+			MediaMediaSliceVariation,
+			MediaMediaSliceDefault,
+			MediaMultipleSlice,
+			MediaMultipleSliceDefaultPrimaryItemsItem,
+			MediaMultipleSliceDefaultPrimary,
+			MediaMultipleSliceVariation,
+			MediaMultipleSliceDefault,
 			RichTextSlice,
 			RichTextSliceDefaultPrimary,
 			RichTextSliceVariation,
