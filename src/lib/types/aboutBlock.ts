@@ -45,13 +45,13 @@ export type ColorToken = 'white' | 'light_gray' | 'black';
 export const BG_CLASS: Record<ColorToken, string> = {
 	white: 'bg-white',
 	light_gray: 'bg-neutral-100',
-	black: 'bg-neutral-900'
+	black: 'bg-black'
 };
 
 export const TEXT_HEX: Record<ColorToken, string> = {
 	white: '#ffffff',
 	light_gray: '#f5f5f5',
-	black: '#171717'
+	black: '#000000'
 };
 
 export function parseColorToken(value: unknown, fallback: ColorToken): ColorToken {
