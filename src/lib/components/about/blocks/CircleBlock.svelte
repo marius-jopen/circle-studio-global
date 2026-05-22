@@ -125,7 +125,7 @@
 			animationType="sin"
 			autoTextSize={true}
 			autoRadius={true}
-			maxFontSize={95}
+			maxFontSize={Math.round(containerSize * 0.5)}
 			manualMode={true}
 			startInvisible={false}
 			fadeInTime={FADE_IN_TIME}
