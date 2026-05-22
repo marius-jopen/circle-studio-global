@@ -24,7 +24,8 @@
 	// / very wide screens. (Computed in JS, not a CSS vw unit, because FanWheel needs numeric px.)
 	$: desktopScale = Math.min(Math.max(windowWidth / 1514, 0.55), 2.2);
 	$: wheelRadius = isMobile ? Math.min(Math.floor(windowWidth * 0.18), 85) : Math.round(140 * desktopScale);
-	$: wheelFontSize = isMobile ? Math.min(Math.floor(windowWidth * 0.03), 14) : Math.round(18 * desktopScale);
+	// Mobile font is 2% smaller (keeps the radius) so the names are less crammed together.
+	$: wheelFontSize = isMobile ? Math.min(Math.floor(windowWidth * 0.03), 14) * 0.98 : Math.round(18 * desktopScale);
 
 	function checkMobile() {
 		if (typeof window !== 'undefined') {
