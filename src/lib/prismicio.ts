@@ -17,7 +17,11 @@ const routes: Route[] = [
 	{ type: 'home', path: '/' },
 	{ type: 'page', path: '/', uid: 'home' },
 	{ type: 'page', path: '/:uid' },
-	{ type: 'projects', path: '/work/:uid' }
+	{ type: 'projects', path: '/work/:uid' },
+	// The About Modules Library has no page of its own — it's rendered inside the /test
+	// page (and the About page) via the AboutModulesArea slice. Resolve it to /test so
+	// Prismic's "Preview the page" button opens a real render instead of the homepage.
+	{ type: 'about_library', path: '/test' }
 ];
 
 /**
