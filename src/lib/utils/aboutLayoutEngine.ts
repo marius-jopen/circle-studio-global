@@ -33,6 +33,12 @@ function isForcedGallery(b: AboutBlock): boolean {
 	return b.type === 'gallery' && b.forceFormat === true;
 }
 
+// The "clock" is a circle whose text uses the [date] shortcode. It must not sit next to
+// another circle, so poetry phrases are never placed beside the clock.
+function isClock(b: AboutBlock): boolean {
+	return b.type === 'circle' && b.items.some((t) => /\[date\]/i.test(t));
+}
+
 function isShapeLocked(b: AboutBlock): boolean {
 	if (b.type === 'circle' || b.type === 'collaborators') return true;
 	if (b.type === 'gallery' && b.forceFormat) return true;
@@ -61,7 +67,8 @@ function pickBlock(
 	slotSize: BlockSize,
 	pattern: BlockSize[],
 	usedIds: Set<string>,
-	excludeTypes?: Set<BlockType>
+	excludeTypes?: Set<BlockType>,
+	disallowClock = false
 ): AboutBlock | null {
 	const shape = slotShape(pattern, slotSize);
 	const canPortrait = slotCanBePortrait(pattern, slotSize);
@@ -72,6 +79,7 @@ function pickBlock(
 	for (const block of pool) {
 		if (usedIds.has(block.id)) continue;
 		if (excludeTypes?.has(block.type)) continue;
+		if (disallowClock && isClock(block)) continue;
 		if (!block.allowedSizes.includes(slotSize)) continue;
 
 		let score = 0;
@@ -109,27 +117,36 @@ function tryFillPattern(
 	const tentativelyUsed = new Set(usedIds);
 	const picked: AboutBlock[] = new Array(pattern.length);
 	const usedTypesInRow = new Set<BlockType>();
+	let rowHasCircle = false;
+	let rowHasClock = false;
 
 	const slotOrder = shuffle(
 		pattern.map((size, idx) => ({ size, idx }))
 	).sort((a, b) => SIZE_FRACTIONS[a.size] - SIZE_FRACTIONS[b.size]);
 
 	for (const slot of slotOrder) {
-		// The two collaborators wheels are independent, so keep them out of the same row:
-		// once one is placed, exclude collaborators from the remaining slots.
-		const excludeTypes = usedTypesInRow.has('collaborators')
-			? new Set<BlockType>(['collaborators'])
-			: undefined;
-		let block = pickBlock(pool, slot.size, pattern, tentativelyUsed, excludeTypes);
-		// Last resort: if nothing else fits the slot, allow a second collaborators block
-		// rather than failing the whole row.
-		if (!block && excludeTypes) {
+		const excludeTypes = new Set<BlockType>();
+		// The two collaborators wheels are independent, so keep them out of the same row.
+		if (usedTypesInRow.has('collaborators')) excludeTypes.add('collaborators');
+		// Nothing circular may sit next to the clock.
+		if (rowHasClock) excludeTypes.add('circle');
+		// And the clock may not sit next to another circle.
+		const disallowClock = rowHasCircle;
+
+		const exclude = excludeTypes.size > 0 ? excludeTypes : undefined;
+		let block = pickBlock(pool, slot.size, pattern, tentativelyUsed, exclude, disallowClock);
+		// Last resort: if nothing else fits the slot, drop the constraints rather than fail the row.
+		if (!block && (exclude || disallowClock)) {
 			block = pickBlock(pool, slot.size, pattern, tentativelyUsed);
 		}
 		if (!block) return null;
 		picked[slot.idx] = block;
 		tentativelyUsed.add(block.id);
 		usedTypesInRow.add(block.type);
+		if (block.type === 'circle') {
+			rowHasCircle = true;
+			if (isClock(block)) rowHasClock = true;
+		}
 	}
 
 	return picked;

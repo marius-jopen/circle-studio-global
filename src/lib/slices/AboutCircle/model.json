@@ -53,6 +53,15 @@
 						"default_value": "black"
 					}
 				},
+				"start_degrees": {
+					"type": "Number",
+					"config": {
+						"label": "Start Degrees (0-360, empty = default)",
+						"placeholder": "",
+						"min": 0,
+						"max": 360
+					}
+				},
 				"randomize": {
 					"type": "Boolean",
 					"config": {

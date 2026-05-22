@@ -74,7 +74,8 @@ export function sliceToCircleBlock(slice: SliceLike): CircleBlock {
 		headline: primary.headline ?? undefined,
 		backgroundColor: parseColorToken(primary.background_color, 'white'),
 		textColor: parseColorToken(primary.text_color, 'black'),
-		randomize: primary.randomize === true
+		randomize: primary.randomize === true,
+		startDegrees: typeof primary.start_degrees === 'number' ? primary.start_degrees : undefined
 	};
 }
 

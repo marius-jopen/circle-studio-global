@@ -130,7 +130,7 @@
 			fontSize={38}
 			radius={Math.round(renderSize * 0.32)}
 			rotationSpeed={0.07}
-			rotationStart={-60}
+			rotationStart={block.startDegrees ?? -60}
 			spacingAmplitudePercent={0.5}
 			spacingSpeed={0}
 			animationType="sin"

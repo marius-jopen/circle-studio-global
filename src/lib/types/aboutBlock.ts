@@ -69,6 +69,8 @@ export interface CircleBlock extends AboutBlockBase {
 	textColor: ColorToken;
 	/** When true, randomly render as black-on-white or white-on-black, ignoring the colors above. */
 	randomize: boolean;
+	/** Rotation start angle in degrees (0–360); undefined falls back to the default start. */
+	startDegrees?: number;
 }
 
 export type FormatPreference = 'square' | 'landscape' | 'portrait';
