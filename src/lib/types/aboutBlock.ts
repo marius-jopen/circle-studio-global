@@ -67,6 +67,8 @@ export interface CircleBlock extends AboutBlockBase {
 	headline?: string;
 	backgroundColor: ColorToken;
 	textColor: ColorToken;
+	/** When true, randomly render as black-on-white or white-on-black, ignoring the colors above. */
+	randomize: boolean;
 }
 
 export type FormatPreference = 'square' | 'landscape' | 'portrait';

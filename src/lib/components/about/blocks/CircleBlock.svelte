@@ -11,8 +11,16 @@
 
 	const { block }: Props = $props();
 
-	const bgClass = $derived(BG_CLASS[block.backgroundColor]);
-	const textHex = $derived(TEXT_HEX[block.textColor]);
+	// Randomize toggle overrides the picked colors with a random black-on-white / white-on-black
+	// scheme. Rolled on the client only (browser-guarded) so it never bakes a fixed value into
+	// SSR/prerendered HTML — that's why it looked "always white" before.
+	let randomDark = $state(browser && block.randomize ? Math.random() < 0.5 : false);
+
+	const bgColor = $derived(block.randomize ? (randomDark ? 'black' : 'white') : block.backgroundColor);
+	const fgColor = $derived(block.randomize ? (randomDark ? 'white' : 'black') : block.textColor);
+
+	const bgClass = $derived(BG_CLASS[bgColor]);
+	const textHex = $derived(TEXT_HEX[fgColor]);
 
 	const FADE_IN_TIME = 2.5;
 	const FADE_OUT_TIME = 1.5;
@@ -121,7 +129,7 @@
 			containerSize={renderSize}
 			fontSize={38}
 			radius={Math.round(renderSize * 0.32)}
-			rotationSpeed={0.1}
+			rotationSpeed={0.07}
 			rotationStart={-60}
 			spacingAmplitudePercent={0.5}
 			spacingSpeed={0}

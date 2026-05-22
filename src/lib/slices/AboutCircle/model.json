@@ -53,6 +53,15 @@
 						"default_value": "black"
 					}
 				},
+				"randomize": {
+					"type": "Boolean",
+					"config": {
+						"label": "Randomize black/white (overrides colors)",
+						"placeholder_false": "false",
+						"placeholder_true": "true",
+						"default_value": false
+					}
+				},
 				"hide_on_mobile": {
 					"type": "Boolean",
 					"config": {

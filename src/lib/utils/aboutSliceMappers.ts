@@ -73,7 +73,8 @@ export function sliceToCircleBlock(slice: SliceLike): CircleBlock {
 		items,
 		headline: primary.headline ?? undefined,
 		backgroundColor: parseColorToken(primary.background_color, 'white'),
-		textColor: parseColorToken(primary.text_color, 'black')
+		textColor: parseColorToken(primary.text_color, 'black'),
+		randomize: primary.randomize === true
 	};
 }
 
