@@ -1,4 +1,4 @@
-import type { AboutBlock, BlockSize, FormatPreference, LayoutRow } from '$lib/types/aboutBlock';
+import type { AboutBlock, BlockSize, BlockType, FormatPreference, LayoutRow } from '$lib/types/aboutBlock';
 import { SIZE_FRACTIONS, FORMAT_ASPECT } from '$lib/types/aboutBlock';
 
 const ROW_PATTERNS: BlockSize[][] = [
@@ -60,7 +60,8 @@ function pickBlock(
 	pool: AboutBlock[],
 	slotSize: BlockSize,
 	pattern: BlockSize[],
-	usedIds: Set<string>
+	usedIds: Set<string>,
+	excludeTypes?: Set<BlockType>
 ): AboutBlock | null {
 	const shape = slotShape(pattern, slotSize);
 	const canPortrait = slotCanBePortrait(pattern, slotSize);
@@ -70,6 +71,7 @@ function pickBlock(
 
 	for (const block of pool) {
 		if (usedIds.has(block.id)) continue;
+		if (excludeTypes?.has(block.type)) continue;
 		if (!block.allowedSizes.includes(slotSize)) continue;
 
 		let score = 0;
@@ -106,16 +108,28 @@ function tryFillPattern(
 ): AboutBlock[] | null {
 	const tentativelyUsed = new Set(usedIds);
 	const picked: AboutBlock[] = new Array(pattern.length);
+	const usedTypesInRow = new Set<BlockType>();
 
 	const slotOrder = shuffle(
 		pattern.map((size, idx) => ({ size, idx }))
 	).sort((a, b) => SIZE_FRACTIONS[a.size] - SIZE_FRACTIONS[b.size]);
 
 	for (const slot of slotOrder) {
-		const block = pickBlock(pool, slot.size, pattern, tentativelyUsed);
+		// The two collaborators wheels are independent, so keep them out of the same row:
+		// once one is placed, exclude collaborators from the remaining slots.
+		const excludeTypes = usedTypesInRow.has('collaborators')
+			? new Set<BlockType>(['collaborators'])
+			: undefined;
+		let block = pickBlock(pool, slot.size, pattern, tentativelyUsed, excludeTypes);
+		// Last resort: if nothing else fits the slot, allow a second collaborators block
+		// rather than failing the whole row.
+		if (!block && excludeTypes) {
+			block = pickBlock(pool, slot.size, pattern, tentativelyUsed);
+		}
 		if (!block) return null;
 		picked[slot.idx] = block;
 		tentativelyUsed.add(block.id);
+		usedTypesInRow.add(block.type);
 	}
 
 	return picked;
