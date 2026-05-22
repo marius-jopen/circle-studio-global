@@ -99,6 +99,8 @@
 							containerSizePercent={100}
 							enableOnMobile={true}
 							square={true}
+							active={i === currentIndex}
+							restartOnActivate={block.videoPlaybackMode === 'restart'}
 						/>
 					{:else if imgUrl}
 						<img src={imgUrl} alt={media.image?.alt ?? ''} class="w-full h-full object-cover" />

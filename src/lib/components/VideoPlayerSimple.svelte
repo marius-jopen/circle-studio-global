@@ -11,6 +11,10 @@
 		enableOnMobile?: boolean;
 		square?: boolean;
 		inView?: boolean;
+		/** When false, the (already loaded) video is paused; only the active one plays. */
+		active?: boolean;
+		/** When becoming active, restart from the beginning instead of resuming. */
+		restartOnActivate?: boolean;
 	}
 
 	// Mobile detection
@@ -26,8 +30,13 @@
 		containerSizePercent = 80,
 		enableOnMobile = false,
 		square = false,
-		inView = true
+		inView = true,
+		active = true,
+		restartOnActivate = false
 	}: Props = $props();
+
+	// Whether this device/config is allowed to play video at all
+	const canPlay = $derived(!isMobile || enableOnMobile);
 
 	let videoElement: HTMLVideoElement;
 	let hlsInstance: any = null;
@@ -141,28 +150,47 @@
 		}
 	};
 
-	let hasInitialized = false;
+	let initialized = $state(false);
 
 	$effect(() => {
-		if (!inView || hasInitialized || !videoElement) return;
-		hasInitialized = true;
+		if (!inView || initialized || !videoElement) return;
 		initVideo();
+		initialized = true;
+	});
+
+	// Play only the active video; pause the rest. For restart mode, rewind on (re)activation.
+	let prevActive = false;
+	$effect(() => {
+		const isActive = active;
+		if (!initialized || !videoElement) return;
+		if (isActive && !prevActive && restartOnActivate) {
+			try {
+				videoElement.currentTime = 0;
+			} catch {
+				/* ignore */
+			}
+		}
+		if (isActive && canPlay) {
+			tryPlay();
+		} else if (!isActive) {
+			try {
+				videoElement.pause();
+			} catch {
+				/* ignore */
+			}
+		}
+		prevActive = isActive;
 	});
 
 	function initVideo() {
 		if (videoElement) {
 			videoElement.muted = true;
-			videoElement.autoplay = !isMobile || enableOnMobile; // Enable autoplay if mobile videos are enabled
 			videoElement.playbackRate = playbackRate;
 
 			// Set webkit-specific attributes for better iOS compatibility
 			videoElement.setAttribute('webkit-playsinline', 'true');
 			videoElement.setAttribute('x-webkit-airplay', 'allow');
-
-			// Try to play if not mobile OR if mobile videos are enabled
-			if (!isMobile || enableOnMobile) {
-				tryPlay();
-			}
+			// Playback itself is driven by the `active` effect above.
 		}
 
 		// Load HLS if not mobile OR if mobile videos are enabled
@@ -279,7 +307,7 @@
 			playsinline
 			disablePictureInPicture
 			controlsList="nodownload nofullscreen noremoteplayback"
-			autoplay
+			autoplay={active && canPlay}
 		>
 			{#if inView && !useHls}
 				<source src={videoUrl} type="video/mp4" />
