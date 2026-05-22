@@ -23,6 +23,9 @@ export interface GalleryItem {
 	image?: { url: string; alt?: string | null } | null;
 	video_url?: string | null;
 	play?: 'no-sound' | 'has-sound' | 'click-to-play-with-sound';
+	/** Per-item overrides for the gallery title slot (fall back to the slice-level values). */
+	title?: string | null;
+	title_color?: 'white' | 'black' | null;
 }
 
 export interface PressItem {
@@ -76,6 +79,8 @@ export const FORMAT_ASPECT: Record<FormatPreference, number> = {
 
 export interface GalleryBlock extends AboutBlockBase {
 	type: 'gallery';
+	title?: string;
+	titleColor: 'white' | 'black';
 	items: GalleryItem[];
 	videoPlaybackMode: 'continuous' | 'restart';
 	preferredFormat: FormatPreference;

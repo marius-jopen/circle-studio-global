@@ -88,6 +88,8 @@ export function sliceToGalleryBlock(slice: SliceLike): GalleryBlock {
 		type: 'gallery',
 		allowedSizes: DEFAULT_ALLOWED_SIZES.gallery,
 		hideOnMobile: readHideOnMobile(primary),
+		title: primary.title ?? undefined,
+		titleColor: primary.title_color === 'black' ? 'black' : 'white',
 		items,
 		videoPlaybackMode:
 			(primary.video_playback_mode as 'continuous' | 'restart') ?? 'continuous',
