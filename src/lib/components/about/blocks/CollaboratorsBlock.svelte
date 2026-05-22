@@ -19,10 +19,10 @@
 
 	// Desktop wheel sizes fluidly with the viewport width (vw-style), since the About page is
 	// full-bleed and this block is always half width — so the column is ~50vw. Anchored so a
-	// ~1620px viewport (MacBook 14"/16") renders the original 140/18 baseline. Radius and font
-	// scale together, so the fill ratio stays constant; floor/ceiling keep it sane on very narrow
+	// ~1514px viewport renders ~7% above the original 140/18 baseline. Radius and font scale
+	// together, so the fill ratio stays constant; floor/ceiling keep it sane on very narrow
 	// / very wide screens. (Computed in JS, not a CSS vw unit, because FanWheel needs numeric px.)
-	$: desktopScale = Math.min(Math.max(windowWidth / 1620, 0.55), 2.2);
+	$: desktopScale = Math.min(Math.max(windowWidth / 1514, 0.55), 2.2);
 	$: wheelRadius = isMobile ? Math.min(Math.floor(windowWidth * 0.18), 85) : Math.round(140 * desktopScale);
 	$: wheelFontSize = isMobile ? Math.min(Math.floor(windowWidth * 0.03), 14) : Math.round(18 * desktopScale);
 

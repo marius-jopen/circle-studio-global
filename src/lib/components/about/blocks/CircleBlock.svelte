@@ -23,6 +23,9 @@
 	let containerSize = $state(300);
 	let mounted = $state(false);
 
+	// Shrink the rendered circle ~8% vs the cell so radius + font don't crowd the border.
+	const renderSize = $derived(Math.round(containerSize * 0.92));
+
 	let wheelText = $state('');
 	let poetryIndex = $state(0);
 	let triggerFadeIn = $state(false);
@@ -115,9 +118,9 @@
 		<div class="absolute inset-0 flex items-center justify-center">
 		<TextCircle
 			text={wheelText || block.items[0]}
-			containerSize={containerSize}
+			containerSize={renderSize}
 			fontSize={38}
-			radius={Math.round(containerSize * 0.32)}
+			radius={Math.round(renderSize * 0.32)}
 			rotationSpeed={0.1}
 			rotationStart={-60}
 			spacingAmplitudePercent={0.5}
@@ -125,7 +128,7 @@
 			animationType="sin"
 			autoTextSize={true}
 			autoRadius={true}
-			maxFontSize={Math.round(containerSize * 0.5)}
+			maxFontSize={Math.round(renderSize * 0.5)}
 			manualMode={true}
 			startInvisible={false}
 			fadeInTime={FADE_IN_TIME}
