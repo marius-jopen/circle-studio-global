@@ -10,15 +10,8 @@
 	void size;
 </script>
 
-{#if block.hideOnMobile}
-	<div class="hidden md:block w-full h-full">
-		{#if block.type === 'circle'}<CircleBlock {block} />
-		{:else if block.type === 'gallery'}<GalleryBlock {block} />
-		{:else if block.type === 'collaborators'}<CollaboratorsBlock {block} />
-		{:else if block.type === 'press'}<PressBlock {block} />
-		{/if}
-	</div>
-{:else if block.type === 'circle'}
+<!-- hideOnMobile is handled by the cell wrapper in AboutLayoutRenderer (hidden md:block). -->
+{#if block.type === 'circle'}
 	<CircleBlock {block} />
 {:else if block.type === 'gallery'}
 	<GalleryBlock {block} />

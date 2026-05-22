@@ -52,6 +52,15 @@
 	$: forced = block.forceFormat === true;
 	$: forcedAspect = FORMAT_ASPECT[block.preferredFormat];
 
+	// On mobile (single column) there is no grid row height, so give the cell an aspect ratio
+	// based on the preferred format; on desktop the grid drives the height (md:h-full).
+	$: mobileAspectClass =
+		block.preferredFormat === 'landscape'
+			? 'aspect-[4/3]'
+			: block.preferredFormat === 'portrait'
+				? 'aspect-[3/4]'
+				: 'aspect-square';
+
 	function updateSize() {
 		if (!cellRef) return;
 		const cw = cellRef.clientWidth;
@@ -86,7 +95,7 @@
 	$: forced, forcedAspect, updateSize();
 </script>
 
-<div bind:this={cellRef} class="w-full h-full min-h-0 flex items-center justify-center">
+<div bind:this={cellRef} class="w-full {mobileAspectClass} md:aspect-auto md:h-full min-h-0 flex items-center justify-center">
 	<div
 		class="group relative overflow-hidden rounded-lg bg-neutral-100 min-h-0"
 		style={forced

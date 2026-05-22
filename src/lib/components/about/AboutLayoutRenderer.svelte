@@ -111,7 +111,11 @@
 				: ''}
 		>
 			{#each row.blocks as block, i (block.id)}
-				<div class="h-full min-h-0 overflow-hidden {colSpanClassFor(row.pattern[i], row.pattern)}">
+				<div
+					class="h-full min-h-0 overflow-hidden {colSpanClassFor(row.pattern[i], row.pattern)} {block.hideOnMobile
+						? 'hidden md:block'
+						: ''}"
+				>
 					<AboutBlock {block} size={row.pattern[i]} />
 				</div>
 			{/each}

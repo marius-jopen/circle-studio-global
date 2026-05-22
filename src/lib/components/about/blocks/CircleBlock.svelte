@@ -112,7 +112,7 @@
 
 <div
 	bind:this={outerRef}
-	class="relative w-full h-full {bgClass} rounded-lg overflow-hidden"
+	class="relative w-full aspect-square md:aspect-auto md:h-full {bgClass} rounded-lg overflow-hidden"
 >
 	{#if block.headline}
 		<div
