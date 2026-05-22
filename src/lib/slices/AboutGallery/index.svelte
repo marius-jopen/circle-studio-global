@@ -9,6 +9,13 @@
 	const block = $derived(sliceToGalleryBlock(slice));
 </script>
 
-<section data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
-	<GalleryBlock {block} />
+<!--
+	On a real page these blocks get their height from the About layout grid (h-full).
+	Rendered standalone (the Slice Machine simulator / page-builder screenshot) there is no
+	grid, so give them a square box — otherwise h-full collapses to 0 and the preview is blank.
+-->
+<section data-slice-type={slice.slice_type} data-slice-variation={slice.variation} class="p-2">
+	<div class="mx-auto aspect-square w-full max-w-[500px]">
+		<GalleryBlock {block} />
+	</div>
 </section>
