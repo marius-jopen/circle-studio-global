@@ -31,6 +31,11 @@
 		currentIndex = (currentIndex + 1) % count;
 	}
 
+	function prev() {
+		if (count < 2) return;
+		currentIndex = (currentIndex - 1 + count) % count;
+	}
+
 	let cellRef: HTMLDivElement | null = null;
 	let mediaW = 0;
 	let mediaH = 0;
@@ -112,25 +117,48 @@
 		{/each}
 
 		{#if count > 1}
-			<button
-				type="button"
-				on:click={(e) => { e.preventDefault(); e.stopPropagation(); next(); }}
-				class="absolute bottom-[7px] right-[7px] z-[2] h-10 px-3 rounded-md bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center transition-[opacity,colors] duration-200 pointer-events-auto cursor-pointer md:opacity-0 md:group-hover:opacity-100"
-				aria-label="Next media"
+			<div
+				class="absolute bottom-[7px] right-[7px] z-[2] flex gap-1 transition-opacity duration-200 md:opacity-0 md:group-hover:opacity-100"
 			>
-				<svg
-					width="16"
-					height="16"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
+				<button
+					type="button"
+					on:click={(e) => { e.preventDefault(); e.stopPropagation(); prev(); }}
+					class="h-10 px-3 rounded-md bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center transition-colors duration-200 pointer-events-auto cursor-pointer"
+					aria-label="Previous media"
 				>
-					<path d="M5 12h14M12 5l7 7-7 7" />
-				</svg>
-			</button>
+					<svg
+						width="16"
+						height="16"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					>
+						<path d="M19 12H5M12 19l-7-7 7-7" />
+					</svg>
+				</button>
+				<button
+					type="button"
+					on:click={(e) => { e.preventDefault(); e.stopPropagation(); next(); }}
+					class="h-10 px-3 rounded-md bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center transition-colors duration-200 pointer-events-auto cursor-pointer"
+					aria-label="Next media"
+				>
+					<svg
+						width="16"
+						height="16"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					>
+						<path d="M5 12h14M12 5l7 7-7 7" />
+					</svg>
+				</button>
+			</div>
 		{/if}
 	</div>
 </div>
