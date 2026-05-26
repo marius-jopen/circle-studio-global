@@ -24,7 +24,7 @@
       </ul>
     {/if}
     <img src="/logo.gif" alt="Art Camp" class="h-7 md:h-10 mb-6 md:mb-0 md:-my-3 md:translate-y-[5px] mix-blend-multiply order-1 md:order-none" />
-    <div class="text-sm text-center md:text-left order-4 md:order-none">Development: <a href="https://www.mariusjopen.com" target="_blank" class="hover:underline decoration-[1px] underline-offset-3">Marius Jopen</a> @ <a href="https://100k.studio/" target="_blank" class="hover:underline decoration-[1px] underline-offset-3">100k Studio</a></div>
+    <div class="text-sm text-center md:text-left order-4 md:order-none">Development: <a href="https://www.mariusjopen.com" target="_blank" class="hover:underline decoration-[1px] underline-offset-3">Marius Jopen</a> @ <a href="https://www.therobots.world/" target="_blank" class="hover:underline decoration-[1px] underline-offset-3">THE ROBOTS</a></div>
   </div>
   
 </footer>
