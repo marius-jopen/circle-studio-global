@@ -26,8 +26,8 @@
 	// Mobile sizing has to fit a square block (width = height ≈ viewport width) minus the title
 	// strip. With ~20-char labels, outerWidth = 2*(radius + maxTextWidth), so radius and font are
 	// trimmed from the previous 0.18/0.03 baseline to leave a small safety margin around the wheel.
-	$: wheelRadius = isMobile ? Math.min(Math.floor(windowWidth * 0.13), 60) : Math.round(140 * desktopScale);
-	$: wheelFontSize = isMobile ? Math.min(Math.floor(windowWidth * 0.028), 13) * 0.98 : Math.round(18 * desktopScale);
+	$: wheelRadius = isMobile ? Math.min(Math.floor(windowWidth * 0.15), 68) : Math.round(140 * desktopScale);
+	$: wheelFontSize = isMobile ? Math.min(Math.floor(windowWidth * 0.030), 14) * 0.98 : Math.round(18 * desktopScale);
 
 	function checkMobile() {
 		if (typeof window !== 'undefined') {
