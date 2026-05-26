@@ -23,9 +23,11 @@
 	// together, so the fill ratio stays constant; floor/ceiling keep it sane on very narrow
 	// / very wide screens. (Computed in JS, not a CSS vw unit, because FanWheel needs numeric px.)
 	$: desktopScale = Math.min(Math.max(windowWidth / 1514, 0.55), 2.2);
-	$: wheelRadius = isMobile ? Math.min(Math.floor(windowWidth * 0.18), 85) : Math.round(140 * desktopScale);
-	// Mobile font is 2% smaller (keeps the radius) so the names are less crammed together.
-	$: wheelFontSize = isMobile ? Math.min(Math.floor(windowWidth * 0.03), 14) * 0.98 : Math.round(18 * desktopScale);
+	// Mobile sizing has to fit a square block (width = height ≈ viewport width) minus the title
+	// strip. With ~20-char labels, outerWidth = 2*(radius + maxTextWidth), so radius and font are
+	// trimmed from the previous 0.18/0.03 baseline to leave a small safety margin around the wheel.
+	$: wheelRadius = isMobile ? Math.min(Math.floor(windowWidth * 0.13), 60) : Math.round(140 * desktopScale);
+	$: wheelFontSize = isMobile ? Math.min(Math.floor(windowWidth * 0.028), 13) * 0.98 : Math.round(18 * desktopScale);
 
 	function checkMobile() {
 		if (typeof window !== 'undefined') {
@@ -112,8 +114,8 @@
 	});
 </script>
 
-<div class="min-w-0 flex flex-col bg-white rounded-lg overflow-hidden w-full h-full">
-	<div class="flex-1 w-full relative flex justify-center min-h-[200px] md:min-h-[280px]">
+<div class="min-w-0 flex flex-col bg-white rounded-lg overflow-hidden w-full aspect-square md:aspect-auto md:h-full">
+	<div class="flex-1 w-full relative flex justify-center md:min-h-[280px]">
 		{#if mounted && items.length > 0}
 			<FanWheel
 				{items}
