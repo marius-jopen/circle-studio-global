@@ -125,19 +125,21 @@ function tryFillPattern(
 	).sort((a, b) => SIZE_FRACTIONS[a.size] - SIZE_FRACTIONS[b.size]);
 
 	for (const slot of slotOrder) {
-		const excludeTypes = new Set<BlockType>();
-		// The two collaborators wheels are independent, so keep them out of the same row.
-		if (usedTypesInRow.has('collaborators')) excludeTypes.add('collaborators');
-		// Nothing circular may sit next to the clock.
-		if (rowHasClock) excludeTypes.add('circle');
-		// And the clock may not sit next to another circle.
+		// Hard constraints: the clock and any other circle must never share a row.
+		const hardExclude = new Set<BlockType>();
+		if (rowHasClock) hardExclude.add('circle');
 		const disallowClock = rowHasCircle;
 
-		const exclude = excludeTypes.size > 0 ? excludeTypes : undefined;
-		let block = pickBlock(pool, slot.size, pattern, tentativelyUsed, exclude, disallowClock);
-		// Last resort: if nothing else fits the slot, drop the constraints rather than fail the row.
-		if (!block && (exclude || disallowClock)) {
-			block = pickBlock(pool, slot.size, pattern, tentativelyUsed);
+		// Soft constraint: keep the two collaborators wheels out of the same row when possible.
+		const softExclude = new Set<BlockType>(hardExclude);
+		if (usedTypesInRow.has('collaborators')) softExclude.add('collaborators');
+
+		let block = pickBlock(pool, slot.size, pattern, tentativelyUsed, softExclude, disallowClock);
+		// Drop only the soft (collaborators) constraint as a fallback. The clock rule stays strict;
+		// if that means the row can't be filled, return null so the caller tries another pattern.
+		if (!block && softExclude.size > hardExclude.size) {
+			const exclude = hardExclude.size > 0 ? hardExclude : undefined;
+			block = pickBlock(pool, slot.size, pattern, tentativelyUsed, exclude, disallowClock);
 		}
 		if (!block) return null;
 		picked[slot.idx] = block;
