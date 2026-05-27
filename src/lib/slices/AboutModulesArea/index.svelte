@@ -2,29 +2,30 @@
 	import { onMount } from 'svelte';
 	import type { SliceComponentProps } from '@prismicio/svelte';
 	import AboutLayoutRenderer from '$lib/components/about/AboutLayoutRenderer.svelte';
-	import { createClient } from '$lib/prismicio';
-	import { slicesToBlocks } from '$lib/utils/aboutSliceMappers';
-	import type { AboutBlock } from '$lib/types/aboutBlock';
+	import { aboutLayoutCache, ensureAboutLayout } from '$lib/stores/aboutLayout';
+	import type { LayoutRow } from '$lib/types/aboutBlock';
 
 	type Props = SliceComponentProps<any>;
 	const { slice }: Props = $props();
 
-	let blocks = $state<AboutBlock[]>([]);
+	let layout = $state<LayoutRow[]>([]);
 	let loaded = $state(false);
 
-	onMount(async () => {
-		try {
-			const client = createClient();
-			const library = await client.getSingle('about_library' as any);
-			const librarySlices =
-				(library?.data as { slices?: unknown[] })?.slices ?? [];
-			blocks = slicesToBlocks(librarySlices as any[]);
-		} catch (e) {
-			console.error('Failed to load About library', e);
-			blocks = [];
-		} finally {
+	// Use the cached layout if the root layout already prefetched it; otherwise kick off the fetch
+	// here as a fallback (e.g. deep-link straight to /about while the prefetch is still inflight).
+	const unsubscribe = aboutLayoutCache.subscribe((value) => {
+		if (value) {
+			layout = value.layout;
 			loaded = true;
 		}
+	});
+
+	onMount(() => {
+		ensureAboutLayout().catch((e) => {
+			console.error('Failed to load About library', e);
+			loaded = true;
+		});
+		return unsubscribe;
 	});
 </script>
 
@@ -33,7 +34,7 @@
 	data-slice-variation={slice.variation}
 	class="my-2"
 >
-	{#if loaded && blocks.length > 0}
-		<AboutLayoutRenderer {blocks} />
+	{#if loaded && layout.length > 0}
+		<AboutLayoutRenderer {layout} />
 	{/if}
 </section>

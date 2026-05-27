@@ -2,7 +2,6 @@
 	import { onMount, onDestroy, tick } from 'svelte';
 	import AboutBlock from './AboutBlock.svelte';
 	import {
-		buildAboutLayout,
 		gridColsClassFor,
 		colSpanClassFor,
 		rowFormat,
@@ -10,21 +9,16 @@
 		SIZE_FRACTIONS
 	} from '$lib/utils/aboutLayoutEngine';
 	import { FORMAT_ASPECT } from '$lib/types/aboutBlock';
-	import type { AboutBlock as AboutBlockType, LayoutRow } from '$lib/types/aboutBlock';
+	import type { LayoutRow } from '$lib/types/aboutBlock';
 
-	export let blocks: AboutBlockType[] = [];
+	// The shuffle now happens once at app load via aboutLayoutCache, so the renderer takes the
+	// precomputed layout directly — no reshuffle on mount, no flash.
+	export let layout: LayoutRow[] = [];
 
-	let clientSeed = 0;
-	let layout: LayoutRow[] = [];
 	let isDesktop = false;
 	let rowEls: Array<HTMLDivElement | null> = [];
 	let rowHeights: number[] = [];
 	let resizeObservers: ResizeObserver[] = [];
-
-	$: {
-		clientSeed;
-		layout = buildAboutLayout(blocks);
-	}
 
 	function measureRow(idx: number) {
 		const el = rowEls[idx];
@@ -80,7 +74,6 @@
 	}
 
 	onMount(() => {
-		clientSeed = Math.random();
 		const mq = window.matchMedia('(min-width: 768px)');
 		isDesktop = mq.matches;
 		const handler = (e: MediaQueryListEvent) => {

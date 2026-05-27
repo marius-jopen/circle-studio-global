@@ -9,6 +9,7 @@
 	import { onMount } from 'svelte';
 	import { afterNavigate } from '$app/navigation';
 	import { hoverPreview } from '$lib/stores/preview';
+	import { ensureAboutLayout } from '$lib/stores/aboutLayout';
 	import "../app.css";
 	import MobileNav from '$lib/components/MobileNav.svelte';
 	import GlobalPreviewPlayer from '$lib/components/GlobalPreviewPlayer.svelte';
@@ -109,7 +110,11 @@
 		if (isAdminRoute) {
 			return;
 		}
-		
+
+		// Prefetch + shuffle the About library on first website load so the layout is already
+		// prepared by the time the user opens /about (no visible reshuffle while the intro fades).
+		ensureAboutLayout().catch(() => {});
+
 		const handleNavigationClick = (e: Event) => {
 			const target = e.target as HTMLElement;
 			// Ignore clicks coming from video components/controls
