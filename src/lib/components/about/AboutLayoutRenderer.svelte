@@ -19,6 +19,10 @@
 	let rowEls: Array<HTMLDivElement | null> = [];
 	let rowHeights: number[] = [];
 	let resizeObservers: ResizeObserver[] = [];
+	// Keep the grid invisible until the first measurement pass has run. The row heights and the
+	// reveal land in the same Svelte flush, so the natural-height intermediate paint is never
+	// seen — no visible snap from one height to another.
+	let measured = false;
 
 	function measureRow(idx: number) {
 		const el = rowEls[idx];
@@ -81,7 +85,10 @@
 			setupObservers();
 		};
 		mq.addEventListener('change', handler);
-		tick().then(setupObservers);
+		tick().then(() => {
+			setupObservers();
+			measured = true;
+		});
 		return () => mq.removeEventListener('change', handler);
 	});
 
@@ -94,7 +101,9 @@
 	}
 </script>
 
-<div class="space-y-2">
+<div
+	class="space-y-2 transition-opacity duration-150 {measured ? 'opacity-100' : 'opacity-0'}"
+>
 	{#each layout as row, rowIndex (rowIndex + '-' + row.blocks.map((b) => b.id).join('-'))}
 		<div
 			bind:this={rowEls[rowIndex]}
