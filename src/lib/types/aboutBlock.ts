@@ -35,12 +35,16 @@ export interface PressItem {
 	image?: { url: string; alt?: string | null } | null;
 }
 
+export type BlockPosition = 'default' | 'top' | 'bottom';
+
 export interface AboutBlockBase {
 	id: string;
 	type: BlockType;
 	allowedSizes: BlockSize[];
 	pinned?: boolean;
 	hideOnMobile?: boolean;
+	/** Editor-controlled placement zone. Absent/`'default'` shuffles in the middle. */
+	position?: BlockPosition;
 }
 
 export type ColorToken = 'white' | 'light_gray' | 'black';
@@ -104,11 +108,7 @@ export interface PressBlock extends AboutBlockBase {
 	items: PressItem[];
 }
 
-export type AboutBlock =
-	| CircleBlock
-	| GalleryBlock
-	| CollaboratorsBlock
-	| PressBlock;
+export type AboutBlock = CircleBlock | GalleryBlock | CollaboratorsBlock | PressBlock;
 
 export interface LayoutRow {
 	blocks: AboutBlock[];

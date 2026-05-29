@@ -12,6 +12,15 @@
 			"description": "Default",
 			"imageUrl": "",
 			"primary": {
+				"position": {
+					"type": "Select",
+					"config": {
+						"label": "Position",
+						"placeholder": "",
+						"options": ["default", "top", "bottom"],
+						"default_value": "default"
+					}
+				},
 				"title": {
 					"type": "Text",
 					"config": {

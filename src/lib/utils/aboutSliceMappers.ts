@@ -1,5 +1,6 @@
 import type {
 	AboutBlock,
+	BlockPosition,
 	CircleBlock,
 	CollaboratorsBlock,
 	GalleryBlock,
@@ -25,6 +26,10 @@ function readHideOnMobile(primary: Record<string, any>): boolean {
 	return primary.hide_on_mobile === true;
 }
 
+function readPosition(primary: Record<string, unknown>): BlockPosition {
+	return primary.position === 'top' || primary.position === 'bottom' ? primary.position : 'default';
+}
+
 export function sliceToPressBlock(slice: SliceLike): PressBlock {
 	const primary = slice.primary ?? {};
 	const items = ((primary.items ?? []) as Array<Record<string, any>>).map<PressItem>((i) => ({
@@ -39,6 +44,7 @@ export function sliceToPressBlock(slice: SliceLike): PressBlock {
 		allowedSizes: DEFAULT_ALLOWED_SIZES.press,
 		pinned: PINNED_TYPES.has('press'),
 		hideOnMobile: readHideOnMobile(primary),
+		position: readPosition(primary),
 		headline: primary.headline ?? undefined,
 		items
 	};
@@ -53,6 +59,7 @@ export function sliceToCollaboratorsBlock(slice: SliceLike): CollaboratorsBlock 
 		allowedSizes: DEFAULT_ALLOWED_SIZES.collaborators,
 		pinned: PINNED_TYPES.has('collaborators'),
 		hideOnMobile: readHideOnMobile(primary),
+		position: readPosition(primary),
 		title: primary.title ?? undefined,
 		items,
 		takeAutomatically: primary.take_automatically === true
@@ -70,6 +77,7 @@ export function sliceToCircleBlock(slice: SliceLike): CircleBlock {
 		type: 'circle',
 		allowedSizes: DEFAULT_ALLOWED_SIZES.circle,
 		hideOnMobile: readHideOnMobile(primary),
+		position: readPosition(primary),
 		items,
 		headline: primary.headline ?? undefined,
 		backgroundColor: parseColorToken(primary.background_color, 'white'),
@@ -90,11 +98,11 @@ export function sliceToGalleryBlock(slice: SliceLike): GalleryBlock {
 		type: 'gallery',
 		allowedSizes: DEFAULT_ALLOWED_SIZES.gallery,
 		hideOnMobile: readHideOnMobile(primary),
+		position: readPosition(primary),
 		title: primary.title ?? undefined,
 		titleColor: primary.title_color === 'black' ? 'black' : 'white',
 		items,
-		videoPlaybackMode:
-			(primary.video_playback_mode as 'continuous' | 'restart') ?? 'continuous',
+		videoPlaybackMode: (primary.video_playback_mode as 'continuous' | 'restart') ?? 'continuous',
 		preferredFormat,
 		forceFormat: primary.force_format === true
 	};

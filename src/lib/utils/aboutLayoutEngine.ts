@@ -1,4 +1,10 @@
-import type { AboutBlock, BlockSize, BlockType, FormatPreference, LayoutRow } from '$lib/types/aboutBlock';
+import type {
+	AboutBlock,
+	BlockSize,
+	BlockType,
+	FormatPreference,
+	LayoutRow
+} from '$lib/types/aboutBlock';
 import { SIZE_FRACTIONS, FORMAT_ASPECT } from '$lib/types/aboutBlock';
 
 const ROW_PATTERNS: BlockSize[][] = [
@@ -120,9 +126,9 @@ function tryFillPattern(
 	let rowHasCircle = false;
 	let rowHasClock = false;
 
-	const slotOrder = shuffle(
-		pattern.map((size, idx) => ({ size, idx }))
-	).sort((a, b) => SIZE_FRACTIONS[a.size] - SIZE_FRACTIONS[b.size]);
+	const slotOrder = shuffle(pattern.map((size, idx) => ({ size, idx }))).sort(
+		(a, b) => SIZE_FRACTIONS[a.size] - SIZE_FRACTIONS[b.size]
+	);
 
 	for (const slot of slotOrder) {
 		// Hard constraints: the clock and any other circle must never share a row.
@@ -158,18 +164,9 @@ function rowSignature(pattern: BlockSize[]): string {
 	return pattern.join('+');
 }
 
-export function buildAboutLayout(blocks: AboutBlock[]): LayoutRow[] {
-	if (blocks.length === 0) return [];
-
-	const pinned = blocks.filter((b) => b.pinned);
-	const unpinned = shuffle(blocks.filter((b) => !b.pinned));
-
-	const pool = [...unpinned];
-	for (const p of shuffle(pinned)) {
-		const insertAt = Math.floor(Math.random() * (pool.length + 1));
-		pool.splice(insertAt, 0, p);
-	}
-
+// Builds rows from an already-ordered pool using constraint-aware, scored per-slot picking. The
+// pool order seeds variety; this is the engine used for the freely-shuffled middle zone.
+function buildRowsFromPool(pool: AboutBlock[]): LayoutRow[] {
 	const rows: LayoutRow[] = [];
 	const usedIds = new Set<string>();
 	let lastSignature: string | null = null;
@@ -201,10 +198,7 @@ export function buildAboutLayout(blocks: AboutBlock[]): LayoutRow[] {
 		if (hasForcedRemaining) {
 			let uniformPatterns = candidatePatterns.filter(isUniformPattern);
 			const hasSquareOrPortraitForce = remaining.some(
-				(b) =>
-					b.type === 'gallery' &&
-					b.forceFormat &&
-					b.preferredFormat !== 'landscape'
+				(b) => b.type === 'gallery' && b.forceFormat && b.preferredFormat !== 'landscape'
 			);
 			if (hasSquareOrPortraitForce && remainingCount > 1) {
 				uniformPatterns = uniformPatterns.filter((p) => p.length > 1);
@@ -212,10 +206,10 @@ export function buildAboutLayout(blocks: AboutBlock[]): LayoutRow[] {
 			if (uniformPatterns.length > 0) candidatePatterns = uniformPatterns;
 		}
 
-		const variantPatterns = candidatePatterns.filter(
-			(p) => rowSignature(p) !== lastSignature
+		const variantPatterns = candidatePatterns.filter((p) => rowSignature(p) !== lastSignature);
+		const orderedPatterns = shuffle(
+			variantPatterns.length > 0 ? variantPatterns : candidatePatterns
 		);
-		const orderedPatterns = shuffle(variantPatterns.length > 0 ? variantPatterns : candidatePatterns);
 
 		let chosenRow: AboutBlock[] | null = null;
 		let chosenPattern: BlockSize[] | null = null;
@@ -255,7 +249,183 @@ export function buildAboutLayout(blocks: AboutBlock[]): LayoutRow[] {
 		lastSignature = rowSignature(chosenPattern);
 	}
 
-	return shuffleRowsAvoidingAdjacentDupes(rows);
+	return rows;
+}
+
+// Picks the row patterns a zone block can lead. Excludes the lone full-width banner for
+// circle/gallery (so a pinned block shares its row instead of spanning the whole width), keeps
+// collaborators in a half|half row, and best-effort honors portrait/forced gallery shape needs.
+function zoneCandidatePatterns(next: AboutBlock, available: number): BlockSize[][] {
+	if (next.type === 'press') return [['full']];
+	if (next.type === 'collaborators') {
+		return ROW_PATTERNS.filter(
+			(p) => p.length <= available && p.length === 2 && p.every((s) => s === 'half')
+		);
+	}
+
+	let patterns = ROW_PATTERNS.filter(
+		(p) => p.length > 1 && p.length <= available && next.allowedSizes.includes(p[0])
+	);
+
+	if (next.type === 'gallery') {
+		if (next.preferredFormat === 'portrait') {
+			const small = patterns.filter((p) => SIZE_FRACTIONS[p[0]] <= 1 / 3);
+			if (small.length > 0) patterns = small;
+		}
+		if (next.forceFormat) {
+			const uniform = patterns.filter(isUniformPattern);
+			if (uniform.length > 0) patterns = uniform;
+		}
+	}
+
+	return patterns;
+}
+
+// Fills one zone (top/bottom) row: zone blocks occupy the leftmost slots in strict order, and any
+// remaining slots are filled with `fillers` (middle-pool blocks) — the boundary-sharing case.
+// Returns null if the pattern can't be filled this way. Hard constraint: a clock circle never
+// shares a row with another circle.
+function fillPatternInOrder(
+	pattern: BlockSize[],
+	zoneRemaining: AboutBlock[],
+	fillers: AboutBlock[]
+): { blocks: AboutBlock[]; zoneUsed: number; fillersUsed: AboutBlock[] } | null {
+	const blocks: AboutBlock[] = new Array(pattern.length);
+	let zoneIdx = 0;
+	let switchedToFillers = false;
+	const usedFillers = new Set<AboutBlock>();
+	const fillersUsed: AboutBlock[] = [];
+	let rowHasCircle = false;
+	let rowHasClock = false;
+
+	const fits = (b: AboutBlock, size: BlockSize): boolean => {
+		if (!b.allowedSizes.includes(size)) return false;
+		if (rowHasClock && b.type === 'circle') return false;
+		if (rowHasCircle && isClock(b)) return false;
+		return true;
+	};
+	const register = (b: AboutBlock) => {
+		if (b.type === 'circle') {
+			rowHasCircle = true;
+			if (isClock(b)) rowHasClock = true;
+		}
+	};
+
+	for (let slot = 0; slot < pattern.length; slot++) {
+		const size = pattern[slot];
+		if (
+			!switchedToFillers &&
+			zoneIdx < zoneRemaining.length &&
+			fits(zoneRemaining[zoneIdx], size)
+		) {
+			const b = zoneRemaining[zoneIdx];
+			blocks[slot] = b;
+			register(b);
+			zoneIdx++;
+			continue;
+		}
+		// A zone block remains but didn't fit this slot — stop placing zone blocks so they stay a
+		// contiguous, left-aligned, in-order prefix; the rest of the row becomes fillers.
+		if (!switchedToFillers && zoneIdx < zoneRemaining.length) switchedToFillers = true;
+
+		let filler: AboutBlock | null = null;
+		for (const f of fillers) {
+			if (usedFillers.has(f)) continue;
+			if (!fits(f, size)) continue;
+			filler = f;
+			break;
+		}
+		if (!filler) return null;
+		blocks[slot] = filler;
+		usedFillers.add(filler);
+		fillersUsed.push(filler);
+		register(filler);
+	}
+
+	if (zoneIdx === 0) return null;
+	return { blocks, zoneUsed: zoneIdx, fillersUsed };
+}
+
+// Packs a top/bottom zone: consumes zoneBlocks in CMS order into rows, pulling fillers from the
+// middle pool to complete partial rows. Mutates middlePool to remove pulled blocks. `pullFrom`
+// chooses which end of the middle pool fillers come from (front for top, back for bottom).
+function packZoneInOrder(
+	zoneBlocks: AboutBlock[],
+	middlePool: AboutBlock[],
+	pullFrom: 'front' | 'back'
+): LayoutRow[] {
+	if (zoneBlocks.length === 0) return [];
+
+	const rows: LayoutRow[] = [];
+	let i = 0;
+	let lastSignature: string | null = null;
+
+	while (i < zoneBlocks.length) {
+		const zoneRemaining = zoneBlocks.slice(i);
+		const next = zoneRemaining[0];
+		const fillers = pullFrom === 'front' ? middlePool : [...middlePool].reverse();
+
+		const available = zoneRemaining.length + fillers.length;
+		const candidates = zoneCandidatePatterns(next, available);
+		const variant = candidates.filter((p) => rowSignature(p) !== lastSignature);
+		const ordered = shuffle(variant.length > 0 ? variant : candidates);
+
+		let result: { blocks: AboutBlock[]; zoneUsed: number; fillersUsed: AboutBlock[] } | null = null;
+		let chosenPattern: BlockSize[] | null = null;
+		for (const pattern of ordered) {
+			const filled = fillPatternInOrder(pattern, zoneRemaining, fillers);
+			if (filled) {
+				result = filled;
+				chosenPattern = pattern;
+				break;
+			}
+		}
+
+		if (!result || !chosenPattern) {
+			// Nothing fit (e.g. no compatible fillers left) — drop the block into its own full row.
+			rows.push({ blocks: [next], pattern: ['full'] });
+			i += 1;
+			lastSignature = rowSignature(['full']);
+			continue;
+		}
+
+		rows.push({ blocks: result.blocks, pattern: chosenPattern });
+		for (const f of result.fillersUsed) {
+			const idx = middlePool.indexOf(f);
+			if (idx >= 0) middlePool.splice(idx, 1);
+		}
+		i += result.zoneUsed;
+		lastSignature = rowSignature(chosenPattern);
+	}
+
+	return rows;
+}
+
+export function buildAboutLayout(blocks: AboutBlock[]): LayoutRow[] {
+	if (blocks.length === 0) return [];
+
+	const topBlocks = blocks.filter((b) => b.position === 'top');
+	const bottomBlocks = blocks.filter((b) => b.position === 'bottom');
+	const middleBlocks = blocks.filter((b) => b.position !== 'top' && b.position !== 'bottom');
+
+	// Middle pool: the existing shuffle + pinned random-insert behaviour, scoped to middle blocks.
+	const pinned = middleBlocks.filter((b) => b.pinned);
+	const unpinned = shuffle(middleBlocks.filter((b) => !b.pinned));
+	const middlePool = [...unpinned];
+	for (const p of shuffle(pinned)) {
+		const insertAt = Math.floor(Math.random() * (middlePool.length + 1));
+		middlePool.splice(insertAt, 0, p);
+	}
+
+	// Top/bottom consume their blocks in CMS order and may pull middle blocks to complete a row.
+	// These run before the middle build and remove pulled blocks from middlePool (no duplicates).
+	const topRows = packZoneInOrder(topBlocks, middlePool, 'front');
+	const bottomRows = packZoneInOrder(bottomBlocks, middlePool, 'back');
+
+	// Only the middle rows get reshuffled; top/bottom keep their order so the zones stay anchored.
+	const middleRows = shuffleRowsAvoidingAdjacentDupes(buildRowsFromPool(middlePool));
+
+	return [...topRows, ...middleRows, ...bottomRows];
 }
 
 function shuffleRowsAvoidingAdjacentDupes(rows: LayoutRow[]): LayoutRow[] {
@@ -297,21 +467,14 @@ function strongestPreference(prefs: FormatPreference[]): FormatPreference {
 	return 'square';
 }
 
-export function cellAspectRatio(
-	row: LayoutRow,
-	slotIdx: number
-): string | null {
+export function cellAspectRatio(row: LayoutRow, slotIdx: number): string | null {
 	if (row.blocks.some((b) => b.type === 'press')) return null;
 	const fractions = row.pattern.map((s) => SIZE_FRACTIONS[s]);
 	const minFraction = Math.min(...fractions);
 	if (minFraction === 1) return '16 / 9';
 
-	const forcedGallery = row.blocks.find(
-		(b) => b.type === 'gallery' && b.forceFormat
-	);
-	const hasSquareLocked = row.blocks.some(
-		(b) => b.type === 'circle' || b.type === 'collaborators'
-	);
+	const forcedGallery = row.blocks.find((b) => b.type === 'gallery' && b.forceFormat);
+	const hasSquareLocked = row.blocks.some((b) => b.type === 'circle' || b.type === 'collaborators');
 
 	let baseFormat: FormatPreference;
 	if (forcedGallery && forcedGallery.type === 'gallery') {
@@ -338,12 +501,8 @@ export function rowFormat(row: LayoutRow): FormatPreference | null {
 	const fractions = row.pattern.map((s) => SIZE_FRACTIONS[s]);
 	const minFraction = Math.min(...fractions);
 
-	const forcedGallery = row.blocks.find(
-		(b) => b.type === 'gallery' && b.forceFormat
-	);
-	const hasSquareLocked = row.blocks.some(
-		(b) => b.type === 'circle' || b.type === 'collaborators'
-	);
+	const forcedGallery = row.blocks.find((b) => b.type === 'gallery' && b.forceFormat);
+	const hasSquareLocked = row.blocks.some((b) => b.type === 'circle' || b.type === 'collaborators');
 
 	if (forcedGallery && forcedGallery.type === 'gallery') {
 		return forcedGallery.preferredFormat;
@@ -372,12 +531,8 @@ export function rowAspectRatio(row: LayoutRow): string | null {
 	if (minFraction === 1) return '16 / 9';
 
 	// Shape-locked blocks (forced gallery > circle/collab) drive the row aspect
-	const forcedGallery = row.blocks.find(
-		(b) => b.type === 'gallery' && b.forceFormat
-	);
-	const hasSquareLocked = row.blocks.some(
-		(b) => b.type === 'circle' || b.type === 'collaborators'
-	);
+	const forcedGallery = row.blocks.find((b) => b.type === 'gallery' && b.forceFormat);
+	const hasSquareLocked = row.blocks.some((b) => b.type === 'circle' || b.type === 'collaborators');
 
 	let format: FormatPreference;
 	if (forcedGallery && forcedGallery.type === 'gallery') {
