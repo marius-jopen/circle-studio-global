@@ -6,6 +6,7 @@
 		{ label: 'Circle Generator', path: '/admin/circle-batch-generator' },
 		{ label: 'Batch Generator', path: '/admin/batch-generator' },
 		{ label: 'OG Generator', path: '/admin/og-generator' },
+		{ label: 'IG Handles', path: '/admin/ig-handles' },
 		{ label: 'Settings', path: '/admin/settings' }
 	];
 

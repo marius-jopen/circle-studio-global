@@ -36,6 +36,14 @@
 		</a>
 
 		<a
+			href="/admin/ig-handles"
+			class="block p-6 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
+		>
+			<h2 class="text-xl font-semibold text-gray-900 mb-2">IG Handles</h2>
+			<p class="text-gray-600">Extract Instagram handles from a project's credits</p>
+		</a>
+
+		<a
 			href="/admin/settings"
 			class="block p-6 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
 		>
