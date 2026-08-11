@@ -1,7 +1,7 @@
 <script lang="ts">
   import TextCircle from './TextCircle.svelte';
   import RichTextInput from './RichTextInput.svelte';
-  import { GIFEncoder, quantize, applyPalette } from 'gifenc';
+  import { loadGifenc } from '../utils/gifenc';
   import { buildGifPalette } from '../utils/gifPalette';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
@@ -422,6 +422,8 @@
     
     try {
       const exportFmt = exportFormat;
+      // Browser-only encoder — pulled in on demand so it stays out of the SSR bundle
+      const gifenc = exportFmt === 'gif' ? await loadGifenc() : null;
       // Use high-res for recording based on the user's preference
       const useHighRes = activeUseHighResRecording;
       
@@ -447,9 +449,9 @@
       // Make sure animation is not paused during recording
       paused = false;
       
-      if (exportFmt === 'gif') {
+      if (exportFmt === 'gif' && gifenc) {
         // GIF: initialize encoder (frames added in captureFrame)
-        const gif = GIFEncoder();
+        const gif = gifenc.GIFEncoder();
         gifRecordingState = { gif, palette: [], firstFrame: true, lastFrameTime: 0 };
       } else {
         // MP4: Set up stream and RecordRTC
@@ -605,7 +607,7 @@
           }
           
           // If GIF export, encode this frame (throttled to ~15fps for file size)
-          if (gifRecordingState && renderContext) {
+          if (gifRecordingState && gifenc && renderContext) {
             const now = performance.now();
             const gifFps = Math.min(exportFps, 15);
             const minFrameDelay = 1000 / gifFps;
@@ -617,14 +619,14 @@
               const isFirst = gifRecordingState.firstFrame;
 
               if (isFirst) {
-                const basePalette = quantize(data, 250);
+                const basePalette = gifenc.quantize(data, 250);
                 gifRecordingState.palette = buildGifPalette(basePalette, {
                   textColor: activeTextColor,
                   backgroundColor: activeBackgroundColor !== 'transparent' ? activeBackgroundColor : undefined
                 });
                 gifRecordingState.firstFrame = false;
               }
-              const index = applyPalette(data, gifRecordingState.palette);
+              const index = gifenc.applyPalette(data, gifRecordingState.palette);
               gif.writeFrame(index, activeExportResolution, activeExportResolution, {
                 palette: isFirst ? gifRecordingState.palette : undefined,
                 delay: Math.round(1000 / gifFps)

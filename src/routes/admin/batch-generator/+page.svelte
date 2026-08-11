@@ -3,7 +3,7 @@
 	import RichTextInput from '$lib/components/RichTextInput.svelte';
 	import { Input, Button, RecordingIndicator, FileUpload } from '$lib/primitives';
 	import { parseBoldText, boldTextToHtml } from '$lib/utils/boldText';
-	import { GIFEncoder, quantize, applyPalette } from 'gifenc';
+	import { loadGifenc } from '$lib/utils/gifenc';
 	import { buildGifPalette } from '$lib/utils/gifPalette';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
@@ -487,6 +487,8 @@ Invite someone dangerous to tea.`);
 
 		try {
 			const exportFmt = exportFormat;
+			// Browser-only encoder — pulled in on demand so it stays out of the SSR bundle
+			const gifenc = exportFmt === 'gif' ? await loadGifenc() : null;
 
 			// Determine recording dimensions based on inputFieldVisible and recordingWidth setting
 			let recordingHeight: number;
@@ -523,9 +525,9 @@ Invite someone dangerous to tea.`);
 			recordingContext.imageSmoothingEnabled = true;
 			recordingContext.imageSmoothingQuality = 'high';
 
-			if (exportFmt === 'gif') {
+			if (exportFmt === 'gif' && gifenc) {
 				// GIF: initialize encoder (frames added in captureFrame)
-				const gif = GIFEncoder();
+				const gif = gifenc.GIFEncoder();
 				gifRecordingState = { gif, palette: [], firstFrame: true };
 			} else {
 				// MP4: Create stream from canvas
@@ -806,21 +808,21 @@ Invite someone dangerous to tea.`);
 				}
 
 				// If GIF export, encode this frame (skip first frame - often black)
-				if (gifRecordingState && recordingContext && recordingCanvas && frameIndex > 0) {
+				if (gifRecordingState && gifenc && recordingContext && recordingCanvas && frameIndex > 0) {
 					const { gif } = gifRecordingState;
 					const imgData = recordingContext.getImageData(0, 0, recordingCanvas.width, recordingCanvas.height);
 					const data = imgData.data;
 					const isFirst = gifRecordingState.firstFrame;
 
 					if (isFirst) {
-						const basePalette = quantize(data, 250);
+						const basePalette = gifenc.quantize(data, 250);
 						gifRecordingState.palette = buildGifPalette(basePalette, {
 							textColor,
 							backgroundColor: backgroundColor !== 'transparent' ? backgroundColor : undefined
 						});
 						gifRecordingState.firstFrame = false;
 					}
-					const index = applyPalette(data, gifRecordingState.palette);
+					const index = gifenc.applyPalette(data, gifRecordingState.palette);
 					const gifFps = Math.min(recordingFps, 15); // Cap for reasonable GIF size
 					gif.writeFrame(index, recordingCanvas.width, recordingCanvas.height, {
 						palette: isFirst ? gifRecordingState.palette : undefined,
