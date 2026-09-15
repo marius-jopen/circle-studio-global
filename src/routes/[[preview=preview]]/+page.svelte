@@ -10,6 +10,7 @@
     import { onMount, tick } from 'svelte';
 	import { viewMode, initializeViewMode, homeSearchQuery, searchZeroResults } from '$lib/stores';
 	import { hoverPreview } from '$lib/stores/preview';
+	import { filterProjectsByView, hiddenProjectIdsForView } from '$lib/utils/projectVisibility';
 
 	export let data;
 	// Use client-provided initial view mode (from +page.ts) to avoid grid flash on SPA nav
@@ -17,11 +18,15 @@
 	$: currentView = (initialViewMode ?? $viewMode) as 'grid' | 'list';
 	// Toggle: show GlobalPreviewPlayer in grid mode as well
 	const SHOW_PREVIEW_IN_GRID = false;
+    // Projects the CMS allows in the current view ("Visibility" select on each project)
+    $: viewProjects = filterProjectsByView(data?.allProjects ?? [], currentView);
+    // Featured projects are content relationships, so match those by id instead
+    $: hiddenProjectIds = hiddenProjectIdsForView(data?.allProjects ?? [], currentView);
     // Shared search filtering (used on mobile when search input in MobileNav is open)
     $: filteredAllProjects = (() => {
         const query = $homeSearchQuery.trim().toLowerCase();
-        if (!query) return data.allProjects;
-        return (data?.allProjects ?? []).filter((project) => {
+        if (!query) return viewProjects;
+        return viewProjects.filter((project) => {
             const client = (project?.data?.client || '').toLowerCase();
             const title = (project?.data?.title || '').toLowerCase();
             const tags = (project?.tags || []).join(' ').toLowerCase();
@@ -148,11 +153,16 @@
 		return shuffled;
 	}
 
+	// Single feature project, unless it is hidden in the current view
+	$: hasVisibleSingleFeature =
+		isFilled.contentRelationship(data?.page?.data?.feature_project) &&
+		!hiddenProjectIds.has(data.page.data.feature_project.id);
+
 	// Collect all projects and create a single shuffled array (shared between single and grid)
 	// Use data.page as dependency to ensure it re-runs on every data change
 	$: allShuffledProjects = (() => {
 		const allProjects: any[] = [];
-		const hasOriginalSingleFeature = isFilled.contentRelationship(data?.page?.data?.feature_project);
+		const hasOriginalSingleFeature = hasVisibleSingleFeature;
 		
 		// Add single featured project if it exists
 		if (hasOriginalSingleFeature) {
@@ -162,7 +172,7 @@
 		// Add featured projects from the group
 		if (data?.page?.data?.feature_projects) {
 			data.page.data.feature_projects.forEach(projectGroup => {
-				if (isFilled.contentRelationship(projectGroup.items)) {
+				if (isFilled.contentRelationship(projectGroup.items) && !hiddenProjectIds.has(projectGroup.items.id)) {
 					allProjects.push(projectGroup.items);
 				}
 			});
@@ -181,14 +191,14 @@
 
 	// Extract single feature project (only if it originally existed in CMS)
 	$: shuffledFeatureProject = (() => {
-		const hasOriginalSingleFeature = isFilled.contentRelationship(data?.page?.data?.feature_project);
+		const hasOriginalSingleFeature = hasVisibleSingleFeature;
 		if (!hasOriginalSingleFeature || allShuffledProjects.length === 0) return null;
 		return allShuffledProjects[0] || null;
 	})();
 
 	// Extract grid projects with preserved size structure
 	$: shuffledFeatureProjects = (() => {
-		const hasOriginalSingleFeature = isFilled.contentRelationship(data?.page?.data?.feature_project);
+		const hasOriginalSingleFeature = hasVisibleSingleFeature;
 		
 		if (allShuffledProjects.length === 0) return [];
 		

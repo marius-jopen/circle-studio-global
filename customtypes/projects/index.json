@@ -12,6 +12,15 @@
 					"label": "UID"
 				}
 			},
+			"visibility": {
+				"type": "Select",
+				"config": {
+					"label": "Visibility",
+					"placeholder": "",
+					"options": ["Both", "Grid only", "List only"],
+					"default_value": "Both"
+				}
+			},
 			"year": {
 				"type": "Select",
 				"config": {

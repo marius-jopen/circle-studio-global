@@ -609,6 +609,18 @@ type ProjectsDocumentDataSlicesSlice =
  */
 interface ProjectsDocumentData {
 	/**
+	 * Visibility field in *Projects*
+	 *
+	 * - **Field Type**: Select
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: Both
+	 * - **API ID Path**: projects.visibility
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/select
+	 */
+	visibility: prismic.SelectField<'Both' | 'Grid only' | 'List only', 'filled'>;
+
+	/**
 	 * Year field in *Projects*
 	 *
 	 * - **Field Type**: Select
