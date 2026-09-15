@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { SliceZone, PrismicImage, PrismicRichText, PrismicLink } from '@prismicio/svelte';
+	import { asText } from '@prismicio/client';
+	import { page } from '$app/state';
 	import type { PageProps } from './$types';
 	import VideoPlayerCustom from '$lib/components/VideoPlayerCustom.svelte';
   import Credits from '$lib/components/Credits.svelte';
@@ -14,6 +16,65 @@
 	const project = $derived(data.project);
 	const projectData = $derived(project.data);
 	const relatedProjects = $derived(data.relatedProjects);
+
+	const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+	// Schema.org CreativeWork JSON-LD. Gives crawlers and language models the facts
+	// of the project as data: who made it, for whom, when, and who is credited.
+	let projectJsonLd = $derived.by(() => {
+		const origin = page.url.origin;
+		const d = projectData as any;
+		const title = (d?.title || '').trim();
+		if (!title) return '';
+
+		const description = (asText(d?.description) || '').replace(/\s+/g, ' ').trim();
+		const previews = Array.isArray(d?.preview) ? d.preview : [];
+		const image =
+			d?.meta_image?.url ||
+			previews.map((i: any) => i?.preview_image_landscape?.url).find(Boolean) ||
+			previews.map((i: any) => i?.preview_image_portrait?.url).find(Boolean);
+
+		// Credits are groups of labelled people; flatten them to unique contributor names.
+		const seen = new Set<string>();
+		const contributors: Record<string, unknown>[] = [];
+		for (const credit of (d?.credits ?? [])) {
+			for (const person of (credit?.person ?? [])) {
+				const name = (person?.data?.title || '').trim();
+				if (!name || seen.has(name)) continue;
+				seen.add(name);
+				const personLd: Record<string, unknown> = { '@type': 'Person', name };
+				const link = person?.data?.link?.url;
+				if (link) personLd.sameAs = link;
+				contributors.push(personLd);
+			}
+		}
+
+		const monthIndex = MONTHS.indexOf(d?.month);
+		const datePublished = d?.year
+			? monthIndex >= 0
+				? `${d.year}-${String(monthIndex + 1).padStart(2, '0')}`
+				: String(d.year)
+			: null;
+
+		const ld: Record<string, unknown> = {
+			'@context': 'https://schema.org',
+			'@type': 'CreativeWork',
+			name: title,
+			url: `${origin}/work/${project.uid}`,
+			inLanguage: 'en',
+			creator: { '@type': 'Organization', name: 'Art Camp', url: origin }
+		};
+		if (description) ld.description = description;
+		if (image) ld.image = image;
+		if (datePublished) ld.datePublished = datePublished;
+		if (d?.client) ld.sponsor = { '@type': 'Organization', name: d.client };
+		if (contributors.length) ld.contributor = contributors;
+		const keywords = [d?.client, d?.year, ...(project.tags ?? [])].filter(Boolean);
+		if (keywords.length) ld.keywords = keywords.join(', ');
+
+		const json = JSON.stringify(ld).replace(/</g, '\\u003c');
+		return `<script type="application/ld+json">${json}<\/script>`;
+	});
 
 	// Use a consistently large controls text size across environments
 	let controlsTextClass = $state('text-4xl');
@@ -68,6 +129,12 @@
 </script>
 
 <!-- Meta tags (og:image, og:title, etc.) are handled by +layout.svelte using page.data -->
+<svelte:head>
+	{#if projectJsonLd}
+		{@html projectJsonLd}
+	{/if}
+	<meta property="og:type" content="article" />
+</svelte:head>
 
 	<!-- Main Media -->
 	 {#key projectData.main}
@@ -155,9 +222,9 @@
 <div class="mx-auto px-2 paragraph-1 -mt-1">
 	<!-- Project Info -->
 	<div class="grid grid-cols-1 md:grid-cols-2 gap-0! md:gap-2! w-full text-primary mb-2">
-		<div class="h3 text-2xl bg-neutral-100 rounded-t md:rounded px-4 pt-[13px] md:pt-2 pb-0 md:pb-2 mb-0! md:mb-2! h-full">
+		<h1 class="h3 text-2xl bg-neutral-100 rounded-t md:rounded px-4 pt-[13px] md:pt-2 pb-0 md:pb-2 mb-0! md:mb-2! h-full">
 			{projectData.title}{projectData.client ? `, ${projectData.client}` : ''}
-		</div>
+		</h1>
 
 		{#if projectData.description}
 			<div class="prose prose-lg max-w-none content-text h3 bg-neutral-100 rounded-b md:rounded px-4 pt-3.5 md:pt-3 h-full [&_*:last-child]:mb-0">

@@ -22,11 +22,16 @@ export async function load({ params, fetch, cookies }) {
 		const relatedProjects = shuffled.slice(0, 3);
 
 
+		// Most projects have no meta_description filled in, which used to leave every
+		// project page sharing the studio-wide boilerplate. Fall back to the project's
+		// own description so each page describes itself.
+		const descriptionText = asText(project.data.description).replace(/\s+/g, ' ').trim();
+
 		return {
 			project,
 			relatedProjects,
 			title: project.data.title || 'Project',
-			meta_description: project.data.meta_description,
+			meta_description: project.data.meta_description || summarize(descriptionText) || null,
 			meta_title: project.data.meta_title,
 			meta_image: project.data.meta_image?.url
 		};
@@ -35,6 +40,14 @@ export async function load({ params, fetch, cookies }) {
 		console.error(`Failed to fetch project with UID: ${params.uid}`, err);
 		throw error(404, `Project not found: ${params.uid}`);
 	}
+}
+
+/** Trim to roughly a meta-description length, cutting on a word boundary. */
+function summarize(text: string, max = 160): string {
+	if (text.length <= max) return text;
+	const cut = text.slice(0, max);
+	const lastSpace = cut.lastIndexOf(' ');
+	return (lastSpace > 80 ? cut.slice(0, lastSpace) : cut).trimEnd() + '…';
 }
 
 export async function entries() {

@@ -9,8 +9,8 @@
 <footer class="w-full px-2 pb-[75px] md:pb-3 ">
   <div class="text-black px-4 rounded pb-8 md:pb-3 flex flex-col md:flex-row pt-6 md:pt-3 justify-center mt-[-1px] md:justify-between items-center w-full pt-3" class:bg-white={isAbout} class:bg-neutral-100={!isAbout}>
     <div class="mb-6 md:mb-0 text-sm text-center md:text-left order-2 md:order-none">© {currentYear} ART CAMP EST.2016</div>
-    {#if settings?.data?.navigation_footer?.length}
-      <ul class="flex items-center space-x-6 mb-6 md:mb-0 order-3 md:order-none">
+    <ul class="flex items-center space-x-6 mb-6 md:mb-0 order-3 md:order-none">
+      {#if settings?.data?.navigation_footer?.length}
         {#each settings.data.navigation_footer as navItem}
           <li>
             <PrismicLink
@@ -21,8 +21,18 @@
             </PrismicLink>
           </li>
         {/each}
-      </ul>
-    {/if}
+      {/if}
+      <!-- Complete, crawlable list of the work. The homepage grid builds itself
+           after mount, so this is the only path that links every project. -->
+      <li>
+        <a
+          href="/work"
+          class="hover:text-neutral-900 transition-colors duration-300 text-sm md:text-black"
+        >
+          Index
+        </a>
+      </li>
+    </ul>
     <img src="/logo.gif" alt="Art Camp" class="h-7 md:h-10 mb-6 md:mb-0 md:-my-3 md:translate-y-[5px] mix-blend-multiply order-1 md:order-none" />
     <div class="text-sm text-center md:text-left order-4 md:order-none">Development: <a href="https://www.mariusjopen.com" target="_blank" class="hover:underline decoration-[1px] underline-offset-3">Marius Jopen</a> @ <a href="https://www.therobots.world/" target="_blank" class="hover:underline decoration-[1px] underline-offset-3">THE ROBOTS</a></div>
   </div>

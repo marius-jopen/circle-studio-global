@@ -15,6 +15,13 @@ export async function GET({ url, fetch, cookies }) {
 			priority: 1
 		});
 
+		// Work index — the only page that links every project in server-rendered HTML
+		urls.push({
+			loc: `${baseUrl}/work`,
+			changefreq: 'weekly',
+			priority: 0.9
+		});
+
 		// Dynamic pages from Prismic (about, play, etc.)
 		const pages = await client.getAllByType('page', { pageSize: 100 });
 		for (const page of pages) {
